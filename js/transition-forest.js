@@ -108,226 +108,228 @@ export function stop() {
 // ============================================
 // "Zoom through branches" entrance transition
 // ============================================
-// Creates layers of dark tree/branch silhouettes that rush toward
-// the viewer, simulating flying through a forest canopy.
+// Continuous rAF-driven rush through organic branch silhouettes
+// with SVG leaf particles and speed streaks.
 
-// ---- Branch shape generators ----
-// Each returns an SVG path "d" attribute string. w/h = viewport dimensions.
-// All shapes originate from an edge and reach into the frame.
+// ---- Helpers ----
 
-function branchThickTrunk(w, h, side) {
-  // Heavy vertical trunk from top or bottom with 2-3 gnarly sub-branches
-  const tw = randomRange(50, 100);
+function smoothstep(edge0, edge1, x) {
+  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+}
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+// Add small random bumps along a path for bark-like texture
+function noisyLine(x1, y1, x2, y2, steps, amplitude) {
+  let d = '';
+  for (let i = 1; i < steps; i++) {
+    const t = i / steps;
+    const mx = lerp(x1, x2, t) + randomRange(-amplitude, amplitude);
+    const my = lerp(y1, y2, t) + randomRange(-amplitude, amplitude);
+    d += `L${mx},${my} `;
+  }
+  return d;
+}
+
+// ---- Organic branch shape generators ----
+
+function branchGnarledTrunk(w, h, side) {
+  const tw = randomRange(40, 90);
   const fromTop = Math.random() > 0.5;
-  const xBase = side === 'left' ? randomRange(-10, w * 0.15) : randomRange(w * 0.85, w + 10);
+  const xBase = side === 'left' ? randomRange(-20, w * 0.12) : randomRange(w * 0.88, w + 20);
   const dir = side === 'left' ? 1 : -1;
+  const y1 = fromTop ? -10 : h + 10;
+  const y2 = fromTop ? randomRange(h * 0.5, h * 0.8) : randomRange(h * 0.2, h * 0.5);
 
-  const y1 = fromTop ? 0 : h;
-  const y2 = fromTop ? randomRange(h * 0.55, h * 0.85) : randomRange(h * 0.15, h * 0.45);
-  const midY = (y1 + y2) / 2;
+  // Organic S-curve trunk using cubic beziers
+  const cx1 = xBase + randomRange(15, 50) * dir;
+  const cy1 = lerp(y1, y2, 0.25) + randomRange(-30, 30);
+  const cx2 = xBase + randomRange(30, 80) * dir;
+  const cy2 = lerp(y1, y2, 0.65) + randomRange(-20, 20);
 
-  // Main trunk curves slightly
-  const curve = randomRange(20, 60) * dir;
-  const b1y = fromTop ? randomRange(h * 0.15, h * 0.35) : randomRange(h * 0.65, h * 0.85);
-  const b1reach = randomRange(w * 0.15, w * 0.4) * dir;
-  const b2y = fromTop ? randomRange(h * 0.4, h * 0.6) : randomRange(h * 0.4, h * 0.6);
-  const b2reach = randomRange(w * 0.1, w * 0.35) * dir;
-  const b2droop = randomRange(10, 50);
+  // Sub-branches with natural curves
+  const b1t = randomRange(0.25, 0.4);
+  const b1x = lerp(xBase, cx2, b1t) + tw * 0.5 * dir;
+  const b1y = lerp(y1, y2, b1t);
+  const b1ex = b1x + randomRange(w * 0.12, w * 0.35) * dir;
+  const b1ey = b1y + randomRange(-60, 40);
+  const b1cpx = lerp(b1x, b1ex, 0.5) + randomRange(-20, 20) * dir;
+  const b1cpy = b1ey - randomRange(20, 60);
+
+  const b2t = randomRange(0.55, 0.75);
+  const b2x = lerp(xBase, cx2, b2t) + tw * 0.5 * dir;
+  const b2y = lerp(y1, y2, b2t);
+  const b2ex = b2x + randomRange(w * 0.08, w * 0.28) * dir;
+  const b2ey = b2y + randomRange(15, 70);
+  const b2cpx = lerp(b2x, b2ex, 0.6);
+  const b2cpy = b2ey - randomRange(10, 40);
+
+  const bark = randomRange(3, 8); // bark noise amplitude
 
   return `M${xBase},${y1}
+    ${noisyLine(xBase, y1, xBase + tw, y1, 4, bark)}
     L${xBase + tw},${y1}
-    Q${xBase + tw + curve * 0.3},${midY} ${xBase + tw + curve},${y2}
-    L${xBase + tw + curve},${b1y - 15}
-    Q${xBase + tw + curve + 20 * dir},${b1y} ${xBase + b1reach + tw},${b1y - randomRange(15, 40)}
-    L${xBase + b1reach + tw - 10 * dir},${b1y + 8}
-    Q${xBase + tw + curve + 10 * dir},${b1y + 12} ${xBase + tw + curve},${b1y + 15}
-    L${xBase + tw + curve},${b2y - 10}
-    Q${xBase + tw + curve + 15 * dir},${b2y} ${xBase + b2reach + tw},${b2y + b2droop}
-    L${xBase + b2reach + tw - 8 * dir},${b2y + b2droop + 10}
-    Q${xBase + tw + curve + 8 * dir},${b2y + 8} ${xBase + tw + curve},${b2y + 12}
-    L${xBase + curve},${y2}
-    Q${xBase + curve * 0.3},${midY} ${xBase},${y1} Z`;
-}
-
-function branchThinTwig(w, h, side) {
-  // Thin wispy twig reaching diagonally across the screen
-  const tw = randomRange(6, 18);
-  const fromEdge = side === 'left' ? randomRange(-5, 15) : randomRange(w - 15, w + 5);
-  const startY = randomRange(0, h * 0.6);
-  const endX = side === 'left' ? randomRange(w * 0.3, w * 0.65) : randomRange(w * 0.35, w * 0.7);
-  const endY = startY + randomRange(h * 0.15, h * 0.4);
-  const cp1x = (fromEdge + endX) * 0.4;
-  const cp1y = startY + randomRange(20, 80);
-  const cp2x = (fromEdge + endX) * 0.7;
-  const cp2y = endY - randomRange(20, 60);
-
-  // Sub-twig branching off
-  const subT = randomRange(0.3, 0.6);
-  const subX = fromEdge + (endX - fromEdge) * subT;
-  const subY = startY + (endY - startY) * subT;
-  const subReachX = subX + randomRange(30, 100) * (side === 'left' ? 1 : -1);
-  const subReachY = subY - randomRange(20, 80);
-
-  return `M${fromEdge},${startY}
-    C${cp1x},${cp1y} ${cp2x},${cp2y} ${endX},${endY}
-    L${endX - tw * 0.5},${endY + tw}
-    C${cp2x - tw},${cp2y + tw} ${cp1x - tw},${cp1y + tw} ${fromEdge},${startY + tw}
+    C${cx1 + tw},${cy1} ${cx2 + tw * 0.8},${cy2} ${cx2 + tw * 0.5},${y2}
+    C${cx2},${cy2 + 10} ${cx1 + 5},${cy1 + 10} ${xBase},${y1} Z
+    M${b1x},${b1y}
+    C${b1cpx},${b1cpy} ${b1cpx + 10 * dir},${b1ey - 10} ${b1ex},${b1ey}
+    L${b1ex - 5 * dir},${b1ey + 8}
+    C${b1cpx + 5 * dir},${b1ey + 5} ${b1cpx - 5 * dir},${b1cpy + 12} ${b1x + 5 * dir},${b1y + 10}
     Z
-    M${subX},${subY}
-    Q${(subX + subReachX) / 2},${subReachY - 15} ${subReachX},${subReachY}
-    L${subReachX + tw * 0.4},${subReachY + tw * 0.7}
-    Q${(subX + subReachX) / 2 + tw * 0.3},${subReachY + tw} ${subX + tw * 0.5},${subY + tw * 0.5}
+    M${b2x},${b2y}
+    C${b2cpx},${b2cpy} ${b2cpx + 8 * dir},${b2ey - 8} ${b2ex},${b2ey}
+    L${b2ex - 4 * dir},${b2ey + 6}
+    C${b2cpx + 3 * dir},${b2ey + 3} ${b2cpx - 3 * dir},${b2cpy + 8} ${b2x + 4 * dir},${b2y + 8}
     Z`;
 }
 
-function branchForked(w, h, side) {
-  // A branch that forks into a Y-shape
-  const tw = randomRange(25, 55);
-  const baseX = side === 'left' ? randomRange(-10, 20) : randomRange(w - 20, w + 10);
-  const baseY = randomRange(h * 0.3, h * 0.7);
+function branchSweepingArc(w, h, side) {
+  const tw = randomRange(18, 40);
+  const startX = side === 'left' ? randomRange(-25, 5) : randomRange(w - 5, w + 25);
+  const startY = randomRange(h * 0.02, h * 0.25);
   const dir = side === 'left' ? 1 : -1;
 
-  const forkX = baseX + randomRange(w * 0.1, w * 0.25) * dir;
-  const forkY = baseY + randomRange(-40, 40);
+  // Long dramatic arc across the screen
+  const peakX = startX + randomRange(w * 0.3, w * 0.6) * dir;
+  const peakY = startY + randomRange(h * 0.02, h * 0.15);
+  const endX = startX + randomRange(w * 0.1, w * 0.3) * dir;
+  const endY = startY + randomRange(h * 0.3, h * 0.6);
 
-  // Two prongs of the fork
-  const prong1X = forkX + randomRange(w * 0.1, w * 0.25) * dir;
-  const prong1Y = forkY - randomRange(h * 0.1, h * 0.25);
-  const prong2X = forkX + randomRange(w * 0.08, w * 0.2) * dir;
-  const prong2Y = forkY + randomRange(h * 0.08, h * 0.2);
-  const tw2 = tw * 0.6;
-
-  return `M${baseX},${baseY - tw / 2}
-    L${forkX},${forkY - tw / 2}
-    L${prong1X},${prong1Y}
-    L${prong1X - tw2 * 0.3 * dir},${prong1Y + tw2}
-    L${forkX + tw * 0.1 * dir},${forkY}
-    L${prong2X},${prong2Y}
-    L${prong2X - tw2 * 0.3 * dir},${prong2Y + tw2}
-    L${forkX},${forkY + tw / 2}
-    L${baseX},${baseY + tw / 2}
-    Z`;
-}
-
-function branchSweepingBough(w, h, side) {
-  // Long sweeping curved bough that arcs across a large portion of the screen
-  const tw = randomRange(20, 45);
-  const startX = side === 'left' ? randomRange(-20, 10) : randomRange(w - 10, w + 20);
-  const startY = randomRange(h * 0.05, h * 0.3);
-  const dir = side === 'left' ? 1 : -1;
-
-  // Arc across and downward
-  const peakX = startX + randomRange(w * 0.3, w * 0.55) * dir;
-  const peakY = startY + randomRange(h * 0.05, h * 0.2);
-  const endX = startX + randomRange(w * 0.15, w * 0.35) * dir;
-  const endY = startY + randomRange(h * 0.3, h * 0.55);
-
-  // Small twig dropping from the arc
-  const dropX = (startX + peakX) * 0.6;
-  const dropY = peakY + randomRange(40, 120);
+  // Drooping sub-twigs along the arc
+  const twigs = [];
+  const twigCount = Math.floor(randomRange(2, 5));
+  for (let i = 0; i < twigCount; i++) {
+    const t = randomRange(0.2, 0.8);
+    const tx = lerp(startX, endX, t) + (peakX - startX) * t * (1 - t) * 2;
+    const ty = lerp(startY, endY, t) + (peakY - startY) * t * (1 - t) * 2 + tw * 0.5;
+    const tlen = randomRange(30, 90);
+    const tsway = randomRange(-15, 15);
+    twigs.push(`M${tx},${ty} C${tx + tsway},${ty + tlen * 0.4} ${tx + tsway * 0.5},${ty + tlen * 0.7} ${tx + tsway * 0.3},${ty + tlen}
+      L${tx + tsway * 0.3 + 3},${ty + tlen - 2}
+      C${tx + tsway * 0.5 + 3},${ty + tlen * 0.7} ${tx + tsway + 3},${ty + tlen * 0.4} ${tx + 4},${ty} Z`);
+  }
 
   return `M${startX},${startY}
-    Q${peakX},${peakY - 30} ${endX},${endY}
-    L${endX - tw * 0.3 * dir},${endY + tw * 0.5}
-    Q${peakX - tw * 0.2 * dir},${peakY + tw + 10} ${startX},${startY + tw}
-    Z
-    M${dropX},${(startY + peakY) / 2}
-    L${dropX + 4 * dir},${dropY}
-    L${dropX - 4 * dir},${dropY - 5}
-    Z`;
+    C${lerp(startX, peakX, 0.5)},${peakY - 20} ${peakX},${peakY} ${endX},${endY}
+    L${endX - tw * 0.2 * dir},${endY + tw * 0.4}
+    C${peakX - tw * 0.15 * dir},${peakY + tw} ${lerp(startX, peakX, 0.5) - tw * 0.1 * dir},${peakY + tw - 10} ${startX},${startY + tw}
+    Z ${twigs.join(' ')}`;
 }
 
-function branchCanopyTop(w, h) {
-  // Dense canopy reaching down from the top of the screen
-  const segments = Math.floor(randomRange(3, 6));
+function branchCanopyMass(w, h) {
+  const segments = Math.floor(randomRange(5, 9));
   const segW = w / segments;
-  let d = `M0,0 `;
+  let d = `M-10,-10 L${w + 10},-10 `;
 
-  // Irregular bottom edge of the canopy hanging down
-  for (let i = 0; i <= segments; i++) {
+  // Right side down
+  d += `L${w + 10},${randomRange(h * 0.05, h * 0.12)} `;
+
+  // Irregular organic canopy bottom edge using cubic beziers
+  for (let i = segments; i >= 0; i--) {
     const x = i * segW;
-    const depth = randomRange(h * 0.08, h * 0.3);
-    const cpx = x + randomRange(-segW * 0.3, segW * 0.3);
-    const cpy = depth + randomRange(-20, 30);
-    if (i === 0) {
-      d += `L0,${depth} `;
-    } else {
-      d += `Q${cpx},${cpy} ${Math.min(x, w)},${depth} `;
+    const depth = randomRange(h * 0.08, h * 0.35);
+    const cpx1 = x + segW * randomRange(0.2, 0.8);
+    const cpy1 = depth + randomRange(-30, 40);
+    const cpx2 = x + segW * randomRange(-0.2, 0.3);
+    const cpy2 = depth + randomRange(-20, 30);
+    d += `C${cpx1},${cpy1} ${cpx2},${cpy2} ${Math.max(x, -10)},${depth} `;
+  }
+
+  d += `L-10,${randomRange(h * 0.05, h * 0.12)} Z`;
+
+  // Hanging foliage clusters (groups of overlapping leaf-like ellipses)
+  const clusterCount = Math.floor(randomRange(3, 7));
+  for (let i = 0; i < clusterCount; i++) {
+    const cx = randomRange(w * 0.05, w * 0.95);
+    const cy = randomRange(h * 0.1, h * 0.3);
+    const clusterSize = randomRange(15, 40);
+    for (let j = 0; j < 3; j++) {
+      const lx = cx + randomRange(-clusterSize * 0.5, clusterSize * 0.5);
+      const ly = cy + randomRange(-clusterSize * 0.3, clusterSize * 0.3);
+      const lr = randomRange(8, clusterSize * 0.6);
+      const lry = lr * randomRange(0.5, 0.9);
+      const rot = randomRange(-40, 40);
+      // Approximate ellipse with two arcs
+      d += ` M${lx - lr},${ly}
+        A${lr},${lry} ${rot} 1 1 ${lx + lr},${ly}
+        A${lr},${lry} ${rot} 1 1 ${lx - lr},${ly} Z`;
     }
   }
-  d += `L${w},0 Z`;
 
-  // Add hanging vines / dripping tendrils
-  const vineCount = Math.floor(randomRange(2, 5));
+  // Thin hanging vines
+  const vineCount = Math.floor(randomRange(3, 6));
   for (let i = 0; i < vineCount; i++) {
-    const vx = randomRange(w * 0.1, w * 0.9);
-    const vy = randomRange(h * 0.05, h * 0.2);
-    const vlen = randomRange(h * 0.05, h * 0.2);
-    const sway = randomRange(-25, 25);
-    d += ` M${vx - 2},${vy} Q${vx + sway},${vy + vlen * 0.6} ${vx},${vy + vlen}
-      Q${vx + sway + 3},${vy + vlen * 0.6} ${vx + 3},${vy} Z`;
+    const vx = randomRange(w * 0.08, w * 0.92);
+    const vy = randomRange(h * 0.08, h * 0.22);
+    const vlen = randomRange(h * 0.06, h * 0.22);
+    const sway1 = randomRange(-20, 20);
+    const sway2 = randomRange(-15, 15);
+    d += ` M${vx - 1.5},${vy}
+      C${vx + sway1},${vy + vlen * 0.35} ${vx + sway2},${vy + vlen * 0.7} ${vx},${vy + vlen}
+      C${vx + sway2 + 2},${vy + vlen * 0.7} ${vx + sway1 + 2},${vy + vlen * 0.35} ${vx + 2},${vy} Z`;
   }
 
   return d;
 }
 
-function branchDiagonalCross(w, h) {
-  // A branch crossing diagonally across the frame (corner to corner-ish)
-  const tw = randomRange(15, 40);
+function branchDiagonalLimb(w, h) {
+  const tw = randomRange(20, 50);
   const fromLeft = Math.random() > 0.5;
   const fromTop = Math.random() > 0.5;
 
-  const sx = fromLeft ? randomRange(-10, w * 0.1) : randomRange(w * 0.9, w + 10);
-  const sy = fromTop ? randomRange(-10, h * 0.1) : randomRange(h * 0.9, h + 10);
-  const ex = fromLeft ? randomRange(w * 0.5, w * 0.85) : randomRange(w * 0.15, w * 0.5);
-  const ey = fromTop ? randomRange(h * 0.5, h * 0.85) : randomRange(h * 0.15, h * 0.5);
+  const sx = fromLeft ? randomRange(-15, w * 0.08) : randomRange(w * 0.92, w + 15);
+  const sy = fromTop ? randomRange(-15, h * 0.08) : randomRange(h * 0.92, h + 15);
+  const ex = fromLeft ? randomRange(w * 0.4, w * 0.8) : randomRange(w * 0.2, w * 0.6);
+  const ey = fromTop ? randomRange(h * 0.4, h * 0.75) : randomRange(h * 0.25, h * 0.6);
 
-  const cpx = (sx + ex) / 2 + randomRange(-80, 80);
-  const cpy = (sy + ey) / 2 + randomRange(-80, 80);
+  // Organic S-curve instead of straight diagonal
+  const cp1x = lerp(sx, ex, 0.3) + randomRange(-60, 60);
+  const cp1y = lerp(sy, ey, 0.2) + randomRange(-40, 40);
+  const cp2x = lerp(sx, ex, 0.7) + randomRange(-50, 50);
+  const cp2y = lerp(sy, ey, 0.8) + randomRange(-30, 30);
 
-  // Perpendicular offset for width
+  // Perpendicular offset for organic width (varies along length)
   const angle = Math.atan2(ey - sy, ex - sx);
-  const nx = -Math.sin(angle) * tw;
-  const ny = Math.cos(angle) * tw;
+  const nx = -Math.sin(angle);
+  const ny = Math.cos(angle);
+  const tw1 = tw;
+  const tw2 = tw * randomRange(0.4, 0.7); // tapers toward tip
+
+  // Small fork at the end
+  const forkAngle = angle + randomRange(-0.6, 0.6);
+  const forkLen = randomRange(30, 80);
+  const fex = ex + Math.cos(forkAngle) * forkLen;
+  const fey = ey + Math.sin(forkAngle) * forkLen;
 
   return `M${sx},${sy}
-    Q${cpx},${cpy} ${ex},${ey}
-    L${ex + nx},${ey + ny}
-    Q${cpx + nx},${cpy + ny} ${sx + nx},${sy + ny}
+    C${cp1x},${cp1y} ${cp2x},${cp2y} ${ex},${ey}
+    L${fex},${fey}
+    L${fex + nx * 5},${fey + ny * 5}
+    L${ex + nx * tw2},${ey + ny * tw2}
+    C${cp2x + nx * tw1 * 0.8},${cp2y + ny * tw1 * 0.8} ${cp1x + nx * tw1},${cp1y + ny * tw1} ${sx + nx * tw1},${sy + ny * tw1}
     Z`;
 }
 
-// Pick a random branch shape generator
 function randomBranchPath(w, h, side) {
   const generators = [
-    () => branchThickTrunk(w, h, side),
-    () => branchThinTwig(w, h, side),
-    () => branchForked(w, h, side),
-    () => branchSweepingBough(w, h, side),
-    () => branchCanopyTop(w, h),
-    () => branchDiagonalCross(w, h),
+    () => branchGnarledTrunk(w, h, side),
+    () => branchSweepingArc(w, h, side),
+    () => branchCanopyMass(w, h),
+    () => branchDiagonalLimb(w, h),
   ];
   return generators[Math.floor(Math.random() * generators.length)]();
 }
 
-function getDepthColor(depth) {
-  const darkness = Math.max(0.6, 1 - depth * 0.25);
-  const r = Math.floor(26 * darkness);
-  const g = Math.floor(61 * darkness);
-  const b = Math.floor(46 * darkness);
-  return `rgb(${r},${g},${b})`;
-}
-
 function createBranchLayer(depth) {
-  // Generate a layer with 2-4 different branch shapes at various positions
   const w = window.innerWidth;
   const h = window.innerHeight;
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-  svg.style.cssText = `position:absolute;inset:0;width:100%;height:100%;`;
+  svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
 
-  const branchCount = Math.floor(randomRange(2, 5));
+  const branchCount = Math.floor(randomRange(2, 4));
   const sides = ['left', 'right'];
 
   for (let i = 0; i < branchCount; i++) {
@@ -336,36 +338,132 @@ function createBranchLayer(depth) {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', pathD);
 
-    // Vary color slightly per branch within the depth
-    const hue = Math.floor(randomRange(120, 155));
-    const sat = Math.floor(randomRange(35, 65));
-    const light = Math.floor(randomRange(8 + depth * 4, 18 + depth * 6));
+    const hue = Math.floor(randomRange(115, 155));
+    const sat = Math.floor(randomRange(30, 60));
+    const light = Math.floor(randomRange(6 + depth * 3, 16 + depth * 5));
     path.setAttribute('fill', `hsl(${hue},${sat}%,${light}%)`);
     svg.appendChild(path);
   }
 
-  // Scatter leaf clusters across the layer
+  // Leaf clusters scattered across layer
   const leafGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  const leafCount = Math.floor(randomRange(8, 20));
+  const leafCount = Math.floor(randomRange(10, 25));
   for (let i = 0; i < leafCount; i++) {
     const lx = randomRange(w * 0.02, w * 0.98);
-    const ly = randomRange(h * 0.02, h * 0.7);
-    const lr = randomRange(6, 25);
+    const ly = randomRange(h * 0.02, h * 0.75);
+    const lr = randomRange(5, 22);
+    const lry = lr * randomRange(0.4, 0.75);
     const leafEl = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
     leafEl.setAttribute('cx', lx);
     leafEl.setAttribute('cy', ly);
     leafEl.setAttribute('rx', lr);
-    leafEl.setAttribute('ry', lr * randomRange(0.4, 0.8));
-    leafEl.setAttribute('transform', `rotate(${randomRange(-60, 60)} ${lx} ${ly})`);
-    const leafHue = Math.floor(randomRange(85, 155));
-    const leafLight = Math.floor(randomRange(12 + depth * 3, 30 + depth * 5));
-    leafEl.setAttribute('fill', `hsl(${leafHue}, ${Math.floor(randomRange(40, 70))}%, ${leafLight}%)`);
+    leafEl.setAttribute('ry', lry);
+    leafEl.setAttribute('transform', `rotate(${randomRange(-70, 70)} ${lx} ${ly})`);
+    const leafHue = Math.floor(randomRange(80, 155));
+    const leafLight = Math.floor(randomRange(10 + depth * 3, 28 + depth * 5));
+    leafEl.setAttribute('fill', `hsl(${leafHue},${Math.floor(randomRange(35, 70))}%,${leafLight}%)`);
     leafGroup.appendChild(leafEl);
   }
   svg.appendChild(leafGroup);
 
   return svg;
 }
+
+// ---- SVG leaf particle for the rush ----
+
+function spawnLeaf(container, duration) {
+  const size = randomRange(14, 32);
+  const startX = randomRange(5, 95);
+  const startY = randomRange(5, 95);
+  const hue = Math.floor(randomRange(80, 160));
+  const sat = Math.floor(randomRange(40, 75));
+  const light = Math.floor(randomRange(22, 52));
+  const color = `hsl(${hue},${sat}%,${light}%)`;
+  const initRot = randomRange(0, 360);
+
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 20 28');
+  svg.setAttribute('width', size);
+  svg.setAttribute('height', size * 1.4);
+  svg.style.cssText = `
+    position:absolute;
+    left:${startX}%;top:${startY}%;
+    opacity:0.85;
+    transform:rotate(${initRot}deg) scale(0.2);
+    transition:transform ${duration}ms cubic-bezier(0.2,0,0.3,1), opacity ${duration * 0.8}ms ease-out;
+    z-index:8;
+    will-change:transform,opacity;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+  `;
+
+  // Organic leaf shape with midrib
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', 'M10,0 C6,5 0,12 1,20 C3,26 7,28 10,28 C13,28 17,26 19,20 C20,12 14,5 10,0 Z');
+  path.setAttribute('fill', color);
+  svg.appendChild(path);
+
+  const midrib = document.createElementNS(ns, 'line');
+  midrib.setAttribute('x1', '10'); midrib.setAttribute('y1', '3');
+  midrib.setAttribute('x2', '10'); midrib.setAttribute('y2', '26');
+  midrib.setAttribute('stroke', 'rgba(0,0,0,0.12)');
+  midrib.setAttribute('stroke-width', '0.5');
+  svg.appendChild(midrib);
+
+  container.appendChild(svg);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const endRot = initRot + randomRange(180, 540);
+      const endScale = randomRange(1.2, 2.5);
+      const tx = randomRange(-200, 200);
+      const ty = randomRange(-200, 200);
+      svg.style.transform = `rotate(${endRot}deg) rotateY(${randomRange(-60,60)}deg) scale(${endScale}) translate(${tx}px,${ty}px)`;
+      svg.style.opacity = '0';
+    });
+  });
+
+  setTimeout(() => svg.remove(), duration + 100);
+}
+
+// ---- Speed streaks during rush ----
+
+function spawnStreak(container) {
+  const streak = document.createElement('div');
+  const y = randomRange(5, 95);
+  const width = randomRange(30, 60);
+  const angle = randomRange(-8, 8);
+  const duration = randomRange(300, 500);
+  const fromLeft = Math.random() > 0.5;
+
+  streak.style.cssText = `
+    position:absolute;
+    top:${y}%;
+    ${fromLeft ? 'left:-10%' : 'right:-10%'};
+    width:${width}vw;
+    height:${randomRange(1, 2)}px;
+    background:linear-gradient(${fromLeft ? '90deg' : '270deg'}, transparent, rgba(160,210,160,0.2), rgba(200,240,200,0.35), transparent);
+    transform:rotate(${angle}deg) ${fromLeft ? 'translateX(-100%)' : 'translateX(100%)'};
+    opacity:0;
+    z-index:9;
+    pointer-events:none;
+    border-radius:1px;
+  `;
+  container.appendChild(streak);
+
+  requestAnimationFrame(() => {
+    streak.style.transition = `transform ${duration}ms cubic-bezier(0.1,0,0.2,1), opacity ${duration * 0.5}ms ease`;
+    streak.style.transform = `rotate(${angle}deg) ${fromLeft ? 'translateX(120vw)' : 'translateX(-120vw)'}`;
+    streak.style.opacity = '1';
+  });
+
+  setTimeout(() => {
+    streak.style.opacity = '0';
+    setTimeout(() => streak.remove(), 200);
+  }, duration * 0.6);
+}
+
+// ---- Main entrance transition (continuous rAF loop) ----
 
 export async function enter() {
   if (prefersReducedMotion()) return;
@@ -374,19 +472,14 @@ export async function enter() {
   overlay.classList.add('active');
   const content = overlay.querySelector('#transition-content');
 
-  // Phase 1 (0ms): Branches start appearing immediately, overlaying
-  // the zooming homescreen image. Overlay is semi-transparent at first
-  // so you see the trees zooming underneath.
-
-  // Create all 4 depth layers of branches up front
+  // Create 4 depth layers of branches up front
   const layers = [];
   for (let depth = 0; depth < 4; depth++) {
     const layer = document.createElement('div');
-    const startScale = 0.4 + depth * 0.15;
     layer.style.cssText = `
       position:absolute;inset:0;
       opacity:0;
-      transform:scale(${startScale});
+      transform:scale(0.4);
       transform-origin:50% 50%;
       will-change:transform,opacity;
     `;
@@ -395,131 +488,112 @@ export async function enter() {
     layers.push(layer);
   }
 
-  // Stagger leaf particles that fly past during the rush
-  const leafBurst = document.createElement('div');
-  leafBurst.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:10;';
-  content.appendChild(leafBurst);
+  // Container for leaf particles and speed streaks
+  const particleContainer = document.createElement('div');
+  particleContainer.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:10;overflow:hidden;';
+  content.appendChild(particleContainer);
 
-  // Green vignette that builds up gradually (transparent center → dark edges)
+  // Green vignette
   const vignette = document.createElement('div');
   vignette.style.cssText = `
     position:absolute;inset:0;
     background:radial-gradient(ellipse at 50% 50%, transparent 10%, rgba(13,40,24,0.3) 50%, rgba(13,40,24,0.85) 100%);
     opacity:0;
-    transition:opacity 0.4s ease;
     z-index:5;
+    will-change:opacity;
   `;
   content.appendChild(vignette);
 
-  // Phase 1: First branches fade in subtly alongside the zoom (0-600ms)
-  // Far layers appear first, semi-transparent
-  await sleep(50);
-  vignette.style.opacity = '1';
+  // Layer timing config: [appearStart, peakStart, fadeStart, fadeEnd] as fraction of total
+  const layerTimings = [
+    { start: 0.35, peak: 0.45, fadeStart: 0.65, fadeEnd: 0.85 }, // depth 0 (closest, darkest)
+    { start: 0.22, peak: 0.32, fadeStart: 0.55, fadeEnd: 0.75 }, // depth 1
+    { start: 0.10, peak: 0.18, fadeStart: 0.40, fadeEnd: 0.60 }, // depth 2
+    { start: 0.00, peak: 0.08, fadeStart: 0.25, fadeEnd: 0.45 }, // depth 3 (farthest, lightest)
+  ];
+  const maxOpacities = [1.0, 0.85, 0.65, 0.45];
 
-  // Far layer (depth 3) — appears immediately, drifts slowly
-  layers[3].style.transition = 'opacity 0.5s ease, transform 1.8s cubic-bezier(0.15, 0, 0.25, 1)';
-  layers[3].style.opacity = '0.4';
-  layers[3].style.transform = 'scale(0.9)';
+  const RUSH_DURATION = 1800;
+  const start = performance.now();
+  let lastLeafTime = 0;
+  let lastStreakTime = 0;
 
-  await sleep(200);
+  await new Promise(resolve => {
+    function tick(now) {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / RUSH_DURATION, 1);
+      // Cubic ease-out for overall progression
+      const ease = 1 - Math.pow(1 - t, 3);
 
-  // Mid-far layer (depth 2)
-  layers[2].style.transition = 'opacity 0.4s ease, transform 1.5s cubic-bezier(0.15, 0, 0.25, 1)';
-  layers[2].style.opacity = '0.6';
-  layers[2].style.transform = 'scale(1.0)';
+      // Update each branch layer
+      for (let i = 0; i < 4; i++) {
+        const lt = layerTimings[i];
+        const maxOp = maxOpacities[i];
 
-  // Start scattering leaves
-  for (let i = 0; i < 8; i++) {
-    spawnLeaf(leafBurst, randomRange(300, 900));
-  }
+        // Opacity: fade in then out
+        let opacity;
+        if (ease < lt.start) {
+          opacity = 0;
+        } else if (ease < lt.peak) {
+          opacity = smoothstep(lt.start, lt.peak, ease) * maxOp;
+        } else if (ease < lt.fadeStart) {
+          opacity = maxOp;
+        } else if (ease < lt.fadeEnd) {
+          opacity = (1 - smoothstep(lt.fadeStart, lt.fadeEnd, ease)) * maxOp;
+        } else {
+          opacity = 0;
+        }
 
-  await sleep(300);
+        // Scale: starts small, grows past camera
+        const scaleProgress = Math.max(0, (ease - lt.start) / (lt.fadeEnd - lt.start));
+        const scale = lerp(0.5, 3.5, Math.pow(scaleProgress, 0.7));
 
-  // Phase 2: Branches rush forward as zoom intensifies (500-1200ms)
-  // Mid layer (depth 1) — rushes toward camera
-  layers[1].style.transition = 'opacity 0.3s ease, transform 1.0s cubic-bezier(0.2, 0, 0.3, 1)';
-  layers[1].style.opacity = '0.8';
-  layers[1].style.transform = 'scale(1.3)';
+        layers[i].style.opacity = opacity;
+        layers[i].style.transform = `scale(${scale})`;
+      }
 
-  // Far layers accelerate past
-  layers[3].style.transition = 'opacity 0.6s ease, transform 0.8s cubic-bezier(0.2, 0, 0.3, 1)';
-  layers[3].style.transform = 'scale(2.5)';
-  layers[3].style.opacity = '0';
+      // Vignette: builds gradually from edges
+      if (ease < 0.3) {
+        vignette.style.opacity = smoothstep(0, 0.15, ease);
+      } else if (ease < 0.7) {
+        vignette.style.opacity = 1;
+        const fill = smoothstep(0.3, 0.7, ease);
+        const centerOpacity = fill * 0.95;
+        vignette.style.background = `radial-gradient(ellipse at 50% 50%, rgba(13,40,24,${centerOpacity * 0.5}) 0%, rgba(13,40,24,${0.3 + fill * 0.65}) 50%, rgba(13,40,24,${0.85 + fill * 0.15}) 100%)`;
+      } else {
+        const solidProgress = smoothstep(0.7, 0.9, ease);
+        vignette.style.background = `rgba(13,40,24,${0.85 + solidProgress * 0.15})`;
+        vignette.style.opacity = 1;
+      }
 
-  // More leaves burst
-  for (let i = 0; i < 10; i++) {
-    spawnLeaf(leafBurst, randomRange(200, 600));
-  }
+      // Spawn leaves continuously during rush (0.05 → 0.75)
+      if (ease > 0.05 && ease < 0.75 && (now - lastLeafTime) > 60) {
+        spawnLeaf(particleContainer, randomRange(400, 900));
+        lastLeafTime = now;
+      }
 
-  await sleep(350);
+      // Speed streaks during the intense part (0.15 → 0.65)
+      if (ease > 0.15 && ease < 0.65 && (now - lastStreakTime) > 140) {
+        spawnStreak(particleContainer);
+        lastStreakTime = now;
+      }
 
-  // Closest layer (depth 0) — big dark branches filling view
-  layers[0].style.transition = 'opacity 0.25s ease, transform 0.9s cubic-bezier(0.2, 0, 0.3, 1)';
-  layers[0].style.opacity = '1';
-  layers[0].style.transform = 'scale(1.5)';
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        resolve();
+      }
+    }
+    requestAnimationFrame(tick);
+  });
 
-  layers[2].style.transition = 'opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0, 0.3, 1)';
-  layers[2].style.transform = 'scale(2.8)';
-  layers[2].style.opacity = '0';
-
-  // Vignette intensifies
-  vignette.style.background = 'radial-gradient(ellipse at 50% 50%, rgba(13,40,24,0.4) 0%, rgba(13,40,24,0.95) 70%)';
-
-  await sleep(400);
-
-  // Phase 3: Everything rushes past — full green (1200-1800ms)
-  layers[1].style.transition = 'opacity 0.4s ease, transform 0.5s ease';
-  layers[1].style.transform = 'scale(3.5)';
-  layers[1].style.opacity = '0';
-
-  layers[0].style.transition = 'opacity 0.5s ease, transform 0.6s ease';
-  layers[0].style.transform = 'scale(3.0)';
-  layers[0].style.opacity = '0';
-
-  // Full green overlay to bridge into the path
-  vignette.style.transition = 'opacity 0.3s ease, background 0.3s ease';
-  vignette.style.background = 'rgba(13,40,24,1)';
-
-  await sleep(500);
-
-  // Phase 4: Fade out to reveal forest path (1800-2200ms)
-  vignette.style.transition = 'opacity 0.5s ease';
+  // Hold full green briefly, then fade out to reveal forest path
+  await sleep(100);
+  vignette.style.transition = 'opacity 0.45s ease';
   vignette.style.opacity = '0';
-
-  await sleep(500);
+  await sleep(450);
 
   // Clean up
   content.innerHTML = '';
   overlay.classList.remove('active');
-}
-
-function spawnLeaf(container, duration) {
-  const leaf = document.createElement('div');
-  const size = randomRange(6, 20);
-  const startX = randomRange(10, 90);
-  const startY = randomRange(10, 90);
-  const hue = Math.floor(randomRange(85, 155));
-  const lightness = Math.floor(randomRange(25, 50));
-  leaf.style.cssText = `
-    position:absolute;
-    left:${startX}%;top:${startY}%;
-    width:${size}px;height:${size * 0.65}px;
-    background:hsl(${hue},55%,${lightness}%);
-    border-radius:50% 0 50% 0;
-    opacity:0.8;
-    transform:rotate(${randomRange(0, 360)}deg) scale(0.3);
-    transition:all ${duration}ms ease-out;
-    z-index:8;
-  `;
-  container.appendChild(leaf);
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      leaf.style.transform = `rotate(${randomRange(0, 720)}deg) scale(${randomRange(1.5, 3)}) translate(${randomRange(-150, 150)}px, ${randomRange(-150, 150)}px)`;
-      leaf.style.opacity = '0';
-    });
-  });
-
-  // Remove after animation
-  setTimeout(() => leaf.remove(), duration + 100);
 }

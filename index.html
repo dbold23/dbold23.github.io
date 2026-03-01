@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Daniel Sambold | Environmental Steward & Researcher</title>
+    <meta name="description" content="Immersive portfolio exploring marine science, forest conservation, data science, and environmental stewardship.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/homescreen.css">
+    <link rel="stylesheet" href="css/transitions.css">
+    <link rel="stylesheet" href="css/path-forest.css">
+    <link rel="stylesheet" href="css/path-ocean.css">
+    <link rel="stylesheet" href="css/path-tech.css">
+    <link rel="stylesheet" href="css/path-mind.css">
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
+
+    <!-- 3D Model Viewer -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+</head>
+<body>
+
+    <!-- ============================================
+         HOMESCREEN HUB
+         ============================================ -->
+    <section id="homescreen" class="homescreen">
+        <div class="hero-image-container">
+            <img src="assets/FinalHome.jpg" alt="Daniel Sambold"
+                 class="hero-portrait"
+                 onerror="this.src='assets/up close picture with ocean backgroun_compressed.jpg'">
+            <img src="assets/FinalHome-removebg-preview.png" alt="" class="hero-cutout" aria-hidden="true">
+        </div>
+
+        <!-- Corner fallback tints (visible if using original photo) -->
+        <div class="corner-tint corner-tint-forest"></div>
+        <div class="corner-tint corner-tint-ocean"></div>
+        <div class="corner-tint corner-tint-tech"></div>
+        <div class="corner-tint corner-tint-mind"></div>
+
+        <!-- Center name -->
+        <div class="hero-title">
+            <h1 class="hero-name">Daniel Sambold</h1>
+            <p class="hero-subtitle">Advancing Environmental Stewardship Through Science</p>
+
+        </div>
+
+        <!-- Four corner hotspots -->
+        <button class="corner-hotspot corner-forest" data-path="forest" aria-label="Explore Forest Conservation">
+            <svg class="corner-icon forest-grow-icon" viewBox="0 0 64 80" fill="none">
+                <ellipse class="fg-soil" cx="32" cy="76" rx="10" ry="2.5" fill="currentColor" opacity="0.25"/>
+                <rect class="fg-trunk" x="29.5" y="20" width="5" height="56" rx="2.5" fill="currentColor" opacity="0.6"/>
+                <path class="fg-sprout-l" d="M32 58 C24 52 18 48 16 42 C20 40 26 44 32 58Z" fill="currentColor" opacity="0.8"/>
+                <path class="fg-sprout-r" d="M32 58 C40 52 46 48 48 42 C44 40 38 44 32 58Z" fill="currentColor" opacity="0.8"/>
+                <path class="fg-canopy" d="M32 6 L22 22h4 L18 36h4 L14 50h36 L46 36h4 L40 22h4Z" fill="currentColor"/>
+            </svg>
+            <span class="corner-label">Conservation</span>
+            <div class="corner-glow"></div>
+        </button>
+
+        <button class="corner-hotspot corner-ocean" data-path="ocean" aria-label="Dive into Marine Science">
+            <svg class="corner-icon ocean-waves-icon" viewBox="0 0 64 64" fill="none">
+                <!-- Calm waves (default) -->
+                <path class="ow-wave ow-wave1" d="M2 26c5-4 10-4 16 0s11 4 16 0 11-4 16 0 9-4 14 0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <path class="ow-wave ow-wave2" d="M2 34c5-3 10-3 16 0s11 3 16 0 11-3 16 0 9-3 14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+                <path class="ow-wave ow-wave3" d="M2 42c5-2 10-2 16 0s11 2 16 0 11-2 16 0 9-2 14 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+                <!-- Splash droplets (hidden by default, appear on hover) -->
+                <circle class="ow-drop ow-drop1" cx="18" cy="20" r="2" fill="currentColor" opacity="0"/>
+                <circle class="ow-drop ow-drop2" cx="34" cy="16" r="1.5" fill="currentColor" opacity="0"/>
+                <circle class="ow-drop ow-drop3" cx="48" cy="18" r="1.8" fill="currentColor" opacity="0"/>
+                <circle class="ow-drop ow-drop4" cx="26" cy="14" r="1.2" fill="currentColor" opacity="0"/>
+                <circle class="ow-drop ow-drop5" cx="42" cy="12" r="1" fill="currentColor" opacity="0"/>
+                <!-- Foam streaks (hidden by default) -->
+                <path class="ow-foam ow-foam1" d="M8 30c2-1 4 0 6 1" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none" opacity="0"/>
+                <path class="ow-foam ow-foam2" d="M36 28c3-1 5 1 7 2" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none" opacity="0"/>
+            </svg>
+            <span class="corner-label">Marine Science</span>
+            <div class="corner-glow"></div>
+        </button>
+
+        <button class="corner-hotspot corner-tech-board" data-path="tech" aria-label="Enter Technology & Data Science"></button>
+
+        <button class="corner-hotspot corner-tech" data-path="tech" aria-label="Enter Technology & Data Science">
+            <span class="corner-label"><span class="tech-label-inner">Technology</span></span>
+            <div class="corner-glow"></div>
+        </button>
+
+        <button class="corner-hotspot corner-mind" data-path="mind" aria-label="Explore About Me">
+            <span class="corner-label">About Me</span>
+            <div class="corner-glow"></div>
+        </button>
+
+        <!-- Ambient canvas -->
+        <canvas id="ambient-canvas" class="homescreen-canvas"></canvas>
+    </section>
+
+    <!-- ============================================
+         TRANSITION OVERLAY (shared by all paths)
+         ============================================ -->
+    <div id="transition-overlay" class="transition-overlay" aria-hidden="true">
+        <canvas id="transition-canvas"></canvas>
+        <div id="transition-content" class="transition-content"></div>
+    </div>
+
+    <!-- ============================================
+         FLOATING NAV PILL
+         ============================================ -->
+    <nav class="v2-nav" id="path-nav" aria-label="Path navigation">
+        <button class="nav-home" data-path="home" aria-label="Return to hub">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        </button>
+        <div class="nav-paths">
+            <button class="nav-dot forest" data-path="forest" aria-label="Forest path"></button>
+            <button class="nav-dot ocean" data-path="ocean" aria-label="Ocean path"></button>
+            <button class="nav-dot tech" data-path="tech" aria-label="Tech path"></button>
+            <button class="nav-dot mind" data-path="mind" aria-label="Mind path"></button>
+        </div>
+        <button class="nav-cv" id="cv-toggle" aria-label="View Resume">CV</button>
+    </nav>
+
+    <!-- ============================================
+         FOREST PATH
+         ============================================ -->
+    <section id="path-forest" class="path-section" data-path="forest" aria-label="Forest Conservation">
+        <!-- Parallax tree layers (SVG, generated by JS) -->
+        <div class="forest-bg">
+            <div class="tree-layer tree-layer-1"></div>
+            <div class="tree-layer tree-layer-2"></div>
+            <div class="tree-layer tree-layer-3"></div>
+        </div>
+        <div class="leaf-container" id="leaf-container"></div>
+
+        <!-- Landing hero image after branch zoom -->
+        <div class="path-hero forest-hero">
+            <img src="assets/NewNiseneHero.jpg" alt="Nisene Marks State Park" class="path-hero-img">
+            <div class="path-hero-overlay">
+                <h2 class="path-hero-title">Conservation & Trail Stewardship</h2>
+                <p class="path-hero-subtitle">Protecting old-growth redwoods and leading community conservation through science and stewardship</p>
+            </div>
+        </div>
+
+        <div class="path-content">
+            <!-- Trail Stewardship -->
+            <article class="content-card fade-in">
+                <div class="card-text">
+                    <h3>Trail Stewardship at Nisene Marks</h3>
+                    <p>As Trail Committee Chair for Advocates for Nisene Marks State Park, I lead conservation stewardship initiatives combining field leadership with geospatial technology to protect old-growth redwood ecosystems.</p>
+                    <ul>
+                        <li>Organized trail maintenance days with 30+ volunteers addressing ecological hazards</li>
+                        <li>Coordinated post-storm disaster assessment and cleanup operations</li>
+                        <li>Created comprehensive GIS maps documenting hazards, erosion hotspots, and invasive species</li>
+                        <li>Developed data-driven stewardship strategies for park management</li>
+                    </ul>
+                    <div class="card-tags">
+                        <span class="tag">GIS Mapping</span>
+                        <span class="tag">Volunteer Leadership</span>
+                        <span class="tag">Forest Ecology</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Community Engagement -->
+            <article class="content-card fade-in">
+                <div class="card-img-wrap">
+                    <img src="assets/people doing trail work in Nisene.avif" alt="Community trail work" loading="lazy">
+                </div>
+                <div class="card-text">
+                    <h3>Community Conservation</h3>
+                    <p>Leading this volunteer initiative taught me as much about community organizing as it did about forest ecology. Coordinating 30 volunteers required clear communication, safety protocols, and adaptability.</p>
+                    <p>Creating GIS maps transformed scattered observations into actionable data that park managers could use for resource allocation. This demonstrated how technology amplifies volunteer efforts and creates lasting impact.</p>
+                </div>
+            </article>
+
+            <!-- Elkhorn Slough -->
+            <article class="content-card fade-in">
+                <div class="card-img-wrap">
+                    <img src="assets/lanscape picture of me in mountains.jpg" alt="Mountain landscape" loading="lazy">
+                </div>
+                <div class="card-text">
+                    <h3>Elkhorn Slough Education</h3>
+                    <p>Served as Educational Aide at Elkhorn Slough Foundation (2024-2025), leading guided tours and educational programs for students grades 4-10. Taught wetland ecology, biodiversity, and conservation concepts to school groups.</p>
+                    <ul>
+                        <li>Led interactive field investigations: species ID, habitat exploration</li>
+                        <li>Collaborated on oak restoration projects with State Parks</li>
+                        <li>Stewarded trails, maintaining habitat and visitor access</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Conservation Philosophy -->
+            <div class="reflection-box fade-in">
+                <h3>Conservation Philosophy</h3>
+                <p>Working in Nisene Marks deepened my connection to old-growth redwoods and reinforced that effective conservation requires both scientific rigor and grassroots engagement. The leadership skills I gained here translate directly to organizing research teams and community science projects.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         OCEAN PATH
+         ============================================ -->
+    <section id="path-ocean" class="path-section" data-path="ocean" aria-label="Marine Science Research">
+        <canvas id="bubble-canvas" class="bubble-canvas"></canvas>
+        <div class="ocean-depth-bg"></div>
+
+        <div class="card-deck-section">
+            <header class="deck-header">
+                <h2 class="deck-title">Marine Science & Ocean Research</h2>
+                <p class="deck-subtitle">Pick a card, any card</p>
+            </header>
+
+            <div class="card-deck">
+
+                <!-- Card 0: Shark Ecology -->
+                <article class="deck-card" data-card="0"
+                         data-preview-title="Shark Ecology & Telemetry"
+                         data-preview-desc="White shark behavior, health, and ecology using advanced telemetry, machine learning, and video analysis."
+                         style="--card-index: 0">
+                    <div class="deck-card-inner">
+                        <div class="card-header">
+                            <span class="card-tab-title">Shark Ecology</span>
+                            <span class="card-type">Telemetry</span>
+                        </div>
+                        <div class="card-image-frame">
+                            <img src="assets/me with a shark tag and antena.avif" alt="Shark tagging fieldwork" loading="lazy">
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-footer-label">California State University, Monterey Bay</span>
+                        </div>
+                        <div class="card-detail" aria-hidden="true">
+                            <h3>Shark Ecology & Telemetry</h3>
+                            <p>Working in the Ocean Predator Ecology Lab, I conduct cutting-edge research on white shark behavior, health, and ecology using advanced telemetry, machine learning, and video analysis.</p>
+                            <ul>
+                                <li>Investigating how injury source affects healing rates in white sharks</li>
+                                <li>Developed CNN morphometric tool for archival video analysis</li>
+                                <li>Classified behavior from POV dorsal-mounted camera footage</li>
+                                <li>Optimized morphometric tool for long-term health assessments</li>
+                            </ul>
+                            <div class="card-tags">
+                                <span class="tag">Acoustic Telemetry</span>
+                                <span class="tag">White Sharks</span>
+                                <span class="tag">Photo-ID</span>
+                            </div>
+                            <div class="panel-gallery">
+                                <img src="assets/tagginggif.gif" alt="Shark tagging operation" loading="lazy">
+                                <img src="assets/gif of white shark yolo keypoint detection.gif" alt="ML shark detection" loading="lazy">
+                                <img src="assets/small image of me presenting my shark research.avif" alt="Shark research presentation" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 1: Sustainable Aquaculture -->
+                <article class="deck-card" data-card="1"
+                         data-preview-title="Sustainable Aquaculture"
+                         data-preview-desc="Revitalizing &quot;zombie&quot; urchins into marketable products, addressing the kelp forest crisis and sustainable seafood production."
+                         style="--card-index: 1">
+                    <div class="deck-card-inner">
+                        <div class="card-header">
+                            <span class="card-tab-title">Aquaculture</span>
+                            <span class="card-type">Restoration</span>
+                        </div>
+                        <div class="card-image-frame">
+                            <img src="assets/aquaculutre facitly pretty pic between both rows of tanks.JPG" alt="Aquaculture facility tanks" loading="lazy">
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-footer-label">Moss Landing Labs</span>
+                        </div>
+                        <div class="card-detail" aria-hidden="true">
+                            <h3>Sustainable Aquaculture</h3>
+                            <p>Investigating methods to revitalize "zombie" urchins into marketable products for sustainable aquaculture. Testing nutritional interventions to improve urchin gonad health, addressing both the kelp forest crisis and sustainable seafood production.</p>
+                            <ul>
+                                <li>Density optimization study for maximum roe growth</li>
+                                <li>Finishing feed viability testing for commercial quality</li>
+                                <li>Texture Profile Analysis (TPA) for gonad firmness metrics</li>
+                            </ul>
+                            <div class="card-tags">
+                                <span class="tag">Aquaculture</span>
+                                <span class="tag">Kelp Restoration</span>
+                                <span class="tag">TPA Analysis</span>
+                            </div>
+                            <div class="panel-gallery">
+                                <img src="assets/bunch of purple urchins.avif" alt="Purple urchins" loading="lazy">
+                                <img src="assets/tank of urchins overhead view_compressed.jpg" alt="Urchin tanks" loading="lazy">
+                                <img src="assets/pic of everyone dissecting urchins_compressed.jpg" alt="Team dissecting urchins" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 2: South Africa -->
+                <article class="deck-card" data-card="2"
+                         data-preview-title="South Africa Marine Research"
+                         data-preview-desc="International field research with 31 hours of scientific diving across diverse marine projects."
+                         style="--card-index: 2">
+                    <div class="deck-card-inner">
+                        <div class="card-header">
+                            <span class="card-tab-title">South Africa</span>
+                            <span class="card-type">Field Work</span>
+                        </div>
+                        <div class="card-image-frame">
+                            <img src="assets/On a boat in SA.avif" alt="On a research boat in South Africa" loading="lazy">
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-footer-label">International Research</span>
+                        </div>
+                        <div class="card-detail" aria-hidden="true">
+                            <h3>South Africa Marine Research</h3>
+                            <p>Conducted international field research in South African coastal waters. 31 hours of scientific diving across diverse projects: nudibranch surveys, shark egg casing analysis, BRUV deployments, fish dissections, and quadrat-based invertebrate counts.</p>
+                            <div class="panel-gallery">
+                                <img src="assets/Me sampling for microplastics in SA.avif" alt="Microplastic sampling" loading="lazy">
+                                <img src="assets/Picture of my in south africa with dive gear and a funny construction hat on.JPEG" alt="SA field work" loading="lazy">
+                                <img src="assets/Me doing trapping.avif" alt="Trapping operations" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 3: Field Ops + Reflection -->
+                <article class="deck-card" data-card="3"
+                         data-preview-title="Marine Field Operations"
+                         data-preview-desc="MOTC certified with extensive vessel-based research in California and Baja California, Mexico."
+                         style="--card-index: 3">
+                    <div class="deck-card-inner">
+                        <div class="card-header">
+                            <span class="card-tab-title">Field Ops</span>
+                            <span class="card-type">Diving</span>
+                        </div>
+                        <div class="card-image-frame">
+                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy">
+                        </div>
+                        <div class="card-footer">
+                            <span class="card-footer-label">Certified Vessel Operator</span>
+                        </div>
+                        <div class="card-detail" aria-hidden="true">
+                            <h3>Marine Field Operations</h3>
+                            <p>MOTC certified with extensive vessel-based research experience in California and Baja California, Mexico. Sampling, species identification, equipment deployment, and environmental monitoring in challenging ocean conditions.</p>
+                            <blockquote class="panel-reflection">
+                                From tracking sharks with acoustic telemetry to analyzing satellite data for harmful algal blooms, my ocean research demonstrates how marine biology and data science are deeply interconnected. Each project reinforces that protecting our oceans requires both understanding their biology and building the technological tools to monitor them at scale.
+                            </blockquote>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- Shared preview panel (updated via JS on hover) -->
+            <div class="deck-preview">
+                <h3 class="deck-preview-title">Hover a card to explore</h3>
+                <p class="deck-preview-desc">Each card represents a research focus area</p>
+                <button class="card-detail-btn deck-preview-btn" style="display: none;">Click card for more details</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TECH / LAPTOP PATH
+         ============================================ -->
+    <section id="path-tech" class="path-section" data-path="tech" aria-label="Technology & Data Science">
+        <canvas id="matrix-canvas" class="matrix-canvas"></canvas>
+        <div class="tech-grid-bg"></div>
+
+        <!-- Laptop + sticker peel container for transition -->
+        <div id="tech-laptop-intro" class="tech-laptop-intro">
+            <div class="laptop-mockup" id="tech-sticker-laptop">
+                <div class="laptop-lid">
+                    <div class="laptop-logo">&#63743;</div>
+                    <!-- GitHub — big sticker, external link -->
+                    <div class="sticker-peel" data-href="https://github.com/dbold23" data-external="true" style="--peel-direction: 0deg; --sticker-size: 56.25%; position: absolute; top: 7.8%; left: 21.9%; z-index: 1; transform: rotate(22deg);">
+                        <div class="sticker-peel-inner">
+                            <div class="sticker-front"><img src="assets/github logo no background_sticker.png" alt="GitHub"></div>
+                            <div class="sticker-flap"><img src="assets/github logo no background_sticker.png" alt="" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                    <!-- JPSS-1 — scrolls to NOAA SAT HACK folder -->
+                    <div class="sticker-peel" data-href="#folder-noaa" style="--peel-direction: -14deg; --sticker-size: 27%; position: absolute; top: -3.75%; left: 2.5%; z-index: 3;">
+                        <div class="sticker-peel-inner">
+                            <div class="sticker-front"><img src="assets/JPSS-1_logo-removebg-preview.png" alt="JPSS"></div>
+                            <div class="sticker-flap"><img src="assets/JPSS-1_logo-removebg-preview.png" alt="" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                    <!-- Rooted in Research (permanent) — no action -->
+                    <div class="sticker-peel permanent" style="--peel-direction: -3deg; --sticker-size: 20.8%; position: absolute; top: 2.5%; right: 3.75%; z-index: 3;">
+                        <div class="sticker-peel-inner"><div class="sticker-front"><img src="assets/rooted in reserach sticker.png" alt="Rooted in Research"></div></div>
+                    </div>
+                    <!-- Jorgensen Lab — scrolls to Jorgensen folder -->
+                    <div class="sticker-peel" data-href="#folder-jorgensen" style="--peel-direction: 11deg; --sticker-size: 23%; position: absolute; bottom: 2.5%; left: 3.75%; z-index: 3;">
+                        <div class="sticker-peel-inner">
+                            <div class="sticker-front"><img src="assets/Jorgensen lab logo_sticker.png" alt="Jorgensen Lab"></div>
+                            <div class="sticker-flap"><img src="assets/Jorgensen lab logo_sticker.png" alt="" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                    <!-- Jue Lab — scrolls to Jue Lab folder -->
+                    <div class="sticker-peel" data-href="#folder-jue" style="--peel-direction: -7deg; --sticker-size: 29%; position: absolute; bottom: -2.5%; right: 2.5%; z-index: 3;">
+                        <div class="sticker-peel-inner">
+                            <div class="sticker-front"><img src="assets/JueLabLogo.png" alt="Jue Lab"></div>
+                            <div class="sticker-flap"><img src="assets/JueLabLogo.png" alt="" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="laptop-hinge"></div>
+                <div class="laptop-base"></div>
+            </div>
+        </div>
+
+        <!-- ---- Interactive File Tree (Terminal) ---- -->
+        <div class="terminal-window fade-in" id="tech-file-tree">
+            <div class="terminal-titlebar">
+                <div class="terminal-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <span class="terminal-title">daniel@macbook &mdash; ~/research-projects</span>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-cmd">$ tree --interactive</div>
+                <div class="tree-root">~/research-projects/</div>
+
+                <!-- ============ NOAA SAT HACK ============ -->
+                <div class="tree-folder" id="folder-noaa">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">NOAA-SAT-HACK/</span>
+                        <span class="folder-desc">1st Place Winner</span>
+                    </button>
+                    <div class="folder-children">
+                        <!-- README -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">README.md</span>
+                                <span class="file-desc">HABHub Dashboard</span>
+                            </button>
+                            <div class="file-content">
+                                <div class="file-badge">1st Place &mdash; NOAA Satellite Hack 2025</div>
+                                <img src="assets/NOAA SAT HACK SLIDE OF SUMMARY_compressed.jpg" alt="NOAA SatHack Summary" loading="lazy">
+                                <p>Real-time HAB monitoring combining NOAA VIIRS satellite data, buoy measurements, and ensemble ML. Built 3 custom REST APIs, dual dashboards for farmers and public safety, and automated alert system.</p>
+                                <ul>
+                                    <li>Automated NOAA ERDDAP fetching, 3D spatiotemporal datacube</li>
+                                    <li>XGBoost + CNN-LSTM + Kernel SVM ensemble (86%+ accuracy)</li>
+                                    <li>Species-specific bioaccumulation timelines</li>
+                                    <li>Historical validation against 1998 &amp; 2015 bloom events</li>
+                                </ul>
+                                <div class="card-tags">
+                                    <span class="tag">Python/Flask</span>
+                                    <span class="tag">XGBoost</span>
+                                    <span class="tag">CNN-LSTM</span>
+                                    <span class="tag">NOAA VIIRS</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Demo video -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">esip-demo.mov</span>
+                                <span class="file-desc">ESIP Conference Demo</span>
+                            </button>
+                            <div class="file-content">
+                                <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;">
+                                    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+                                        src="https://www.youtube.com/embed/G45YIUKWAN0"
+                                        title="HABHub ESIP Conference Demo"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen loading="lazy"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Link -->
+                        <div class="tree-link">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
+                            <a href="https://github.com/dbold23/HabHub" target="_blank" rel="noopener">&rarr; github.com/dbold23/HabHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ JORGENSEN LAB ============ -->
+                <div class="tree-folder" id="folder-jorgensen">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">Jorgensen-Lab/</span>
+                        <span class="folder-desc">Shark Ecology &amp; Telemetry</span>
+                    </button>
+                    <div class="folder-children">
+                        <!-- Relay Station (nested sub-folder) -->
+                        <div class="tree-folder" id="folder-relay">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="folder-toggle" aria-expanded="false">
+                                <span class="folder-arrow">▶</span>
+                                <span class="folder-name">relay-station/</span>
+                                <span class="folder-desc">SDR + NB-IoT Telemetry</span>
+                            </button>
+                            <div class="folder-children">
+                                <!-- hardware.glb — 3D Model -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">hardware.glb</span>
+                                        <span class="file-desc">Interactive 3D Model</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <div class="hw-viewer-wrap">
+                                            <model-viewer
+                                                id="hw-model"
+                                                src="assets/Meshy_AI_Raspberry_Pi_with_RTL_0301051610_texture.glb"
+                                                alt="Raspberry Pi 5 with RTL-SDR and NB-IoT HAT"
+                                                auto-rotate
+                                                camera-controls
+                                                shadow-intensity="0.5"
+                                                interpolation-decay="100"
+                                                camera-orbit="0.6579rad 1.3367rad 4.5m"
+                                                style="width: 100%; height: 350px; border-radius: 8px 8px 0 0; background: rgba(10,14,20,0.9);">
+                                            </model-viewer>
+                                            <!-- Part selector buttons -->
+                                            <div class="hw-parts-bar">
+                                                <button class="hw-part-btn active" data-orbit="0.6579rad 1.3367rad 4.5m" data-target="auto auto auto" data-part="overview">
+                                                    <span class="hw-part-icon">&#9673;</span> Overview
+                                                </button>
+                                                <button class="hw-part-btn" data-orbit="0.6579375928511628rad 1.3366934269636894rad 3.3807857335971816m" data-target="-0.0008600056171417236m -0.0014030635356903076m -0.0014225244522094727m" data-part="pi">
+                                                    <span class="hw-part-icon">&#9632;</span> Raspberry Pi 5
+                                                </button>
+                                                <button class="hw-part-btn" data-orbit="1.242312491952811rad 1.4620184620242396rad 3.3836422905104753m" data-target="0.04m 0.02m 0m" data-part="sdr">
+                                                    <span class="hw-part-icon">&#9636;</span> RTL-SDR
+                                                </button>
+                                                <button class="hw-part-btn" data-orbit="-0.5103627792060639rad 1.3327669590946962rad 2.9799014837485247m" data-target="0.04m 0.02m 0m" data-part="hat">
+                                                    <span class="hw-part-icon">&#9650;</span> NB-IoT HAT
+                                                </button>
+                                            </div>
+                                            <!-- Part descriptions (swap on click) -->
+                                            <div class="hw-part-desc" data-for="overview">
+                                                <p>Custom-built edge station: Raspberry Pi 5 + RTL-SDR Blog V4 + SIM7028 NB-IoT HAT. Each unit operates autonomously in the field for weeks, detecting VHF wildlife tags across the 151 MHz band.</p>
+                                            </div>
+                                            <div class="hw-part-desc" data-for="pi" style="display:none;">
+                                                <p><strong>Raspberry Pi 5</strong> &mdash; The brain of each relay station. Runs the 927-line FFT detection engine, Flask dashboard, and offline event queue. Processes 256K IQ samples per scan cycle. Connects to the SDR via USB and the cellular HAT via GPIO.</p>
+                                            </div>
+                                            <div class="hw-part-desc" data-for="sdr" style="display:none;">
+                                                <p><strong>RTL-SDR Blog V4</strong> &mdash; Software Defined Radio tuned to 151 MHz VHF wildlife band. Auto-calibration sweeps gain from 15&ndash;45 dB on boot to find optimal sensitivity. Feeds raw IQ samples to the Pi for real-time spectral analysis.</p>
+                                            </div>
+                                            <div class="hw-part-desc" data-for="hat" style="display:none;">
+                                                <p><strong>SIM7028 NB-IoT HAT</strong> &mdash; Cellular modem for field deployment without WiFi. Communicates via AT commands over serial (/dev/ttyAMA0). Sends ~650 byte detection alerts. Automatic WiFi&rarr;NB-IoT failover with exponential backoff.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-tags">
+                                            <span class="tag">Raspberry Pi 5</span>
+                                            <span class="tag">RTL-SDR</span>
+                                            <span class="tag">SIM7028</span>
+                                            <span class="tag">VHF 151 MHz</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- detector.py — FFT Signal Processing -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">detector.py</span>
+                                        <span class="file-desc">FFT Signal Processing</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <div class="file-gallery">
+                                            <img src="assets/relay-detailed-verification.png" alt="Synthetic VHF tag signal verification — spectrograms" loading="lazy">
+                                            <img src="assets/relay-channel-heatmap.png" alt="Channel heatmap — pulse detection across frequencies" loading="lazy">
+                                            <img src="assets/relay-snr-comparison.png" alt="SNR comparison at different signal strengths" loading="lazy">
+                                        </div>
+                                        <p>927-line multi-channel FFT-based detection engine. Processes 256K IQ samples through adaptive baseline tracking, pattern validation with ghost filtering, and coefficient-of-variation analysis to distinguish true repeating tags (CV &lt; 0.15) from noise.</p>
+                                        <ul>
+                                            <li>Multi-channel FFT across 151.19&ndash;151.45 MHz (20 kHz channels)</li>
+                                            <li>Adaptive baseline with rolling deque for noise floor tracking</li>
+                                            <li>Pulse pattern validation: handles missed pulses via 2x&ndash;3x interval estimation</li>
+                                            <li>Tag locking at 90%+ confidence &mdash; skips validation for confirmed detections</li>
+                                            <li>Bandwidth filtering rejects broadband noise (&gt;15 kHz signal width)</li>
+                                        </ul>
+                                        <div class="card-tags">
+                                            <span class="tag">NumPy FFT</span>
+                                            <span class="tag">Scipy</span>
+                                            <span class="tag">DSP</span>
+                                            <span class="tag">Adaptive Thresholding</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- dashboard.py — Embedded Browser Clone -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">dashboard.py</span>
+                                        <span class="file-desc">Real-time Monitoring</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <!-- Browser frame wrapping dashboard clone -->
+                                        <div class="browser-frame">
+                                            <div class="browser-titlebar">
+                                                <div class="browser-dots">
+                                                    <span class="dot-red"></span>
+                                                    <span class="dot-yellow"></span>
+                                                    <span class="dot-green"></span>
+                                                </div>
+                                                <span class="browser-nav">&#9665; &#9655; &#8635;</span>
+                                                <div class="browser-url">
+                                                    <span class="lock-icon">&#128274;</span>
+                                                    xxx.xxx.x.xx:8080/dashboard
+                                                </div>
+                                            </div>
+                                            <div class="dash-body">
+                                                <div class="dash-header">
+                                                    <div>
+                                                        <h3>RelayStation Dashboard</h3>
+                                                        <span style="font-size:0.5rem;color:#71767b;">Last update: 2:34:17 AM</span>
+                                                    </div>
+                                                    <div class="dash-status">
+                                                        <span class="dash-pulse-dot"></span> Running
+                                                    </div>
+                                                </div>
+
+                                                <!-- Active Tags -->
+                                                <div class="dash-card">
+                                                    <div class="dash-card-title">Active Tags</div>
+                                                    <div class="dash-tag-item" style="border-left-width:4px;">
+                                                        <div style="display:flex;align-items:center;">
+                                                            <span class="dash-tag-freq">151.281 MHz</span>
+                                                            <span class="dash-tag-locked">LOCKED</span>
+                                                        </div>
+                                                        <div class="dash-tag-details">
+                                                            <span>Signal: <strong>+14.2 dB</strong></span>
+                                                            <span>Confidence: <strong>94%</strong></span>
+                                                            <span>Interval: <strong>1.024s</strong></span>
+                                                            <span>Pulses: <strong>847</strong></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dash-tag-item">
+                                                        <span class="dash-tag-freq">151.340 MHz</span>
+                                                        <div class="dash-tag-details">
+                                                            <span>Signal: <strong>+8.7 dB</strong></span>
+                                                            <span>Confidence: <strong>72%</strong></span>
+                                                            <span>Interval: <strong>1.012s</strong></span>
+                                                            <span>Pulses: <strong>213</strong></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Stats Grid -->
+                                                <div class="dash-stats-grid">
+                                                    <div class="dash-card">
+                                                        <div class="dash-card-title">Total Detections</div>
+                                                        <div class="dash-stat-value">1,247</div>
+                                                    </div>
+                                                    <div class="dash-card">
+                                                        <div class="dash-card-title">Uptime</div>
+                                                        <div class="dash-stat-value" style="font-size:0.85rem;">3d 14h 22m</div>
+                                                    </div>
+                                                    <div class="dash-card">
+                                                        <div class="dash-card-title">System Health</div>
+                                                        <div class="dash-health-bar">
+                                                            <span class="dash-health-label">CPU</span>
+                                                            <div class="dash-health-track"><div class="dash-health-fill" style="width:42%"></div></div>
+                                                            <span class="dash-health-val">42%</span>
+                                                        </div>
+                                                        <div class="dash-health-bar">
+                                                            <span class="dash-health-label">MEM</span>
+                                                            <div class="dash-health-track"><div class="dash-health-fill" style="width:67%"></div></div>
+                                                            <span class="dash-health-val">67%</span>
+                                                        </div>
+                                                        <div class="dash-health-bar">
+                                                            <span class="dash-health-label">DISK</span>
+                                                            <div class="dash-health-track"><div class="dash-health-fill" style="width:52%"></div></div>
+                                                            <span class="dash-health-val">52%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Recent Detections -->
+                                                <div class="dash-card">
+                                                    <div class="dash-card-title">Recent Detections</div>
+                                                    <div class="dash-detection-item">
+                                                        <div><span class="dash-det-freq">151.281 MHz</span></div>
+                                                        <div style="display:flex;align-items:center;gap:8px;">
+                                                            <span class="dash-det-signal">+14.2 dB</span>
+                                                            <div class="dash-conf-bar"><div class="dash-conf-fill" style="width:94%"></div></div>
+                                                            <span class="dash-det-time">3s ago</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dash-detection-item">
+                                                        <div><span class="dash-det-freq">151.340 MHz</span></div>
+                                                        <div style="display:flex;align-items:center;gap:8px;">
+                                                            <span class="dash-det-signal">+8.7 dB</span>
+                                                            <div class="dash-conf-bar"><div class="dash-conf-fill" style="width:72%"></div></div>
+                                                            <span class="dash-det-time">8s ago</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dash-detection-item">
+                                                        <div><span class="dash-det-freq">151.281 MHz</span></div>
+                                                        <div style="display:flex;align-items:center;gap:8px;">
+                                                            <span class="dash-det-signal">+13.8 dB</span>
+                                                            <div class="dash-conf-bar"><div class="dash-conf-fill" style="width:91%"></div></div>
+                                                            <span class="dash-det-time">12s ago</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dash-detection-item">
+                                                        <div><span class="dash-det-freq">151.340 MHz</span></div>
+                                                        <div style="display:flex;align-items:center;gap:8px;">
+                                                            <span class="dash-det-signal">+7.9 dB</span>
+                                                            <div class="dash-conf-bar"><div class="dash-conf-fill" style="width:68%"></div></div>
+                                                            <span class="dash-det-time">18s ago</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dash-detection-item" style="border-bottom:none;">
+                                                        <div><span class="dash-det-freq">151.281 MHz</span></div>
+                                                        <div style="display:flex;align-items:center;gap:8px;">
+                                                            <span class="dash-det-signal">+15.1 dB</span>
+                                                            <div class="dash-conf-bar"><div class="dash-conf-fill" style="width:96%"></div></div>
+                                                            <span class="dash-det-time">24s ago</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="dash-footer">RelayStation v2 &mdash; Radio Tag Detection System</div>
+                                            </div>
+                                        </div>
+                                        <p>Dual dashboard architecture: local Flask station dashboard for real-time tag detection and system health, plus a centralized FastAPI server with 35+ REST endpoints, 8-table SQLite schema, HMAC auth, and Leaflet geographic mapping for multi-station fleet monitoring.</p>
+                                        <div class="card-tags">
+                                            <span class="tag">Flask</span>
+                                            <span class="tag">FastAPI</span>
+                                            <span class="tag">SQLite</span>
+                                            <span class="tag">Leaflet</span>
+                                            <span class="tag">REST API</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- comms/ — NB-IoT + WiFi Failover -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">comms/</span>
+                                        <span class="file-desc">NB-IoT + WiFi Failover</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <div class="arch-diagram">┌─────────────┐     WiFi      ┌──────────────┐
+│  Pi Station │──────────────▶│ Central API  │
+│  (Edge)     │               │ (FastAPI)    │
+│             │  NB-IoT       │              │
+│  RTL-SDR ─▶│──────────────▶│  Dashboard   │
+│  Detector   │  (Failover)   │  SQLite DB   │
+│             │               │  Leaflet Map │
+└──────┬──────┘               └──────────────┘
+       │
+   ┌───▼───┐
+   │Offline│ ← SQLite queue
+   │Queue  │   (10K events max)
+   └───────┘</div>
+                                        <p>Automatic WiFi-to-NB-IoT failover for network resilience. SQLite-backed offline queue buffers detections during connectivity gaps. Batched events use single-letter JSON keys to achieve ~650 bytes per cellular alert. Exponential backoff (2s&rarr;60s) with connection state machine tracking wifi/nbiot/offline states.</p>
+                                        <div class="card-tags">
+                                            <span class="tag">NB-IoT</span>
+                                            <span class="tag">AT Commands</span>
+                                            <span class="tag">PySerial</span>
+                                            <span class="tag">State Machine</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- range-tests.md — Field Deployment -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">range-tests.md</span>
+                                        <span class="file-desc">Field Deployment</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <div class="file-gallery">
+                                            <img src="assets/relay-range-map.png" alt="Wildlife tag detection map — antenna range test results" loading="lazy">
+                                            <img src="assets/relay-antenna-analysis.png" alt="Antenna beam pattern and directional analysis" loading="lazy">
+                                        </div>
+                                        <p>Field-tested at Monterey Bay coastal sites. Yagi directional antenna achieves 1,700+ ft max range with 62% detection rate. Auto-calibration sweep optimizes SDR gain (15&ndash;45 dB) on boot. Watchdog daemon monitors system health every 60s with 3-strike escalation policy.</p>
+                                        <div class="stat-metrics">
+                                            <div class="stat-metric">
+                                                <div class="stat-val">1,700 ft</div>
+                                                <div class="stat-label">Max Range</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">62%</div>
+                                                <div class="stat-label">Detection Rate</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">~30&deg;</div>
+                                                <div class="stat-label">Beamwidth</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">~650 B</div>
+                                                <div class="stat-label">Per Alert</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">3&ndash;50+</div>
+                                                <div class="stat-label">Stations</div>
+                                            </div>
+                                        </div>
+                                        <div class="card-tags">
+                                            <span class="tag">Field Testing</span>
+                                            <span class="tag">Yagi Antenna</span>
+                                            <span class="tag">Auto-Calibration</span>
+                                            <span class="tag">Watchdog</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Repo link for the entire sub-folder -->
+                                <a class="subfolder-repo-link" href="https://github.com/dbold23/RelayStation-Deploy" target="_blank" rel="noopener">&rarr; github.com/dbold23/RelayStation-Deploy</a>
+                            </div>
+                        </div>
+                        <!-- Shark Morphometrics (nested sub-folder) -->
+                        <div class="tree-folder" id="folder-shark-morpho">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="folder-toggle" aria-expanded="false">
+                                <span class="folder-arrow">▶</span>
+                                <span class="folder-name">shark-morphometrics/</span>
+                                <span class="folder-desc">ML + Computer Vision</span>
+                            </button>
+                            <div class="folder-children">
+                                <!-- yolo-detection.py -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">yolo-detection.py</span>
+                                        <span class="file-desc">Keypoint Detection</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <img src="assets/gif of white shark yolo keypoint detection.gif" alt="YOLO shark keypoint detection" loading="lazy">
+                                        <p>YOLO-based keypoint detection model trained to identify anatomical landmarks on white shark dorsal fins from underwater video. Extracts morphometric measurements for individual identification and health assessment.</p>
+                                        <div class="card-tags">
+                                            <span class="tag">YOLO</span>
+                                            <span class="tag">Keypoint Detection</span>
+                                            <span class="tag">Computer Vision</span>
+                                            <span class="tag">PyTorch</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- health-app.py -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">health-app.py</span>
+                                        <span class="file-desc">Flask Web App</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <p>Flask-based web application integrating the YOLO morphometrics pipeline. Upload footage, run automated detection, and view results with extracted metadata and strict confidence thresholds. Google Drive API integration for batch processing research datasets.</p>
+                                        <div class="card-tags">
+                                            <span class="tag">Flask</span>
+                                            <span class="tag">REST API</span>
+                                            <span class="tag">Google APIs</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- conferences.md -->
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">conferences.md</span>
+                                        <span class="file-desc">Talks &amp; Posters</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <img src="assets/small image of me presenting my shark research.avif" alt="Presenting research" loading="lazy">
+                                        <p>Presented research at multiple conferences including the CSUMB Summer Symposium on ML-based dorsal fin morphometrics for white shark identification and health assessment.</p>
+                                        <img src="assets/title background of Summer symposium talk about ml for dorsal mounted cameras on sharks.avif" alt="Summer symposium talk" loading="lazy" style="margin-top: 0.8rem;">
+                                    </div>
+                                </div>
+                                <a class="subfolder-repo-link" href="https://github.com/dbold23/SharkHealthApp" target="_blank" rel="noopener">&rarr; github.com/dbold23/SharkHealthApp</a>
+                            </div>
+                        </div>
+                        <!-- CFD -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">cfd-analysis/</span>
+                                <span class="file-desc">OpenFOAM</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Performed CFD analysis using OpenFOAM to model hydrodynamic drag around acoustic tags on shark dorsal fins. Iterative simulations refined tag geometry to minimize swimming resistance.</p>
+                                <div class="file-gallery">
+                                    <img src="assets/v1.gif" alt="CFD v1 simulation" loading="lazy">
+                                    <img src="assets/v2.gif" alt="CFD v2 simulation" loading="lazy">
+                                </div>
+                                <div class="card-tags">
+                                    <span class="tag">OpenFOAM</span>
+                                    <span class="tag">CFD</span>
+                                    <span class="tag">Hydrodynamics</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ JUE LAB ============ -->
+                <div class="tree-folder" id="folder-jue">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">Jue-Lab/</span>
+                        <span class="folder-desc">TECAN Pipeline</span>
+                    </button>
+                    <div class="folder-children">
+                        <!-- README -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">README.md</span>
+                                <span class="file-desc">Growth Curve Analysis</span>
+                            </button>
+                            <div class="file-content">
+                                <p>End-to-end pipeline for TECAN plate reader growth curve analysis on bacteria remediation strains. Automates the full workflow from raw data to publication-ready figures.</p>
+                                <ul>
+                                    <li><strong>Parse</strong> &mdash; Read raw TECAN output, preprocess 96-well plate data</li>
+                                    <li><strong>Process</strong> &mdash; Clean, normalize, blank-subtract, average triplicates</li>
+                                    <li><strong>Analyze</strong> &mdash; Fit Gompertz growth models, classify curves (GOOD/BAD)</li>
+                                    <li><strong>Haldane</strong> &mdash; Fit mechanistic substrate inhibition ODE to pesticide strains</li>
+                                    <li><strong>Advanced Stats</strong> &mdash; GP truncation, Bayesian hierarchical models (NUTS/DEMetropolisZ), bootstrap CIs, WAIC/LOO model comparison</li>
+                                    <li><strong>Plot &amp; Validate</strong> &mdash; 480 synthetic curves + interactive manual audit tool</li>
+                                </ul>
+                                <div class="card-tags">
+                                    <span class="tag">Python</span>
+                                    <span class="tag">Bayesian Stats</span>
+                                    <span class="tag">Gompertz</span>
+                                    <span class="tag">PyMC</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Validation -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">validation/</span>
+                                <span class="file-desc">Model Results</span>
+                            </button>
+                            <div class="file-content">
+                                <div class="file-gallery">
+                                    <img src="assets/tecan-classification-summary.png" alt="Classification summary" loading="lazy">
+                                    <img src="assets/tecan-confusion-matrix.png" alt="Validation confusion matrix" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Link -->
+                        <div class="tree-link">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
+                            <a href="https://github.com/dbold23/JueLab_Toolbox" target="_blank" rel="noopener">&rarr; github.com/dbold23/JueLab_Toolbox</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ PASSION PROJECTS ============ -->
+                <div class="tree-folder" id="folder-passion">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">passion-projects/</span>
+                        <span class="folder-desc">Side Builds</span>
+                    </button>
+                    <div class="folder-children">
+                        <div class="tree-file">
+                            <div class="tree-connector">&nbsp;&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">arctos-arm.py</span>
+                                <span class="file-desc">Robotics — In Progress</span>
+                            </button>
+                            <div class="file-content">
+                                <img src="assets/arctos arm.png" alt="Arctos Robotic Arm" loading="lazy">
+                                <p>Multi-DOF robotic arm exploring kinematics, servo control, and mechanical design.</p>
+                            </div>
+                        </div>
+                        <div class="tree-file">
+                            <div class="tree-connector">&nbsp;&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">water-qual-sensors.ino</span>
+                                <span class="file-desc">IoT</span>
+                            </button>
+                            <div class="file-content">
+                                <img src="assets/pictrue of water qual sensor.png" alt="Water Quality Sensor" loading="lazy">
+                                <p>Custom monitoring devices measuring pH, temperature, DO, and salinity in real-time.</p>
+                            </div>
+                        </div>
+                        <div class="tree-file">
+                            <div class="tree-connector">&nbsp;&nbsp;&nbsp;&nbsp;└──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">stallion-fpv.cfg</span>
+                                <span class="file-desc">Drone Build</span>
+                            </button>
+                            <div class="file-content">
+                                <model-viewer
+                                    src="assets/Meshy_AI_Stallion_UAV_0301062827_texture.glb"
+                                    alt="Stallion FPV Racing Drone — 3D Model"
+                                    auto-rotate
+                                    camera-controls
+                                    shadow-intensity="0.5"
+                                    style="width: 100%; height: 300px; border-radius: 8px; background: rgba(10,14,20,0.9); margin-bottom: 0.8rem;">
+                                </model-viewer>
+                                <p>Research platform and learning opportunity for avionics. Custom-built FPV drone serving as a hands-on testbed for flight controller programming, PID tuning, ESC protocols, and radio telemetry systems.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ SKILLS.MD ============ -->
+                <div class="tree-file">
+                    <div class="tree-connector">└──</div>
+                    <button class="file-toggle">
+                        <span class="file-name">skills.md</span>
+                        <span class="file-desc">Technical Skills</span>
+                    </button>
+                    <div class="file-content">
+                        <div class="skills-output">
+                            <div class="skill-row">
+                                <span class="skill-key">Languages</span>
+                                <span class="skill-val">Python, R, SQL, C/Arduino, JavaScript, Unix/Bash</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-key">ML / AI</span>
+                                <span class="skill-val">YOLO, XGBoost, CNN-LSTM, Computer Vision, scikit-learn</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-key">Web</span>
+                                <span class="skill-val">Flask, FastAPI, REST APIs, Streamlit, HTML/CSS/JS</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-key">Hardware</span>
+                                <span class="skill-val">Raspberry Pi, RTL-SDR, Arduino, IoT Sensors, NB-IoT</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-key">Data / DSP</span>
+                                <span class="skill-val">NumPy FFT, Satellite Data, Statistical Analysis, Visualization</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-key">Geospatial</span>
+                                <span class="skill-val">GIS, Movement Tracking, CAD, OpenFOAM CFD</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-key">DevOps</span>
+                                <span class="skill-val">Git, Linux, SSH, Systemd, Watchdog, Remote Deploy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blinking cursor -->
+                <div class="terminal-prompt">daniel@macbook ~ $ <span class="blink-cursor">█</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         MIND / EYE PATH
+         ============================================ -->
+    <section id="path-mind" class="path-section" data-path="mind" aria-label="About Me">
+        <svg id="neural-svg" class="neural-bg" aria-hidden="true"></svg>
+
+        <div class="path-content">
+            <div class="path-header fade-in">
+                <h2 class="path-title">Inside My Mind</h2>
+                <p class="path-intro">The person behind the research — what drives me, where I come from, and where I'm headed</p>
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline-eyebrow fade-in">My Story</div>
+
+            <div class="timeline">
+
+                <!-- Coastal Roots -->
+                <article class="timeline-entry fade-in" data-side="right">
+                    <div class="timeline-node"><div class="timeline-dot"></div></div>
+                    <div class="timeline-card">
+                        <div class="timeline-period">Before College</div>
+                        <h3 class="timeline-title">Coastal Roots</h3>
+                        <p>Growing up near the coast, I watched environmental changes reshape the lives and livelihoods of people I cared about. That experience carved a belief I've never let go of: human needs and environmental protection are not at odds — they are the same cause.</p>
+                        <img class="timeline-img" src="assets/scripps-lj.jpg" alt="Scripps Institution of Oceanography pier and La Jolla coastline" loading="lazy">
+                    </div>
+                </article>
+
+                <!-- Quote -->
+                <div class="timeline-quote-node fade-in">
+                    <blockquote>"Science without community impact is incomplete."</blockquote>
+                </div>
+
+                <!-- CSUMB -->
+                <article class="timeline-entry fade-in" data-side="left">
+                    <div class="timeline-node"><div class="timeline-dot"></div></div>
+                    <div class="timeline-card">
+                        <div class="timeline-period">Fall 2021 – Spring 2025</div>
+                        <h3 class="timeline-title">CSUMB — Finding Direction</h3>
+                        <p>Enrolled at California State University, Monterey Bay for a B.S. in Marine Science with a Biology minor. The coursework that shaped my thinking most: Marine Ecology, Scientific Diving (MSCI 380 & 283), Statistics, GIS, and Python Programming.</p>
+                        <div class="timeline-edu-badge">
+                            <strong>CSUMB</strong>
+                            <span>B.S. Marine Science · Biology Minor · Spring 2025</span>
+                            <span>UROC Innovation Scholar · MOTC Certified · AAUS Scientific Diver</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Spring 2024 -->
+                <article class="timeline-entry fade-in" data-side="right">
+                    <div class="timeline-node"><div class="timeline-dot"></div></div>
+                    <div class="timeline-card">
+                        <div class="timeline-period">Spring 2024</div>
+                        <h3 class="timeline-title">First Research Steps</h3>
+                        <ul>
+                            <li>Aquaculture research at Moss Landing Marine Labs — investigating how to transform "zombie" urchins into marketable products while addressing the kelp forest crisis</li>
+                            <li>Scientific Diving Course (MSCI 380) — kelp canopy cover study at San Carlos Beach</li>
+                            <li>Shark Injury Healing Study with Ocean Predator Ecology Lab — photo-ID analysis of anthropogenic vs. natural injury healing in white sharks</li>
+                        </ul>
+                        <figure class="timeline-figure">
+                            <img class="timeline-img" src="assets/SharkVideoObtaining.jpg" alt="Filming a white shark from the research vessel" loading="lazy">
+                            <figcaption class="timeline-permit">All research follows IACUC standards · CSUMB IACUC-2024-04-NEW</figcaption>
+                        </figure>
+                    </div>
+                </article>
+
+                <!-- Summer 2024 -->
+                <article class="timeline-entry fade-in" data-side="left">
+                    <div class="timeline-node"><div class="timeline-dot"></div></div>
+                    <div class="timeline-card">
+                        <div class="timeline-period">Summer 2024</div>
+                        <h3 class="timeline-title">Going International — South Africa</h3>
+                        <p>Research and Diver Development Program. Thirty-one hours of scientific diving across diverse projects: nudibranch population surveys, shark egg casing measurements, BRUV deployments, and microplastic pollution sampling.</p>
+                        <div class="timeline-highlight-tag">NAUI Divemaster · 143 logged dives</div>
+                        <img class="timeline-img" src="assets/Picture of my in south africa with dive gear and a funny construction hat on.JPEG" alt="In dive gear during South Africa research program" loading="lazy">
+                    </div>
+                </article>
+
+                <!-- Fall 2024 -->
+                <article class="timeline-entry fade-in" data-side="right">
+                    <div class="timeline-node"><div class="timeline-dot"></div></div>
+                    <div class="timeline-card">
+                        <div class="timeline-period">Fall 2024</div>
+                        <h3 class="timeline-title">Scaling Up</h3>
+                        <ul>
+                            <li>Selected as UROC Innovation Scholar — funded by CSUN HSI Equity Innovation Hub and Apple</li>
+                            <li>Marine Ecology research on latitudinal biodiversity gradients using PISCO + NOAA CUTI datasets</li>
+                            <li>Trail Committee Chair at Advocates for Nisene Marks — led 30+ volunteers, created GIS stewardship maps for old-growth redwood ecosystems</li>
+                            <li>Educational Aide at Elkhorn Slough Foundation, teaching grades 4–10</li>
+                            <li>Radio Tag Relay Station — Raspberry Pi + SDR + NB-IoT for autonomous shark tracking</li>
+                            <li>CNN Morphometric Tool — deep learning extraction of measurements from archival shark video</li>
+                        </ul>
+                        <img class="timeline-img" src="assets/Elkhornslougheducation.jpg" alt="Teaching students at Elkhorn Slough" loading="lazy">
+                    </div>
+                </article>
+
+                <!-- Summer 2025 -->
+                <article class="timeline-entry fade-in" data-side="left">
+                    <div class="timeline-node"><div class="timeline-dot"></div></div>
+                    <div class="timeline-card">
+                        <div class="timeline-period">Summer 2025</div>
+                        <h3 class="timeline-title">Building Tools</h3>
+                        <ul>
+                            <li>SharkHealthApp — Flask + YOLO ML pipeline for automated shark detection and health monitoring from video</li>
+                            <li>Aquaculture research continued: density optimization and finishing feed viability studies</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- October 2025: HABHub -->
+                <article class="timeline-entry fade-in" data-side="right">
+                    <div class="timeline-node"><div class="timeline-dot timeline-dot--win"></div></div>
+                    <div class="timeline-card timeline-card--featured">
+                        <div class="timeline-win-badge">1st Place · NOAA SatHack 2025</div>
+                        <div class="timeline-period">October 2025</div>
+                        <h3 class="timeline-title">HABHub — The Big Win</h3>
+                        <p>Built in 48 hours: a real-time harmful algal bloom monitoring system for Monterey Bay. NOAA VIIRS satellite data feeds an ensemble ML stack (XGBoost, CNN-LSTM, Kernel SVM) achieving 86%+ accuracy with species-specific risk assessments for oysters, abalone, and urchins.</p>
+                    </div>
+                </article>
+
+                <!-- Present & Future -->
+                <article class="timeline-entry fade-in" data-side="left">
+                    <div class="timeline-node"><div class="timeline-dot timeline-dot--pulse"></div></div>
+                    <div class="timeline-card">
+                        <div class="timeline-period">Now & Beyond</div>
+                        <h3 class="timeline-title">Steward, Not Just Scientist</h3>
+                        <p>Continuing as Trail Committee Chair, aquaculture researcher, and shark ecology researcher. Eager to deepen understanding of policy implementation, community engagement, and advanced spatial analysis. My identity as a researcher is inseparable from my role as a steward — building bridges between research and action.</p>
+                        <div class="timeline-certs">
+                            <span class="timeline-cert-tag">MOTC Certified</span>
+                            <span class="timeline-cert-tag">AAUS Scientific Diver</span>
+                            <span class="timeline-cert-tag">143+ Logged Dives</span>
+                            <span class="timeline-cert-tag">NAUI Divemaster</span>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         RESUME SLIDE-OUT PANEL
+         ============================================ -->
+    <aside id="resume-panel" class="resume-panel" aria-label="Resume">
+        <button class="resume-close" id="resume-close" aria-label="Close resume">&times;</button>
+        <div class="resume-panel-content">
+            <h2>Resume / CV</h2>
+
+            <h3>Education</h3>
+            <div class="resume-item">
+                <h4>California State University, Monterey Bay</h4>
+                <p class="resume-meta">B.S. Marine Science | Minor: Biology | Spring 2025</p>
+                <ul>
+                    <li>UROC Innovation Scholars Grant Recipient</li>
+                    <li>Certifications: MOTC, AAUS Scientific Diver, NAUI Divemaster</li>
+                </ul>
+            </div>
+
+            <h3>Research Experience</h3>
+            <div class="resume-item">
+                <h4>SharkHealthApp Development</h4>
+                <p class="resume-meta">Research Developer | Summer 2025</p>
+                <ul><li>Flask + YOLO ML for shark detection from video</li><li>Google APIs integration for data management</li></ul>
+            </div>
+            <div class="resume-item">
+                <h4>Shark Injury Healing Study</h4>
+                <p class="resume-meta">Lead Researcher | Spring 2024-Present</p>
+                <ul><li>Photo-ID analysis of healing rates in white sharks</li></ul>
+            </div>
+            <div class="resume-item">
+                <h4>Aquaculture Research | Moss Landing Marine Labs</h4>
+                <p class="resume-meta">Research Assistant | Spring 2024-Present</p>
+                <ul><li>Urchin conditioning, TPA testing, feed optimization</li></ul>
+            </div>
+
+            <h3>Awards</h3>
+            <div class="resume-item">
+                <ul>
+                    <li>1st Place NOAA SatHack 2025</li>
+                    <li>UROC Innovation Scholar</li>
+                </ul>
+            </div>
+
+            <h3>Certifications</h3>
+            <div class="resume-item">
+                <ul>
+                    <li>NAUI Divemaster (143 dives)</li>
+                    <li>AAUS Scientific Diver</li>
+                    <li>MOTC Certified</li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <div id="resume-backdrop" class="resume-backdrop"></div>
+
+    <!-- ============================================
+         SHARED CONTACT FOOTER
+         ============================================ -->
+    <footer id="shared-footer" class="shared-footer">
+        <div class="footer-content">
+            <h2>Let's Connect</h2>
+            <p>Interested in collaboration, research opportunities, or discussing environmental stewardship?</p>
+            <div class="contact-links">
+                <a href="mailto:daniel.sambold@gmail.com" class="contact-card">
+                    <span class="contact-icon">@</span>
+                    <strong>Email</strong>
+                    <span>daniel.sambold@gmail.com</span>
+                </a>
+                <a href="https://www.linkedin.com/in/daniel-sambold-620b37221/" target="_blank" class="contact-card">
+                    <span class="contact-icon">in</span>
+                    <strong>LinkedIn</strong>
+                    <span>Connect professionally</span>
+                </a>
+                <a href="https://github.com/dbold23" target="_blank" class="contact-card">
+                    <span class="contact-icon"><img src="assets/git hub logo no background.png" alt="GitHub" width="28" height="28"></span>
+                    <strong>GitHub</strong>
+                    <span>View my code</span>
+                </a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Daniel Sambold</p>
+                <p class="footer-mission">Advancing Environmental Stewardship Through Science</p>
+                <p class="footer-meta">UROC Scholar ePortfolio | CSUMB</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript (ES Modules) -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

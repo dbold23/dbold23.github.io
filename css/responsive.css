@@ -1,0 +1,207 @@
+/* ============================================
+   Responsive Styles
+   ============================================ */
+
+@media (max-width: 968px) {
+  .corner-hotspot { padding: 0.8rem; }
+  .corner-icon { width: clamp(60px, 10vw, 120px); height: clamp(60px, 10vw, 120px); }
+  .corner-label { font-size: clamp(1.1rem, 2.5vw, 2rem); }
+  .hero-name { font-size: clamp(2rem, 6vw, 3.5rem); }
+
+  .content-card.has-image { grid-template-columns: 1fr; }
+
+  .laptop-lid { width: 380px; height: 250px; padding: 20px; gap: 0.8rem; }
+  .laptop-hinge { width: 400px; }
+  .laptop-base { width: 420px; }
+  .sticker-peel { --sticker-size: 80px !important; }
+  .skill-row { font-size: 0.8rem; }
+  .skill-key { min-width: 85px; }
+
+  /* File tree — tablet */
+  .terminal-window { margin: 2rem 1rem 0; }
+  .terminal-body { font-size: 0.85rem; padding: 1.2rem; }
+  .file-content { margin-left: 3rem; }
+
+  /* Nested sub-folder — tablet */
+  .tree-folder .tree-folder { margin-left: 1rem; }
+  .tree-folder .tree-folder .file-content { margin-left: 0.5rem; }
+  .hw-parts-bar { gap: 0; }
+  .hw-part-btn { font-size: 0.6rem; padding: 6px 4px; }
+  .dash-stats-grid { grid-template-columns: 1fr 1fr; }
+  .stat-metrics { grid-template-columns: repeat(3, 1fr); }
+
+  /* Ocean card deck — tablet */
+  .card-deck { height: 340px; }
+  .deck-card {
+    width: 200px;
+    height: 300px;
+    margin-left: -100px;
+    --card-offset: calc((var(--card-index) - 1.5) * 90px);
+  }
+  .card-tab-title { font-size: 0.75rem; }
+  .card-type { font-size: 0.6rem; }
+  .card-footer-label { font-size: 0.6rem; }
+  .deck-detail-overlay .panel-gallery img { width: 120px; height: 85px; }
+
+  /* Mind timeline — tablet */
+  .timeline-entry { gap: 0 1rem; }
+  .timeline-card { padding: 1.25rem 1.5rem; }
+}
+
+@media (max-width: 640px) {
+  /* Homescreen: hotspots become simpler on mobile */
+  .corner-hotspot {
+    padding: 0.5rem;
+  }
+
+  .corner-icon { width: clamp(40px, 8vw, 80px); height: clamp(40px, 8vw, 80px); }
+  .corner-label { font-size: clamp(0.9rem, 2vw, 1.4rem); }
+  .hero-hint { font-size: 0.8rem; margin-top: 1.5rem; }
+
+  /* Path content */
+  .path-content { padding: 4rem 1rem 3rem; }
+  .path-header { margin-bottom: 2rem; }
+
+  .content-card { border-radius: 12px; }
+  .card-text { padding: 1.5rem; }
+
+  .media-gallery { grid-template-columns: 1fr 1fr; }
+  .project-grid { grid-template-columns: 1fr; }
+  .skill-row { flex-direction: column; gap: 0.15rem; font-size: 0.75rem; }
+  .skill-key { min-width: unset; }
+  .skill-key::after { content: ':'; }
+
+  /* Nav pill */
+  .v2-nav { padding: 0.4rem 0.8rem; gap: 0.5rem; }
+  .nav-dot { width: 10px; height: 10px; }
+
+  /* Laptop */
+  .laptop-lid { width: 280px; height: 180px; padding: 15px; gap: 0.5rem; }
+  .laptop-hinge { width: 295px; }
+  .laptop-base { width: 310px; }
+  .sticker-peel { --sticker-size: 60px !important; }
+
+  /* Mind timeline — mobile */
+  .timeline::before { left: 20px; transform: none; }
+  .timeline-entry {
+    grid-template-columns: 40px 1fr;
+    gap: 0 1rem;
+  }
+  .timeline-entry[data-side="right"] .timeline-card,
+  .timeline-entry[data-side="left"]  .timeline-card {
+    grid-column: 2;
+    text-align: left;
+  }
+  .timeline-entry[data-side="right"] .timeline-node,
+  .timeline-entry[data-side="left"]  .timeline-node {
+    grid-column: 1;
+  }
+  .timeline-entry .timeline-node::after { display: none; }
+  .timeline-quote-node::before { left: 20px; }
+  .timeline-quote-node { text-align: left; padding-left: 3.5rem; }
+  .timeline-quote-node blockquote { margin: 0; }
+  .timeline-entry[data-side="right"] .timeline-edu-badge {
+    border-left: 3px solid var(--mind-accent);
+    border-right: none;
+    border-radius: 0 12px 12px 0;
+    text-align: left;
+  }
+  .timeline-entry[data-side="right"] .timeline-certs { justify-content: flex-start; }
+  .timeline-img { max-height: 200px; }
+
+  /* Ocean card deck — mobile: stack vertically as trading cards */
+  .card-deck-section {
+    height: auto;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+  }
+
+  .card-deck {
+    position: relative;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .deck-card {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    margin-left: 0;
+    width: 70%;
+    max-width: 280px;
+    height: 320px;
+    transform: none !important;
+    transform-origin: center center;
+    opacity: 1 !important;
+  }
+
+  .deck-preview {
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .deck-detail-overlay .panel-gallery img {
+    width: calc(50% - 0.375rem);
+    height: 80px;
+  }
+
+  .deck-backdrop { display: none; }
+
+  .deck-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .deck-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  /* File tree — mobile */
+  .terminal-window { margin: 1.5rem 0.5rem 0; border-radius: 8px; }
+  .terminal-titlebar { padding: 0.5rem 0.8rem; }
+  .terminal-title { font-size: 0.65rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .terminal-body { font-size: 0.8rem; padding: 1rem; line-height: 2; }
+  .folder-toggle, .file-toggle { font-size: 0.8rem; }
+  .folder-desc, .file-desc { display: none; }
+  .file-content { margin-left: 1.5rem; }
+  .file-content img { max-height: 180px; }
+  .file-gallery { flex-direction: column; }
+  .file-gallery img { width: 100%; }
+  .terminal-prompt { display: none; }
+
+  /* Nested sub-folder — mobile */
+  .tree-folder .tree-folder { margin-left: 0.5rem; }
+  .tree-folder .tree-folder .file-content { margin-left: 0; }
+  .tree-folder .tree-folder .hw-viewer-wrap { margin-left: 0; margin-right: 0; }
+  #hw-model { height: 220px !important; }
+  .hw-parts-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .hw-part-btn { flex: 0 0 auto; font-size: 0.55rem; padding: 6px 8px; white-space: nowrap; }
+  .hw-part-icon { display: none; }
+  .arch-diagram { font-size: 0.6rem; }
+  .stat-metrics { grid-template-columns: repeat(2, 1fr); }
+  .dash-stats-grid { grid-template-columns: 1fr; }
+  .dash-tag-details { gap: 6px; }
+  .browser-nav { display: none; }
+  .browser-url { font-size: 0.6rem; }
+
+  /* Contact */
+  .contact-links { flex-direction: column; align-items: center; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .homescreen.zooming { transition: none !important; }
+  .transition-overlay * { transition-duration: 0.01ms !important; }
+  .leaf { animation: none !important; display: none; }
+  .corner-hotspot::before { animation: none !important; }
+  .hero-name { animation: none !important; }
+  .hero-hint { animation: none !important; opacity: 1 !important; }
+  .deck-card { transition: none !important; }
+  .deck-detail-overlay { transition: opacity 0.01ms !important; }
+  .folder-children, .file-content { transition: none !important; }
+  .folder-arrow { transition: none !important; }
+  .blink-cursor { animation: none !important; }
+  .dash-pulse-dot { animation: none !important; }
+}

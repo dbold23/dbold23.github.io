@@ -1,0 +1,58 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# Raw source photos (compressed versions are used instead)
+*.HEIC
+
+# PowerPoint source/temp files
+*.pptx
+~$*
+
+# Google Docs cache (not used by site)
+tagging.html
+tagging_files/
+
+# Large video files (use YouTube embed instead)
+*.mov
+*.MOV
+*.MP4
+
+# Root-level assets (v2/assets/ has its own optimized copies)
+/assets/
+
+# Legacy v1 files (not deployed)
+/index.html
+/script.js
+/styles.css
+
+# Claude Code local config
+.claude/

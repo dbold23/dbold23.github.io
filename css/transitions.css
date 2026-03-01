@@ -1,0 +1,151 @@
+/* ============================================
+   Path Transition Overlay
+   ============================================ */
+.transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.transition-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.transition-overlay canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.transition-content {
+  position: absolute;
+  inset: 0;
+}
+
+/* Homescreen zoom-out animation */
+.homescreen.zooming {
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), filter 1s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.homescreen.zooming.zoom-forest {
+  transform: scale(3);
+  transform-origin: 18% 25%;
+  filter: blur(4px);
+}
+
+.homescreen.zooming.zoom-ocean {
+  transform: scale(4.5);
+  transform-origin: 85% 55%;
+  filter: blur(6px) brightness(0.7) saturate(1.4);
+}
+
+.homescreen.zooming.zoom-tech {
+  transform: scale(6);
+  transform-origin: 27% 68%;
+  filter: blur(6px) brightness(0.6);
+}
+
+.homescreen.zooming.zoom-mind {
+  transform: scale(3);
+  transform-origin: 48% 28%;
+  filter: blur(4px);
+}
+
+/* Forest transition layers */
+.transition-trees {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.transition-trees .tree-svg {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 80%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.transition-trees .tree-svg.visible { opacity: 1; }
+
+.transition-trees .tree-svg:nth-child(1) { fill: var(--forest-dark); z-index: 3; }
+.transition-trees .tree-svg:nth-child(2) { fill: var(--forest-mid); z-index: 2; transform: scale(1.1); }
+.transition-trees .tree-svg:nth-child(3) { fill: var(--forest-light); z-index: 1; transform: scale(1.2); opacity: 0.6; }
+
+/* Ocean dive transition — diagonal water gush + bubbles */
+.ocean-dive-container {
+  position: absolute;
+  inset: 0;
+}
+
+/* Water slab — sweeps diagonally across the screen */
+.ocean-dive-water {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(30, 95, 140, 0.9) 0%,
+    #0a2463 40%,
+    #0a2463 100%
+  );
+  clip-path: polygon(0 100%, 0 100%, 0 100%, 0 100%);
+  transition: clip-path 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ocean-dive-water.rising {
+  /* Diagonal sweep: top-left leading edge arrives first */
+  clip-path: polygon(-10% -10%, 120% -10%, 120% 120%, -10% 120%);
+}
+
+/* Bubble canvas on top */
+.ocean-dive-bubble-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Mind iris zoom */
+.transition-iris {
+  position: absolute;
+  inset: 0;
+  background: var(--mind-deep);
+  clip-path: circle(0% at 48% 28%);
+  transition: clip-path 1.5s var(--ease-out);
+}
+
+.transition-iris.expanding {
+  clip-path: circle(150% at 48% 28%);
+}
+
+/* Tech transition — 3D MacBook reveal */
+.tech-transition-container {
+  position: absolute;
+  inset: 0;
+  background: #0a0e14;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  overflow: hidden;
+}
+
+.tech-transition-container.visible {
+  opacity: 1;
+}
+
+.tech-transition-container canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}

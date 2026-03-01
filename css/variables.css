@@ -1,0 +1,83 @@
+/* ============================================
+   V2 Design Tokens
+   ============================================ */
+:root {
+  /* Ocean */
+  --ocean-deep: #0a2463;
+  --ocean-mid: #1e5f8c;
+  --ocean-light: #3d9dd9;
+  --ocean-foam: #b8e6f5;
+
+  /* Forest */
+  --forest-dark: #1a3d2e;
+  --forest-mid: #2d5f3f;
+  --forest-light: #4a9b6a;
+  --forest-bright: #7bc96f;
+
+  /* Tech */
+  --tech-dark: #1a1a2e;
+  --tech-accent: #16213e;
+  --tech-bright: #0f4c81;
+  --tech-cyan: #00d9ff;
+
+  /* Mind */
+  --mind-warm: #e8a87c;
+  --mind-deep: #2d1b4e;
+  --mind-light: #f7e7ce;
+  --mind-accent: #c77dff;
+  --mind-glow: #9d4edd;
+
+  /* Neutrals */
+  --white: #ffffff;
+  --off-white: #f5f2eb;
+  --gray-light: #e0e0e0;
+  --gray-mid: #6c757d;
+  --gray-dark: #343a40;
+  --black: #000000;
+
+  /* Gradients */
+  --gradient-ocean: linear-gradient(135deg, var(--ocean-deep), var(--ocean-mid), var(--ocean-light));
+  --gradient-forest: linear-gradient(135deg, var(--forest-dark), var(--forest-mid), var(--forest-light));
+  --gradient-tech: linear-gradient(135deg, var(--tech-dark), var(--tech-accent), var(--tech-bright));
+  --gradient-mind: linear-gradient(135deg, var(--mind-deep), var(--mind-accent), var(--mind-warm));
+
+  /* Dynamic path colors (overridden by data-active-path) */
+  --path-primary: var(--ocean-mid);
+  --path-secondary: var(--ocean-light);
+  --path-bg: var(--ocean-deep);
+  --path-text: var(--white);
+
+  /* Timing */
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  --transition-speed: 0.6s;
+
+  /* Layout */
+  --content-max: 1000px;
+  --section-gap: 4rem;
+}
+
+/* Path-specific color overrides */
+[data-active-path="forest"] {
+  --path-primary: var(--forest-mid);
+  --path-secondary: var(--forest-light);
+  --path-bg: var(--forest-dark);
+}
+
+[data-active-path="ocean"] {
+  --path-primary: var(--ocean-mid);
+  --path-secondary: var(--ocean-light);
+  --path-bg: var(--ocean-deep);
+}
+
+[data-active-path="tech"] {
+  --path-primary: var(--tech-cyan);
+  --path-secondary: var(--tech-bright);
+  --path-bg: var(--tech-dark);
+}
+
+[data-active-path="mind"] {
+  --path-primary: var(--mind-accent);
+  --path-secondary: var(--mind-warm);
+  --path-bg: var(--mind-deep);
+}

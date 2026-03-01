@@ -1,0 +1,140 @@
+/* ============================================
+   Forest Path Styles
+   ============================================ */
+#path-forest {
+  background: linear-gradient(180deg, var(--forest-dark) 0%, #0f2a1e 100%);
+}
+
+/* Parallax tree background layers */
+.forest-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  display: none;
+}
+
+#path-forest.active ~ .forest-bg,
+#path-forest.active .forest-bg { display: block; }
+
+[data-active-path="forest"] .forest-bg { display: block; }
+
+.tree-layer {
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 110%;
+  height: 100%;
+  background-repeat: repeat-x;
+  background-position: bottom center;
+  background-size: auto 70%;
+  will-change: transform;
+}
+
+/* SVG tree silhouettes created via JS, these are positioning layers */
+.tree-layer-1 { z-index: 3; opacity: 0.9; }
+.tree-layer-2 { z-index: 2; opacity: 0.6; }
+.tree-layer-3 { z-index: 1; opacity: 0.35; }
+
+/* Leaf particles */
+.leaf-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  overflow: hidden;
+  display: none;
+}
+
+[data-active-path="forest"] .leaf-container { display: block; }
+
+.leaf {
+  position: absolute;
+  width: 14px;
+  height: 18px;
+  opacity: 0.6;
+  animation: leafFall linear infinite;
+  /* Leaf shape via clip-path */
+  clip-path: polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%);
+}
+
+/* Add a midrib line via ::after */
+.leaf::after {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  width: 1px;
+  height: 70%;
+  background: rgba(0,0,0,0.15);
+  transform: translateX(-50%);
+}
+
+@keyframes leafFall {
+  0% {
+    transform: translateY(-20px) rotate(0deg) rotateX(0deg);
+    opacity: 0.7;
+  }
+  25% {
+    transform: translateY(27vh) rotate(90deg) rotateX(60deg) translateX(30px);
+  }
+  50% {
+    transform: translateY(55vh) rotate(180deg) rotateX(0deg) translateX(-20px);
+  }
+  75% {
+    transform: translateY(82vh) rotate(270deg) rotateX(-60deg) translateX(25px);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg) rotateX(0deg) translateX(-10px);
+    opacity: 0;
+  }
+}
+
+/* Path hero landing image */
+.path-hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.path-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.path-hero-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 4rem 3rem;
+  background: linear-gradient(to top, rgba(15,42,30,0.9) 0%, transparent 100%);
+  color: var(--white);
+}
+
+.path-hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  text-shadow: 0 3px 15px rgba(0,0,0,0.6);
+}
+
+.path-hero-subtitle {
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  color: rgba(255,255,255,0.85);
+  max-width: 600px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Forest content card overrides */
+#path-forest .content-card { background: rgba(255,255,255,0.92); }
+#path-forest .card-text h3 { color: var(--forest-dark); }
+#path-forest .tag { background: rgba(45,95,63,0.15); color: var(--forest-dark); }
+#path-forest .reflection-box { border-color: var(--forest-light); background: rgba(45,95,63,0.2); }

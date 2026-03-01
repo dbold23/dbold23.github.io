@@ -1,0 +1,336 @@
+/* ============================================
+   Mind / Eye Path Styles
+   ============================================ */
+#path-mind {
+  background: var(--mind-deep);
+}
+
+/* Neural network SVG background */
+.neural-bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+  display: none;
+}
+
+[data-active-path="mind"] .neural-bg { display: block; }
+
+/* ── Timeline eyebrow label ── */
+.timeline-eyebrow {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mind-accent);
+  margin-bottom: 3rem;
+}
+
+/* ── Timeline wrapper ── */
+.timeline {
+  position: relative;
+  padding: 0 0 4rem;
+}
+
+/* Central vertical spine */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--mind-accent) 5%,
+    var(--mind-glow) 50%,
+    var(--mind-warm) 95%,
+    transparent 100%
+  );
+  opacity: 0.4;
+}
+
+/* ── Entry row ── */
+.timeline-entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  align-items: start;
+  gap: 0 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+/* Right-side entries: card on left, node center */
+.timeline-entry[data-side="right"] .timeline-card { grid-column: 1; text-align: right; }
+.timeline-entry[data-side="right"] .timeline-node { grid-column: 2; grid-row: 1; }
+
+/* Left-side entries: node center, card on right */
+.timeline-entry[data-side="left"] .timeline-card { grid-column: 3; text-align: left; }
+.timeline-entry[data-side="left"] .timeline-node { grid-column: 2; grid-row: 1; }
+
+/* ── Connector node (holds the dot) ── */
+.timeline-node {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Horizontal connector line from dot to card */
+.timeline-entry .timeline-node::after {
+  content: '';
+  position: absolute;
+  top: calc(1.2rem + 7px);
+  height: 1px;
+  width: 1.5rem;
+  background: rgba(199,125,255,0.35);
+}
+.timeline-entry[data-side="right"] .timeline-node::after { right: 100%; }
+.timeline-entry[data-side="left"]  .timeline-node::after { left: 100%; }
+
+/* ── Dot ── */
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--mind-deep);
+  border: 2px solid var(--mind-accent);
+  box-shadow: 0 0 10px rgba(199,125,255,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+
+.timeline-entry:hover .timeline-dot {
+  transform: scale(1.35);
+  box-shadow: 0 0 18px rgba(199,125,255,0.7);
+}
+
+/* Featured dot (HABHub win) */
+.timeline-dot--win {
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+  border-color: #ffd700;
+  box-shadow: 0 0 14px rgba(255,215,0,0.5);
+  width: 20px;
+  height: 20px;
+}
+
+/* Pulsing dot (present/future) */
+.timeline-dot--pulse {
+  border-color: var(--mind-warm);
+  animation: timeline-pulse 2.4s ease-in-out infinite;
+}
+@keyframes timeline-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(232,168,124,0.4); }
+  50%       { box-shadow: 0 0 22px rgba(232,168,124,0.9); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-dot--pulse { animation: none; }
+}
+
+/* ── Card ── */
+.timeline-card {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(199,125,255,0.15);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  color: var(--white);
+  transition: border-color 0.3s ease,
+              background 0.3s ease,
+              transform 0.3s ease;
+}
+
+.timeline-entry:hover .timeline-card {
+  border-color: rgba(199,125,255,0.4);
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-3px);
+}
+
+/* Featured card variant (HABHub) */
+.timeline-card--featured {
+  border-color: rgba(255,215,0,0.3);
+  background: rgba(255,215,0,0.06);
+}
+.timeline-entry:hover .timeline-card--featured {
+  border-color: rgba(255,215,0,0.55);
+}
+
+/* ── Period label ── */
+.timeline-period {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mind-accent);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Title ── */
+.timeline-title {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: var(--mind-warm);
+  margin-bottom: 0.85rem;
+}
+
+/* Keep body text left-aligned even on right-side cards */
+.timeline-entry[data-side="right"] .timeline-card ul,
+.timeline-entry[data-side="right"] .timeline-card p {
+  text-align: left;
+}
+
+/* Card body text */
+.timeline-card p,
+.timeline-card li {
+  color: rgba(255,255,255,0.87);
+  font-size: 0.97rem;
+  line-height: 1.75;
+}
+.timeline-card ul {
+  margin-left: 1.2rem;
+  margin-bottom: 0;
+}
+
+/* ── Win badge ── */
+.timeline-win-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,160,0,0.15));
+  border: 1px solid rgba(255,215,0,0.4);
+  color: #ffd700;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Education badge (CSUMB entry) ── */
+.timeline-edu-badge {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(199,125,255,0.1);
+  border-left: 3px solid var(--mind-accent);
+  border-radius: 0 12px 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+}
+.timeline-entry[data-side="right"] .timeline-edu-badge {
+  border-left: none;
+  border-right: 3px solid var(--mind-accent);
+  border-radius: 12px 0 0 12px;
+  text-align: right;
+}
+.timeline-edu-badge strong {
+  color: var(--mind-warm);
+  font-size: 1rem;
+}
+.timeline-edu-badge span {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+}
+
+/* ── Highlight tag ── */
+.timeline-highlight-tag {
+  display: inline-block;
+  margin-top: 1rem;
+  background: rgba(157,78,221,0.2);
+  border: 1px solid rgba(199,125,255,0.3);
+  color: var(--mind-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.9rem;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Cert tags (future entry) ── */
+.timeline-certs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: flex-start;
+}
+.timeline-entry[data-side="right"] .timeline-certs { justify-content: flex-end; }
+
+.timeline-cert-tag {
+  background: rgba(232,168,124,0.15);
+  border: 1px solid rgba(232,168,124,0.35);
+  color: var(--mind-warm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+}
+
+/* ── Quote node (floats centered on the spine) ── */
+.timeline-quote-node {
+  position: relative;
+  text-align: center;
+  margin: 2rem 0 3rem;
+  padding: 0 2rem;
+  z-index: 2;
+}
+.timeline-quote-node blockquote {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-style: italic;
+  color: var(--mind-warm);
+  line-height: 1.8;
+  max-width: 620px;
+  margin: 0 auto;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(199,125,255,0.25);
+  border-bottom: 1px solid rgba(199,125,255,0.25);
+}
+.timeline-quote-node::before {
+  content: '\u25C6';
+  position: absolute;
+  left: 50%;
+  top: -0.6rem;
+  transform: translateX(-50%);
+  color: var(--mind-accent);
+  font-size: 0.7rem;
+  z-index: 3;
+}
+
+/* ── Timeline images ── */
+.timeline-img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 1rem;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+.timeline-entry:hover .timeline-img {
+  opacity: 1;
+}
+
+/* ── IACUC permit figure ── */
+.timeline-figure {
+  margin: 1rem 0 0;
+}
+.timeline-permit {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+  margin-top: 0.4rem;
+  letter-spacing: 0.02em;
+}
+
+#path-mind .reflection-box {
+  border-color: var(--mind-accent);
+  background: rgba(157,78,221,0.15);
+}

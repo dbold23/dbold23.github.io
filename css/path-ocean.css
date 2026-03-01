@@ -1,0 +1,479 @@
+/* ============================================
+   Ocean Path — Fanned Card Deck
+   ============================================ */
+#path-ocean {
+  background: var(--ocean-deep);
+  overflow: hidden;
+}
+
+/* Depth gradient (fixed background layer) */
+.ocean-depth-bg {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(30,95,140,0.4) 0%,
+    var(--ocean-deep) 40%,
+    #041230 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+  display: none;
+}
+
+[data-active-path="ocean"] .ocean-depth-bg { display: block; }
+
+/* Bubble canvas (fixed background layer) */
+.bubble-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  display: none;
+}
+
+[data-active-path="ocean"] .bubble-canvas { display: block; }
+
+/* ---- Card Deck Section ---- */
+.card-deck-section {
+  position: relative;
+  z-index: 5;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: calc(5rem + env(safe-area-inset-top, 0px)) 2rem 2rem;
+  box-sizing: border-box;
+  gap: 2rem;
+}
+
+/* ---- Header ---- */
+.deck-header {
+  text-align: center;
+  margin-top: auto;
+  z-index: 10;
+  transition: opacity 0.4s ease;
+}
+
+.deck-title {
+  color: var(--ocean-foam);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.deck-subtitle {
+  color: rgba(255,255,255,0.65);
+  font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ---- Deck container ---- */
+.card-deck {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 420px;
+  /* Cards are positioned via left offset + rotation */
+}
+
+/* ---- Individual card ---- */
+.deck-card {
+  /* Spread cards horizontally: each offset by ~130px, centered on 4 cards */
+  --card-offset: calc((var(--card-index) - 1.5) * 130px);
+  --card-rotation: calc((var(--card-index) - 1.5) * 6deg);
+
+  position: absolute;
+  left: calc(50% + var(--card-offset));
+  bottom: 0;
+  width: 260px;
+  height: 370px;
+  margin-left: -130px;
+
+  transform-origin: 50% 100%;
+  transform: rotate(var(--card-rotation));
+  will-change: transform;
+
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              z-index 0s;
+  cursor: pointer;
+  z-index: calc(var(--card-index) + 1);
+}
+
+.deck-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  background: linear-gradient(
+    170deg,
+    rgb(20, 60, 120) 0%,
+    rgb(10, 36, 99) 50%,
+    rgb(6, 22, 60) 100%
+  );
+  border: 2px solid rgba(184,230,245,0.25);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4),
+              inset 0 1px 0 rgba(184,230,245,0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Holographic shimmer on hover */
+.deck-card-inner::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(61,157,217,0.15) 45%,
+    rgba(184,230,245,0.2) 50%,
+    rgba(61,157,217,0.15) 55%,
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* ---- Card header (title + type badge) ---- */
+.card-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid rgba(184,230,245,0.12);
+  flex-shrink: 0;
+}
+
+.card-tab-title {
+  color: var(--ocean-foam);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.card-type {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(184,230,245,0.8);
+  background: rgba(61,157,217,0.2);
+  border: 1px solid rgba(184,230,245,0.15);
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---- Card image frame (like a Pokemon card art box) ---- */
+.card-image-frame {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  margin: 0.4rem 0.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(184,230,245,0.12);
+  background: rgb(6, 16, 40);
+}
+
+.card-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+/* ---- Card footer (label bar at bottom) ---- */
+.card-footer {
+  position: relative;
+  z-index: 2;
+  padding: 0.45rem 0.8rem;
+  border-top: 1px solid rgba(184,230,245,0.12);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.card-footer-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(184,230,245,0.6);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ---- "More details" button ---- */
+.card-detail-btn {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  background: rgba(61,157,217,0.3);
+  color: var(--ocean-foam);
+  border: 1px solid rgba(184,230,245,0.25);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card-detail-btn:hover {
+  background: rgba(61,157,217,0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(61,157,217,0.2);
+}
+
+/* ---- Hover: dim siblings, glow active card ---- */
+.deck-card {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.4s ease,
+              filter 0.4s ease;
+}
+
+/* When a card is directly hovered, dim ALL cards + header */
+.card-deck:has(.deck-card:hover) .deck-card {
+  opacity: 0.35;
+  filter: brightness(0.5) saturate(0.4);
+}
+
+.card-deck-section:has(.deck-card:hover) .deck-header {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Then un-dim the actual hovered card and make it glow */
+.card-deck:has(.deck-card:hover) .deck-card:hover {
+  opacity: 1;
+  filter: brightness(1.1) saturate(1.2);
+  transform: rotate(var(--card-rotation)) scale(1.1);
+  z-index: 20;
+}
+
+.deck-card:hover .deck-card-inner::before {
+  opacity: 1;
+}
+
+.deck-card:hover .deck-card-inner {
+  border-color: rgba(184,230,245,0.6);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5),
+              0 0 30px rgba(61,157,217,0.35),
+              0 0 60px rgba(61,157,217,0.15),
+              inset 0 1px 0 rgba(184,230,245,0.2);
+}
+
+.deck-card:hover .card-image-frame img {
+  transform: scale(1.05);
+}
+
+.deck-card:hover .card-image-frame {
+  border-color: rgba(184,230,245,0.3);
+}
+
+/* ---- Shared preview panel below deck ---- */
+.deck-preview {
+  position: relative;
+  z-index: 30;
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1.2rem 2rem;
+  background: rgba(10, 36, 99, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(184,230,245,0.15);
+  border-radius: 16px;
+  max-width: 500px;
+  min-height: 90px;
+  transition: opacity 0.3s ease;
+}
+
+.deck-preview-title {
+  color: var(--ocean-foam);
+  font-size: 1.15rem;
+  margin-bottom: 0.3rem;
+}
+
+.deck-preview-desc {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.6rem;
+}
+
+.deck-preview-btn {
+  margin-top: 0.3rem;
+}
+
+/* ---- Detail overlay (opened on click) ---- */
+.card-detail {
+  display: none;
+}
+
+.deck-detail-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: min(650px, 90vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ocean-light) transparent;
+
+  background: rgba(10, 36, 99, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(184,230,245,0.2);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5),
+              0 0 30px rgba(61,157,217,0.1);
+
+  color: var(--white);
+  z-index: 1001;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease,
+              transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.deck-detail-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.deck-detail-overlay h3 {
+  color: var(--ocean-foam);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  margin-bottom: 0.8rem;
+}
+
+.deck-detail-overlay p {
+  color: rgba(255,255,255,0.9);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.deck-detail-overlay ul {
+  color: rgba(255,255,255,0.85);
+  padding-left: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.deck-detail-overlay li {
+  margin-bottom: 0.4rem;
+  line-height: 1.5;
+}
+
+/* Tags in detail */
+.deck-detail-overlay .tag {
+  background: rgba(61,157,217,0.3);
+  color: var(--ocean-foam);
+  border: 1px solid rgba(184,230,245,0.2);
+}
+
+/* Gallery in detail */
+.deck-detail-overlay .panel-gallery {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.deck-detail-overlay .panel-gallery img {
+  width: 140px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(184,230,245,0.15);
+  flex-shrink: 0;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.deck-detail-overlay .panel-gallery img:hover {
+  transform: scale(1.08);
+  border-color: var(--ocean-foam);
+}
+
+/* Close button */
+.deck-detail-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(184,230,245,0.2);
+  background: rgba(10, 36, 99, 0.6);
+  color: var(--ocean-foam);
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.deck-detail-close:hover {
+  background: rgba(61,157,217,0.4);
+  transform: scale(1.1);
+}
+
+/* Badge */
+.deck-detail-overlay .panel-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,180,0,0.2));
+  color: #ffd700;
+  border: 1px solid rgba(255,215,0,0.4);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+/* Reflection blockquote */
+.deck-detail-overlay .panel-reflection {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-left: 3px solid var(--ocean-foam);
+  background: rgba(30,95,140,0.2);
+  border-radius: 0 12px 12px 0;
+  font-style: italic;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.7;
+}
+
+/* ---- Backdrop when detail is open ---- */
+.deck-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 18, 48, 0.7);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.deck-backdrop.visible {
+  opacity: 1;
+  pointer-events: all;
+}

@@ -130,7 +130,20 @@
   padding: 2rem 2.5rem 4rem;
 }
 
-.resume-panel-content h2 { color: var(--ocean-deep); margin-bottom: 2rem; }
+.resume-panel-content h2 { color: var(--ocean-deep); margin-bottom: 1rem; }
+.cv-download-btn {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  background: var(--ocean-deep);
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s;
+}
+.cv-download-btn:hover { background: var(--ocean-mid); }
 .resume-panel-content h3 { color: var(--ocean-deep); margin-top: 2rem; border-bottom: 2px solid var(--ocean-light); padding-bottom: 0.5rem; }
 .resume-panel-content h4 { color: var(--ocean-mid); margin-bottom: 0.3rem; }
 .resume-meta { color: var(--gray-mid); font-size: 0.9rem; margin-bottom: 0.5rem; }

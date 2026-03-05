@@ -19,153 +19,365 @@
 
 [data-active-path="mind"] .neural-bg { display: block; }
 
-/* ── Timeline eyebrow label ── */
-.timeline-eyebrow {
-  text-align: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--mind-accent);
-  margin-bottom: 3rem;
+/* ── Journal Wrapper ── */
+.journal-wrapper {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-/* ── Timeline wrapper ── */
-.timeline {
-  position: relative;
-  padding: 0 0 4rem;
-}
-
-/* Central vertical spine */
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--mind-accent) 5%,
-    var(--mind-glow) 50%,
-    var(--mind-warm) 95%,
-    transparent 100%
-  );
-  opacity: 0.4;
-}
-
-/* ── Entry row ── */
-.timeline-entry {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 40px 1fr;
-  align-items: start;
-  gap: 0 1.5rem;
-  margin-bottom: 3.5rem;
-}
-
-/* Right-side entries: card on left, node center */
-.timeline-entry[data-side="right"] .timeline-card { grid-column: 1; text-align: right; }
-.timeline-entry[data-side="right"] .timeline-node { grid-column: 2; grid-row: 1; }
-
-/* Left-side entries: node center, card on right */
-.timeline-entry[data-side="left"] .timeline-card { grid-column: 3; text-align: left; }
-.timeline-entry[data-side="left"] .timeline-node { grid-column: 2; grid-row: 1; }
-
-/* ── Connector node (holds the dot) ── */
-.timeline-node {
+/* ── Flyleaf (inscription page) ── */
+.journal-flyleaf {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding-top: 1.2rem;
-  position: relative;
-  z-index: 2;
+  min-height: 50vh;
+  text-align: center;
+  padding: 4rem 2rem;
+  animation: flyleafFadeIn 0.8s ease;
 }
 
-/* Horizontal connector line from dot to card */
-.timeline-entry .timeline-node::after {
+@keyframes flyleafFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.journal-flyleaf.hidden { display: none; }
+
+.flyleaf-inscription {
+  position: relative;
+  font-family: Georgia, 'Palatino Linotype', serif;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+  font-style: italic;
+  color: var(--mind-warm);
+  line-height: 1.9;
+  max-width: 640px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  margin-bottom: 3rem;
+  padding: 2rem;
+  border-top: 1px solid rgba(199,125,255,0.25);
+  border-bottom: 1px solid rgba(199,125,255,0.25);
+}
+/* Breathing glow behind the quote */
+.flyleaf-inscription::before {
   content: '';
   position: absolute;
-  top: calc(1.2rem + 7px);
-  height: 1px;
-  width: 1.5rem;
-  background: rgba(199,125,255,0.35);
+  inset: -20px;
+  background: radial-gradient(ellipse, rgba(199,125,255,0.08) 0%, transparent 70%);
+  animation: flyleafGlow 3s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
 }
-.timeline-entry[data-side="right"] .timeline-node::after { right: 100%; }
-.timeline-entry[data-side="left"]  .timeline-node::after { left: 100%; }
-
-/* ── Dot ── */
-.timeline-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--mind-deep);
-  border: 2px solid var(--mind-accent);
-  box-shadow: 0 0 10px rgba(199,125,255,0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  flex-shrink: 0;
+@keyframes flyleafGlow {
+  from { opacity: 0.5; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1.05); }
 }
 
-.timeline-entry:hover .timeline-dot {
-  transform: scale(1.35);
-  box-shadow: 0 0 18px rgba(199,125,255,0.7);
+.flyleaf-open-btn {
+  font-family: Georgia, serif;
+  font-style: italic;
+  background: rgba(199,125,255,0.15);
+  border: 1px solid rgba(199,125,255,0.4);
+  color: var(--mind-accent);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  letter-spacing: 0.12em;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+.flyleaf-open-btn:hover {
+  background: rgba(199,125,255,0.3);
+  border-color: rgba(199,125,255,0.7);
+  transform: translateY(-2px);
 }
 
-/* Featured dot (HABHub win) */
-.timeline-dot--win {
-  background: linear-gradient(135deg, #ffd700, #ffa500);
-  border-color: #ffd700;
-  box-shadow: 0 0 14px rgba(255,215,0,0.5);
-  width: 20px;
-  height: 20px;
+/* ── Journal (hidden until flyleaf opens) ── */
+.journal {
+  display: none;
+  animation: journalReveal 0.6s ease;
+  perspective: 1500px;
+  position: relative;
+}
+.journal.visible { display: block; }
+
+@keyframes journalReveal {
+  from { opacity: 0; transform: perspective(1200px) rotateY(-4deg); }
+  to   { opacity: 1; transform: perspective(1200px) rotateY(0); }
 }
 
-/* Pulsing dot (present/future) */
-.timeline-dot--pulse {
-  border-color: var(--mind-warm);
-  animation: timeline-pulse 2.4s ease-in-out infinite;
-}
-@keyframes timeline-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(232,168,124,0.4); }
-  50%       { box-shadow: 0 0 22px rgba(232,168,124,0.9); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .timeline-dot--pulse { animation: none; }
-}
-
-/* ── Card ── */
-.timeline-card {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+/* ── Journal Spread (two-page layout) ── */
+.journal-spread {
+  display: none;
+  grid-template-columns: 1fr 8px 1fr;
+  max-width: 960px;
+  min-height: 520px;
+  margin: 0 auto 2rem;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(199,125,255,0.15);
-  border-radius: 20px;
-  padding: 1.75rem 2rem;
-  color: var(--white);
-  transition: border-color 0.3s ease,
-              background 0.3s ease,
-              transform 0.3s ease;
+  border-radius: 2px 16px 16px 2px;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.3),
+    0 2px 8px rgba(0,0,0,0.2),
+    /* Page-edge depth — right side (stacked pages) */
+    4px 2px 0 -1px rgba(180,170,155,0.08),
+    6px 3px 0 -1px rgba(160,150,135,0.05);
+  transform: perspective(1200px) rotateY(0deg);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+}
+.journal-spread.active { display: grid; }
+
+/* Hover — subtle 3D lift */
+.journal-spread:hover {
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.4),
+    0 0 30px rgba(199,125,255,0.12),
+    4px 2px 0 -1px rgba(180,170,155,0.1),
+    6px 3px 0 -1px rgba(160,150,135,0.07);
+  transform: perspective(1200px) rotateY(-0.5deg) translateY(-3px);
 }
 
-.timeline-entry:hover .timeline-card {
-  border-color: rgba(199,125,255,0.4);
-  background: rgba(255,255,255,0.1);
-  transform: translateY(-3px);
+/* ── Page peel — Forward (right page peels from bottom-right corner) ── */
+.journal-spread.page-turning-forward {
+  display: grid;
+  z-index: 2;
+  overflow: visible;
+}
+.journal-spread.page-turning-forward .journal-page--right {
+  animation: pagePeelRight 0.85s cubic-bezier(0.4, 0, 0.15, 1) forwards;
+  filter: drop-shadow(-6px 6px 12px rgba(0,0,0,0.35));
+  will-change: clip-path;
+  z-index: 3;
+}
+.journal-spread.page-turning-forward .journal-page--left,
+.journal-spread.page-turning-forward .journal-spine {
+  animation: fadeOutSide 0.5s ease forwards;
 }
 
-/* Featured card variant (HABHub) */
-.timeline-card--featured {
-  border-color: rgba(255,215,0,0.3);
-  background: rgba(255,215,0,0.06);
-}
-.timeline-entry:hover .timeline-card--featured {
-  border-color: rgba(255,215,0,0.55);
+@keyframes pagePeelRight {
+  0%   { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 100% 100%, 0% 100%); }
+  35%  { clip-path: polygon(0% 0%, 100% 0%, 100% 50%,  50%  100%, 0% 100%); }
+  65%  { clip-path: polygon(0% 0%, 100% 0%, 100% 5%,   5%   100%, 0% 100%); }
+  100% { clip-path: polygon(0% 0%, 0%   0%, 0%   0%,   0%   0%,   0% 0%);   }
 }
 
-/* ── Period label ── */
-.timeline-period {
+/* ── Page peel — Backward (left page peels from bottom-left corner) ── */
+.journal-spread.page-turning-backward {
+  display: grid;
+  z-index: 2;
+  overflow: visible;
+}
+.journal-spread.page-turning-backward .journal-page--left {
+  animation: pagePeelLeft 0.85s cubic-bezier(0.4, 0, 0.15, 1) forwards;
+  filter: drop-shadow(6px 6px 12px rgba(0,0,0,0.35));
+  will-change: clip-path;
+  z-index: 3;
+}
+.journal-spread.page-turning-backward .journal-page--right,
+.journal-spread.page-turning-backward .journal-spine {
+  animation: fadeOutSide 0.5s ease forwards;
+}
+
+@keyframes pagePeelLeft {
+  0%   { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 100%); }
+  35%  { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 50%);  }
+  65%  { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 95% 100%, 0% 5%);   }
+  100% { clip-path: polygon(100% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%);  }
+}
+
+/* Shared side-fade for the non-peeling page */
+@keyframes fadeOutSide {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── Incoming spread (visible underneath the peel) ── */
+.journal-spread.peel-entering {
+  display: grid;
+  animation: spreadFadeIn 0.5s ease 0.15s both;
+  z-index: 1;
+}
+@keyframes spreadFadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Left Page (photo) ── */
+.journal-page--left {
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  background: rgba(0,0,0,0.3);
+}
+
+.journal-page--left img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.4s ease;
+}
+.journal-spread:hover .journal-page--left img {
+  opacity: 1;
+}
+
+/* Ken Burns — slow drift while visible */
+.journal-spread.active .journal-page--left img {
+  animation: kenBurns 20s ease-in-out infinite alternate;
+}
+@keyframes kenBurns {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.06) translate(-1%, -1%); }
+}
+
+/* Purple edge glow near spine */
+.journal-page--left::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 30px;
+  background: linear-gradient(to left, rgba(199,125,255,0.08), transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Paper texture overlay on photo */
+.journal-page--left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
+  pointer-events: none;
+}
+
+.journal-chapter-label {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-family: Georgia, serif;
+  font-style: italic;
   font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: rgba(255,255,255,0.7);
+  z-index: 2;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  padding-bottom: 0.25rem;
+}
+
+.journal-page-num--left {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 1rem;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+  z-index: 2;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* ── Spine (center divider) ── */
+.journal-spine {
+  background:
+    /* Stitch marks */
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 18px,
+      rgba(199,125,255,0.18) 18px,
+      rgba(199,125,255,0.18) 22px,
+      transparent 22px,
+      transparent 28px
+    ),
+    /* 3D depth gradient */
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0.35) 0%,
+      rgba(0,0,0,0.12) 25%,
+      rgba(255,255,255,0.04) 50%,
+      rgba(0,0,0,0.12) 75%,
+      rgba(0,0,0,0.35) 100%
+    );
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* ── Right Page (narrative) ── */
+.journal-page--right {
+  padding: 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* Warm paper tone + faint ruled lines */
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 1.84rem,
+      rgba(199,125,255,0.05) 1.84rem,
+      rgba(199,125,255,0.05) calc(1.84rem + 1px)
+    ),
+    linear-gradient(
+      180deg,
+      rgba(245, 240, 230, 0.06) 0%,
+      rgba(240, 235, 222, 0.04) 100%
+    );
+}
+
+/* Corner curl hint — folded page corner on bottom-right */
+.journal-spread.active .journal-page--right {
+  cursor: pointer;
+}
+.journal-spread.active .journal-page--left {
+  cursor: pointer;
+}
+
+.journal-spread.active .journal-page--right::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(
+    315deg,
+    rgba(199,125,255,0.25) 0%,
+    rgba(255,255,255,0.12) 35%,
+    rgba(199,125,255,0.08) 50%,
+    transparent 70%
+  );
+  clip-path: polygon(100% 0%, 100% 100%, 0% 100%);
+  box-shadow: -2px -2px 6px rgba(0,0,0,0.2);
+  opacity: 0.7;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.journal-spread.active:hover .journal-page--right::after {
+  width: 55px;
+  height: 55px;
+  opacity: 1;
+  background: linear-gradient(
+    315deg,
+    rgba(199,125,255,0.35) 0%,
+    rgba(255,255,255,0.18) 30%,
+    rgba(199,125,255,0.12) 50%,
+    transparent 70%
+  );
+}
+
+.journal-period {
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -173,74 +385,69 @@
   margin-bottom: 0.5rem;
 }
 
-/* ── Title ── */
-.timeline-title {
-  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+.journal-title {
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
   color: var(--mind-warm);
-  margin-bottom: 0.85rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+/* Decorative ornament below title */
+.journal-title::after {
+  content: '\B7  \25C7  \B7';
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.55rem;
+  color: rgba(199,125,255,0.3);
+  letter-spacing: 0.3em;
 }
 
-/* Keep body text left-aligned even on right-side cards */
-.timeline-entry[data-side="right"] .timeline-card ul,
-.timeline-entry[data-side="right"] .timeline-card p {
-  text-align: left;
-}
-
-/* Card body text */
-.timeline-card p,
-.timeline-card li {
+.journal-narrative {
+  font-family: Georgia, 'Palatino Linotype', 'Book Antiqua', serif;
   color: rgba(255,255,255,0.87);
-  font-size: 0.97rem;
-  line-height: 1.75;
+  font-size: 0.95rem;
+  line-height: 1.85;
+  flex: 1;
 }
-.timeline-card ul {
-  margin-left: 1.2rem;
+.journal-narrative p {
+  margin-bottom: 0.9rem;
+}
+.journal-narrative p:last-child {
   margin-bottom: 0;
 }
 
-/* ── Win badge ── */
-.timeline-win-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,160,0,0.15));
-  border: 1px solid rgba(255,215,0,0.4);
-  color: #ffd700;
-  font-size: 0.75rem;
+/* Drop cap on first paragraph */
+.journal-narrative p:first-child::first-letter {
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.8;
+  padding-right: 0.08em;
+  margin-top: 0.05em;
+  color: var(--mind-accent);
+  font-family: Georgia, serif;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 0.3rem 0.85rem;
-  border-radius: 20px;
-  margin-bottom: 0.75rem;
 }
 
-/* ── Education badge (CSUMB entry) ── */
-.timeline-edu-badge {
-  margin-top: 1rem;
+/* ── Callout boxes ── */
+.journal-callout {
+  margin-top: 1.25rem;
   padding: 1rem 1.25rem;
   background: rgba(199,125,255,0.1);
   border-left: 3px solid var(--mind-accent);
   border-radius: 0 12px 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  text-align: left;
 }
-.timeline-entry[data-side="right"] .timeline-edu-badge {
-  border-left: none;
-  border-right: 3px solid var(--mind-accent);
-  border-radius: 12px 0 0 12px;
-  text-align: right;
-}
-.timeline-edu-badge strong {
+.journal-callout strong {
   color: var(--mind-warm);
   font-size: 1rem;
+  display: block;
+  margin-bottom: 0.25rem;
 }
-.timeline-edu-badge span {
+.journal-callout span {
   color: rgba(255,255,255,0.75);
   font-size: 0.85rem;
 }
 
-/* ── Highlight tag ── */
-.timeline-highlight-tag {
+/* Highlight tag callout */
+.journal-highlight {
   display: inline-block;
   margin-top: 1rem;
   background: rgba(157,78,221,0.2);
@@ -253,17 +460,45 @@
   letter-spacing: 0.04em;
 }
 
-/* ── Cert tags (future entry) ── */
-.timeline-certs {
+/* Stats callout */
+.journal-stats {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
-  justify-content: flex-start;
 }
-.timeline-entry[data-side="right"] .timeline-certs { justify-content: flex-end; }
+.journal-stat {
+  background: rgba(199,125,255,0.12);
+  border: 1px solid rgba(199,125,255,0.25);
+  color: var(--mind-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+}
 
-.timeline-cert-tag {
+/* Win badge (HABHub) */
+.journal-win-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,160,0,0.15));
+  border: 1px solid rgba(255,215,0,0.4);
+  color: #ffd700;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  margin-bottom: 0.75rem;
+}
+
+/* Cert tags (Now + Next) */
+.journal-certs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.journal-cert-tag {
   background: rgba(232,168,124,0.15);
   border: 1px solid rgba(232,168,124,0.35);
   color: var(--mind-warm);
@@ -273,61 +508,155 @@
   border-radius: 20px;
 }
 
-/* ── Quote node (floats centered on the spine) ── */
-.timeline-quote-node {
-  position: relative;
-  text-align: center;
-  margin: 2rem 0 3rem;
-  padding: 0 2rem;
-  z-index: 2;
-}
-.timeline-quote-node blockquote {
-  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+.journal-page-num--right {
+  font-family: Georgia, serif;
   font-style: italic;
-  color: var(--mind-warm);
-  line-height: 1.8;
-  max-width: 620px;
-  margin: 0 auto;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.4);
-  padding: 1.5rem 2rem;
-  border-top: 1px solid rgba(199,125,255,0.25);
-  border-bottom: 1px solid rgba(199,125,255,0.25);
-}
-.timeline-quote-node::before {
-  content: '\u25C6';
-  position: absolute;
-  left: 50%;
-  top: -0.6rem;
-  transform: translateX(-50%);
-  color: var(--mind-accent);
-  font-size: 0.7rem;
-  z-index: 3;
-}
-
-/* ── Timeline images ── */
-.timeline-img {
-  width: 100%;
-  max-height: 280px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-top: 1rem;
-  opacity: 0.9;
-  transition: opacity 0.3s ease;
-}
-.timeline-entry:hover .timeline-img {
-  opacity: 1;
-}
-
-/* ── IACUC permit figure ── */
-.timeline-figure {
-  margin: 1rem 0 0;
-}
-.timeline-permit {
   font-size: 0.65rem;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.35);
+  text-align: right;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+/* ── Staggered content reveal ── */
+@keyframes contentFadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.journal-spread.active .journal-period    { animation: contentFadeUp 0.5s ease both; animation-delay: 0ms; }
+.journal-spread.active .journal-title     { animation: contentFadeUp 0.5s ease both; animation-delay: 80ms; }
+.journal-spread.active .journal-narrative { animation: contentFadeUp 0.5s ease both; animation-delay: 160ms; }
+.journal-spread.active .journal-callout,
+.journal-spread.active .journal-stats,
+.journal-spread.active .journal-highlight,
+.journal-spread.active .journal-certs,
+.journal-spread.active .journal-win-badge { animation: contentFadeUp 0.5s ease both; animation-delay: 240ms; }
+.journal-spread.active .journal-page-num--right { animation: contentFadeUp 0.4s ease both; animation-delay: 300ms; }
+.journal-spread.active .journal-chapter-label,
+.journal-spread.active .journal-page-num--left { animation: contentFadeUp 0.4s ease both; animation-delay: 100ms; }
+
+/* ── Featured spread (HABHub — gold accent) ── */
+.journal-spread--featured {
+  border-color: rgba(255,215,0,0.25);
+  background: rgba(255,215,0,0.04);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(255,215,0,0.08);
+}
+.journal-spread--featured:hover {
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 35px rgba(255,215,0,0.15);
+  border-color: rgba(255,215,0,0.4);
+}
+
+/* ── Chapter Tabs ── */
+.journal-tabs {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+/* Progress line behind tabs */
+.journal-tabs::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(199,125,255,0.2), rgba(199,125,255,0.2), transparent);
+  z-index: 0;
+}
+
+.journal-tab {
+  position: relative;
+  z-index: 1;
+  font-family: Georgia, serif;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(199,125,255,0.15);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px 4px 16px 16px;
+  border-bottom-width: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.journal-tab-numeral {
   font-style: italic;
-  margin-top: 0.4rem;
-  letter-spacing: 0.02em;
+}
+.journal-tab:hover {
+  background: rgba(199,125,255,0.15);
+  border-color: rgba(199,125,255,0.4);
+  color: var(--mind-accent);
+}
+.journal-tab.active {
+  background: rgba(199,125,255,0.2);
+  border-color: rgba(199,125,255,0.6);
+  color: var(--mind-accent);
+  box-shadow: 0 0 12px rgba(199,125,255,0.25);
+  transform: translateY(-2px);
+}
+
+/* Gold tab for HABHub */
+.journal-tab--gold {
+  border-color: rgba(255,215,0,0.2);
+}
+.journal-tab--gold:hover {
+  border-color: rgba(255,215,0,0.5);
+  color: #ffd700;
+  background: rgba(255,215,0,0.12);
+}
+.journal-tab--gold.active {
+  border-color: rgba(255,215,0,0.6);
+  color: #ffd700;
+  background: rgba(255,215,0,0.15);
+  box-shadow: 0 0 12px rgba(255,215,0,0.25);
+}
+
+/* Pulsing tab for Now + Next */
+.journal-tab--pulse.active {
+  animation: tab-pulse 2.4s ease-in-out infinite;
+}
+@keyframes tab-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(232,168,124,0.3); }
+  50%      { box-shadow: 0 0 20px rgba(232,168,124,0.7); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journal-tab--pulse.active { animation: none; }
+}
+
+/* Tab label vs numeral */
+.journal-tab-label { margin-left: 0.3rem; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .flyleaf-inscription::before { animation: none; }
+  .journal-spread.active .journal-page--left img { animation: none; }
+  .journal-spread.active .journal-period,
+  .journal-spread.active .journal-title,
+  .journal-spread.active .journal-narrative,
+  .journal-spread.active .journal-callout,
+  .journal-spread.active .journal-stats,
+  .journal-spread.active .journal-highlight,
+  .journal-spread.active .journal-certs,
+  .journal-spread.active .journal-win-badge,
+  .journal-spread.active .journal-page-num--right,
+  .journal-spread.active .journal-chapter-label,
+  .journal-spread.active .journal-page-num--left { animation: none; opacity: 1; }
+  .journal-spread.page-turning-forward,
+  .journal-spread.page-turning-backward,
+  .journal-spread.peel-entering { animation: none; opacity: 1; transform: none; }
+  .journal-spread.page-turning-forward .journal-page--right,
+  .journal-spread.page-turning-backward .journal-page--left,
+  .journal-spread.page-turning-forward .journal-page--left,
+  .journal-spread.page-turning-forward .journal-spine,
+  .journal-spread.page-turning-backward .journal-page--right,
+  .journal-spread.page-turning-backward .journal-spine { animation: none; opacity: 1; filter: none; clip-path: none; }
 }
 
 #path-mind .reflection-box {

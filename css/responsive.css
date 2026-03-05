@@ -43,9 +43,20 @@
   .card-footer-label { font-size: 0.6rem; }
   .deck-detail-overlay .panel-gallery img { width: 120px; height: 85px; }
 
-  /* Mind timeline — tablet */
-  .timeline-entry { gap: 0 1rem; }
-  .timeline-card { padding: 1.25rem 1.5rem; }
+  /* Mind journal — tablet */
+  .journal-spread {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    border-radius: 16px;
+  }
+  .journal-narrative p:first-child::first-letter { font-size: 2.8em; }
+  .journal-page--left {
+    min-height: 250px;
+    border-radius: 16px 16px 0 0;
+  }
+  .journal-spine { display: none; }
+  .journal-page--right { padding: 1.5rem; }
+  .journal-tab-label { display: none; }
 }
 
 @media (max-width: 640px) {
@@ -81,33 +92,22 @@
   .laptop-base { width: 310px; }
   .sticker-peel { --sticker-size: 60px !important; }
 
-  /* Mind timeline — mobile */
-  .timeline::before { left: 20px; transform: none; }
-  .timeline-entry {
-    grid-template-columns: 40px 1fr;
-    gap: 0 1rem;
+  /* Mind journal — mobile */
+  .journal-page--left { min-height: 200px; }
+  .journal-page--right { padding: 1.25rem; }
+  .journal-title { font-size: 1.1rem; }
+  .journal-narrative { font-size: 0.88rem; line-height: 1.75; }
+  .journal-narrative p:first-child::first-letter { font-size: 2.4em; }
+  .journal-tabs { gap: 0.35rem; }
+  .journal-tab { padding: 0.4rem 0.7rem; font-size: 0.7rem; }
+
+  /* Page peel — mobile: cross-fade instead of corner peel */
+  .journal-spread.page-turning-forward .journal-page--right,
+  .journal-spread.page-turning-backward .journal-page--left {
+    animation: fadeOutSide 0.4s ease forwards !important;
+    filter: none !important;
+    clip-path: none !important;
   }
-  .timeline-entry[data-side="right"] .timeline-card,
-  .timeline-entry[data-side="left"]  .timeline-card {
-    grid-column: 2;
-    text-align: left;
-  }
-  .timeline-entry[data-side="right"] .timeline-node,
-  .timeline-entry[data-side="left"]  .timeline-node {
-    grid-column: 1;
-  }
-  .timeline-entry .timeline-node::after { display: none; }
-  .timeline-quote-node::before { left: 20px; }
-  .timeline-quote-node { text-align: left; padding-left: 3.5rem; }
-  .timeline-quote-node blockquote { margin: 0; }
-  .timeline-entry[data-side="right"] .timeline-edu-badge {
-    border-left: 3px solid var(--mind-accent);
-    border-right: none;
-    border-radius: 0 12px 12px 0;
-    text-align: left;
-  }
-  .timeline-entry[data-side="right"] .timeline-certs { justify-content: flex-start; }
-  .timeline-img { max-height: 200px; }
 
   /* Ocean card deck — mobile: stack vertically as trading cards */
   .card-deck-section {

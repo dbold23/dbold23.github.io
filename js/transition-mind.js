@@ -115,9 +115,119 @@ export async function enter() {
   overlay.classList.remove('active');
 }
 
+// ---- Captain's Log Journal ----
+let currentChapter = 0;
+let turning = false;
+
+function initJournal() {
+  const flyleaf = document.getElementById('journal-flyleaf');
+  const journal = document.getElementById('journal');
+  const openBtn = document.getElementById('journal-open-btn');
+  if (!flyleaf || !journal || !openBtn) return;
+
+  openBtn.addEventListener('click', () => {
+    // Brief press animation before revealing
+    openBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      flyleaf.classList.add('hidden');
+      journal.classList.add('visible');
+      showChapter(0);
+    }, 150);
+  });
+
+  // Tab clicks
+  journal.querySelectorAll('.journal-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.chapter, 10);
+      if (idx !== currentChapter && !turning) {
+        turnToChapter(idx);
+      }
+    });
+  });
+
+  // Click on right page → next chapter, left page → previous chapter
+  journal.addEventListener('click', (e) => {
+    if (turning) return;
+    const rightPage = e.target.closest('.journal-page--right');
+    const leftPage = e.target.closest('.journal-page--left');
+    if (rightPage && currentChapter < 6) {
+      turnToChapter(currentChapter + 1);
+    } else if (leftPage && currentChapter > 0) {
+      turnToChapter(currentChapter - 1);
+    }
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (!journal.classList.contains('visible') || turning) return;
+    if (e.key === 'ArrowRight' && currentChapter < 6) {
+      turnToChapter(currentChapter + 1);
+    } else if (e.key === 'ArrowLeft' && currentChapter > 0) {
+      turnToChapter(currentChapter - 1);
+    }
+  });
+}
+
+function showChapter(idx) {
+  const journal = document.getElementById('journal');
+  if (!journal) return;
+  journal.querySelectorAll('.journal-spread').forEach(s => {
+    s.classList.remove('active');
+  });
+  const target = journal.querySelector(`.journal-spread[data-chapter="${idx}"]`);
+  if (target) target.classList.add('active');
+  currentChapter = idx;
+  updateTabs();
+}
+
+function turnToChapter(idx) {
+  if (prefersReducedMotion()) { showChapter(idx); return; }
+
+  const journal = document.getElementById('journal');
+  if (!journal) return;
+  turning = true;
+
+  const peelClass = idx > currentChapter ? 'page-turning-forward' : 'page-turning-backward';
+
+  const current = journal.querySelector('.journal-spread.active');
+  const target = journal.querySelector(`.journal-spread[data-chapter="${idx}"]`);
+
+  if (current && target) {
+    // Show incoming spread underneath the peel
+    target.classList.add('peel-entering');
+
+    // Peel the outgoing page away
+    current.classList.add(peelClass);
+
+    setTimeout(() => {
+      // Clean up outgoing
+      current.classList.remove('active', peelClass);
+      // Promote incoming to active
+      target.classList.remove('peel-entering');
+      target.classList.add('active');
+      currentChapter = idx;
+      updateTabs();
+      turning = false;
+    }, 850);
+  } else {
+    showChapter(idx);
+    turning = false;
+  }
+}
+
+function updateTabs() {
+  const journal = document.getElementById('journal');
+  if (!journal) return;
+  journal.querySelectorAll('.journal-tab').forEach(tab => {
+    const idx = parseInt(tab.dataset.chapter, 10);
+    tab.classList.toggle('active', idx === currentChapter);
+  });
+}
+
 // ---- Start/Stop ----
 export function start() {
   startNeural();
+  initJournal();
 }
 
 export function stop() {

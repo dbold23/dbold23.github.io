@@ -187,21 +187,32 @@ function turnToChapter(idx) {
   if (!journal) return;
   turning = true;
 
-  const peelClass = idx > currentChapter ? 'page-turning-forward' : 'page-turning-backward';
+  const isForward = idx > currentChapter;
+  const peelClass = isForward ? 'page-turning-forward' : 'page-turning-backward';
 
   const current = journal.querySelector('.journal-spread.active');
   const target = journal.querySelector(`.journal-spread[data-chapter="${idx}"]`);
 
   if (current && target) {
-    // Show incoming spread underneath the peel
+    // Inject backface element into the turning page
+    const turningPage = isForward
+      ? current.querySelector('.journal-page--right')
+      : current.querySelector('.journal-page--left');
+
+    const backface = document.createElement('div');
+    backface.className = 'page-backface';
+    turningPage.appendChild(backface);
+
+    // Show incoming spread underneath the turn
     target.classList.add('peel-entering');
 
-    // Peel the outgoing page away
+    // Turn the outgoing page in 3D
     current.classList.add(peelClass);
 
     setTimeout(() => {
       // Clean up outgoing
       current.classList.remove('active', peelClass);
+      backface.remove();
       // Promote incoming to active
       target.classList.remove('peel-entering');
       target.classList.add('active');

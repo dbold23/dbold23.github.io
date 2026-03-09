@@ -125,6 +125,13 @@ function initJournal() {
   const openBtn = document.getElementById('journal-open-btn');
   if (!flyleaf || !journal || !openBtn) return;
 
+  // Inject corner curl hints into each left page
+  journal.querySelectorAll('.journal-page--left').forEach(page => {
+    const curl = document.createElement('div');
+    curl.className = 'corner-curl-left';
+    page.appendChild(curl);
+  });
+
   openBtn.addEventListener('click', () => {
     // Brief press animation before revealing
     openBtn.style.transform = 'scale(0.95)';

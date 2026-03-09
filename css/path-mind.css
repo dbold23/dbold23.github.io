@@ -101,7 +101,18 @@
   perspective: 1500px;
   position: relative;
 }
-.journal.visible { display: block; }
+.journal.visible {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+/* All visible spreads stack in the same grid cell */
+.journal-spread.active,
+.journal-spread.page-turning-forward,
+.journal-spread.page-turning-backward,
+.journal-spread.peel-entering {
+  grid-row: 1;
+  grid-column: 1;
+}
 
 @keyframes journalReveal {
   from { opacity: 0; transform: perspective(1200px) rotateY(-4deg); }
@@ -132,12 +143,6 @@
   transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
 }
 .journal-spread.active { display: grid; }
-
-/* During page turns, the outgoing spread needs position context */
-.journal-spread.page-turning-forward,
-.journal-spread.page-turning-backward {
-  position: relative;
-}
 
 /* Hover — subtle 3D lift */
 .journal-spread:hover {
@@ -229,20 +234,12 @@
   100% { opacity: 0; }
 }
 
-/* ── Incoming spread (positioned underneath the turning page) ── */
+/* ── Incoming spread (visible underneath the turning page) ── */
 .journal-spread.peel-entering {
   display: grid;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  max-width: 960px;
   opacity: 0;
   animation: spreadFadeIn 0.4s ease 0.1s forwards;
   z-index: 1;
-  /* Override base transition so it doesn't slide */
-  transition: none;
 }
 @keyframes spreadFadeIn {
   from { opacity: 0; }
@@ -384,18 +381,16 @@
 }
 
 /* Corner curl hint — left page (bottom-left, indicates backward) */
-.journal-spread.active .journal-page--left::after {
-  content: '';
+.corner-curl-left {
   position: absolute;
-  inset: auto;
   bottom: 0;
   left: 0;
   width: 28px;
   height: 28px;
   background: linear-gradient(
     45deg,
-    rgba(199,125,255,0.25) 0%,
-    rgba(255,255,255,0.12) 35%,
+    rgba(199,125,255,0.35) 0%,
+    rgba(255,255,255,0.15) 35%,
     rgba(199,125,255,0.08) 50%,
     transparent 70%
   );
@@ -407,15 +402,15 @@
   z-index: 5;
 }
 
-.journal-spread.active:hover .journal-page--left::after {
+.journal-spread.active:hover .corner-curl-left {
   width: 55px;
   height: 55px;
   opacity: 1;
   background: linear-gradient(
     45deg,
-    rgba(199,125,255,0.35) 0%,
-    rgba(255,255,255,0.18) 30%,
-    rgba(199,125,255,0.12) 50%,
+    rgba(199,125,255,0.5) 0%,
+    rgba(255,255,255,0.25) 30%,
+    rgba(199,125,255,0.15) 50%,
     transparent 70%
   );
 }

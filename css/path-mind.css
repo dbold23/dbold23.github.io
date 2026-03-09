@@ -402,7 +402,7 @@
   z-index: 5;
 }
 
-.journal-spread.active:hover .corner-curl-left {
+.journal-spread.active .journal-page--left:hover .corner-curl-left {
   width: 55px;
   height: 55px;
   opacity: 1;
@@ -438,7 +438,7 @@
   z-index: 5;
 }
 
-.journal-spread.active:hover .journal-page--right::after {
+.journal-spread.active .journal-page--right:hover::after {
   width: 55px;
   height: 55px;
   opacity: 1;

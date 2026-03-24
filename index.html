@@ -157,12 +157,19 @@
             <div class="path-hero-overlay">
                 <h2 class="path-hero-title">Conservation & Trail Stewardship</h2>
                 <p class="path-hero-subtitle">Protecting old-growth redwoods and leading community conservation through science and stewardship</p>
+                <p class="forest-philosophy">From the old-growth redwoods of Nisene Marks to the coastal wetlands of Elkhorn Slough, the Santa Cruz Mountains, and Big Sur — each landscape has reinforced that effective conservation requires both scientific rigor and grassroots engagement. Leading volunteers, clearing trails, removing invasive species, and restoring habitat across these organizations has shown me that stewardship is not a single act but a network of commitments.</p>
             </div>
+        </div>
+
+        <!-- Interactive California Coast Map -->
+        <div class="forest-map-section fade-in">
+            <h3 class="map-heading">Where I Work</h3>
+            <div class="forest-map-container" id="forest-map-container"></div>
         </div>
 
         <div class="path-content">
             <!-- Trail Stewardship at Nisene Marks -->
-            <article class="content-card fade-in">
+            <article class="content-card fade-in" id="card-nisene">
                 <div class="card-img-wrap">
                     <img src="assets/people doing trail work in Nisene.avif" alt="Community trail work at Nisene Marks" loading="lazy">
                 </div>
@@ -185,7 +192,7 @@
             </article>
 
             <!-- Big Sur Land Trust -->
-            <article class="content-card fade-in">
+            <article class="content-card fade-in" id="card-bigsur">
                 <div class="card-img-wrap">
                     <img src="assets/lanscape picture of me in mountains.jpg" alt="Coastal mountain landscape along the Big Sur coast" loading="lazy">
                 </div>
@@ -206,7 +213,7 @@
             </article>
 
             <!-- Santa Lucia Conservancy -->
-            <article class="content-card fade-in">
+            <article class="content-card fade-in" id="card-santalucia">
                 <div class="card-text">
                     <h3>Santa Lucia Conservancy</h3>
                     <p>Conservation volunteer on the 20,000-acre Santa Lucia Preserve in Carmel, working alongside the Conservancy to maintain trails and support science-guided land management on permanently protected wildlands.</p>
@@ -224,7 +231,7 @@
             </article>
 
             <!-- Santa Cruz Mountains Trail Stewardship -->
-            <article class="content-card fade-in">
+            <article class="content-card fade-in" id="card-scmts">
                 <div class="card-text">
                     <h3>Santa Cruz Mountains Trail Stewardship</h3>
                     <p>Part of SCMTS's volunteer trail crews building and maintaining trails at Wilder Ranch State Park and Henry Cowell Redwoods State Park — contributing to new public trail access in the Santa Cruz Mountains.</p>
@@ -242,7 +249,7 @@
             </article>
 
             <!-- Elkhorn Slough Trail Maintenance -->
-            <article class="content-card fade-in">
+            <article class="content-card fade-in" id="card-elkhorn">
                 <div class="card-text">
                     <h3>Elkhorn Slough Trail Stewardship</h3>
                     <p>Trail stewardship and habitat restoration at Elkhorn Slough National Estuarine Research Reserve — maintaining visitor access through coastal wetland environments while supporting the reserve's ecological mission.</p>
@@ -258,12 +265,6 @@
                     </div>
                 </div>
             </article>
-
-            <!-- Conservation Philosophy -->
-            <div class="reflection-box fade-in">
-                <h3>Conservation Philosophy</h3>
-                <p>From the old-growth redwoods of Nisene Marks to the coastal wetlands of Elkhorn Slough, the Santa Cruz Mountains, and Big Sur — each landscape has reinforced that effective conservation requires both scientific rigor and grassroots engagement. Leading volunteers, clearing trails, removing invasive species, and restoring habitat across these organizations has shown me that stewardship is not a single act but a network of commitments.</p>
-            </div>
         </div>
     </section>
 
@@ -1419,7 +1420,7 @@
                             <div class="journal-period">Before College</div>
                             <h3 class="journal-title">Origins</h3>
                             <div class="journal-narrative">
-                                <p>The first time I saw ROV footage of a hydrothermal vent — the shimmering fluid, the tube worms crowding a chimney in complete darkness — something shifted. It was during a thesis defense I'd stumbled into, a graduate student describing species that had never been cataloged, ecosystems sustained by chemistry instead of sunlight, DNA analysis revealing evolutionary histories that rewrote textbooks.</p>
+                                <p>The first time I saw ROV footage of a hydrothermal vent, the shimmering fluid and tube worms crowding a chimney in complete darkness, something shifted. It was during a thesis defense I'd stumbled into, a graduate student describing species that had never been cataloged, ecosystems sustained by chemistry instead of sunlight, DNA analysis revealing evolutionary histories that rewrote textbooks.</p>
                                 <p>That experience showed me that entire ecosystems on our own planet remain unknown, and that the tools we build to observe them determine what we can discover. It is the reason I now build those tools.</p>
                             </div>
                             <span class="journal-page-num--right">2</span>
@@ -1429,7 +1430,7 @@
                     <!-- Chapter II: CSUMB -->
                     <div class="journal-spread" data-chapter="1">
                         <div class="journal-page--left">
-                            <img src="assets/Elkhornslougheducation.jpg" alt="Field research at CSUMB" loading="lazy">
+                            <img src="assets/Elkhornslougheducation.jpg" alt="Teaching kids at Elkhorn Slough during education volunteering" loading="lazy">
                             <span class="journal-chapter-label">Chapter II</span>
                             <span class="journal-page-num--left">3</span>
                         </div>
@@ -1439,7 +1440,7 @@
                             <h3 class="journal-title">CSUMB</h3>
                             <div class="journal-narrative">
                                 <p>California State University, Monterey Bay became the place where curiosity found structure. A B.S. in Marine Science with a Biology minor gave me the foundation, but the coursework that actually shaped my thinking went deeper: Marine Ecology, Scientific Diving, Statistics, GIS, and Python Programming.</p>
-                                <p>Each course added a new lens. Statistics taught me to question what I thought I saw. GIS taught me to think spatially. Python taught me that the bottleneck in science is rarely data — it's the tools to make sense of it.</p>
+                                <p>Each course added a new lens. Statistics taught me to question what I thought I saw. GIS taught me to think spatially. Python taught me that the bottleneck in science is rarely data, it's the tools to make sense of it. Beyond the classroom, volunteer work is where I found my love for conservation and teaching. Guiding kids through the mudflats and channels of Elkhorn Slough, watching them discover crabs and birds for the first time, reminded me why this work matters beyond the lab.</p>
                             </div>
                             <div class="journal-callout">
                                 <strong>CSUMB</strong>
@@ -1463,7 +1464,7 @@
                             <h3 class="journal-title">First Dives</h3>
                             <div class="journal-narrative">
                                 <p>Spring 2024 was when research stopped being theoretical. At Moss Landing Marine Labs, I was elbow-deep in urchin conditioning tanks. In the Ocean Predator Ecology Lab, I was reviewing hours of white shark footage, learning to read injury patterns the way a doctor reads an X-ray. Every kelp canopy dive at San Carlos Beach taught me that the ocean doesn't wait for you to be ready.</p>
-                                <p>Then South Africa changed everything. The research diving program threw me into conditions I wasn't ready for — surge, cold water, unfamiliar species, boats that never stopped moving. I earned my NAUI Divemaster there, but what I really gained was the understanding that fieldwork is where science becomes honest.</p>
+                                <p>After earning my NAUI Divemaster, South Africa changed everything. The research diving program threw me into conditions I wasn't ready for, surge, cold water, unfamiliar species, boats that never stopped moving. What I gained was the understanding that fieldwork is where science becomes honest.</p>
                             </div>
                             <span class="journal-highlight">NAUI Divemaster · 143 logged dives</span>
                             <span class="journal-page-num--right">6</span>
@@ -1482,8 +1483,8 @@
                             <div class="journal-period">Fall 2024 – Summer 2025</div>
                             <h3 class="journal-title">Scaling Up</h3>
                             <div class="journal-narrative">
-                                <p>Being selected as a UROC Innovation Scholar — funded by CSUN's HSI Equity Innovation Hub and Apple — gave me the resources to think bigger. I wasn't just collecting data anymore; I was building systems to process it. Marine ecology research on latitudinal biodiversity gradients using PISCO and NOAA CUTI datasets taught me to think at scale.</p>
-                                <p>Outside the lab, I took on leadership roles in conservation and education — roles that reminded me that science without community is just data. And in the lab, the SharkHealthApp was taking shape: dual YOLO models achieving 96% pose accuracy, semi-supervised learning, automated keypoint tracking from archival footage.</p>
+                                <p>Being selected as a UROC Innovation Scholar, funded by CSUN's HSI Equity Innovation Hub and Apple, gave me the resources to think bigger. I wasn't just collecting data anymore; I was building systems to process it. Marine ecology research on latitudinal biodiversity gradients using PISCO and NOAA CUTI datasets taught me to think at scale.</p>
+                                <p>Outside the lab, I took on leadership roles in conservation and education, roles that reminded me that science without community is just data. And in the lab, the SharkHealthApp was taking shape: dual YOLO models achieving 96% pose accuracy, semi-supervised learning, automated keypoint tracking from archival footage.</p>
                             </div>
                             <div class="journal-stats">
                                 <span class="journal-stat">96% Pose Accuracy</span>
@@ -1506,8 +1507,8 @@
                             <div class="journal-period">October 2025</div>
                             <h3 class="journal-title">HABHub</h3>
                             <div class="journal-narrative">
-                                <p>Forty-eight hours. That's how long we had to build a real-time harmful algal bloom monitoring system for Monterey Bay. NOAA VIIRS satellite imagery fused with NDBC buoy observations and CalHABMAP toxin records. A 47-feature XGBoost model generating 8-day HAB forecasts.</p>
-                                <p>The full stack came together under pressure: Python data pipeline, Flask REST API, Docker deployment, three React/TypeScript dashboards serving aquaculture farmers, beachgoers, and marine mammal researchers. When they announced first place, it wasn't just validation — it was proof that the tools I'd been building actually worked when it mattered.</p>
+                                <p>A week-long hackathon, inspired by my work in aquaculture and the colleges and communities that need these tools most. We built a real-time harmful algal bloom monitoring system for Monterey Bay, fusing NOAA VIIRS satellite imagery with NDBC buoy observations and CalHABMAP toxin records. A 47-feature XGBoost model generating 8-day HAB forecasts.</p>
+                                <p>The full stack came together under pressure: Python data pipeline, Flask REST API, Docker deployment, three React/TypeScript dashboards serving aquaculture farmers, beachgoers, and marine mammal researchers. When they announced first place, it was proof that the tools I'd been building actually worked when it mattered.</p>
                             </div>
                             <span class="journal-page-num--right">10</span>
                         </div>
@@ -1525,7 +1526,7 @@
                             <div class="journal-period">Ongoing</div>
                             <h3 class="journal-title">Hardware</h3>
                             <div class="journal-narrative">
-                                <p>VHF wildlife tag relay stations — Raspberry Pi, RTL-SDR, NB-IoT cellular — deployed off-grid at Elkhorn Slough, solar-powered, bridging MQTT to AWS EC2. The kind of system where failure means losing data that took months of fieldwork to create.</p>
+                                <p>VHF wildlife tag relay stations, Raspberry Pi, RTL-SDR, and NB-IoT cellular, deployed off-grid at Elkhorn Slough. Solar-powered and bridging MQTT to AWS EC2, the kind of system where failure means losing data that took months of fieldwork to create.</p>
                                 <p>Alongside the stations, I'm developing a custom aerial platform for automated white shark population assessments and a CNN-based pipeline for behavior classification from dorsal-mounted camera footage fused with accelerometer and magnetometer data. A multi-task deep learning framework for angle-tolerant morphometric extraction, presented at NEPSS 2026 in February.</p>
                             </div>
                             <div class="journal-stats">
@@ -1549,8 +1550,8 @@
                             <div class="journal-period">Present</div>
                             <h3 class="journal-title">Now + Next</h3>
                             <div class="journal-narrative">
-                                <p>Continuing as researcher and steward. The connection to MBARI and FathomNet — deep-sea imagery classification, bioinspired robotics, scalable ocean observation — represents the convergence of everything I've been working toward. The tools to observe what we couldn't before. The commitment to make that knowledge matter.</p>
-                                <p>It is the reason I now build those tools.</p>
+                                <p>Continuing as researcher and steward. Everything I've worked toward, from field ecology to computer vision to hardware deployments, converges on the same goal: building tools that let us observe what we couldn't before and making that knowledge accessible to the people and communities who need it.</p>
+                                <p>Whether it's conservation monitoring, marine health assessment, or education outreach, the thread is the same. Science should serve the places and people it studies.</p>
                             </div>
                             <div class="journal-certs">
                                 <span class="journal-cert-tag">MOTC Certified</span>

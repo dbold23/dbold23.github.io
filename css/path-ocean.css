@@ -85,9 +85,9 @@
 
 /* ---- Individual card ---- */
 .deck-card {
-  /* Spread cards horizontally: each offset by ~130px, centered on 4 cards */
-  --card-offset: calc((var(--card-index) - 1.5) * 130px);
-  --card-rotation: calc((var(--card-index) - 1.5) * 6deg);
+  /* Spread cards horizontally: centered on 6 cards */
+  --card-offset: calc((var(--card-index) - 2.5) * 100px);
+  --card-rotation: calc((var(--card-index) - 2.5) * 5deg);
 
   position: absolute;
   left: calc(50% + var(--card-offset));
@@ -460,6 +460,86 @@
   font-style: italic;
   color: rgba(255,255,255,0.8);
   line-height: 1.7;
+}
+
+/* ---- Presentation list in detail overlay ---- */
+.card-presentations {
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(184,230,245,0.12);
+}
+
+.card-presentations h4 {
+  color: var(--ocean-foam);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+
+.card-presentations ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.card-presentations li {
+  position: relative;
+  padding-left: 1.2rem;
+  margin-bottom: 0.6rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.card-presentations li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--ocean-foam);
+}
+
+.card-presentations li strong {
+  color: var(--ocean-foam);
+}
+
+.tag-small {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  vertical-align: middle;
+  opacity: 0.7;
+}
+
+/* ---- Presentation links ---- */
+.pres-link {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--ocean-foam);
+  text-decoration: none;
+  border: 1px solid rgba(184,230,245,0.25);
+  padding: 0.15rem 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.pres-link:hover {
+  background: rgba(61,157,217,0.3);
+  border-color: var(--ocean-foam);
+}
+
+/* ---- Embedded presentation/PDF ---- */
+.pres-embed {
+  margin-top: 1.2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(184,230,245,0.15);
+}
+
+.pres-embed iframe {
+  display: block;
+  border: none;
 }
 
 /* ---- Backdrop when detail is open ---- */

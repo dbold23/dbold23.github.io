@@ -313,8 +313,10 @@ export async function enter() {
   // Let it fill the screen
   await new Promise((r) => setTimeout(r, 1200));
 
-  // Clean up
+  // Fade out overlay smoothly, then clean up DOM
+  overlay.classList.remove('active');
+  await new Promise((r) => setTimeout(r, 400));
+
   animating = false;
   container.remove();
-  overlay.classList.remove('active');
 }

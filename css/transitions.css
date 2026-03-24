@@ -8,6 +8,7 @@
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
 .transition-overlay.active {

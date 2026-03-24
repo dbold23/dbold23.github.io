@@ -260,37 +260,82 @@ export async function enter() {
   overlay.classList.add('active');
   const content = overlay.querySelector('#transition-content');
 
-  // Container
   const container = document.createElement('div');
   container.className = 'ocean-dive-container';
 
-  // Water slab (diagonal clip-path sweep)
-  const water = document.createElement('div');
-  water.className = 'ocean-dive-water';
-  container.appendChild(water);
+  // Create 3 wave layers (deep → mid → surface)
+  const WAVE_LAYERS = [
+    { color: '#041230', amplitude: 20, frequency: 1.5, speed: 0.03, delay: 0 },
+    { color: '#0a2463', amplitude: 30, frequency: 1.2, speed: 0.025, delay: 150 },
+    { color: 'rgba(30, 95, 140, 0.9)', amplitude: 40, frequency: 1.0, speed: 0.02, delay: 300 },
+  ];
+
+  const waveDivs = WAVE_LAYERS.map((layer) => {
+    const div = document.createElement('div');
+    div.className = 'ocean-wave-layer';
+    div.style.background = layer.color;
+    container.appendChild(div);
+    return div;
+  });
 
   // Bubble canvas
   const bCanvas = document.createElement('canvas');
   bCanvas.className = 'ocean-dive-bubble-canvas';
   container.appendChild(bCanvas);
-
   content.appendChild(container);
 
-  // Size canvas
   bCanvas.width = window.innerWidth;
   bCanvas.height = window.innerHeight;
   const bCtx = bCanvas.getContext('2d');
 
-  // Create bubbles spread across the screen
   const diveBubbles = [];
   for (let i = 0; i < 35; i++) {
     diveBubbles.push(createDiveBubble(bCanvas.width, bCanvas.height));
   }
 
-  // Bubble loop
+  // Animate wave rise + bubbles together via rAF
+  const DURATION = 1400;
+  const startTime = performance.now();
   let animating = true;
-  function animateBubbles() {
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function animate(now) {
     if (!animating) return;
+    const elapsed = now - startTime;
+
+    // Update each wave layer's clip-path
+    WAVE_LAYERS.forEach((layer, i) => {
+      const layerElapsed = Math.max(0, elapsed - layer.delay);
+      const progress = Math.min(1, layerElapsed / (DURATION - layer.delay));
+      const easedProgress = easeOutCubic(progress);
+
+      // Wave rises from bottom: y offset goes from 110% down to -10% up
+      const yOffset = 110 - easedProgress * 120;
+
+      // Build wavy polygon top edge using sine
+      const points = [];
+      const segments = 20;
+      for (let s = 0; s <= segments; s++) {
+        const x = (s / segments) * 100;
+        const wave =
+          Math.sin(
+            (s / segments) * Math.PI * 2 * layer.frequency +
+              now * layer.speed
+          ) *
+          layer.amplitude *
+          Math.min(1, easedProgress * 3);
+        const y = yOffset + wave * (1 - easedProgress * 0.5);
+        points.push(`${x}% ${y}%`);
+      }
+      // Close polygon at bottom
+      points.push('100% 120%', '0% 120%');
+      waveDivs[i].style.clipPath = `polygon(${points.join(', ')})`;
+    });
+
+    // Bubbles
     bCtx.clearRect(0, 0, bCanvas.width, bCanvas.height);
     diveBubbles.forEach((b) => {
       b.y -= b.speed;
@@ -302,16 +347,13 @@ export async function enter() {
       }
       drawDiveBubble(bCtx, b);
     });
-    requestAnimationFrame(animateBubbles);
+
+    requestAnimationFrame(animate);
   }
-  animateBubbles();
+  requestAnimationFrame(animate);
 
-  // Trigger diagonal sweep
-  await new Promise((r) => setTimeout(r, 30));
-  water.classList.add('rising');
-
-  // Let it fill the screen
-  await new Promise((r) => setTimeout(r, 1200));
+  // Wait for animation to complete
+  await new Promise((r) => setTimeout(r, DURATION + 200));
 
   // Fade out overlay smoothly, then clean up DOM
   overlay.classList.remove('active');

@@ -88,23 +88,12 @@
   inset: 0;
 }
 
-/* Water slab — sweeps diagonally across the screen */
-.ocean-dive-water {
+/* Wave layers — JS-driven clip-path animation (sine wave rise) */
+.ocean-wave-layer {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    160deg,
-    rgba(30, 95, 140, 0.9) 0%,
-    #0a2463 40%,
-    #0a2463 100%
-  );
-  clip-path: polygon(0 100%, 0 100%, 0 100%, 0 100%);
-  transition: clip-path 1s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.ocean-dive-water.rising {
-  /* Diagonal sweep: top-left leading edge arrives first */
-  clip-path: polygon(-10% -10%, 120% -10%, 120% 120%, -10% 120%);
+  clip-path: polygon(0% 120%, 100% 120%, 100% 120%, 0% 120%);
+  will-change: clip-path;
 }
 
 /* Bubble canvas on top */

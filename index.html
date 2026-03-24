@@ -161,110 +161,113 @@
             </div>
         </div>
 
-        <!-- Interactive California Coast Map -->
-        <div class="forest-map-section fade-in">
-            <h3 class="map-heading">Where I Work</h3>
-            <div class="forest-map-container" id="forest-map-container"></div>
-        </div>
+        <!-- Full-Screen Scrollytelling Map Explorer -->
+        <div class="forest-explore">
+            <div class="forest-map-sticky">
+                <div class="forest-map-container" id="forest-map-container"></div>
+            </div>
 
-        <div class="path-content">
-            <!-- Trail Stewardship at Nisene Marks -->
-            <article class="content-card fade-in" id="card-nisene">
-                <div class="card-img-wrap">
-                    <img src="assets/people doing trail work in Nisene.avif" alt="Community trail work at Nisene Marks" loading="lazy">
-                </div>
-                <div class="card-text">
-                    <h3>Trail Stewardship at Nisene Marks</h3>
-                    <p>As Trail Committee Chair for Advocates for Nisene Marks State Park, I lead conservation stewardship initiatives combining field leadership with geospatial technology to protect old-growth redwood ecosystems.</p>
-                    <ul>
-                        <li>Organized trail maintenance days with 30+ volunteers addressing ecological hazards</li>
-                        <li>Coordinated post-storm disaster assessment and cleanup operations</li>
-                        <li>Created comprehensive GIS maps documenting hazards, erosion hotspots, and invasive species</li>
-                        <li>Developed data-driven stewardship strategies for park management</li>
-                    </ul>
-                    <p>Leading this initiative taught me as much about community organizing as it did about forest ecology. Creating GIS maps transformed scattered observations into actionable data — demonstrating how technology amplifies volunteer efforts and creates lasting impact.</p>
-                    <div class="card-tags">
-                        <span class="tag">GIS Mapping</span>
-                        <span class="tag">Volunteer Leadership</span>
-                        <span class="tag">Forest Ecology</span>
-                    </div>
-                </div>
-            </article>
+            <div class="forest-steps">
+                <!-- Overview step (full coast, no card) -->
+                <div class="forest-step" data-step="overview"></div>
 
-            <!-- Big Sur Land Trust -->
-            <article class="content-card fade-in" id="card-bigsur">
-                <div class="card-img-wrap">
-                    <img src="assets/lanscape picture of me in mountains.jpg" alt="Coastal mountain landscape along the Big Sur coast" loading="lazy">
+                <!-- Santa Cruz Mountains -->
+                <div class="forest-step" data-step="scmts">
+                    <article class="forest-card" id="card-scmts">
+                        <h3>Santa Cruz Mountains Trail Stewardship</h3>
+                        <p>Part of SCMTS's volunteer trail crews building and maintaining trails at Wilder Ranch State Park and Henry Cowell Redwoods State Park — contributing to new public trail access in the Santa Cruz Mountains.</p>
+                        <ul>
+                            <li>Trail construction and maintenance on state park lands</li>
+                            <li>Contributing to expanded public access and conservation corridor connectivity</li>
+                            <li>Part of a 25+ year legacy of volunteer-led trail building in the region</li>
+                        </ul>
+                        <div class="card-tags">
+                            <span class="tag">Trail Construction</span>
+                            <span class="tag">State Parks</span>
+                            <span class="tag">Volunteer Crew</span>
+                        </div>
+                    </article>
                 </div>
-                <div class="card-text">
-                    <h3>Big Sur Land Trust</h3>
-                    <p>Volunteer with the Stewardship Trails &amp; Access Crew, maintaining roads, trails, and ecological integrity across Big Sur Land Trust's protected coastal and mountain landscapes.</p>
-                    <ul>
-                        <li>Trail maintenance and restoration work supporting 20,000+ acres of protected land</li>
-                        <li>Strengthened ecological resilience through hands-on habitat stewardship</li>
-                        <li>Improved visitor access and experience on conservation properties</li>
-                    </ul>
-                    <div class="card-tags">
-                        <span class="tag">Trail Building</span>
-                        <span class="tag">Ecological Restoration</span>
-                        <span class="tag">Community Stewardship</span>
-                    </div>
-                </div>
-            </article>
 
-            <!-- Santa Lucia Conservancy -->
-            <article class="content-card fade-in" id="card-santalucia">
-                <div class="card-text">
-                    <h3>Santa Lucia Conservancy</h3>
-                    <p>Conservation volunteer on the 20,000-acre Santa Lucia Preserve in Carmel, working alongside the Conservancy to maintain trails and support science-guided land management on permanently protected wildlands.</p>
-                    <ul>
-                        <li>Trail maintenance across 10,360 acres of Conservancy-managed Wildlands</li>
-                        <li>Invasive species removal and conservation grazing support</li>
-                        <li>Biodiversity monitoring on lands protected for ecological integrity since 1995</li>
-                    </ul>
-                    <div class="card-tags">
-                        <span class="tag">Invasive Species</span>
-                        <span class="tag">Biodiversity Monitoring</span>
-                        <span class="tag">Land Stewardship</span>
-                    </div>
+                <!-- Nisene Marks -->
+                <div class="forest-step" data-step="nisene">
+                    <article class="forest-card" id="card-nisene">
+                        <div class="card-img-wrap">
+                            <img src="assets/people doing trail work in Nisene.avif" alt="Community trail work at Nisene Marks" loading="lazy">
+                        </div>
+                        <h3>Trail Stewardship at Nisene Marks</h3>
+                        <p>As Trail Committee Chair for Advocates for Nisene Marks State Park, I lead conservation stewardship initiatives combining field leadership with geospatial technology to protect old-growth redwood ecosystems.</p>
+                        <ul>
+                            <li>Organized trail maintenance days with 30+ volunteers addressing ecological hazards</li>
+                            <li>Coordinated post-storm disaster assessment and cleanup operations</li>
+                            <li>Created comprehensive GIS maps documenting hazards, erosion hotspots, and invasive species</li>
+                            <li>Developed data-driven stewardship strategies for park management</li>
+                        </ul>
+                        <div class="card-tags">
+                            <span class="tag">GIS Mapping</span>
+                            <span class="tag">Volunteer Leadership</span>
+                            <span class="tag">Forest Ecology</span>
+                        </div>
+                    </article>
                 </div>
-            </article>
 
-            <!-- Santa Cruz Mountains Trail Stewardship -->
-            <article class="content-card fade-in" id="card-scmts">
-                <div class="card-text">
-                    <h3>Santa Cruz Mountains Trail Stewardship</h3>
-                    <p>Part of SCMTS's volunteer trail crews building and maintaining trails at Wilder Ranch State Park and Henry Cowell Redwoods State Park — contributing to new public trail access in the Santa Cruz Mountains.</p>
-                    <ul>
-                        <li>Trail construction and maintenance on state park lands</li>
-                        <li>Contributing to expanded public access and conservation corridor connectivity</li>
-                        <li>Part of a 25+ year legacy of volunteer-led trail building in the region</li>
-                    </ul>
-                    <div class="card-tags">
-                        <span class="tag">Trail Construction</span>
-                        <span class="tag">State Parks</span>
-                        <span class="tag">Volunteer Crew</span>
-                    </div>
+                <!-- Elkhorn Slough -->
+                <div class="forest-step" data-step="elkhorn">
+                    <article class="forest-card" id="card-elkhorn">
+                        <h3>Elkhorn Slough Trail Stewardship</h3>
+                        <p>Trail stewardship and habitat restoration at Elkhorn Slough National Estuarine Research Reserve — maintaining visitor access through coastal wetland environments while supporting the reserve's ecological mission.</p>
+                        <ul>
+                            <li>Trail maintenance across the reserve's wetland and upland habitat network</li>
+                            <li>Habitat restoration supporting one of California's last great coastal wetlands</li>
+                            <li>Collaborating with reserve staff on stewardship alongside active research programs</li>
+                        </ul>
+                        <div class="card-tags">
+                            <span class="tag">Wetland Stewardship</span>
+                            <span class="tag">Habitat Restoration</span>
+                            <span class="tag">Trail Access</span>
+                        </div>
+                    </article>
                 </div>
-            </article>
 
-            <!-- Elkhorn Slough Trail Maintenance -->
-            <article class="content-card fade-in" id="card-elkhorn">
-                <div class="card-text">
-                    <h3>Elkhorn Slough Trail Stewardship</h3>
-                    <p>Trail stewardship and habitat restoration at Elkhorn Slough National Estuarine Research Reserve — maintaining visitor access through coastal wetland environments while supporting the reserve's ecological mission.</p>
-                    <ul>
-                        <li>Trail maintenance across the reserve's wetland and upland habitat network</li>
-                        <li>Habitat restoration supporting one of California's last great coastal wetlands</li>
-                        <li>Collaborating with reserve staff on stewardship alongside active research programs</li>
-                    </ul>
-                    <div class="card-tags">
-                        <span class="tag">Wetland Stewardship</span>
-                        <span class="tag">Habitat Restoration</span>
-                        <span class="tag">Trail Access</span>
-                    </div>
+                <!-- Big Sur Land Trust -->
+                <div class="forest-step" data-step="bigsur">
+                    <article class="forest-card" id="card-bigsur">
+                        <div class="card-img-wrap">
+                            <img src="assets/lanscape picture of me in mountains.jpg" alt="Coastal mountain landscape along the Big Sur coast" loading="lazy">
+                        </div>
+                        <h3>Big Sur Land Trust</h3>
+                        <p>Volunteer with the Stewardship Trails &amp; Access Crew, maintaining roads, trails, and ecological integrity across Big Sur Land Trust's protected coastal and mountain landscapes.</p>
+                        <ul>
+                            <li>Trail maintenance and restoration work supporting 20,000+ acres of protected land</li>
+                            <li>Strengthened ecological resilience through hands-on habitat stewardship</li>
+                            <li>Improved visitor access and experience on conservation properties</li>
+                        </ul>
+                        <div class="card-tags">
+                            <span class="tag">Trail Building</span>
+                            <span class="tag">Ecological Restoration</span>
+                            <span class="tag">Community Stewardship</span>
+                        </div>
+                    </article>
                 </div>
-            </article>
+
+                <!-- Santa Lucia Conservancy -->
+                <div class="forest-step" data-step="santalucia">
+                    <article class="forest-card" id="card-santalucia">
+                        <h3>Santa Lucia Conservancy</h3>
+                        <p>Conservation volunteer on the 20,000-acre Santa Lucia Preserve in Carmel, working alongside the Conservancy to maintain trails and support science-guided land management on permanently protected wildlands.</p>
+                        <ul>
+                            <li>Trail maintenance across 10,360 acres of Conservancy-managed Wildlands</li>
+                            <li>Invasive species removal and conservation grazing support</li>
+                            <li>Biodiversity monitoring on lands protected for ecological integrity since 1995</li>
+                        </ul>
+                        <div class="card-tags">
+                            <span class="tag">Invasive Species</span>
+                            <span class="tag">Biodiversity Monitoring</span>
+                            <span class="tag">Land Stewardship</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
         </div>
     </section>
 

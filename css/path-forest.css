@@ -144,44 +144,52 @@
   text-shadow: 0 1px 6px rgba(0,0,0,0.3);
 }
 
-/* ---- Interactive California Coast Map ---- */
-.forest-map-section {
+/* ============================================
+   Full-Screen Scrollytelling Map Explorer
+   ============================================ */
+
+/* Scrollytelling container */
+.forest-explore {
   position: relative;
   z-index: 5;
-  text-align: center;
-  padding: 4rem 2rem 3rem;
 }
 
-.map-heading {
-  color: var(--forest-bright);
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 2rem;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+/* Sticky map — fills left 55% of viewport, stays pinned */
+.forest-map-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 55%;
+  float: left;
+  z-index: 6;
+  overflow: hidden;
+  background: rgba(8, 25, 40, 0.5);
+  cursor: grab;
+}
+
+.forest-map-sticky:active {
+  cursor: grabbing;
 }
 
 .forest-map-container {
   position: relative;
-  max-width: 420px;
-  margin: 0 auto;
-  background: rgba(8, 25, 40, 0.4);
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid rgba(74, 155, 106, 0.15);
+  width: 100%;
+  height: 100%;
 }
 
 .forest-map-svg {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
 }
 
-/* Land */
-.map-land {
-  fill: var(--forest-dark);
+#map-viewport {
+  transform-origin: 0 0;
+  will-change: transform;
 }
+
+/* Land */
+.map-land { fill: var(--forest-dark); }
 
 /* Coastline */
 .map-coastline {
@@ -191,28 +199,9 @@
   stroke-linejoin: round;
 }
 
-/* Contour lines */
-.map-contour {
-  stroke: var(--forest-mid);
-  stroke-width: 1;
-  stroke-dasharray: 6 4;
-  opacity: 0.35;
-}
-
-.map-contour-2 {
-  opacity: 0.2;
-}
-
 /* ---- Map Regions ---- */
 .map-region {
-  transition: fill-opacity 0.3s ease, stroke-opacity 0.3s ease;
-}
-
-.map-marker.hovered .map-region,
-.map-marker.active .map-region {
-  fill-opacity: 0.4;
-  stroke-opacity: 0.9;
-  stroke-width: 2;
+  transition: fill 0.5s ease, stroke-opacity 0.5s ease, stroke-width 0.5s ease;
 }
 
 /* ---- Map Markers ---- */
@@ -237,19 +226,15 @@
   font-size: 13px;
   font-weight: 600;
   font-family: inherit;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
   pointer-events: none;
 }
 
-/* Marker hover */
-.map-marker.hovered .marker-dot,
 .map-marker.active .marker-dot {
   fill: #fff;
   r: 8;
   filter: drop-shadow(0 0 8px var(--forest-bright));
 }
 
-.map-marker.hovered .marker-label,
 .map-marker.active .marker-label {
   fill: #fff;
 }
@@ -263,72 +248,102 @@
   100% { r: 26; opacity: 0; }
 }
 
-/* ---- Map Tooltip ---- */
-.map-tooltip {
-  position: absolute;
-  background: rgba(15, 42, 30, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(74, 155, 106, 0.3);
-  border-radius: 10px;
-  padding: 0.7rem 1rem;
+/* ---- Scroll Steps (right column) ---- */
+.forest-steps {
+  position: relative;
+  margin-left: 55%;
+  z-index: 7;
   pointer-events: none;
+}
+
+.forest-step {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  pointer-events: auto;
+}
+
+/* Overview step — just spacer, no card */
+.forest-step[data-step="overview"] {
+  min-height: 60vh;
+}
+
+/* ---- Forest Cards (glassmorphism) ---- */
+.forest-card {
+  background: rgba(15, 42, 30, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(74, 155, 106, 0.25);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  color: var(--white);
+
+  /* Slide-in animation */
   opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  z-index: 20;
-  max-width: 250px;
-  white-space: nowrap;
+  transform: translateX(30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.map-tooltip.visible {
+.forest-card.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 
-.map-tooltip strong {
+.forest-card .card-img-wrap {
+  margin: -2rem -2rem 1.5rem -2rem;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.forest-card .card-img-wrap img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
   display: block;
+}
+
+.forest-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--forest-bright);
+  margin-bottom: 0.8rem;
+}
+
+.forest-card p {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 0.8rem;
+}
+
+.forest-card ul {
+  margin: 0.5rem 0 1rem 1.2rem;
   font-size: 0.85rem;
-  margin-bottom: 0.2rem;
-}
-
-.map-tooltip span {
+  line-height: 1.6;
   color: rgba(255,255,255,0.75);
-  font-size: 0.78rem;
-  white-space: normal;
 }
 
-/* ---- Forest content card overrides ---- */
-#path-forest .content-card {
-  background: rgba(255,255,255,0.92);
-  border-left: 3px solid var(--forest-light);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.forest-card ul li {
+  margin-bottom: 0.3rem;
 }
 
-#path-forest .content-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+.forest-card .card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
 }
 
-/* Hover preview when mousing over a region on the map */
-#path-forest .content-card.map-hover-preview {
-  border-left-color: var(--forest-bright);
-  box-shadow: 0 0 0 2px var(--forest-bright), 0 8px 24px rgba(74,155,106,0.25);
-  transform: translateY(-3px);
-}
-
-/* Flash highlight when clicked/scrolled to from map */
-#path-forest .content-card.map-highlight {
-  border-left-color: var(--forest-bright);
-  box-shadow: 0 0 0 2px var(--forest-bright), 0 8px 24px rgba(74,155,106,0.3);
-  transition: border-left-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#path-forest .card-text h3 { color: var(--forest-dark); }
-
-#path-forest .tag {
-  background: rgba(45,95,63,0.15);
-  color: var(--forest-dark);
+.forest-card .tag {
+  background: rgba(74, 155, 106, 0.2);
+  color: var(--forest-bright);
+  font-size: 0.75rem;
   font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  border: 1px solid rgba(74, 155, 106, 0.2);
 }

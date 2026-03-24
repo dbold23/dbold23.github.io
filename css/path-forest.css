@@ -148,20 +148,19 @@
    Full-Screen Scrollytelling Map Explorer
    ============================================ */
 
-/* Scrollytelling container — grid layout */
+/* Scrollytelling container */
 .forest-explore {
   position: relative;
   z-index: 5;
-  display: grid;
-  grid-template-columns: 55% 1fr;
 }
 
-/* Sticky map — fills left column, stays pinned */
+/* Sticky map — fills left 55%, negative margin collapses its space */
 .forest-map-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
-  grid-row: 1 / -1;
+  width: 55%;
+  margin-bottom: -100vh;
   z-index: 6;
   overflow: hidden;
   background: rgba(8, 25, 40, 0.5);
@@ -253,6 +252,7 @@
 .forest-steps {
   position: relative;
   z-index: 7;
+  margin-left: 55%;
 }
 
 .forest-step {

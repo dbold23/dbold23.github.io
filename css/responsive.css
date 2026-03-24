@@ -59,8 +59,7 @@
   .journal-tab-label { display: none; }
 
   /* Forest map — tablet */
-  .forest-map-sticky { width: 50%; }
-  .forest-steps { margin-left: 50%; }
+  .forest-explore { grid-template-columns: 50% 1fr; }
   .forest-card { max-width: 360px; padding: 1.5rem; }
   .marker-label { font-size: 11px; }
 }
@@ -197,15 +196,20 @@
   .contact-links { flex-direction: column; align-items: center; }
 
   /* Forest map — mobile: map fullscreen, cards as bottom overlay */
+  .forest-explore {
+    display: block;
+    position: relative;
+  }
   .forest-map-sticky {
     width: 100%;
-    float: none;
+    position: sticky;
+    top: 0;
+    height: 100vh;
   }
   .forest-steps {
-    margin-left: 0;
     position: relative;
+    z-index: 8;
     margin-top: -100vh;
-    pointer-events: none;
   }
   .forest-step {
     min-height: 100vh;
@@ -217,7 +221,6 @@
   }
   .forest-card {
     max-width: 100%;
-    pointer-events: auto;
     border-radius: 16px 16px 0 0;
     background: rgba(15, 42, 30, 0.9);
     max-height: 45vh;

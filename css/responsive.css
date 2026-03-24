@@ -83,8 +83,9 @@
   .skill-key::after { content: ':'; }
 
   /* Nav pill */
-  .v2-nav { padding: 0.4rem 0.8rem; gap: 0.5rem; }
-  .nav-dot { width: 10px; height: 10px; }
+  .v2-nav { padding: 0.35rem 0.6rem; gap: 0.4rem; }
+  .nav-btn { padding: 0.25rem 0.5rem; font-size: 0.65rem; gap: 0.3rem; }
+  .nav-btn-dot { width: 5px; height: 5px; }
 
   /* Laptop */
   .laptop-lid { width: 280px; height: 180px; padding: 15px; gap: 0.5rem; }
@@ -188,6 +189,15 @@
 
   /* Contact */
   .contact-links { flex-direction: column; align-items: center; }
+}
+
+/* Very small screens — collapse nav labels to dots only */
+@media (max-width: 420px) {
+  .nav-btn-label { display: none; }
+  .nav-btn { padding: 0.35rem; }
+  .nav-btn-dot { width: 10px; height: 10px; }
+  .nav-btn.active .nav-btn-label { display: inline; }
+  .nav-btn.active { padding: 0.25rem 0.55rem; }
 }
 
 /* Reduced motion */

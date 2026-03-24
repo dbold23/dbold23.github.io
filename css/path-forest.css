@@ -154,13 +154,25 @@
   z-index: 5;
 }
 
-/* Sticky map — fills left 55%, negative margin collapses its space */
+/* Steps container — drives scroll height, contains everything */
+.forest-steps {
+  position: relative;
+}
+
+/* Clearfix so the float doesn't collapse */
+.forest-steps::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+/* Sticky map — floated left, sticks within .forest-steps */
 .forest-map-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
   width: 55%;
-  margin-bottom: -100vh;
+  float: left;
   z-index: 6;
   overflow: hidden;
   background: rgba(8, 25, 40, 0.5);
@@ -249,14 +261,9 @@
 }
 
 /* ---- Scroll Steps (right column) ---- */
-.forest-steps {
-  position: relative;
-  z-index: 7;
-  margin-left: 55%;
-}
-
 .forest-step {
   min-height: 85vh;
+  margin-left: 55%;
   display: flex;
   align-items: center;
   justify-content: center;

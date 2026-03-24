@@ -265,9 +265,9 @@ export async function enter() {
 
   // Create 3 wave layers (deep → mid → surface)
   const WAVE_LAYERS = [
-    { color: '#041230', amplitude: 20, frequency: 1.5, speed: 0.03, delay: 0 },
-    { color: '#0a2463', amplitude: 30, frequency: 1.2, speed: 0.025, delay: 150 },
-    { color: 'rgba(30, 95, 140, 0.9)', amplitude: 40, frequency: 1.0, speed: 0.02, delay: 300 },
+    { color: '#041230', amplitude: 15, frequency: 1.2, speed: 0.015, delay: 0 },
+    { color: '#0a2463', amplitude: 25, frequency: 1.0, speed: 0.012, delay: 250 },
+    { color: 'rgba(30, 95, 140, 0.9)', amplitude: 35, frequency: 0.8, speed: 0.01, delay: 500 },
   ];
 
   const waveDivs = WAVE_LAYERS.map((layer) => {
@@ -294,7 +294,7 @@ export async function enter() {
   }
 
   // Animate wave rise + bubbles together via rAF
-  const DURATION = 1400;
+  const DURATION = 2000;
   const startTime = performance.now();
   let animating = true;
 
@@ -355,10 +355,13 @@ export async function enter() {
   // Wait for animation to complete
   await new Promise((r) => setTimeout(r, DURATION + 200));
 
-  // Fade out overlay smoothly, then clean up DOM
-  overlay.classList.remove('active');
-  await new Promise((r) => setTimeout(r, 400));
-
+  // Stop animation and remove wave layers
   animating = false;
   container.remove();
+
+  // Defer overlay fade to next frame — lets app.js hide homescreen
+  // and show the path section before we reveal what's underneath
+  requestAnimationFrame(() => {
+    overlay.classList.remove('active');
+  });
 }

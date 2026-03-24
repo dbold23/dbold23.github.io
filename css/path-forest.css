@@ -178,11 +178,6 @@
   z-index: 6;
   overflow: hidden;
   background: rgba(8, 25, 40, 0.5);
-  cursor: grab;
-}
-
-.forest-map-sticky:active {
-  cursor: grabbing;
 }
 
 .forest-map-container {

@@ -88,17 +88,7 @@ const MAP_VIEWS = {
 
 let stepObserver = null;
 let activeStep = 'overview';
-let isManualMode = false;
-let manualTimeout = null;
 let viewportGroup = null;
-
-// Manual pan/zoom state
-let manualScale = 1;
-let manualTx = 0;
-let manualTy = 0;
-let isPanning = false;
-let panStart = { x: 0, y: 0 };
-let panOrigin = { tx: 0, ty: 0 };
 
 export function init(container) {
   if (!container) return;
@@ -184,9 +174,6 @@ export function init(container) {
 
   // Setup scroll observer
   setupStepObserver();
-
-  // Setup manual pan/zoom
-  setupManualInteraction(container);
 }
 
 function createPath(d, className) {
@@ -251,8 +238,6 @@ function setupStepObserver() {
   if (!steps.length) return;
 
   stepObserver = new IntersectionObserver(entries => {
-    if (isManualMode) return;
-
     entries.forEach(entry => {
       if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
         const stepId = entry.target.dataset.step;
@@ -269,125 +254,6 @@ function setupStepObserver() {
   steps.forEach(step => stepObserver.observe(step));
 }
 
-// ── Manual pan/zoom ──
-
-function setupManualInteraction(container) {
-  // Mouse wheel zoom
-  container.addEventListener('wheel', e => {
-    e.preventDefault();
-    enterManualMode();
-
-    const delta = e.deltaY > 0 ? -0.15 : 0.15;
-    manualScale = Math.max(0.8, Math.min(5, manualScale + delta));
-
-    applyManualTransform();
-  }, { passive: false });
-
-  // Mouse drag pan
-  container.addEventListener('mousedown', e => {
-    if (e.button !== 0) return;
-    isPanning = true;
-    panStart = { x: e.clientX, y: e.clientY };
-    panOrigin = { tx: manualTx, ty: manualTy };
-    container.style.cursor = 'grabbing';
-    enterManualMode();
-  });
-
-  window.addEventListener('mousemove', e => {
-    if (!isPanning) return;
-    manualTx = panOrigin.tx + (e.clientX - panStart.x);
-    manualTy = panOrigin.ty + (e.clientY - panStart.y);
-    applyManualTransform();
-  });
-
-  window.addEventListener('mouseup', () => {
-    if (isPanning) {
-      isPanning = false;
-      container.style.cursor = '';
-    }
-  });
-
-  // Touch gestures
-  let lastTouchDist = 0;
-  let lastTouchCenter = { x: 0, y: 0 };
-
-  container.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) {
-      isPanning = true;
-      panStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      panOrigin = { tx: manualTx, ty: manualTy };
-      enterManualMode();
-    } else if (e.touches.length === 2) {
-      const dx = e.touches[1].clientX - e.touches[0].clientX;
-      const dy = e.touches[1].clientY - e.touches[0].clientY;
-      lastTouchDist = Math.hypot(dx, dy);
-      lastTouchCenter = {
-        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
-      };
-      enterManualMode();
-    }
-  }, { passive: true });
-
-  container.addEventListener('touchmove', e => {
-    if (e.touches.length === 1 && isPanning) {
-      e.preventDefault();
-      manualTx = panOrigin.tx + (e.touches[0].clientX - panStart.x);
-      manualTy = panOrigin.ty + (e.touches[0].clientY - panStart.y);
-      applyManualTransform();
-    } else if (e.touches.length === 2) {
-      e.preventDefault();
-      const dx = e.touches[1].clientX - e.touches[0].clientX;
-      const dy = e.touches[1].clientY - e.touches[0].clientY;
-      const dist = Math.hypot(dx, dy);
-      if (lastTouchDist > 0) {
-        const pinchScale = dist / lastTouchDist;
-        manualScale = Math.max(0.8, Math.min(5, manualScale * pinchScale));
-      }
-      lastTouchDist = dist;
-      applyManualTransform();
-    }
-  }, { passive: false });
-
-  container.addEventListener('touchend', () => {
-    isPanning = false;
-    lastTouchDist = 0;
-  }, { passive: true });
-}
-
-function enterManualMode() {
-  if (!isManualMode) {
-    isManualMode = true;
-    // Capture current computed transform as manual starting point
-    const view = MAP_VIEWS[activeStep];
-    if (view && manualScale === 1 && manualTx === 0 && manualTy === 0) {
-      manualScale = view.scale;
-      manualTx = 250 - view.cx * view.scale;
-      manualTy = 350 - view.cy * view.scale;
-    }
-  }
-
-  // Reset timeout — resume scroll-driving after 3s of no interaction
-  clearTimeout(manualTimeout);
-  manualTimeout = setTimeout(exitManualMode, 3000);
-}
-
-function exitManualMode() {
-  isManualMode = false;
-  manualScale = 1;
-  manualTx = 0;
-  manualTy = 0;
-  // Snap back to current step
-  setMapView(activeStep);
-}
-
-function applyManualTransform() {
-  if (!viewportGroup) return;
-  viewportGroup.style.transition = 'none';
-  viewportGroup.style.transformOrigin = '0 0';
-  viewportGroup.style.transform = `translate(${manualTx}px, ${manualTy}px) scale(${manualScale})`;
-}
-
 // ── Cleanup ──
 
 export function destroy() {
@@ -395,11 +261,6 @@ export function destroy() {
     stepObserver.disconnect();
     stepObserver = null;
   }
-  clearTimeout(manualTimeout);
-  isManualMode = false;
-  manualScale = 1;
-  manualTx = 0;
-  manualTy = 0;
   activeStep = 'overview';
   viewportGroup = null;
 

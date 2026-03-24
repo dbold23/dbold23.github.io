@@ -115,61 +115,126 @@
   text-align: right;
 }
 
-/* Desktop content area */
-.desktop-content {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 0;
+/* Desktop surface — freeform positioning below menubar */
+.desktop-surface {
+  position: relative;
   flex: 1;
-  padding: 1.5rem 2rem 2rem 0;
+  min-height: calc(100vh - 28px);
+  padding: 24px;
 }
 
-/* Sticker dock (left sidebar) */
-.sticker-dock {
+/* Sequoia-inspired wallpaper gradient */
+.desktop-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 30% 80%, rgba(45, 20, 80, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 20%, rgba(20, 40, 80, 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(10, 15, 30, 0.9) 0%, rgba(8, 10, 20, 1) 100%);
+  pointer-events: none;
+}
+
+/* Desktop icons — right-aligned column (macOS default placement) */
+.desktop-icons {
+  position: absolute;
+  top: 20px;
+  right: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: 1rem 0;
+  gap: 8px;
+  z-index: 10;
 }
 
-.sticker-dock .sticker-peel {
-  --sticker-size: 48px;
+/* Each desktop icon cell */
+.desktop-icon {
+  --sticker-size: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+  width: 100px;
+}
+
+.desktop-icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.desktop-icon:active {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Desktop icon labels — always visible, macOS-style */
+.desktop-icon-label,
+.desktop-icon .sticker-label {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  opacity: 1;
+  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 0 6px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.2;
+  max-width: 94px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+/* Staggered entrance — icons drop in from above */
+.desktop-icons .sticker-peel {
   opacity: 0;
-  transform: translateX(-10px);
+  transform: translateY(8px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-[data-active-path="tech"] .sticker-dock .sticker-peel { opacity: 1; transform: translateX(0); }
-[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(1) { transition-delay: 0.2s; }
-[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(2) { transition-delay: 0.3s; }
-[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(3) { transition-delay: 0.4s; }
-[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(4) { transition-delay: 0.5s; }
-[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(5) { transition-delay: 0.6s; }
+[data-active-path="tech"] .desktop-icons .sticker-peel { opacity: 1; transform: translateY(0); }
+[data-active-path="tech"] .desktop-icons .sticker-peel:nth-child(1) { transition-delay: 0.2s; }
+[data-active-path="tech"] .desktop-icons .sticker-peel:nth-child(2) { transition-delay: 0.3s; }
+[data-active-path="tech"] .desktop-icons .sticker-peel:nth-child(3) { transition-delay: 0.4s; }
+[data-active-path="tech"] .desktop-icons .sticker-peel:nth-child(4) { transition-delay: 0.5s; }
+[data-active-path="tech"] .desktop-icons .sticker-peel:nth-child(5) { transition-delay: 0.6s; }
 
-.sticker-dock .sticker-label {
-  transform: translateX(-50%);
-  bottom: -20px;
-  font-size: 0.6rem;
-}
-
-/* Mobile: dock becomes horizontal strip */
+/* Mobile: icons become horizontal strip at top */
 @media (max-width: 768px) {
-  .desktop-content {
-    grid-template-columns: 1fr;
-    padding: 1rem;
+  .desktop-surface {
+    padding: 12px;
+    min-height: auto;
   }
 
-  .sticker-dock {
+  .desktop-icons {
+    position: relative;
+    top: auto;
+    right: auto;
     flex-direction: row;
     justify-content: center;
-    padding: 0.5rem 0;
-    gap: 10px;
-    order: -1;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 16px;
   }
 
-  .sticker-dock .sticker-peel {
-    --sticker-size: 40px;
+  .desktop-icon {
+    --sticker-size: 52px;
+    width: 72px;
+  }
+
+  .desktop-icon-label,
+  .desktop-icon .sticker-label {
+    font-size: 9px;
+  }
+
+  .terminal-window {
+    width: 100% !important;
+    margin-left: 0 !important;
   }
 
   .macos-menubar {
@@ -373,13 +438,13 @@
    Interactive File Tree (Terminal Window)
    ============================================ */
 
-/* Terminal window container */
+/* Terminal window — floating on desktop surface */
 .terminal-window {
   position: relative;
   z-index: 5;
-  max-width: 960px;
-  width: 100%;
-  margin: 0 auto;
+  max-width: 920px;
+  width: calc(100% - 160px);
+  margin-left: 24px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(0,217,255,0.1);

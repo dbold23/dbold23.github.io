@@ -212,28 +212,34 @@
   padding-bottom: 0.15em;
 }
 
-/* When any hotspot is hovered, dim all labels & icons, then un-dim the active one */
+/* When any hotspot is hovered, stop pulse on all labels */
 .homescreen:has(.corner-hotspot:hover) .corner-label {
-  color: rgba(255,255,255,0.3);
   animation: none;
-  opacity: 1;
-  border-bottom-color: rgba(255,255,255,0.1);
 }
 
-.homescreen:has(.corner-hotspot:hover) .corner-icon {
-  opacity: 0.3;
+/* Forest hover: dim others */
+.homescreen:has(.corner-forest:hover) .corner-ocean .corner-label,
+.homescreen:has(.corner-forest:hover) .corner-ocean .corner-icon,
+.homescreen:has(.corner-forest:hover) .corner-tech .corner-label,
+.homescreen:has(.corner-forest:hover) .corner-mind .corner-label {
+  opacity: 0.2;
 }
 
-.corner-hotspot:hover .corner-label {
-  color: rgba(255,255,255,0.95);
-  text-shadow: 0 3px 16px rgba(0,0,0,0.7), 0 0 40px rgba(0,0,0,0.4);
-  animation: none;
-  opacity: 1;
-  border-bottom-color: rgba(255,255,255,0.5);
+/* Ocean hover: dim others */
+.homescreen:has(.corner-ocean:hover) .corner-forest .corner-label,
+.homescreen:has(.corner-ocean:hover) .corner-forest .corner-icon,
+.homescreen:has(.corner-ocean:hover) .corner-tech .corner-label,
+.homescreen:has(.corner-ocean:hover) .corner-mind .corner-label {
+  opacity: 0.2;
 }
 
-.corner-hotspot:hover .corner-icon {
-  opacity: 1;
+/* Tech hover: dim others */
+.homescreen:has(.corner-tech:hover) .corner-forest .corner-label,
+.homescreen:has(.corner-tech:hover) .corner-forest .corner-icon,
+.homescreen:has(.corner-tech:hover) .corner-ocean .corner-label,
+.homescreen:has(.corner-tech:hover) .corner-ocean .corner-icon,
+.homescreen:has(.corner-tech:hover) .corner-mind .corner-label {
+  opacity: 0.2;
 }
 
 /* Glow overlay */

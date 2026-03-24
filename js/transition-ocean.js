@@ -129,7 +129,7 @@ function initCardDeck() {
   deck.addEventListener('mouseleave', () => {
     activeCardIndex = null;
     if (previewTitle) previewTitle.textContent = 'Hover a card to explore';
-    if (previewDesc) previewDesc.textContent = 'Each card represents a research focus area';
+    if (previewDesc) previewDesc.textContent = 'Each card represents a research or presentation topic';
     if (previewBtn) previewBtn.style.display = 'none';
   });
 

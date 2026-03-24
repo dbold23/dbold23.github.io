@@ -229,22 +229,3 @@ img { max-width: 100%; height: auto; display: block; }
   outline-offset: 2px;
 }
 
-/* Blob cursor */
-.blob-cursor {
-  position: fixed;
-  width: 500px; height: 500px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  filter: blur(80px);
-  opacity: 0;
-  background: radial-gradient(circle, var(--blob-color, rgba(61,157,217,0.9)) 0%, rgba(61,157,217,0.4) 30%, transparent 70%);
-  will-change: transform;
-  transition: opacity 0.8s ease;
-  mix-blend-mode: screen;
-}
-.blob-cursor.active { opacity: 0.5; }
-
-@media (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .blob-cursor { display: none !important; }
-}

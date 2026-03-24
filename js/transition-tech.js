@@ -1,5 +1,5 @@
 // ============================================
-// Tech Path: macOS Desktop, Sticker Peel, Matrix Rain
+// Tech Path: macOS Desktop, Matrix Rain
 // ============================================
 
 import { randomRange, prefersReducedMotion, sleep } from './utils.js';
@@ -8,7 +8,6 @@ let matrixAnimId = null;
 let matrixCanvas = null;
 let matrixCtx = null;
 let columns = [];
-let stickerCleanup = null;
 
 // ---- Matrix Rain ----
 const CHAR_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*(){}[]|/<>';
@@ -72,103 +71,14 @@ function stopMatrix() {
   window.removeEventListener('resize', resizeMatrix);
 }
 
-// ---- Sticker Peel (hover-triggered, adapted from v1 scroll-linked) ----
-
-function initStickerPeel() {
-  const dock = document.querySelector('.desktop-icons');
-  if (!dock) return;
-  const stickers = dock.querySelectorAll('.sticker-peel:not(.permanent)');
-  if (!stickers.length) return;
-
-  const DURATION = 500; // ms for full peel/unpeel
-  const controllers = [];
-
-  stickers.forEach((sticker) => {
-    let animId = null;
-    let current = 0; // current --peel-amount (0 = flat, 1 = peeled)
-    let target = 0;
-    let startTime = null;
-    let startVal = 0;
-
-    function applyPeel(progress) {
-      current = progress;
-      sticker.style.setProperty('--peel-amount', progress);
-
-      // Update shadow
-      const shadow = sticker.querySelector('.sticker-shadow');
-      if (shadow) {
-        shadow.style.height = (progress * 20) + 'px';
-        shadow.style.opacity = progress;
-      }
-
-      // Show/hide label
-      if (progress > 0.5) {
-        sticker.classList.add('peeled');
-      } else {
-        sticker.classList.remove('peeled');
-      }
-    }
-
-    function animate(timestamp) {
-      if (startTime === null) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const duration = DURATION * Math.abs(target - startVal);
-      const t = duration > 0 ? Math.min(elapsed / duration, 1) : 1;
-
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - t, 3);
-      const value = startVal + (target - startVal) * eased;
-
-      applyPeel(value);
-
-      if (t < 1) {
-        animId = requestAnimationFrame(animate);
-      } else {
-        animId = null;
-      }
-    }
-
-    function startAnimation(newTarget) {
-      target = newTarget;
-      startVal = current;
-      startTime = null;
-      if (animId) cancelAnimationFrame(animId);
-      animId = requestAnimationFrame(animate);
-    }
-
-    function onEnter() { startAnimation(1); }
-    function onLeave() { startAnimation(0); }
-
-    sticker.addEventListener('mouseenter', onEnter);
-    sticker.addEventListener('mouseleave', onLeave);
-
-    controllers.push(() => {
-      sticker.removeEventListener('mouseenter', onEnter);
-      sticker.removeEventListener('mouseleave', onLeave);
-      if (animId) cancelAnimationFrame(animId);
-      applyPeel(0);
-    });
-  });
-
-  // Return cleanup function
-  return () => controllers.forEach(fn => fn());
-}
-
-function stopStickerPeel() {
-  if (stickerCleanup) {
-    stickerCleanup();
-    stickerCleanup = null;
-  }
-}
-
-// ---- Sticker Click Navigation ----
+// ---- Desktop Icon Click Navigation ----
 
 let stickerClickCleanup = null;
 
 function initStickerNav() {
   const dock = document.querySelector('.desktop-icons');
   if (!dock) return;
-  const stickers = dock.querySelectorAll('.sticker-peel[data-href]');
+  const stickers = dock.querySelectorAll('.desktop-icon[data-href]');
   const cleanups = [];
 
   stickers.forEach((sticker) => {
@@ -427,7 +337,6 @@ function stopMenubarClock() {
 export function start() {
   startMatrix();
   startMenubarClock();
-  stickerCleanup = initStickerPeel();
   stickerClickCleanup = initStickerNav();
   fileTreeCleanup = initFileTree();
   hwViewerCleanup = initHardwareViewer();
@@ -436,7 +345,6 @@ export function start() {
 export function stop() {
   stopMatrix();
   stopMenubarClock();
-  stopStickerPeel();
   stopFileTree();
   stopHardwareViewer();
 }

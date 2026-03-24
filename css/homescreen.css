@@ -110,7 +110,7 @@
 .hero-name {
   font-size: clamp(2.5rem, 7vw, 5rem);
   font-weight: 900;
-  color: var(--ocean-foam);
+  color: #5bb8d4;
   letter-spacing: 0.04em;
   text-shadow: 0 2px 8px rgba(10,36,99,0.4);
   -webkit-font-smoothing: antialiased;
@@ -193,21 +193,23 @@
 
 /* Label — visible by default with breathing pulse, bold on hover */
 @keyframes labelPulse {
-  0%, 100% { opacity: 0.65; }
-  50% { opacity: 0.8; }
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
 }
 
 .corner-label {
-  color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.85);
   font-size: clamp(1.4rem, 3vw, 2.8rem);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  text-shadow: 0 3px 16px rgba(0,0,0,0.4);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6), 0 0 20px rgba(255,255,255,0.15);
   transition: color 0.5s var(--ease-out), text-shadow 0.5s var(--ease-out), transform 0.5s var(--ease-out);
   white-space: nowrap;
   flex-shrink: 0;
   animation: labelPulse 3.5s ease-in-out infinite;
+  border-bottom: 2px solid rgba(255,255,255,0.3);
+  padding-bottom: 0.15em;
 }
 
 .corner-hotspot:hover .corner-label {

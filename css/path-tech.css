@@ -120,7 +120,7 @@
   position: relative;
   flex: 1;
   min-height: calc(100vh - 28px);
-  padding: 24px;
+  padding: 48px 24px 24px;
 }
 
 /* Desktop wallpaper (photo background) */
@@ -351,7 +351,7 @@
   z-index: 5;
   max-width: 920px;
   width: calc(100% - 160px);
-  margin-left: 24px;
+  margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(0,217,255,0.1);

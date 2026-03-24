@@ -113,8 +113,8 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 4rem 3rem;
-  background: linear-gradient(to top, rgba(15,42,30,0.9) 0%, transparent 100%);
+  padding: 5rem 3rem 4rem;
+  background: linear-gradient(to top, rgba(15,42,30,0.95) 0%, rgba(15,42,30,0.7) 50%, transparent 100%);
   color: var(--white);
 }
 
@@ -122,25 +122,27 @@
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
   color: var(--white);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   text-shadow: 0 3px 15px rgba(0,0,0,0.6);
 }
 
 .path-hero-subtitle {
   font-size: clamp(0.95rem, 2vw, 1.2rem);
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.9);
   max-width: 600px;
   text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 /* ---- Conservation Philosophy in Hero ---- */
 .forest-philosophy {
-  margin-top: 1.2rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  padding-left: 1.2rem;
+  border-left: 3px solid var(--forest-bright);
   max-width: 650px;
-  font-size: clamp(0.85rem, 1.6vw, 1rem);
-  line-height: 1.7;
-  color: rgba(255,255,255,0.7);
-  font-style: italic;
+  font-size: clamp(0.85rem, 1.6vw, 0.95rem);
+  line-height: 1.75;
+  color: rgba(255,255,255,0.78);
   text-shadow: 0 1px 6px rgba(0,0,0,0.3);
 }
 
@@ -270,9 +272,47 @@
   padding: 3rem 2rem;
 }
 
-/* Overview step — just spacer, no card */
+/* Overview step */
 .forest-step[data-step="overview"] {
   min-height: 60vh;
+  align-items: flex-end;
+  padding-bottom: 4rem;
+}
+
+/* Scroll prompt */
+.scroll-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: scrollPromptBob 2s ease-in-out infinite;
+}
+
+.scroll-prompt svg {
+  opacity: 0.5;
+}
+
+@keyframes scrollPromptBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* Hero → map transition fade */
+.forest-explore::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, rgba(8, 25, 40, 0.5));
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* ---- Forest Cards (glassmorphism) ---- */

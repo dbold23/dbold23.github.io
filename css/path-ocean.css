@@ -78,7 +78,7 @@
 .card-deck {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
   height: 420px;
   /* Cards are positioned via left offset + rotation */
 }
@@ -86,7 +86,7 @@
 /* ---- Individual card ---- */
 .deck-card {
   /* Spread cards horizontally: centered on 6 cards */
-  --card-offset: calc((var(--card-index) - 2.5) * 100px);
+  --card-offset: calc((var(--card-index) - 2.5) * 90px);
   --card-rotation: calc((var(--card-index) - 2.5) * 5deg);
 
   position: absolute;
@@ -325,28 +325,26 @@
 
 .deck-detail-overlay {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.9);
-  width: min(650px, 90vw);
-  max-height: 85vh;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--ocean-light) transparent;
 
-  background: rgba(10, 36, 99, 0.85);
+  background: rgba(10, 36, 99, 0.95);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(184,230,245,0.2);
-  border-radius: 20px;
-  padding: 2.5rem;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5),
-              0 0 30px rgba(61,157,217,0.1);
+  border: none;
+  border-radius: 0;
+  padding: 3rem 4rem;
+  box-sizing: border-box;
 
   color: var(--white);
   z-index: 1001;
 
   opacity: 0;
+  transform: scale(0.95);
   pointer-events: none;
   transition: opacity 0.4s ease,
               transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -355,7 +353,13 @@
 .deck-detail-overlay.open {
   opacity: 1;
   pointer-events: all;
-  transform: translate(-50%, -50%) scale(1);
+  transform: scale(1);
+}
+
+.deck-detail-overlay > * {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .deck-detail-overlay h3 {
@@ -531,10 +535,20 @@
 
 /* ---- Embedded presentation/PDF ---- */
 .pres-embed {
-  margin-top: 1.2rem;
+  margin-top: 1.5rem;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(184,230,245,0.15);
+}
+
+.pres-embed h5 {
+  color: var(--ocean-foam);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 0.8rem 1rem;
+  background: rgba(10, 36, 99, 0.6);
+  border-bottom: 1px solid rgba(184,230,245,0.1);
 }
 
 .pres-embed iframe {

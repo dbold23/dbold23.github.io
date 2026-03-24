@@ -75,7 +75,7 @@ function stopMatrix() {
 // ---- Sticker Peel (hover-triggered, adapted from v1 scroll-linked) ----
 
 function initStickerPeel() {
-  const dock = document.querySelector('.sticker-dock');
+  const dock = document.querySelector('.desktop-icons');
   if (!dock) return;
   const stickers = dock.querySelectorAll('.sticker-peel:not(.permanent)');
   if (!stickers.length) return;
@@ -166,7 +166,7 @@ function stopStickerPeel() {
 let stickerClickCleanup = null;
 
 function initStickerNav() {
-  const dock = document.querySelector('.sticker-dock');
+  const dock = document.querySelector('.desktop-icons');
   if (!dock) return;
   const stickers = dock.querySelectorAll('.sticker-peel[data-href]');
   const cleanups = [];

@@ -4,6 +4,7 @@
 // ============================================
 
 import { randomRange, prefersReducedMotion, sleep } from './utils.js';
+import { init as initForestMap, destroy as destroyForestMap } from './forest-map.js';
 
 const LEAF_COUNT = 20;
 let leaves = [];
@@ -99,10 +100,12 @@ export function updateParallax(scrollY) {
 export function start() {
   initTreeLayers();
   startLeaves();
+  initForestMap(document.getElementById('forest-map-container'));
 }
 
 export function stop() {
   stopLeaves();
+  destroyForestMap();
 }
 
 // ============================================

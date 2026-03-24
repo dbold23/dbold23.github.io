@@ -83,9 +83,9 @@ async function enterPath(path) {
   nav.classList.add('visible');
   if (footer) footer.classList.add('visible');
 
-  // Update nav dots
-  document.querySelectorAll('.nav-dot').forEach((dot) => {
-    dot.classList.toggle('active', dot.dataset.path === path);
+  // Update nav buttons
+  document.querySelectorAll('.nav-btn').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.path === path);
   });
 
   // Observe fade-in elements in the new path
@@ -170,9 +170,9 @@ function setupEvents() {
   // Nav pill: home button
   document.querySelector('.nav-home')?.addEventListener('click', goHome);
 
-  // Nav pill: path dots
-  document.querySelectorAll('.nav-dot').forEach((dot) => {
-    dot.addEventListener('click', () => enterPath(dot.dataset.path));
+  // Nav pill: path buttons
+  document.querySelectorAll('.nav-btn').forEach((btn) => {
+    btn.addEventListener('click', () => enterPath(btn.dataset.path));
   });
 
   // Resume

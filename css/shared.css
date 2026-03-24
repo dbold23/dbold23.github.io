@@ -46,34 +46,63 @@
 
 .nav-paths {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
-.nav-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.3);
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
   background: transparent;
+  color: rgba(255,255,255,0.55);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-btn-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
   transition: all 0.3s ease;
 }
 
-.nav-dot.forest { border-color: var(--forest-light); }
-.nav-dot.ocean { border-color: var(--ocean-light); }
-.nav-dot.tech { border-color: var(--tech-cyan); }
-.nav-dot.mind { border-color: var(--mind-accent); }
+.nav-btn.forest .nav-btn-dot { background: var(--forest-light); }
+.nav-btn.ocean .nav-btn-dot { background: var(--ocean-light); }
+.nav-btn.tech .nav-btn-dot { background: var(--tech-cyan); }
+.nav-btn.mind .nav-btn-dot { background: var(--mind-accent); }
 
-.nav-dot.active {
-  transform: scale(1.3);
+.nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.2);
 }
 
-.nav-dot.forest.active { background: var(--forest-light); }
-.nav-dot.ocean.active { background: var(--ocean-light); }
-.nav-dot.tech.active { background: var(--tech-cyan); }
-.nav-dot.mind.active { background: var(--mind-accent); }
+.nav-btn.forest:hover { border-color: rgba(74,155,106,0.4); }
+.nav-btn.ocean:hover { border-color: rgba(61,157,217,0.4); }
+.nav-btn.tech:hover { border-color: rgba(0,217,255,0.4); }
+.nav-btn.mind:hover { border-color: rgba(199,125,255,0.4); }
 
-.nav-dot:hover { transform: scale(1.2); }
+.nav-btn.active {
+  color: #fff;
+  border-color: transparent;
+}
+
+.nav-btn.forest.active { background: var(--forest-light); }
+.nav-btn.ocean.active { background: var(--ocean-light); }
+.nav-btn.tech.active { background: var(--tech-cyan); color: #0a0a0a; }
+.nav-btn.mind.active { background: var(--mind-accent); }
+
+.nav-btn.active .nav-btn-dot { background: rgba(255,255,255,0.9); }
+.nav-btn.tech.active .nav-btn-dot { background: rgba(0,0,0,0.5); }
 
 .nav-cv {
   padding: 0.3rem 0.8rem;

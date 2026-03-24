@@ -71,6 +71,16 @@ function stopMatrix() {
   window.removeEventListener('resize', resizeMatrix);
 }
 
+// ---- Clear entrance transition delays so hover is instant ----
+function clearIconEntrance() {
+  const icons = document.querySelectorAll('.desktop-icons .desktop-icon');
+  if (!icons.length) return;
+  // Wait for longest entrance delay (0.5s) + animation (0.4s) = ~1s
+  setTimeout(() => {
+    icons.forEach(icon => icon.classList.add('entered'));
+  }, 1000);
+}
+
 // ---- Desktop Icon Click Navigation ----
 
 let stickerClickCleanup = null;
@@ -337,6 +347,7 @@ function stopMenubarClock() {
 export function start() {
   startMatrix();
   startMenubarClock();
+  clearIconEntrance();
   stickerClickCleanup = initStickerNav();
   fileTreeCleanup = initFileTree();
   hwViewerCleanup = initHardwareViewer();

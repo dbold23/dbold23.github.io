@@ -310,20 +310,13 @@ export async function enter() {
   // Phase 1: Dark screen fades in
   await sleep(30);
   container.classList.add('visible');
-  await sleep(300);
-
-  // Phase 2: Cyan scan line shoots across
-  container.classList.add('scanline');
-  await sleep(400);
-
-  // Phase 3: Line expands to fill screen (flash)
-  container.classList.add('expand');
   await sleep(250);
 
-  // Reveal desktop
-  container.classList.remove('visible');
-  await sleep(300);
+  // Phase 2: Scan line + expand (single smooth keyframe animation)
+  container.classList.add('power-on');
+  await sleep(900);
 
+  // Clean up — remove container instantly (no fade to avoid previous-page flash)
   container.remove();
   overlay.classList.remove('active');
 }

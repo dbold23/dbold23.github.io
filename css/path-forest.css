@@ -203,6 +203,18 @@
   opacity: 0.2;
 }
 
+/* ---- Map Regions ---- */
+.map-region {
+  transition: fill-opacity 0.3s ease, stroke-opacity 0.3s ease;
+}
+
+.map-marker.hovered .map-region,
+.map-marker.active .map-region {
+  fill-opacity: 0.4;
+  stroke-opacity: 0.9;
+  stroke-width: 2;
+}
+
 /* ---- Map Markers ---- */
 .marker-dot {
   fill: var(--forest-bright);
@@ -299,7 +311,14 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
-/* Flash highlight when scrolled to from map */
+/* Hover preview when mousing over a region on the map */
+#path-forest .content-card.map-hover-preview {
+  border-left-color: var(--forest-bright);
+  box-shadow: 0 0 0 2px var(--forest-bright), 0 8px 24px rgba(74,155,106,0.25);
+  transform: translateY(-3px);
+}
+
+/* Flash highlight when clicked/scrolled to from map */
 #path-forest .content-card.map-highlight {
   border-left-color: var(--forest-bright);
   box-shadow: 0 0 0 2px var(--forest-bright), 0 8px 24px rgba(74,155,106,0.3);

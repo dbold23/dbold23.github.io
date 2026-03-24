@@ -1570,49 +1570,162 @@
         <button class="resume-close" id="resume-close" aria-label="Close resume">&times;</button>
         <div class="resume-panel-content">
             <h2>Resume / CV</h2>
-            <a href="assets/Sambold_Daniel_cv_MBARI.docx" download class="cv-download-btn">Download Full CV (.docx)</a>
+            <a href="assets/Sambold_Daniel_CV.docx" download class="cv-download-btn">Download Full CV (.docx)</a>
 
             <h3>Education</h3>
             <div class="resume-item">
                 <h4>California State University, Monterey Bay</h4>
-                <p class="resume-meta">B.S. Marine Science | Minor: Biology | Spring 2025</p>
+                <p class="resume-meta">B.S. Marine Science | Minor: Biology | Expected: Spring 2026</p>
                 <ul>
-                    <li>UROC Innovation Scholars Grant Recipient</li>
-                    <li>Certifications: MOTC, AAUS Scientific Diver, NAUI Divemaster</li>
+                    <li>UROC Innovation Scholar (funded by CSUN HSI Equity Innovation Hub &amp; Apple)</li>
                 </ul>
+            </div>
+
+            <h3>Technical Skills</h3>
+            <div class="resume-item">
+                <ul>
+                    <li><strong>Programming:</strong> Python (Flask, PyTorch, OpenCV, Streamlit), R (GAMs, Bayesian hierarchical modeling, ggplot2), MATLAB, SQL, Bash/Unix, TypeScript (React)</li>
+                    <li><strong>ML &amp; Computer Vision:</strong> Swin Transformers, YOLO, SAM 3 segmentation, XGBoost, CNN-LSTM, DINOv2 embeddings, ArcFace metric learning, FAISS vector search, monocular depth estimation</li>
+                    <li><strong>Data Infrastructure &amp; Cloud:</strong> Docker, AWS (EC2, S3, SageMaker), CUDA, Google APIs, REST API development, NOAA VIIRS/ERDDAP satellite data, GIS spatial analysis</li>
+                    <li><strong>Hardware &amp; Autonomous Systems:</strong> Raspberry Pi, RTL-SDR, Arduino, NB-IoT cellular modem, flight controller programming, OTA firmware updates, 3D modeling</li>
+                    <li><strong>Ocean Instrumentation:</strong> VHF telemetry, acoustic/accelerometer/magnetometer bio-logging tags, MQTT/IoT sensor networks, BRUV deployment, CFD modeling (OpenFOAM)</li>
+                    <li><strong>Marine Operations:</strong> NAUI Divemaster (143 dives), AAUS Scientific Diver, MOTC Certified Vessel Operator</li>
+                </ul>
+            </div>
+
+            <h3>Publications</h3>
+            <div class="resume-item">
+                <ul>
+                    <li>Sambold, D., &amp; Gardner, L. Effects of Stocking Density on Gonad Development and Survival in Purple Sea Urchin (<em>Strongylocentrotus purpuratus</em>) Aquaculture. <em>In review.</em></li>
+                    <li>Sambold, D., &amp; Gardner, L. Examining Finishing Feed Applications for Purple Urchin (<em>Strongylocentrotus purpuratus</em>) Roe Enhancement. <em>In review.</em></li>
+                </ul>
+            </div>
+
+            <h3>Awards &amp; Honors</h3>
+            <div class="resume-item">
+                <h4>1st Place, NOAA SatHack 2025 | Harmful Algal Bloom Forecasting</h4>
+                <p class="resume-meta">October 2025</p>
+                <ul>
+                    <li>Built HABHub: real-time HAB monitoring platform integrating NOAA VIIRS satellite imagery, NDBC buoy data, and CalHABMAP toxin records</li>
+                    <li>Engineered 47-feature XGBoost prediction model with Flask REST API serving 3 dashboards</li>
+                    <li>Deployed containerized production system (Docker, Railway/Render) with React/TypeScript frontends</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>UROC Innovation Scholar | CSUMB</h4>
+                <p class="resume-meta">August 2024 – Present</p>
+                <ul><li>Research program funded by CSUN HSI Equity Innovation Hub and Apple</li></ul>
             </div>
 
             <h3>Research Experience</h3>
             <div class="resume-item">
-                <h4>SharkHealthApp Development</h4>
-                <p class="resume-meta">Research Developer | Summer 2025</p>
-                <ul><li>Flask + YOLO ML for shark detection from video</li><li>Google APIs integration for data management</li></ul>
-            </div>
-            <div class="resume-item">
-                <h4>Shark Injury Healing Study</h4>
-                <p class="resume-meta">Lead Researcher | Spring 2024-Present</p>
-                <ul><li>Photo-ID analysis of healing rates in white sharks</li></ul>
-            </div>
-            <div class="resume-item">
-                <h4>Aquaculture Research | Moss Landing Marine Labs</h4>
-                <p class="resume-meta">Research Assistant | Spring 2024-Present</p>
-                <ul><li>Urchin conditioning, TPA testing, feed optimization</li></ul>
-            </div>
-
-            <h3>Awards</h3>
-            <div class="resume-item">
+                <h4>Research Assistant | Jue Lab, CSUMB</h4>
+                <p class="resume-meta">Mentor: Dr. Nathaniel Jue | Spring 2025 – Present</p>
                 <ul>
-                    <li>1st Place NOAA SatHack 2025</li>
-                    <li>UROC Innovation Scholar</li>
+                    <li>Built 10-stage automated analysis pipeline for TECAN plate reader data, processing 92 bacterial strains across 4 experimental groups to assess pesticide bioremediation potential</li>
+                    <li>Implemented modified Gompertz growth modeling, Haldane substrate inhibition kinetics, and a two-stage ML classifier (HistGBT)</li>
+                    <li>Applied Bayesian hierarchical modeling, Gaussian process regression, and bootstrap confidence intervals</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>Lead Technician | Aquaculture Lab, Moss Landing Marine Labs</h4>
+                <p class="resume-meta">Mentor: Dr. Luke Gardner | Spring 2024 – Present</p>
+                <ul>
+                    <li>Independently designing and managing two experiments on purple sea urchin aquaculture: stocking density optimization and finishing feed roe enhancement</li>
+                    <li>Managing full experimental lifecycle: hypothesis development, tank setup, water quality monitoring, data collection, statistical analysis, and manuscript preparation</li>
+                    <li>Performing Texture Profile Analysis (TPA) testing to assess gonad quality and commercial viability</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>Undergraduate Researcher | Ocean Predator Ecology Lab, CSUMB</h4>
+                <p class="resume-meta">Mentor: Dr. Salvador Jorgensen | Spring 2023 – Present</p>
+                <ul>
+                    <li><strong>SharkHealthApp (UROC Research):</strong> Developed Flask web app integrating YOLOv8-pose with 15-keypoint schema for automated shark detection and morphometric analysis from 20+ years of archival video. Built active learning pipeline achieving 98% detection accuracy (mAP50). Built SharkScarAnnotator with SAM2 segmentation and experience-weighted consensus scoring.</li>
+                    <li><strong>Behavior Classification:</strong> Developing CNN-based pipeline to classify white shark behaviors from dorsal-mounted camera footage with accelerometer and magnetometer sensor data</li>
+                    <li><strong>CFD Analysis:</strong> Performed computational fluid dynamics analysis using OpenFOAM to model hydrodynamic drag on acoustic tags mounted to shark dorsal fins</li>
                 </ul>
             </div>
 
-            <h3>Certifications</h3>
+            <h3>Engineering &amp; Technology Projects</h3>
+            <div class="resume-item">
+                <h4>Harbor Porpoise Individual Re-ID System | PorpoisedID</h4>
+                <p class="resume-meta">2025 – Present</p>
+                <ul>
+                    <li>Automated re-identification pipeline: SAM2 body segmentation, protrusion-based fin extraction, and multi-backbone feature comparison across 198 individuals (2,393 sightings)</li>
+                    <li>MiewID + ArcFace metric learning achieved 69.4% rank-1 / 87.4% rank-5 in temporal-split evaluation</li>
+                    <li>Gradio web interface; SQLite catalog; Docker/Kubernetes deployment</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>VHF Wildlife Tag Detection System</h4>
+                <p class="resume-meta">2024 – Present</p>
+                <ul>
+                    <li>Full-stack IoT architecture: Raspberry Pi 5, RTL-SDR Blog V4, SIM7028 NB-IoT HAT, and custom VHF antenna</li>
+                    <li>Achieved comparable tag detection to a $695 commercial receiver for under $100 in components</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>Autonomous Aerial Platform for Marine Survey</h4>
+                <p class="resume-meta">2024 – Present</p>
+                <ul>
+                    <li>Building custom FPV aircraft for testing CV detection via aerial imagery</li>
+                    <li>Flight controller programming, motor/ESC configuration, radio telemetry systems</li>
+                </ul>
+            </div>
+
+            <h3>Presentations</h3>
             <div class="resume-item">
                 <ul>
-                    <li>NAUI Divemaster (143 dives)</li>
-                    <li>AAUS Scientific Diver</li>
-                    <li>MOTC Certified</li>
+                    <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. "Assessing White Shark Body Condition..." Poster, WSN, November 2025, San Diego, CA.</li>
+                    <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. "Assessing Shark Body Condition..." Poster, NEPSS, March 2026, Newport, OR.</li>
+                    <li>Sambold, D. "From Fins to Frames: An AI-Powered Tool for Morphometric Shark Analysis." UROC Spring Showcase, CSUMB, Spring 2025.</li>
+                    <li>Sambold, D. &amp; Jorgensen, S. "Classifying White Shark Behaviors from Sensor Packages." UROC Summer Symposium, CSUMB, Summer 2025.</li>
+                    <li>Sambold, D. &amp; Gardner, L. "Optimizing Urchin Ranching: Precision Roe Phenotyping via Organoleptic Analysis." WRAC Workshop, November 2025, San Francisco, CA.</li>
+                    <li>Sambold, D. "HAB Hub: Integrating Satellite, Buoy, and Toxin Data for Real-Time HAB Monitoring in Monterey Bay." ESIP, January 2025, Online.</li>
+                </ul>
+            </div>
+
+            <h3>Field Experience &amp; Certifications</h3>
+            <div class="resume-item">
+                <h4>NAUI Divemaster | 143 logged dives</h4>
+                <p class="resume-meta">July 2024 – Present</p>
+                <ul><li>Certified professional dive leader; trained in dive planning, safety management, and underwater research coordination</li></ul>
+            </div>
+            <div class="resume-item">
+                <h4>Research &amp; Diver Development Program | South Africa</h4>
+                <p class="resume-meta">July – August 2024</p>
+                <ul>
+                    <li>31 hours scientific diving: nudibranch surveys, shark egg casing measurement, BRUV deployment, fish dissections</li>
+                    <li>Advanced vessel operations: docking, loading, anchoring, navigation, equipment deployment/recovery at sea</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>MOTC Certified Vessel Operator | CSUMB</h4>
+                <p class="resume-meta">2024</p>
+            </div>
+            <div class="resume-item">
+                <h4>AAUS Scientific Diver | CSUMB</h4>
+                <p class="resume-meta">Spring 2024</p>
+                <ul><li>Designed and conducted study: "Thermal Thresholds: The Role of Temperature Fluctuations in Shaping Kelp Forest Health at San Carlos Beach, Monterey, CA"</li></ul>
+            </div>
+
+            <h3>Leadership &amp; Outreach</h3>
+            <div class="resume-item">
+                <h4>Trail Committee Chair | Advocates for Nisene Marks State Park</h4>
+                <p class="resume-meta">2024 – 2025</p>
+                <ul><li>Led hazard assessments with 30+ volunteers; developed GIS-based stewardship mapping for park management</li></ul>
+            </div>
+            <div class="resume-item">
+                <h4>Educational Aide | Elkhorn Slough Foundation</h4>
+                <p class="resume-meta">2024 – 2025</p>
+                <ul><li>Led environmental education programs for students grades 4-10; participated in habitat restoration and community science</li></ul>
+            </div>
+
+            <h3>Additional Training</h3>
+            <div class="resume-item">
+                <ul>
+                    <li>CITI Certified: Research Ethics and Responsible Conduct of Research</li>
+                    <li>Career Development in Marine Sciences (ENVS 302): Scientific communication and professional development</li>
                 </ul>
             </div>
         </div>

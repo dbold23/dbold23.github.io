@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>California Map SVG Editor — forest-map.js</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; color: #e0e0e0; font-family: system-ui; display: flex; height: 100vh; overflow: hidden; }
+
+  #canvas-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+  svg { background: #0a1628; border: 1px solid #444; border-radius: 8px; cursor: crosshair; }
+
+  #sidebar { width: 400px; background: #16213e; padding: 16px; overflow-y: auto; border-left: 1px solid #444; }
+  h2 { margin-bottom: 8px; font-size: 16px; color: #4a9b6a; }
+  .instructions { font-size: 12px; color: #999; margin-bottom: 16px; line-height: 1.5; }
+
+  .section-title { color: #4a9b6a; font-size: 11px; font-weight: 600; text-transform: uppercase; margin: 14px 0 6px; letter-spacing: 0.5px; }
+
+  .controls-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; font-size: 12px; flex-wrap: wrap; }
+  .controls-bar label { color: #999; }
+  .controls-bar input[type=range] { width: 120px; }
+  .controls-bar input[type=file] { font-size: 11px; }
+
+  /* Mode buttons */
+  .mode-buttons { display: flex; gap: 6px; margin-bottom: 8px; }
+  .mode-btn { flex: 1; padding: 8px 6px; background: #1a1a2e; border: 1px solid #444; border-radius: 4px; color: #e0e0e0; cursor: pointer; font-size: 12px; font-weight: 600; text-align: center; transition: all 0.15s; }
+  .mode-btn:hover { background: #2a2a4e; }
+  .mode-btn.active { border-color: #4a9b6a; background: rgba(74,155,106,0.15); color: #7bc96f; }
+
+  /* Drawing controls */
+  .draw-controls { display: flex; gap: 6px; margin: 6px 0; }
+  .draw-controls button { flex: 1; padding: 6px; background: #1a1a2e; border: 1px solid #444; border-radius: 4px; color: #e0e0e0; cursor: pointer; font-size: 11px; transition: all 0.15s; }
+  .draw-controls button:hover { background: #2a2a4e; }
+  .draw-controls button.danger:hover { background: rgba(239,68,68,0.2); border-color: #ef4444; }
+
+  /* Contour selector */
+  .contour-selector { display: flex; gap: 6px; margin: 6px 0; }
+  .contour-btn { flex: 1; padding: 5px; background: #1a1a2e; border: 1px solid #444; border-radius: 4px; color: #e0e0e0; cursor: pointer; font-size: 11px; text-align: center; }
+  .contour-btn:hover { background: #2a2a4e; }
+  .contour-btn.active { border-color: #f59e0b; background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+  /* Location buttons */
+  .loc-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 10px; margin: 3px 0; background: #1a1a2e; border: 2px solid #444; border-radius: 4px; color: #e0e0e0; cursor: pointer; text-align: left; font-size: 12px; transition: all 0.15s; }
+  .loc-btn:hover { background: #2a2a4e; }
+  .loc-btn.active { border-color: var(--loc-color, #7bc96f); background: rgba(74,155,106,0.15); }
+  .loc-btn .swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .loc-btn .label { font-weight: 600; flex: 1; }
+  .loc-btn .info { color: #888; font-size: 10px; font-family: monospace; }
+
+  /* Output */
+  #output { width: 100%; height: 300px; background: #111; color: #7bc96f; border: 1px solid #444; border-radius: 4px; padding: 8px; font-family: monospace; font-size: 11px; resize: vertical; }
+  #copy-btn { display: block; width: 100%; padding: 8px; margin-top: 8px; background: #4a9b6a; border: none; border-radius: 4px; color: #fff; cursor: pointer; font-size: 13px; font-weight: 600; transition: background 0.15s; }
+  #copy-btn:hover { background: #5bb97a; }
+
+  .point-count { font-size: 10px; color: #888; margin-left: auto; }
+</style>
+</head>
+<body>
+
+<div id="canvas-wrap">
+  <div class="controls-bar">
+    <label>Ref opacity: <input type="range" id="ref-opacity" min="0" max="100" value="40"></label>
+    <label>Load image: <input type="file" id="ref-upload" accept="image/*"></label>
+  </div>
+  <svg id="map-svg" viewBox="0 0 500 700" width="500" height="700" xmlns="http://www.w3.org/2000/svg">
+    <!-- Reference background image -->
+    <image id="ref-img" href="" x="0" y="0" width="500" height="700" opacity="0.4" pointer-events="none" preserveAspectRatio="xMidYMid slice"/>
+
+    <!-- Land mass fill (auto-generated from coastline) -->
+    <path id="land-fill" d="" fill="#1a3d2e" opacity="0.5"/>
+
+    <!-- Contour paths -->
+    <path id="contour-1" d="" fill="none" stroke="#2d5f3f" stroke-width="1" stroke-dasharray="6 4" opacity="0.35"/>
+    <path id="contour-2" d="" fill="none" stroke="#2d5f3f" stroke-width="1" stroke-dasharray="6 4" opacity="0.2"/>
+
+    <!-- Coastline path -->
+    <path id="coastline" d="" fill="none" stroke="#4a9b6a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Location region polygons -->
+    <g id="regions-layer"></g>
+
+    <!-- Marker dots (center of each region) -->
+    <g id="markers-layer"></g>
+
+    <!-- Drag handles layer -->
+    <g id="handles-layer"></g>
+  </svg>
+</div>
+
+<div id="sidebar">
+  <h2>California Map Editor</h2>
+  <div class="instructions">
+    <b>How to use:</b><br>
+    1. Load a California reference image<br>
+    2. <b>Coastline</b> mode: click to trace the coast<br>
+    3. <b>Contour</b> mode: click to draw interior detail lines<br>
+    4. <b>Regions</b> mode: select a location, click to draw its boundary polygon. Each click adds a point; the polygon auto-closes.<br>
+    5. Drag any handle to adjust &mdash; right-click to delete a point<br>
+    6. Copy output and paste into <code>forest-map.js</code>
+  </div>
+
+  <div class="section-title">Drawing Mode</div>
+  <div class="mode-buttons">
+    <button class="mode-btn active" data-mode="coastline">Coastline</button>
+    <button class="mode-btn" data-mode="contour">Contour</button>
+    <button class="mode-btn" data-mode="region">Regions</button>
+  </div>
+
+  <!-- Coastline controls -->
+  <div id="coastline-controls">
+    <div class="draw-controls">
+      <button id="undo-coast-btn">Undo Last</button>
+      <button id="clear-coast-btn" class="danger">Clear All</button>
+    </div>
+    <div class="point-count" id="coast-count">0 points</div>
+  </div>
+
+  <!-- Contour controls -->
+  <div id="contour-controls" style="display:none">
+    <div class="contour-selector">
+      <button class="contour-btn active" data-contour="0">Contour 1</button>
+      <button class="contour-btn" data-contour="1">Contour 2</button>
+    </div>
+    <div class="draw-controls">
+      <button id="undo-contour-btn">Undo Last</button>
+      <button id="clear-contour-btn" class="danger">Clear All</button>
+    </div>
+    <div class="point-count" id="contour-count">0 points</div>
+  </div>
+
+  <!-- Region controls -->
+  <div id="region-controls" style="display:none">
+    <p style="font-size:11px; color:#999; margin-bottom:8px;">Select a location, then click on the map to draw its region polygon. Right-click a handle to delete it.</p>
+    <div id="loc-buttons"></div>
+    <div class="draw-controls" style="margin-top:8px;">
+      <button id="undo-region-btn">Undo Last Pt</button>
+      <button id="clear-region-btn" class="danger">Clear Region</button>
+    </div>
+    <div class="point-count" id="region-count">0 points</div>
+  </div>
+
+  <div class="section-title" style="margin-top:18px;">Output</div>
+  <textarea id="output" readonly></textarea>
+  <button id="copy-btn">Copy to Clipboard</button>
+</div>
+
+<script>
+"use strict";
+
+// ── Location colors (distinct, forest-themed) ──
+const LOC_COLORS = [
+  '#5ec969', // SC Mountains — bright green
+  '#3db88c', // Nisene — teal green
+  '#6bc2e2', // Elkhorn — coastal blue
+  '#c9a84c', // Santa Lucia — golden
+  '#e07a5f', // Big Sur — warm terracotta
+];
+
+// ── State ──
+const LOCATIONS = [
+  { id: 'scmts',      name: 'Santa Cruz Mountains',    color: LOC_COLORS[0], points: [] },
+  { id: 'nisene',     name: 'Nisene Marks',             color: LOC_COLORS[1], points: [] },
+  { id: 'elkhorn',    name: 'Elkhorn Slough',           color: LOC_COLORS[2], points: [] },
+  { id: 'santalucia', name: 'Santa Lucia Conservancy',  color: LOC_COLORS[3], points: [] },
+  { id: 'bigsur',     name: 'Big Sur Land Trust',       color: LOC_COLORS[4], points: [] },
+];
+
+let coastlinePoints = [];
+let contourPoints = [[], []];
+let activeContour = 0;
+
+let mode = 'coastline'; // 'coastline' | 'contour' | 'region'
+let activeLocIndex = 0;
+let dragging = null; // { type, index, locIdx?, contourIdx? }
+
+const svg = document.getElementById('map-svg');
+const handlesLayer = document.getElementById('handles-layer');
+const markersLayer = document.getElementById('markers-layer');
+const regionsLayer = document.getElementById('regions-layer');
+
+// ── SVG coordinate transform ──
+function svgPoint(e) {
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+// ── Path serialization ──
+function serializePathD(pts) {
+  if (pts.length === 0) return '';
+  return 'M ' + pts.map(p => `${Math.round(p.x)},${Math.round(p.y)}`).join(' L ');
+}
+
+function serializePolygonD(pts) {
+  if (pts.length === 0) return '';
+  return 'M ' + pts.map(p => `${Math.round(p.x)},${Math.round(p.y)}`).join(' L ') + ' Z';
+}
+
+// ── Polygon centroid ──
+function centroid(pts) {
+  if (pts.length === 0) return null;
+  const cx = pts.reduce((s, p) => s + p.x, 0) / pts.length;
+  const cy = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+  return { x: cx, y: cy };
+}
+
+// ── Rendering ──
+function renderCoastline() {
+  const d = serializePathD(coastlinePoints);
+  document.getElementById('coastline').setAttribute('d', d);
+
+  if (coastlinePoints.length >= 2) {
+    const landD = d + ' L 500,700 L 500,0 L ' + Math.round(coastlinePoints[0].x) + ',' + Math.round(coastlinePoints[0].y) + ' Z';
+    document.getElementById('land-fill').setAttribute('d', landD);
+  } else {
+    document.getElementById('land-fill').setAttribute('d', '');
+  }
+
+  document.getElementById('coast-count').textContent = coastlinePoints.length + ' points';
+}
+
+function renderContours() {
+  contourPoints.forEach((pts, i) => {
+    document.getElementById('contour-' + (i + 1)).setAttribute('d', serializePathD(pts));
+  });
+  document.getElementById('contour-count').textContent = contourPoints[activeContour].length + ' points';
+}
+
+function renderRegions() {
+  regionsLayer.innerHTML = '';
+  markersLayer.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+
+  LOCATIONS.forEach((loc, i) => {
+    if (loc.points.length < 2) return;
+
+    // Filled polygon
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', serializePolygonD(loc.points));
+    path.setAttribute('fill', loc.color);
+    path.setAttribute('fill-opacity', i === activeLocIndex && mode === 'region' ? '0.35' : '0.2');
+    path.setAttribute('stroke', loc.color);
+    path.setAttribute('stroke-width', i === activeLocIndex && mode === 'region' ? '2' : '1.2');
+    path.setAttribute('stroke-opacity', '0.7');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.style.pointerEvents = 'none';
+    regionsLayer.appendChild(path);
+  });
+
+  // Markers at centroid of each region
+  LOCATIONS.forEach((loc, i) => {
+    if (loc.points.length < 3) return;
+    const c = centroid(loc.points);
+
+    // Pulse ring
+    const pulse = document.createElementNS(ns, 'circle');
+    pulse.setAttribute('cx', c.x);
+    pulse.setAttribute('cy', c.y);
+    pulse.setAttribute('r', '12');
+    pulse.setAttribute('fill', loc.color);
+    pulse.setAttribute('opacity', '0.3');
+    markersLayer.appendChild(pulse);
+
+    // Dot
+    const dot = document.createElementNS(ns, 'circle');
+    dot.setAttribute('cx', c.x);
+    dot.setAttribute('cy', c.y);
+    dot.setAttribute('r', '6');
+    dot.setAttribute('fill', loc.color);
+    dot.setAttribute('stroke', '#fff');
+    dot.setAttribute('stroke-width', '1.5');
+    dot.style.pointerEvents = 'none';
+    markersLayer.appendChild(dot);
+
+    // Label
+    const text = document.createElementNS(ns, 'text');
+    text.setAttribute('x', c.x + 12);
+    text.setAttribute('y', c.y + 4);
+    text.setAttribute('fill', 'rgba(255,255,255,0.85)');
+    text.setAttribute('font-size', '11');
+    text.setAttribute('font-weight', '600');
+    text.setAttribute('pointer-events', 'none');
+    text.textContent = loc.name;
+    markersLayer.appendChild(text);
+  });
+}
+
+function renderHandles() {
+  handlesLayer.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+
+  if (mode === 'coastline') {
+    coastlinePoints.forEach((p, i) => {
+      handlesLayer.appendChild(makeHandle(p, i, '#4a9b6a', 'coast'));
+    });
+  } else if (mode === 'contour') {
+    contourPoints[activeContour].forEach((p, i) => {
+      handlesLayer.appendChild(makeHandle(p, i, '#f59e0b', 'contour'));
+    });
+  } else if (mode === 'region') {
+    const loc = LOCATIONS[activeLocIndex];
+    loc.points.forEach((p, i) => {
+      handlesLayer.appendChild(makeHandle(p, i, loc.color, 'region'));
+    });
+  }
+}
+
+function makeHandle(p, i, color, type) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const circle = document.createElementNS(ns, 'circle');
+  circle.setAttribute('cx', p.x);
+  circle.setAttribute('cy', p.y);
+  circle.setAttribute('r', '4');
+  circle.setAttribute('fill', color);
+  circle.setAttribute('stroke', '#fff');
+  circle.setAttribute('stroke-width', '0.8');
+  circle.setAttribute('cursor', 'grab');
+
+  circle.addEventListener('mousedown', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragging = { type, index: i, locIdx: activeLocIndex, contourIdx: activeContour };
+  });
+
+  circle.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    if (type === 'coast') {
+      coastlinePoints.splice(i, 1);
+      renderCoastline();
+    } else if (type === 'contour') {
+      contourPoints[activeContour].splice(i, 1);
+      renderContours();
+    } else if (type === 'region') {
+      LOCATIONS[activeLocIndex].points.splice(i, 1);
+      renderRegions();
+      updateLocButtons();
+    }
+    renderHandles();
+    updateOutput();
+  });
+
+  return circle;
+}
+
+// ── Mode switching ──
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    mode = btn.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+    document.getElementById('coastline-controls').style.display = mode === 'coastline' ? '' : 'none';
+    document.getElementById('contour-controls').style.display = mode === 'contour' ? '' : 'none';
+    document.getElementById('region-controls').style.display = mode === 'region' ? '' : 'none';
+    renderHandles();
+    renderRegions();
+  });
+});
+
+// ── Contour selector ──
+document.querySelectorAll('.contour-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeContour = parseInt(btn.dataset.contour);
+    document.querySelectorAll('.contour-btn').forEach(b => b.classList.toggle('active', b === btn));
+    renderHandles();
+    document.getElementById('contour-count').textContent = contourPoints[activeContour].length + ' points';
+  });
+});
+
+// ── Coastline controls ──
+document.getElementById('undo-coast-btn').addEventListener('click', () => {
+  coastlinePoints.pop();
+  renderCoastline(); renderHandles(); updateOutput();
+});
+document.getElementById('clear-coast-btn').addEventListener('click', () => {
+  if (coastlinePoints.length > 0 && !confirm('Clear all coastline points?')) return;
+  coastlinePoints = [];
+  renderCoastline(); renderHandles(); updateOutput();
+});
+
+// ── Contour controls ──
+document.getElementById('undo-contour-btn').addEventListener('click', () => {
+  contourPoints[activeContour].pop();
+  renderContours(); renderHandles(); updateOutput();
+});
+document.getElementById('clear-contour-btn').addEventListener('click', () => {
+  if (contourPoints[activeContour].length > 0 && !confirm('Clear this contour?')) return;
+  contourPoints[activeContour] = [];
+  renderContours(); renderHandles(); updateOutput();
+});
+
+// ── Region controls ──
+document.getElementById('undo-region-btn').addEventListener('click', () => {
+  LOCATIONS[activeLocIndex].points.pop();
+  renderRegions(); renderHandles(); updateLocButtons(); updateOutput();
+});
+document.getElementById('clear-region-btn').addEventListener('click', () => {
+  const loc = LOCATIONS[activeLocIndex];
+  if (loc.points.length > 0 && !confirm(`Clear ${loc.name} region?`)) return;
+  loc.points = [];
+  renderRegions(); renderHandles(); updateLocButtons(); updateOutput();
+});
+
+// ── Location buttons ──
+function buildLocButtons() {
+  const container = document.getElementById('loc-buttons');
+  container.innerHTML = '';
+  LOCATIONS.forEach((loc, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'loc-btn' + (i === activeLocIndex ? ' active' : '');
+    btn.style.setProperty('--loc-color', loc.color);
+    const pts = loc.points.length;
+    const c = pts >= 3 ? centroid(loc.points) : null;
+    btn.innerHTML = `<span class="swatch" style="background:${loc.color}"></span><span class="label">${loc.name}</span><span class="info">${pts} pts${c ? ' · ' + Math.round(c.x) + ',' + Math.round(c.y) : ''}</span>`;
+    btn.addEventListener('click', () => {
+      activeLocIndex = i;
+      updateLocButtons();
+      renderHandles();
+      renderRegions();
+    });
+    container.appendChild(btn);
+  });
+}
+
+function updateLocButtons() {
+  const buttons = document.querySelectorAll('.loc-btn');
+  buttons.forEach((btn, i) => {
+    btn.classList.toggle('active', i === activeLocIndex);
+    const loc = LOCATIONS[i];
+    const pts = loc.points.length;
+    const c = pts >= 3 ? centroid(loc.points) : null;
+    btn.querySelector('.info').textContent = `${pts} pts${c ? ' · ' + Math.round(c.x) + ',' + Math.round(c.y) : ''}`;
+  });
+  document.getElementById('region-count').textContent = LOCATIONS[activeLocIndex].points.length + ' points';
+}
+
+buildLocButtons();
+
+// ── SVG mouse events ──
+svg.addEventListener('click', e => {
+  const pt = svgPoint(e);
+  if (dragging) return;
+
+  if (mode === 'coastline') {
+    coastlinePoints.push({ x: pt.x, y: pt.y });
+    renderCoastline(); renderHandles(); updateOutput();
+  }
+  else if (mode === 'contour') {
+    contourPoints[activeContour].push({ x: pt.x, y: pt.y });
+    renderContours(); renderHandles(); updateOutput();
+  }
+  else if (mode === 'region') {
+    LOCATIONS[activeLocIndex].points.push({ x: pt.x, y: pt.y });
+    renderRegions(); renderHandles(); updateLocButtons(); updateOutput();
+  }
+});
+
+svg.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const pt = svgPoint(e);
+
+  if (dragging.type === 'coast') {
+    coastlinePoints[dragging.index] = { x: pt.x, y: pt.y };
+    renderCoastline(); renderHandles();
+  } else if (dragging.type === 'contour') {
+    contourPoints[dragging.contourIdx][dragging.index] = { x: pt.x, y: pt.y };
+    renderContours(); renderHandles();
+  } else if (dragging.type === 'region') {
+    LOCATIONS[dragging.locIdx].points[dragging.index] = { x: pt.x, y: pt.y };
+    renderRegions(); renderHandles(); updateLocButtons();
+  }
+});
+
+window.addEventListener('mouseup', () => {
+  if (dragging) {
+    dragging = null;
+    updateOutput();
+  }
+});
+
+svg.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── Reference image ──
+document.getElementById('ref-opacity').addEventListener('input', e => {
+  document.getElementById('ref-img').setAttribute('opacity', e.target.value / 100);
+});
+document.getElementById('ref-upload').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('ref-img').setAttribute('href', ev.target.result);
+  };
+  reader.readAsDataURL(file);
+});
+
+// ── Output generation ──
+function updateOutput() {
+  const lines = [];
+  lines.push('// ── Paste into forest-map.js ──');
+  lines.push('');
+
+  // Coastline
+  lines.push('const COASTLINE_PATH = `');
+  lines.push('  ' + (coastlinePoints.length > 0 ? serializePathD(coastlinePoints) : ''));
+  lines.push('`;');
+  lines.push('');
+
+  // Land path
+  if (coastlinePoints.length >= 2) {
+    const coastD = serializePathD(coastlinePoints);
+    const first = coastlinePoints[0];
+    lines.push('const LAND_PATH = `');
+    lines.push('  ' + coastD);
+    lines.push('  L 500,700 L 500,0 L ' + Math.round(first.x) + ',' + Math.round(first.y) + ' Z');
+    lines.push('`;');
+  } else {
+    lines.push('const LAND_PATH = ``;');
+  }
+  lines.push('');
+
+  // Contours
+  lines.push('const CONTOUR_PATHS = [');
+  contourPoints.forEach(pts => {
+    lines.push('  `' + (pts.length > 0 ? serializePathD(pts) : '') + '`,');
+  });
+  lines.push('];');
+  lines.push('');
+
+  // Location regions + marker positions
+  lines.push('const LOCATIONS = [');
+  LOCATIONS.forEach(loc => {
+    const c = loc.points.length >= 3 ? centroid(loc.points) : null;
+    lines.push('  {');
+    lines.push(`    id: '${loc.id}',`);
+    lines.push(`    name: '${loc.name}',`);
+    if (c) {
+      lines.push(`    cx: ${Math.round(c.x)}, cy: ${Math.round(c.y)},`);
+    } else {
+      lines.push('    cx: 0, cy: 0, // not drawn yet');
+    }
+    lines.push(`    region: '${loc.points.length >= 3 ? serializePolygonD(loc.points) : ''}',`);
+    lines.push('  },');
+  });
+  lines.push('];');
+
+  document.getElementById('output').value = lines.join('\n');
+}
+
+// ── Copy ──
+document.getElementById('copy-btn').addEventListener('click', () => {
+  const output = document.getElementById('output');
+  output.select();
+  navigator.clipboard.writeText(output.value).then(() => {
+    document.getElementById('copy-btn').textContent = 'Copied!';
+    setTimeout(() => document.getElementById('copy-btn').textContent = 'Copy to Clipboard', 2000);
+  });
+});
+
+// Init
+updateOutput();
+</script>
+</body>
+</html>

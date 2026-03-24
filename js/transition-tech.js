@@ -315,9 +315,13 @@ export async function enter() {
 
   // Start progress bar
   container.querySelector('.boot-progress-fill').classList.add('filling');
-  await sleep(1200);
+  await sleep(1800);
 
-  // Done — remove instantly
+  // Pause briefly, then fade out smoothly
+  await sleep(200);
+  container.classList.remove('visible');
+  await sleep(400);
+
   container.remove();
   overlay.classList.remove('active');
 }

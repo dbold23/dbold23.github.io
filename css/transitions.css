@@ -125,7 +125,7 @@
   inset: 0;
   background: #000;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.4s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -161,7 +161,7 @@
 }
 
 .boot-progress-fill.filling {
-  animation: bootFill 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: bootFill 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes bootFill {

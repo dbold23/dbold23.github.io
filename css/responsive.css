@@ -60,7 +60,7 @@
 
   /* Forest map — tablet */
   .forest-map-sticky { width: 50%; }
-  .forest-steps { margin-left: 50%; }
+  .forest-step { margin-left: 50%; }
   .forest-card { max-width: 360px; padding: 1.5rem; }
   .marker-label { font-size: 11px; }
 }
@@ -199,11 +199,10 @@
   /* Forest map — mobile: map fullscreen, cards as bottom overlay */
   .forest-map-sticky {
     width: 100%;
-    margin-bottom: -100vh;
+    float: none;
   }
-  .forest-steps {
+  .forest-step {
     margin-left: 0;
-    z-index: 8;
   }
   .forest-step {
     min-height: 100vh;

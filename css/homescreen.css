@@ -212,10 +212,27 @@
   padding-bottom: 0.15em;
 }
 
+/* When any hotspot is hovered, dim all labels & icons, then un-dim the active one */
+.homescreen:has(.corner-hotspot:hover) .corner-label {
+  color: rgba(255,255,255,0.3);
+  animation: none;
+  opacity: 1;
+  border-bottom-color: rgba(255,255,255,0.1);
+}
+
+.homescreen:has(.corner-hotspot:hover) .corner-icon {
+  opacity: 0.3;
+}
+
 .corner-hotspot:hover .corner-label {
   color: rgba(255,255,255,0.95);
   text-shadow: 0 3px 16px rgba(0,0,0,0.7), 0 0 40px rgba(0,0,0,0.4);
   animation: none;
+  opacity: 1;
+  border-bottom-color: rgba(255,255,255,0.5);
+}
+
+.corner-hotspot:hover .corner-icon {
   opacity: 1;
 }
 

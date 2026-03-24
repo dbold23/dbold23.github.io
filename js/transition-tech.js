@@ -295,7 +295,7 @@ function stopFileTree() {
   }
 }
 
-// ---- Entrance transition: CRT power-on ----
+// ---- Entrance transition: macOS boot screen ----
 export async function enter() {
   if (prefersReducedMotion()) return;
 
@@ -305,18 +305,19 @@ export async function enter() {
 
   const container = document.createElement('div');
   container.className = 'tech-transition-container';
+  container.innerHTML = '<div class="boot-logo">\uF8FF</div><div class="boot-progress"><div class="boot-progress-fill"></div></div>';
   content.appendChild(container);
 
-  // Phase 1: Dark screen fades in
+  // Show boot screen
   await sleep(30);
   container.classList.add('visible');
-  await sleep(250);
+  await sleep(150);
 
-  // Phase 2: Scan line + expand (single smooth keyframe animation)
-  container.classList.add('power-on');
-  await sleep(900);
+  // Start progress bar
+  container.querySelector('.boot-progress-fill').classList.add('filling');
+  await sleep(1200);
 
-  // Clean up — remove container instantly (no fade to avoid previous-page flash)
+  // Done — remove instantly
   container.remove();
   overlay.classList.remove('active');
 }

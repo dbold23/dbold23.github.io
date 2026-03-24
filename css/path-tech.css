@@ -34,16 +34,153 @@
 
 [data-active-path="tech"] .matrix-canvas { display: block; }
 
-/* Laptop intro (for transition) */
-.tech-laptop-intro {
-  display: none;
+/* macOS Desktop wrapper */
+.macos-desktop {
   position: relative;
-  z-index: 10;
-  padding: 4rem 2rem 2rem;
-  text-align: center;
+  z-index: 5;
+  min-height: 100vh;
+  display: none;
+  flex-direction: column;
 }
 
-[data-active-path="tech"] .tech-laptop-intro { display: flex; justify-content: center; }
+[data-active-path="tech"] .macos-desktop {
+  display: flex;
+}
+
+/* Menubar */
+.macos-menubar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  height: 28px;
+  background: rgba(30, 30, 30, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.85);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+}
+
+[data-active-path="tech"] .macos-menubar {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.menubar-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.menubar-apple {
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
+
+.menubar-item {
+  opacity: 0.85;
+  font-weight: 400;
+  font-size: 0.78rem;
+}
+
+.menubar-app {
+  font-weight: 700;
+}
+
+.menubar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.menubar-icon {
+  font-size: 0.85rem;
+  letter-spacing: -2px;
+}
+
+.menubar-time {
+  font-variant-numeric: tabular-nums;
+  min-width: 65px;
+  text-align: right;
+}
+
+/* Desktop content area */
+.desktop-content {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 0;
+  flex: 1;
+  padding: 1.5rem 2rem 2rem 0;
+}
+
+/* Sticker dock (left sidebar) */
+.sticker-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 1rem 0;
+}
+
+.sticker-dock .sticker-peel {
+  --sticker-size: 48px;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+[data-active-path="tech"] .sticker-dock .sticker-peel { opacity: 1; transform: translateX(0); }
+[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(1) { transition-delay: 0.2s; }
+[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(2) { transition-delay: 0.3s; }
+[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(3) { transition-delay: 0.4s; }
+[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(4) { transition-delay: 0.5s; }
+[data-active-path="tech"] .sticker-dock .sticker-peel:nth-child(5) { transition-delay: 0.6s; }
+
+.sticker-dock .sticker-label {
+  transform: translateX(-50%);
+  bottom: -20px;
+  font-size: 0.6rem;
+}
+
+/* Mobile: dock becomes horizontal strip */
+@media (max-width: 768px) {
+  .desktop-content {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .sticker-dock {
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.5rem 0;
+    gap: 10px;
+    order: -1;
+  }
+
+  .sticker-dock .sticker-peel {
+    --sticker-size: 40px;
+  }
+
+  .macos-menubar {
+    font-size: 0.7rem;
+    padding: 0 10px;
+    gap: 10px;
+  }
+
+  .menubar-left { gap: 10px; }
+  .menubar-item { font-size: 0.65rem; }
+}
 
 /* Terminal-styled cards */
 #path-tech .content-card.terminal {
@@ -131,28 +268,7 @@
   background: rgba(22,33,62,0.5);
 }
 
-/* Laptop mockup (reused from V1) */
-.laptop-mockup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  perspective: 800px;
-}
-
-.laptop-lid {
-  position: relative;
-  width: 480px;
-  height: 320px;
-  background: linear-gradient(145deg, #c0c0c5, #a8a8ad 20%, #b4b4b9 50%, #a0a0a5 80%, #96969b);
-  border-radius: 16px 16px 0 0;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15), 0 -2px 20px rgba(0,0,0,0.1);
-  overflow: visible;
-}
-
-.laptop-logo { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.12; font-size: 2rem; pointer-events: none; }
-.laptop-hinge { width: 500px; height: 6px; background: linear-gradient(to bottom, #888, #aaa 30%, #999 60%, #777); border-radius: 0 0 2px 2px; }
-.laptop-base { width: 530px; height: 16px; background: linear-gradient(to bottom, #bbb, #ccc 40%, #b5b5b5); border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); position: relative; }
-.laptop-base::before { content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 70px; height: 3px; background: #999; border-radius: 0 0 4px 4px; }
+/* (laptop mockup styles removed — replaced by macOS desktop layout) */
 
 /* Sticker clip-path peel (hover-triggered, ported from v1) */
 .sticker-peel {
@@ -261,12 +377,28 @@
 .terminal-window {
   position: relative;
   z-index: 5;
-  max-width: 900px;
-  margin: 3rem auto 0;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(0,217,255,0.1);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,217,255,0.05);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.5),
+    0 0 30px rgba(0,217,255,0.05),
+    0 0 0 1px rgba(255,255,255,0.05);
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+}
+
+[data-active-path="tech"] .terminal-window {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.terminal-dots .dot:hover {
+  filter: brightness(1.3);
 }
 
 /* Title bar */

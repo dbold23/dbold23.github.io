@@ -534,51 +534,72 @@
         <canvas id="matrix-canvas" class="matrix-canvas"></canvas>
         <div class="tech-grid-bg"></div>
 
-        <!-- Laptop + sticker peel container for transition -->
-        <div id="tech-laptop-intro" class="tech-laptop-intro">
-            <div class="laptop-mockup" id="tech-sticker-laptop">
-                <div class="laptop-lid">
-                    <div class="laptop-logo">&#63743;</div>
-                    <!-- GitHub — big sticker, external link -->
-                    <div class="sticker-peel" data-href="https://github.com/dbold23" data-external="true" style="--peel-direction: 0deg; --sticker-size: 56.25%; position: absolute; top: 7.8%; left: 21.9%; z-index: 1; transform: rotate(22deg);">
+        <!-- macOS Desktop Layout -->
+        <div class="macos-desktop">
+            <!-- Cosmetic menubar -->
+            <div class="macos-menubar">
+                <div class="menubar-left">
+                    <span class="menubar-apple">&#63743;</span>
+                    <span class="menubar-item menubar-app">Finder</span>
+                    <span class="menubar-item">File</span>
+                    <span class="menubar-item">Edit</span>
+                    <span class="menubar-item">View</span>
+                    <span class="menubar-item">Go</span>
+                    <span class="menubar-item">Window</span>
+                    <span class="menubar-item">Help</span>
+                </div>
+                <div class="menubar-right">
+                    <span class="menubar-icon">&#8942;&#8942;</span>
+                    <span class="menubar-icon">&#9681;</span>
+                    <span class="menubar-time"></span>
+                </div>
+            </div>
+
+            <!-- Desktop content: sticker dock + terminal -->
+            <div class="desktop-content">
+                <!-- Sticker dock (left sidebar) -->
+                <div class="sticker-dock">
+                    <!-- GitHub — external link -->
+                    <div class="sticker-peel" data-href="https://github.com/dbold23" data-external="true" style="--peel-direction: 0deg;">
                         <div class="sticker-peel-inner">
                             <div class="sticker-front"><img src="assets/github logo no background_sticker.png" alt="GitHub"></div>
                             <div class="sticker-flap"><img src="assets/github logo no background_sticker.png" alt="" aria-hidden="true"></div>
                         </div>
+                        <span class="sticker-label">GitHub</span>
                     </div>
                     <!-- JPSS-1 — scrolls to NOAA SAT HACK folder -->
-                    <div class="sticker-peel" data-href="#folder-noaa" style="--peel-direction: -14deg; --sticker-size: 27%; position: absolute; top: -3.75%; left: 2.5%; z-index: 3;">
+                    <div class="sticker-peel" data-href="#folder-noaa" style="--peel-direction: 0deg;">
                         <div class="sticker-peel-inner">
                             <div class="sticker-front"><img src="assets/JPSS-1_logo-removebg-preview.png" alt="JPSS"></div>
                             <div class="sticker-flap"><img src="assets/JPSS-1_logo-removebg-preview.png" alt="" aria-hidden="true"></div>
                         </div>
+                        <span class="sticker-label">NOAA</span>
                     </div>
-                    <!-- Rooted in Research (permanent) — no action -->
-                    <div class="sticker-peel permanent" style="--peel-direction: -3deg; --sticker-size: 20.8%; position: absolute; top: 2.5%; right: 3.75%; z-index: 3;">
+                    <!-- Rooted in Research (permanent) -->
+                    <div class="sticker-peel permanent" style="--peel-direction: 0deg;">
                         <div class="sticker-peel-inner"><div class="sticker-front"><img src="assets/rooted in reserach sticker.png" alt="Rooted in Research"></div></div>
+                        <span class="sticker-label">Research</span>
                     </div>
                     <!-- Jorgensen Lab — scrolls to Jorgensen folder -->
-                    <div class="sticker-peel" data-href="#folder-jorgensen" style="--peel-direction: 11deg; --sticker-size: 23%; position: absolute; bottom: 2.5%; left: 3.75%; z-index: 3;">
+                    <div class="sticker-peel" data-href="#folder-jorgensen" style="--peel-direction: 0deg;">
                         <div class="sticker-peel-inner">
                             <div class="sticker-front"><img src="assets/Jorgensen lab logo_sticker.png" alt="Jorgensen Lab"></div>
                             <div class="sticker-flap"><img src="assets/Jorgensen lab logo_sticker.png" alt="" aria-hidden="true"></div>
                         </div>
+                        <span class="sticker-label">Jorgensen</span>
                     </div>
                     <!-- Jue Lab — scrolls to Jue Lab folder -->
-                    <div class="sticker-peel" data-href="#folder-jue" style="--peel-direction: -7deg; --sticker-size: 29%; position: absolute; bottom: -2.5%; right: 2.5%; z-index: 3;">
+                    <div class="sticker-peel" data-href="#folder-jue" style="--peel-direction: 0deg;">
                         <div class="sticker-peel-inner">
                             <div class="sticker-front"><img src="assets/JueLabLogo.png" alt="Jue Lab"></div>
                             <div class="sticker-flap"><img src="assets/JueLabLogo.png" alt="" aria-hidden="true"></div>
                         </div>
+                        <span class="sticker-label">Jue Lab</span>
                     </div>
                 </div>
-                <div class="laptop-hinge"></div>
-                <div class="laptop-base"></div>
-            </div>
-        </div>
 
-        <!-- ---- Interactive File Tree (Terminal) ---- -->
-        <div class="terminal-window fade-in" id="tech-file-tree">
+                <!-- ---- Interactive File Tree (Terminal) ---- -->
+                <div class="terminal-window" id="tech-file-tree">
             <div class="terminal-titlebar">
                 <div class="terminal-dots">
                     <span class="dot red"></span>
@@ -1408,6 +1429,8 @@
                 <div class="terminal-prompt">daniel@macbook ~ $ <span class="blink-cursor">█</span></div>
             </div>
         </div>
+        </div> <!-- /.desktop-content -->
+        </div> <!-- /.macos-desktop -->
     </section>
 
     <!-- ============================================

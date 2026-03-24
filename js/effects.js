@@ -12,9 +12,6 @@ export function initBlobCursor() {
   blob.classList.add('blob-cursor');
   document.body.appendChild(blob);
 
-  const dot = document.createElement('div');
-  dot.classList.add('blob-dot');
-  document.body.appendChild(dot);
 
   let mouseX = 0, mouseY = 0;
   let blobX = 0, blobY = 0;
@@ -49,8 +46,6 @@ export function initBlobCursor() {
     blob.style.transform = `translate(${blobX - 250}px, ${blobY - 250}px) scale(${scale})`;
     blob.style.setProperty('--blob-color', hslColor(velocity));
 
-    dot.style.left = mouseX + 'px';
-    dot.style.top = mouseY + 'px';
 
     requestAnimationFrame(animate);
   }

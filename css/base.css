@@ -245,18 +245,6 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .blob-cursor.active { opacity: 0.5; }
 
-.blob-dot {
-  position: fixed;
-  width: 8px; height: 8px;
-  background: var(--ocean-foam);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10000;
-  transform: translate(-50%, -50%);
-  will-change: left, top;
-  box-shadow: 0 0 15px rgba(61,157,217,0.8), 0 0 40px rgba(61,157,217,0.3);
-}
-
 @media (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .blob-cursor, .blob-dot { display: none !important; }
+  .blob-cursor { display: none !important; }
 }

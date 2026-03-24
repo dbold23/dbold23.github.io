@@ -85,9 +85,9 @@
 
 /* ---- Individual card ---- */
 .deck-card {
-  /* Spread cards horizontally: centered on 6 cards */
-  --card-offset: calc((var(--card-index) - 2.5) * 90px);
-  --card-rotation: calc((var(--card-index) - 2.5) * 5deg);
+  /* Spread cards horizontally: centered on 5 cards */
+  --card-offset: calc((var(--card-index) - 2) * 100px);
+  --card-rotation: calc((var(--card-index) - 2) * 5deg);
 
   position: absolute;
   left: calc(50% + var(--card-offset));
@@ -554,6 +554,14 @@
 .pres-embed iframe {
   display: block;
   border: none;
+}
+
+.pres-date {
+  float: right;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
 }
 
 /* ---- Backdrop when detail is open ---- */

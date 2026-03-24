@@ -217,7 +217,8 @@
   animation: none;
 }
 
-/* Forest hover: dim others */
+/* Forest hover: dim others + hero title */
+.homescreen:has(.corner-forest:hover) .hero-title,
 .homescreen:has(.corner-forest:hover) .corner-ocean .corner-label,
 .homescreen:has(.corner-forest:hover) .corner-ocean .corner-icon,
 .homescreen:has(.corner-forest:hover) .corner-tech .corner-label,
@@ -225,7 +226,8 @@
   opacity: 0.2;
 }
 
-/* Ocean hover: dim others */
+/* Ocean hover: dim others + hero title */
+.homescreen:has(.corner-ocean:hover) .hero-title,
 .homescreen:has(.corner-ocean:hover) .corner-forest .corner-label,
 .homescreen:has(.corner-ocean:hover) .corner-forest .corner-icon,
 .homescreen:has(.corner-ocean:hover) .corner-tech .corner-label,
@@ -233,7 +235,8 @@
   opacity: 0.2;
 }
 
-/* Tech hover: dim others */
+/* Tech hover: dim others + hero title */
+.homescreen:has(.corner-tech:hover) .hero-title,
 .homescreen:has(.corner-tech:hover) .corner-forest .corner-label,
 .homescreen:has(.corner-tech:hover) .corner-forest .corner-icon,
 .homescreen:has(.corner-tech:hover) .corner-ocean .corner-label,

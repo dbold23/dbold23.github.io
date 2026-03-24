@@ -57,6 +57,10 @@
   .journal-spine { display: none; }
   .journal-page--right { padding: 1.5rem; }
   .journal-tab-label { display: none; }
+
+  /* Forest map — tablet */
+  .forest-map-container { max-width: 350px; }
+  .marker-label { font-size: 11px; }
 }
 
 @media (max-width: 640px) {
@@ -189,6 +193,13 @@
 
   /* Contact */
   .contact-links { flex-direction: column; align-items: center; }
+
+  /* Forest map — mobile */
+  .forest-map-section { padding: 3rem 1rem 2rem; }
+  .forest-map-container { max-width: 280px; }
+  .forest-philosophy { font-size: 0.82rem; }
+  .marker-label { font-size: 10px; }
+  .map-marker { touch-action: manipulation; }
 }
 
 /* Very small screens — collapse nav labels to dots only */
@@ -214,4 +225,5 @@
   .folder-arrow { transition: none !important; }
   .blink-cursor { animation: none !important; }
   .dash-pulse-dot { animation: none !important; }
+  .marker-pulse { animation: none !important; }
 }

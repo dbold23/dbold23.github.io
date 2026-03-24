@@ -133,8 +133,183 @@
   text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
-/* Forest content card overrides */
-#path-forest .content-card { background: rgba(255,255,255,0.92); }
+/* ---- Conservation Philosophy in Hero ---- */
+.forest-philosophy {
+  margin-top: 1.2rem;
+  max-width: 650px;
+  font-size: clamp(0.85rem, 1.6vw, 1rem);
+  line-height: 1.7;
+  color: rgba(255,255,255,0.7);
+  font-style: italic;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+}
+
+/* ---- Interactive California Coast Map ---- */
+.forest-map-section {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 4rem 2rem 3rem;
+}
+
+.map-heading {
+  color: var(--forest-bright);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.forest-map-container {
+  position: relative;
+  max-width: 420px;
+  margin: 0 auto;
+  background: rgba(8, 25, 40, 0.4);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(74, 155, 106, 0.15);
+}
+
+.forest-map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Land */
+.map-land {
+  fill: var(--forest-dark);
+}
+
+/* Coastline */
+.map-coastline {
+  stroke: var(--forest-light);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Contour lines */
+.map-contour {
+  stroke: var(--forest-mid);
+  stroke-width: 1;
+  stroke-dasharray: 6 4;
+  opacity: 0.35;
+}
+
+.map-contour-2 {
+  opacity: 0.2;
+}
+
+/* ---- Map Markers ---- */
+.marker-dot {
+  fill: var(--forest-bright);
+  transition: r 0.3s ease, fill 0.3s ease;
+}
+
+.marker-pulse {
+  fill: var(--forest-bright);
+  opacity: 0;
+  animation: markerPulse 2.5s ease-out infinite;
+}
+
+@keyframes markerPulse {
+  0% { r: 6; opacity: 0.5; }
+  100% { r: 22; opacity: 0; }
+}
+
+.marker-label {
+  fill: rgba(255,255,255,0.85);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  pointer-events: none;
+}
+
+/* Marker hover */
+.map-marker.hovered .marker-dot,
+.map-marker.active .marker-dot {
+  fill: #fff;
+  r: 8;
+  filter: drop-shadow(0 0 8px var(--forest-bright));
+}
+
+.map-marker.hovered .marker-label,
+.map-marker.active .marker-label {
+  fill: #fff;
+}
+
+.map-marker.active .marker-pulse {
+  animation: markerPulseActive 2s ease-out infinite;
+}
+
+@keyframes markerPulseActive {
+  0% { r: 8; opacity: 0.4; }
+  100% { r: 26; opacity: 0; }
+}
+
+/* ---- Map Tooltip ---- */
+.map-tooltip {
+  position: absolute;
+  background: rgba(15, 42, 30, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(74, 155, 106, 0.3);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 20;
+  max-width: 250px;
+  white-space: nowrap;
+}
+
+.map-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.map-tooltip strong {
+  display: block;
+  color: var(--forest-bright);
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+
+.map-tooltip span {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.78rem;
+  white-space: normal;
+}
+
+/* ---- Forest content card overrides ---- */
+#path-forest .content-card {
+  background: rgba(255,255,255,0.92);
+  border-left: 3px solid var(--forest-light);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#path-forest .content-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* Flash highlight when scrolled to from map */
+#path-forest .content-card.map-highlight {
+  border-left-color: var(--forest-bright);
+  box-shadow: 0 0 0 2px var(--forest-bright), 0 8px 24px rgba(74,155,106,0.3);
+  transition: border-left-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 #path-forest .card-text h3 { color: var(--forest-dark); }
-#path-forest .tag { background: rgba(45,95,63,0.15); color: var(--forest-dark); }
-#path-forest .reflection-box { border-color: var(--forest-light); background: rgba(45,95,63,0.2); }
+
+#path-forest .tag {
+  background: rgba(45,95,63,0.15);
+  color: var(--forest-dark);
+  font-weight: 600;
+}

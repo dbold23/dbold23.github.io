@@ -60,10 +60,16 @@ async function enterPath(path) {
       setTimeout(r, prefersReducedMotion() ? 50 : 1200)
     );
 
+    // Hide homescreen as soon as zoom finishes (before enter() resolves)
+    // This prevents the zoomed homescreen from flashing when the
+    // transition overlay fades out
+    zoomPromise.then(() => {
+      homescreen.style.display = 'none';
+    });
+
     // Wait for both zoom and transition to finish
     await Promise.all([enterPromise, zoomPromise]);
 
-    homescreen.style.display = 'none';
     destroyHomescreen();
   } else {
     // Switching between paths — just run the entrance

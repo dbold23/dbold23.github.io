@@ -989,40 +989,59 @@
                             <button class="folder-toggle" aria-expanded="false">
                                 <span class="folder-arrow">▶</span>
                                 <span class="folder-name">shark-morphometrics/</span>
-                                <span class="folder-desc">ML + Computer Vision</span>
+                                <span class="folder-desc">YOLOv8 Pose Estimation Pipeline</span>
                             </button>
                             <div class="folder-children">
-                                <!-- yolo-detection.py -->
+                                <!-- pose-model.py -->
                                 <div class="tree-file">
                                     <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
-                                        <span class="file-name">yolo-detection.py</span>
-                                        <span class="file-desc">Keypoint Detection</span>
+                                        <span class="file-name">pose-model.py</span>
+                                        <span class="file-desc">16-Keypoint YOLOv8-Pose</span>
                                     </button>
                                     <div class="file-content">
-                                        <img src="assets/gif of white shark yolo keypoint detection.gif" alt="YOLO shark keypoint detection" loading="lazy">
-                                        <p>YOLO-based keypoint detection model trained to identify anatomical landmarks on white shark dorsal fins from underwater video. Extracts morphometric measurements for individual identification and health assessment.</p>
+                                        <img src="assets/gif of white shark yolo keypoint detection.gif" alt="YOLOv8 16-keypoint pose detection on white shark" loading="lazy">
+                                        <p>YOLOv8-pose model trained on 16 anatomical keypoints&mdash;9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips&mdash;for white shark body condition assessment from underwater video. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
+                                        <div class="stat-metrics">
+                                            <div class="stat-metric">
+                                                <div class="stat-val">16-pt</div>
+                                                <div class="stat-label">Skeleton</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">4,850</div>
+                                                <div class="stat-label">Videos</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">0.96</div>
+                                                <div class="stat-label">Box mAP50</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">4</div>
+                                                <div class="stat-label">Sites</div>
+                                            </div>
+                                        </div>
                                         <div class="card-tags">
-                                            <span class="tag">YOLO</span>
-                                            <span class="tag">Keypoint Detection</span>
-                                            <span class="tag">Computer Vision</span>
+                                            <span class="tag">YOLOv8</span>
+                                            <span class="tag">Pose Estimation</span>
                                             <span class="tag">PyTorch</span>
+                                            <span class="tag">Active Learning</span>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- health-app.py -->
+                                <!-- pipeline.yaml -->
                                 <div class="tree-file">
                                     <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
-                                        <span class="file-name">health-app.py</span>
-                                        <span class="file-desc">Flask Web App</span>
+                                        <span class="file-name">pipeline.yaml</span>
+                                        <span class="file-desc">8-Stage Active Learning</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Flask-based web application integrating the YOLO morphometrics pipeline. Upload footage, run automated detection, and view results with extracted metadata and strict confidence thresholds. Google Drive API integration for batch processing research datasets.</p>
+                                        <p>Semi-supervised 8-stage pipeline: video cataloging &rarr; frame extraction &rarr; seed annotation &rarr; model training &rarr; active learning selection &rarr; human correction &rarr; pseudo-label amplification &rarr; refinement. Processes 4,850 videos (661&nbsp;GB) spanning 2012&ndash;2026 across A&ntilde;o Nuevo, Aptos, Farallon Islands, and Point Reyes. Uncertainty + k-center diversity scoring selects the most informative frames for annotation, with pre-annotation from the current best model to accelerate human review.</p>
                                         <div class="card-tags">
-                                            <span class="tag">Flask</span>
-                                            <span class="tag">REST API</span>
-                                            <span class="tag">Google APIs</span>
+                                            <span class="tag">Active Learning</span>
+                                            <span class="tag">Semi-Supervised</span>
+                                            <span class="tag">Google Colab</span>
+                                            <span class="tag">AWS EC2</span>
                                         </div>
                                     </div>
                                 </div>

@@ -111,7 +111,6 @@
   font-size: clamp(2.5rem, 7vw, 5rem);
   font-weight: 900;
   color: var(--white);
-  text-shadow: 0 4px 30px rgba(0,0,0,0.7), 0 2px 10px rgba(10,36,99,0.8);
   letter-spacing: 0.04em;
   background: linear-gradient(135deg, var(--white), var(--ocean-foam), var(--white));
   background-clip: text;
@@ -119,6 +118,8 @@
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
   animation: nameShimmer 8s ease-in-out infinite;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   margin-bottom: 0.5rem;
 }
 
@@ -200,22 +201,30 @@
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6));
 }
 
-/* Label — subtle by default, bold on hover */
+/* Label — visible by default with breathing pulse, bold on hover */
+@keyframes labelPulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 0.8; }
+}
+
 .corner-label {
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.65);
   font-size: clamp(1.4rem, 3vw, 2.8rem);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-shadow: 0 3px 16px rgba(0,0,0,0.4);
-  transition: all 0.5s var(--ease-out);
+  transition: color 0.5s var(--ease-out), text-shadow 0.5s var(--ease-out), transform 0.5s var(--ease-out);
   white-space: nowrap;
   flex-shrink: 0;
+  animation: labelPulse 3.5s ease-in-out infinite;
 }
 
 .corner-hotspot:hover .corner-label {
   color: rgba(255,255,255,0.95);
   text-shadow: 0 3px 16px rgba(0,0,0,0.7), 0 0 40px rgba(0,0,0,0.4);
+  animation: none;
+  opacity: 1;
 }
 
 /* Glow overlay */

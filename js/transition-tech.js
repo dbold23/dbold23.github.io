@@ -295,7 +295,7 @@ function stopFileTree() {
   }
 }
 
-// ---- Entrance transition: simple dark fade ----
+// ---- Entrance transition: CRT power-on ----
 export async function enter() {
   if (prefersReducedMotion()) return;
 
@@ -303,21 +303,26 @@ export async function enter() {
   overlay.classList.add('active');
   const content = overlay.querySelector('#transition-content');
 
-  // Dark tech background container
   const container = document.createElement('div');
   container.className = 'tech-transition-container';
   content.appendChild(container);
 
-  // Fade in
+  // Phase 1: Dark screen fades in
   await sleep(30);
   container.classList.add('visible');
+  await sleep(300);
 
-  // Brief hold
-  await sleep(600);
-
-  // Fade out to reveal desktop
-  container.classList.remove('visible');
+  // Phase 2: Cyan scan line shoots across
+  container.classList.add('scanline');
   await sleep(400);
+
+  // Phase 3: Line expands to fill screen (flash)
+  container.classList.add('expand');
+  await sleep(250);
+
+  // Reveal desktop
+  container.classList.remove('visible');
+  await sleep(300);
 
   container.remove();
   overlay.classList.remove('active');

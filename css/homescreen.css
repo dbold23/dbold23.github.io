@@ -110,22 +110,12 @@
 .hero-name {
   font-size: clamp(2.5rem, 7vw, 5rem);
   font-weight: 900;
-  color: var(--white);
+  color: var(--ocean-foam);
   letter-spacing: 0.04em;
-  background: linear-gradient(135deg, var(--white), var(--ocean-foam), var(--white));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-  animation: nameShimmer 8s ease-in-out infinite;
+  text-shadow: 0 2px 8px rgba(10,36,99,0.4);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   margin-bottom: 0.5rem;
-}
-
-@keyframes nameShimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
 }
 
 .hero-subtitle {

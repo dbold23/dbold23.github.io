@@ -111,7 +111,7 @@
   /* Page peel — mobile: cross-fade instead of corner peel */
   .journal-spread.page-turning-forward .journal-page--right,
   .journal-spread.page-turning-backward .journal-page--left {
-    animation: fadeOutSide 0.4s ease forwards !important;
+    animation: fadeOutSideLate 0.4s ease forwards !important;
     filter: none !important;
     clip-path: none !important;
   }
@@ -203,11 +203,17 @@
   }
   .forest-step {
     margin-left: 0;
+    position: relative;
+    z-index: 7;
+    pointer-events: none;
   }
   .forest-step {
     min-height: 100vh;
     align-items: flex-end;
     padding: 0 1rem 2rem;
+  }
+  .forest-card {
+    pointer-events: auto;
   }
   .forest-step[data-step="overview"] {
     min-height: 80vh;

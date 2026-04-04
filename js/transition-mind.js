@@ -2,7 +2,7 @@
 // Mind Path: Iris clip-path zoom + Neural Network SVG
 // ============================================
 
-import { randomRange, prefersReducedMotion, sleep } from './utils.js';
+import { randomRange, prefersReducedMotion, sleep, isTouchDevice } from './utils.js';
 
 let neuralAnimId = null;
 let nodes = [];
@@ -173,6 +173,50 @@ function initJournal() {
       turnToChapter(currentChapter - 1);
     }
   });
+
+  // Touch: swipe navigation + arrow buttons + hint
+  if (isTouchDevice()) {
+    let startX = 0, startY = 0;
+    const SWIPE_THRESHOLD = 50;
+
+    journal.addEventListener('touchstart', (e) => {
+      startX = e.changedTouches[0].clientX;
+      startY = e.changedTouches[0].clientY;
+    }, { passive: true });
+
+    journal.addEventListener('touchend', (e) => {
+      if (turning) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0 && currentChapter < 6) turnToChapter(currentChapter + 1);
+        else if (dx > 0 && currentChapter > 0) turnToChapter(currentChapter - 1);
+      }
+    }, { passive: true });
+
+    // Arrow buttons
+    journal.insertAdjacentHTML('beforeend',
+      '<button class="journal-nav-arrow journal-nav-prev" aria-label="Previous page">&#8249;</button>' +
+      '<button class="journal-nav-arrow journal-nav-next" aria-label="Next page">&#8250;</button>'
+    );
+    journal.querySelector('.journal-nav-prev').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!turning && currentChapter > 0) turnToChapter(currentChapter - 1);
+    });
+    journal.querySelector('.journal-nav-next').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!turning && currentChapter < 6) turnToChapter(currentChapter + 1);
+    });
+
+    // Swipe hint
+    const hint = document.createElement('div');
+    hint.className = 'journal-swipe-hint';
+    hint.textContent = 'Swipe or tap arrows to turn pages';
+    journal.appendChild(hint);
+    const dismissHint = () => hint.classList.add('hidden');
+    journal.addEventListener('touchstart', dismissHint, { passive: true, once: true });
+    setTimeout(dismissHint, 3000);
+  }
 }
 
 function showChapter(idx) {

@@ -740,3 +740,53 @@
   border-color: var(--mind-accent);
   background: rgba(157,78,221,0.15);
 }
+
+/* ── Mobile journal nav arrows ── */
+.journal-nav-arrow { display: none; }
+.journal-swipe-hint { display: none; }
+
+@media (max-width: 640px) {
+  .journal-nav-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(199, 125, 255, 0.2);
+    border: 1px solid rgba(199, 125, 255, 0.4);
+    color: var(--mind-accent);
+    font-size: 1.4rem;
+    cursor: pointer;
+    z-index: 20;
+    transition: background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .journal-nav-arrow:active {
+    background: rgba(199, 125, 255, 0.4);
+  }
+  .journal-nav-prev { left: 4px; }
+  .journal-nav-next { right: 4px; }
+
+  .journal-swipe-hint {
+    display: block;
+    position: absolute;
+    bottom: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: rgba(199, 125, 255, 0.6);
+    white-space: nowrap;
+    transition: opacity 0.5s ease;
+    z-index: 20;
+  }
+  .journal-swipe-hint.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

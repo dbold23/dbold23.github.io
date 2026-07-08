@@ -183,8 +183,8 @@
 
 /* Icon — large and unmissable */
 .corner-icon {
-  width: clamp(80px, 12vw, 160px);
-  height: clamp(80px, 12vw, 160px);
+  width: clamp(90px, 14vw, 190px);
+  height: clamp(90px, 14vw, 190px);
   flex-shrink: 0;
   color: rgba(255,255,255,0.9);
   transition: all 0.4s var(--ease-out);
@@ -199,7 +199,7 @@
 
 .corner-label {
   color: rgba(255,255,255,0.85);
-  font-size: clamp(1.4rem, 3vw, 2.8rem);
+  font-size: clamp(1.5rem, 3.4vw, 3.1rem);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;

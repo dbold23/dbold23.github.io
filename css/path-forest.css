@@ -317,8 +317,8 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(74, 155, 106, 0.25);
   border-radius: 16px;
-  padding: 2rem;
-  max-width: 420px;
+  padding: 2.5rem;
+  max-width: 580px;
   width: 100%;
   color: var(--white);
 
@@ -334,27 +334,27 @@
 }
 
 .forest-card .card-img-wrap {
-  margin: -2rem -2rem 1.5rem -2rem;
+  margin: -2.5rem -2.5rem 1.5rem -2.5rem;
   border-radius: 16px 16px 0 0;
   overflow: hidden;
 }
 
 .forest-card .card-img-wrap img {
   width: 100%;
-  height: 180px;
+  height: 230px;
   object-fit: cover;
   display: block;
 }
 
 .forest-card h3 {
-  font-size: 1.3rem;
+  font-size: 1.55rem;
   font-weight: 700;
   color: var(--forest-bright);
   margin-bottom: 0.8rem;
 }
 
 .forest-card p {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   line-height: 1.65;
   color: rgba(255,255,255,0.8);
   margin-bottom: 0.8rem;
@@ -362,7 +362,7 @@
 
 .forest-card ul {
   margin: 0.5rem 0 1rem 1.2rem;
-  font-size: 0.85rem;
+  font-size: 0.98rem;
   line-height: 1.6;
   color: rgba(255,255,255,0.75);
 }

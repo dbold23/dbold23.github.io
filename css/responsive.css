@@ -63,6 +63,11 @@
   .forest-map-sticky { width: 50%; }
   .forest-step { margin-left: 50%; }
   .forest-card { max-width: 360px; padding: 1.5rem; }
+  .forest-card .card-img-wrap { margin: -1.5rem -1.5rem 1.2rem -1.5rem; }
+  .forest-card .card-img-wrap img { height: 180px; }
+  .forest-card h3 { font-size: 1.3rem; }
+  .forest-card p { font-size: 0.9rem; }
+  .forest-card ul { font-size: 0.85rem; }
   .marker-label { font-size: 11px; }
 }
 

@@ -223,9 +223,76 @@ img { max-width: 100%; height: auto; display: block; }
   .fade-in { opacity: 1; transform: none; }
 }
 
-/* Keyboard nav */
-.keyboard-nav *:focus {
-  outline: 3px solid var(--ocean-light) !important;
+/* ============================================
+   Focus visibility (keyboard nav)
+   ============================================ */
+:focus-visible {
+  outline: 3px solid var(--ocean-light);
   outline-offset: 2px;
+}
+
+/* Interactive controls sit on dark / gradient backgrounds — use a
+   high-contrast white outline and match each element's border-radius. */
+.corner-hotspot:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+  border-radius: 20px;
+}
+
+.file-toggle:focus-visible {
+  outline: 2px solid var(--tech-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.deck-card:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 4px;
+  border-radius: 16px;
+}
+
+/* ============================================
+   Skip link
+   ============================================ */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 2000;
+  padding: 0.75rem 1.25rem;
+  background: var(--gray-dark);
+  color: var(--white);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: top 0.2s var(--ease-out);
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 3px solid var(--ocean-light);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Visually hidden (screen-reader only)
+   ============================================ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 

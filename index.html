@@ -4,12 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Daniel Sambold | Environmental Steward & Researcher</title>
-    <meta name="description" content="Immersive portfolio exploring marine science, forest conservation, data science, and environmental stewardship.">
+    <meta name="description" content="Immersive portfolio exploring marine research, forest conservation, data science, and environmental stewardship.">
+
+    <!-- SEO & Sharing -->
+    <link rel="canonical" href="https://dbold23.github.io/">
+    <meta name="theme-color" content="#0a2463">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dbold23.github.io/">
+    <meta property="og:title" content="Daniel Sambold | Environmental Steward &amp; Researcher">
+    <meta property="og:description" content="Immersive portfolio exploring marine research, forest conservation, data science, and environmental stewardship.">
+    <meta property="og:image" content="https://dbold23.github.io/assets/social-preview.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Portrait of Daniel Sambold">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Daniel Sambold | Environmental Steward &amp; Researcher">
+    <meta name="twitter:description" content="Immersive portfolio exploring marine research, forest conservation, data science, and environmental stewardship.">
+    <meta name="twitter:image" content="https://dbold23.github.io/assets/social-preview.jpg">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="assets/FinalHome.jpg" fetchpriority="high">
 
     <!-- Styles -->
     <link rel="stylesheet" href="css/variables.css">
@@ -25,10 +44,10 @@
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
-    <!-- 3D Model Viewer -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <noscript><style> body { opacity: 1 !important; } .path-section { display: block !important; position: static !important; } .corner-hotspot, .skip-link { display: none !important; } </style></noscript>
 </head>
 <body>
+    <a class="skip-link" href="#homescreen">Skip to content</a>
 
     <!-- ============================================
          HOMESCREEN HUB
@@ -37,6 +56,7 @@
         <div class="hero-image-container">
             <img src="assets/FinalHome.jpg" alt="Daniel Sambold"
                  class="hero-portrait"
+                 fetchpriority="high" width="1600" height="1040"
                  onerror="this.src='assets/up close picture with ocean backgroun_compressed.jpg'">
             <img src="assets/FinalHome-removebg-preview.png" alt="" class="hero-cutout" aria-hidden="true">
         </div>
@@ -67,7 +87,7 @@
             <div class="corner-glow"></div>
         </button>
 
-        <button class="corner-hotspot corner-ocean" data-path="ocean" aria-label="Explore Research">
+        <button class="corner-hotspot corner-ocean" data-path="ocean" aria-label="Explore Research &amp; Presentations">
             <svg class="corner-icon ocean-waves-icon" viewBox="0 0 64 64" fill="none">
                 <!-- Calm waves (default) -->
                 <path class="ow-wave ow-wave1" d="M2 26c5-4 10-4 16 0s11 4 16 0 11-4 16 0 9-4 14 0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
@@ -83,7 +103,7 @@
                 <path class="ow-foam ow-foam1" d="M8 30c2-1 4 0 6 1" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none" opacity="0"/>
                 <path class="ow-foam ow-foam2" d="M36 28c3-1 5 1 7 2" stroke="currentColor" stroke-width="1" stroke-linecap="round" fill="none" opacity="0"/>
             </svg>
-            <span class="corner-label">Research</span>
+            <span class="corner-label">Research &amp; Presentations</span>
             <div class="corner-glow"></div>
         </button>
 
@@ -153,7 +173,7 @@
 
         <!-- Landing hero image after branch zoom -->
         <div class="path-hero forest-hero">
-            <img src="assets/NewNiseneHero.jpg" alt="Nisene Marks State Park" class="path-hero-img">
+            <img src="assets/nisene-hero.avif" alt="Nisene Marks State Park" class="path-hero-img" width="1600" height="1040" loading="lazy" decoding="async">
             <div class="path-hero-overlay">
                 <h2 class="path-hero-title">Conservation & Trail Stewardship</h2>
                 <p class="path-hero-subtitle">Protecting old-growth redwoods and leading community conservation through science and stewardship</p>
@@ -278,13 +298,13 @@
     <!-- ============================================
          OCEAN PATH
          ============================================ -->
-    <section id="path-ocean" class="path-section" data-path="ocean" aria-label="Research">
+    <section id="path-ocean" class="path-section" data-path="ocean" aria-label="Research &amp; Presentations">
         <canvas id="bubble-canvas" class="bubble-canvas"></canvas>
         <div class="ocean-depth-bg"></div>
 
         <div class="card-deck-section">
             <header class="deck-header">
-                <h2 class="deck-title">Research</h2>
+                <h2 class="deck-title">Research &amp; Presentations</h2>
                 <p class="deck-subtitle">Pick a card, any card</p>
             </header>
 
@@ -343,7 +363,7 @@
                                 </div>
                             </div>
                             <div class="panel-gallery">
-                                <img src="assets/tagginggif.gif" alt="Shark tagging operation" loading="lazy">
+                                <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Shark tagging operation"><source src="assets/shark-tagging.webm" type="video/webm"><source src="assets/shark-tagging.mp4" type="video/mp4"></video>
                             </div>
                         </div>
                     </div>
@@ -489,7 +509,7 @@
                             <span class="card-type">Training</span>
                         </div>
                         <div class="card-image-frame">
-                            <img src="assets/relay-station-sunset.png" alt="Relay station deployment at sunset" loading="lazy">
+                            <img src="assets/relay-station-sunset.avif" alt="Relay station deployment at sunset" width="645" height="797" loading="lazy">
                         </div>
                         <div class="card-footer">
                             <span class="card-footer-label">Galápagos & California</span>
@@ -531,6 +551,7 @@
          TECH / LAPTOP PATH
          ============================================ -->
     <section id="path-tech" class="path-section" data-path="tech" aria-label="Technology & Data Science">
+        <h2 class="visually-hidden">Technology &amp; Data Science</h2>
         <canvas id="matrix-canvas" class="matrix-canvas"></canvas>
         <div class="tech-grid-bg"></div>
 
@@ -557,27 +578,27 @@
 
             <!-- Desktop surface (freeform positioning) -->
             <div class="desktop-surface">
-                <img class="desktop-wallpaper" src="assets/desktop-wallpaper.jpg" alt="" aria-hidden="true">
+                <img class="desktop-wallpaper" src="assets/desktop-wallpaper.avif" alt="" aria-hidden="true" width="1920" height="1440" loading="lazy" decoding="async">
                 <!-- Desktop icons (right-aligned column, macOS style) -->
                 <div class="desktop-icons">
                     <!-- GitHub — external link -->
                     <div class="desktop-icon" data-href="https://github.com/dbold23" data-external="true">
-                        <img src="assets/github logo no background_sticker.png" alt="GitHub">
+                        <img src="assets/github logo no background_sticker.png" alt="GitHub" loading="lazy" decoding="async">
                         <span class="desktop-icon-label">GitHub</span>
                     </div>
                     <!-- JPSS-1 — scrolls to NOAA SAT HACK folder -->
                     <div class="desktop-icon" data-href="#folder-noaa">
-                        <img src="assets/JPSS-1_logo-removebg-preview.png" alt="JPSS">
+                        <img src="assets/JPSS-1_logo-removebg-preview.png" alt="JPSS" loading="lazy" decoding="async">
                         <span class="desktop-icon-label">NOAA Sat Hack</span>
                     </div>
                     <!-- Jorgensen Lab — scrolls to Jorgensen folder -->
                     <div class="desktop-icon" data-href="#folder-jorgensen">
-                        <img src="assets/Jorgensen lab logo_sticker.png" alt="Jorgensen Lab">
+                        <img src="assets/jorgensen-lab-logo.avif" alt="Jorgensen Lab" width="500" height="500" loading="lazy" decoding="async">
                         <span class="desktop-icon-label">Jorgensen Lab</span>
                     </div>
                     <!-- Jue Lab — scrolls to Jue Lab folder -->
                     <div class="desktop-icon" data-href="#folder-jue">
-                        <img src="assets/JueLabLogo.png" alt="Jue Lab">
+                        <img src="assets/jue-lab-logo.avif" alt="Jue Lab" width="480" height="519" loading="lazy" decoding="async">
                         <span class="desktop-icon-label">Jue Lab</span>
                     </div>
                 </div>
@@ -684,14 +705,17 @@
                                         <div class="hw-viewer-wrap">
                                             <model-viewer
                                                 id="hw-model"
-                                                src="assets/Meshy_AI_Raspberry_Pi_with_RTL_0301051610_texture.glb"
+                                                src="assets/relay-hardware.glb"
                                                 alt="Raspberry Pi 5 with RTL-SDR and NB-IoT HAT"
                                                 auto-rotate
                                                 camera-controls
                                                 shadow-intensity="0.5"
                                                 interpolation-decay="100"
                                                 camera-orbit="0.6579rad 1.3367rad 4.5m"
+                                                loading="lazy"
+                                                reveal="interaction"
                                                 style="width: 100%; height: 350px; border-radius: 8px 8px 0 0; background: rgba(10,14,20,0.9);">
+                                                <div slot="poster" class="model-poster">Click to load 3D model</div>
                                             </model-viewer>
                                             <!-- Part selector buttons -->
                                             <div class="hw-parts-bar">
@@ -740,7 +764,7 @@
                                     </button>
                                     <div class="file-content">
                                         <div class="file-gallery">
-                                            <img src="assets/relay-detailed-verification.png" alt="Synthetic VHF tag signal verification — spectrograms" loading="lazy">
+                                            <img src="assets/relay-detailed-verification.avif" alt="Synthetic VHF tag signal verification — spectrograms" width="1600" height="1386" loading="lazy">
                                             <img src="assets/relay-channel-heatmap.png" alt="Channel heatmap — pulse detection across frequencies" loading="lazy">
                                             <img src="assets/relay-snr-comparison.png" alt="SNR comparison at different signal strengths" loading="lazy">
                                         </div>
@@ -950,7 +974,7 @@
                                     <div class="file-content">
                                         <div class="file-gallery">
                                             <img src="assets/relay-range-map.png" alt="Wildlife tag detection map — antenna range test results" loading="lazy">
-                                            <img src="assets/relay-antenna-analysis.png" alt="Antenna beam pattern and directional analysis" loading="lazy">
+                                            <img src="assets/relay-antenna-analysis.avif" alt="Antenna beam pattern and directional analysis" width="1600" height="792" loading="lazy">
                                         </div>
                                         <p>Field-tested at Monterey Bay coastal sites. Yagi directional antenna achieves 1,700+ ft max range with 62% detection rate. Auto-calibration sweep optimizes SDR gain (15&ndash;45 dB) on boot. Watchdog daemon monitors system health every 60s with 3-strike escalation policy.</p>
                                         <div class="stat-metrics">
@@ -1005,7 +1029,7 @@
                                         <span class="file-desc">16-Keypoint YOLOv8-Pose</span>
                                     </button>
                                     <div class="file-content">
-                                        <img src="assets/gif of white shark yolo keypoint detection.gif" alt="YOLOv8 pose detection on white shark (early 5-keypoint model)" loading="lazy">
+                                        <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="YOLOv8 pose detection on white shark (early 5-keypoint model)"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
                                         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem; margin-bottom:1rem; font-style:italic;">Shown: first-generation 5-keypoint model. Current pipeline uses the 16-keypoint schema described below.</p>
                                         <p>YOLOv8-pose model trained on 16 anatomical keypoints&mdash;9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips&mdash;for white shark body condition assessment from underwater video. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
                                         <div class="stat-metrics">
@@ -1311,8 +1335,8 @@
                             <div class="file-content">
                                 <p>Performed CFD analysis using OpenFOAM to model hydrodynamic drag around acoustic tags on shark dorsal fins. Iterative simulations refined tag geometry to minimize swimming resistance.</p>
                                 <div class="file-gallery">
-                                    <img src="assets/v1.gif" alt="CFD v1 simulation" loading="lazy">
-                                    <img src="assets/v2.gif" alt="CFD v2 simulation" loading="lazy">
+                                    <video class="lazy-video" muted loop playsinline preload="none" width="512" height="258" aria-label="CFD v1 simulation"><source src="assets/cfd-v1.webm" type="video/webm"><source src="assets/cfd-v1.mp4" type="video/mp4"></video>
+                                    <video class="lazy-video" muted loop playsinline preload="none" width="512" height="258" aria-label="CFD v2 simulation"><source src="assets/cfd-v2.webm" type="video/webm"><source src="assets/cfd-v2.mp4" type="video/mp4"></video>
                                 </div>
                                 <div class="card-tags">
                                     <span class="tag">OpenFOAM</span>
@@ -1396,7 +1420,7 @@
                                 <span class="file-desc">Robotics — In Progress</span>
                             </button>
                             <div class="file-content">
-                                <img src="assets/arctos arm.png" alt="Arctos Robotic Arm" loading="lazy">
+                                <img src="assets/arctos-arm.avif" alt="Arctos Robotic Arm" width="634" height="936" loading="lazy">
                                 <p>Multi-DOF robotic arm exploring kinematics, servo control, and mechanical design.</p>
                             </div>
                         </div>
@@ -1407,7 +1431,7 @@
                                 <span class="file-desc">IoT</span>
                             </button>
                             <div class="file-content">
-                                <img src="assets/pictrue of water qual sensor.png" alt="Water Quality Sensor" loading="lazy">
+                                <img src="assets/water-quality-sensor.avif" alt="Water Quality Sensor" width="996" height="1174" loading="lazy">
                                 <p>Custom monitoring devices measuring pH, temperature, DO, and salinity in real-time.</p>
                             </div>
                         </div>
@@ -1419,12 +1443,15 @@
                             </button>
                             <div class="file-content">
                                 <model-viewer
-                                    src="assets/Meshy_AI_Stallion_UAV_0301062827_texture.glb"
+                                    src="assets/stallion-uav.glb"
                                     alt="Stallion FPV Racing Drone — 3D Model"
                                     auto-rotate
                                     camera-controls
                                     shadow-intensity="0.5"
+                                    loading="lazy"
+                                    reveal="interaction"
                                     style="width: 100%; height: 300px; border-radius: 8px; background: rgba(10,14,20,0.9); margin-bottom: 0.8rem;">
+                                    <div slot="poster" class="model-poster">Click to load 3D model</div>
                                 </model-viewer>
                                 <p>Research platform and learning opportunity for avionics. Custom-built FPV drone serving as a hands-on testbed for flight controller programming, PID tuning, ESC protocols, and radio telemetry systems.</p>
                             </div>
@@ -1571,7 +1598,7 @@
                     <!-- Chapter IV: Scaling Up -->
                     <div class="journal-spread" data-chapter="3">
                         <div class="journal-page--left">
-                            <img src="assets/SharkVideoObtaining.jpg" alt="Filming a white shark from the research vessel" loading="lazy">
+                            <img src="assets/shark-video-obtaining.avif" alt="Filming a white shark from the research vessel" width="915" height="1600" loading="lazy">
                             <span class="journal-chapter-label">Chapter IV</span>
                             <span class="journal-page-num--left">7</span>
                         </div>

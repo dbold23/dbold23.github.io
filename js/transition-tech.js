@@ -4,6 +4,9 @@
 
 import { randomRange, prefersReducedMotion, sleep } from './utils.js';
 
+// Load model-viewer on demand for the 3D models in this path (fire-and-forget)
+import('https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js').catch(() => {});
+
 let matrixAnimId = null;
 let matrixCanvas = null;
 let matrixCtx = null;

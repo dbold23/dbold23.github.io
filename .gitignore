@@ -45,6 +45,9 @@ tagging_files/
 *.mov
 *.MOV
 *.MP4
+# Optimized web videos are allowed (GIF replacements)
+!assets/*.mp4
+!assets/*.webm
 
 # Claude Code local config
 .claude/

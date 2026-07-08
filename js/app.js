@@ -3,7 +3,7 @@
 // ============================================
 
 import { prefersReducedMotion } from './utils.js';
-import { initBlobCursor, initFadeInObserver, observeNewFadeIns } from './effects.js';
+import { initLazyVideos, initFadeInObserver, observeNewFadeIns } from './effects.js';
 import { initHomescreen, destroyHomescreen } from './homescreen.js';
 import { initScrollManager, destroyScrollManager } from './scroll-manager.js';
 
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('loaded');
 
   // Init effects
-  initBlobCursor();
+  initLazyVideos();
   state.fadeObserver = initFadeInObserver();
 
   // Init homescreen

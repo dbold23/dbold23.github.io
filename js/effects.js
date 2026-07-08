@@ -1,9 +1,36 @@
 // ============================================
-// Effects ported from V1: Blob Cursor, Tilt Cards, Fade-in Observer
+// Effects ported from V1: Tilt Cards, Fade-in Observer, Lazy Videos
 // ============================================
 
-export function initBlobCursor() {
-  // removed — was creating a distracting dot on the mouse
+import { prefersReducedMotion } from './utils.js';
+
+// Lazy-play .lazy-video elements only while on screen
+export function initLazyVideos() {
+  const videos = document.querySelectorAll('.lazy-video');
+  if (!videos.length) return;
+
+  // Respect reduced motion: expose controls, never autoplay
+  if (prefersReducedMotion()) {
+    videos.forEach((video) => {
+      video.controls = true;
+    });
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.play().catch(() => {});
+        } else {
+          entry.target.pause();
+        }
+      });
+    },
+    { threshold: 0.25 }
+  );
+
+  videos.forEach((video) => observer.observe(video));
 }
 
 // Fade-in observer for .fade-in elements

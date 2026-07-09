@@ -7,6 +7,17 @@ import { initLazyVideos, initFadeInObserver, observeNewFadeIns } from './effects
 import { initHomescreen, destroyHomescreen } from './homescreen.js';
 import { initScrollManager, destroyScrollManager } from './scroll-manager.js';
 
+// Own the scroll position: prevents the browser from restoring a deep
+// scroll offset on reload/back-navigation into a path hash.
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+function scrollTopInstant() {
+  // Bypasses `html { scroll-behavior: smooth }` so resets don't animate
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+}
+
 // ---- State ----
 const state = {
   activePath: null, // 'forest' | 'ocean' | 'tech' | 'mind' | null
@@ -37,6 +48,7 @@ async function loadTransition(path) {
 async function enterPath(path) {
   if (state.transitioning || state.activePath === path) return;
   state.transitioning = true;
+  scrollTopInstant();
 
   // If coming from another path, exit it first
   if (state.activePath) {
@@ -82,7 +94,7 @@ async function enterPath(path) {
   const section = document.getElementById(`path-${path}`);
   if (section) {
     section.classList.add('active');
-    window.scrollTo(0, 0);
+    scrollTopInstant();
   }
 
   // Show nav and footer
@@ -147,7 +159,7 @@ async function goHome() {
   initHomescreen();
 
   // Scroll to top
-  window.scrollTo(0, 0);
+  scrollTopInstant();
 
   state.transitioning = false;
   history.pushState(null, '', window.location.pathname);

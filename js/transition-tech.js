@@ -102,9 +102,11 @@ function initStickerNav() {
         window.open(href, '_blank', 'noopener');
         return;
       }
-      // Scroll to folder and auto-open it
+      // Scroll to folder and auto-open it (restore the window if minimized)
       const target = document.querySelector(href);
       if (!target) return;
+      const win = document.getElementById('tech-file-tree');
+      if (win) win.classList.remove('minimized');
       target.scrollIntoView({ behavior: 'smooth', block: 'center' });
       // Auto-open after scroll settles
       setTimeout(() => {
@@ -223,10 +225,16 @@ function initFileTree() {
       folder.classList.toggle('open', !isOpen);
       toggle.setAttribute('aria-expanded', String(!isOpen));
 
-      // Correct scroll so clicked toggle stays in the same viewport position
+      // Correct scroll so clicked toggle stays in the same viewport position.
+      // The terminal body is its own scroller on desktop; fall back to the page.
       const drift = toggle.getBoundingClientRect().top - toggleTop;
       if (Math.abs(drift) > 2) {
-        window.scrollBy(0, drift);
+        const body = toggle.closest('.terminal-body');
+        if (body && body.scrollHeight > body.clientHeight) {
+          body.scrollTop += drift;
+        } else {
+          window.scrollBy(0, drift);
+        }
       }
     }
 
@@ -298,6 +306,101 @@ function stopFileTree() {
   }
 }
 
+// ---- Terminal Window (drag + traffic-light controls) ----
+
+function initTerminalWindow() {
+  const win = document.getElementById('tech-file-tree');
+  if (!win || win.dataset.windowInit) return;
+  win.dataset.windowInit = 'true';
+
+  const titlebar = win.querySelector('.terminal-titlebar');
+  const surface = win.closest('.desktop-surface');
+  if (!titlebar || !surface) return;
+
+  const desktopMode = window.matchMedia('(min-width: 969px)');
+  let winX = 0;
+  let winY = 0;
+
+  function applyPosition() {
+    win.style.setProperty('--win-x', `${winX}px`);
+    win.style.setProperty('--win-y', `${winY}px`);
+  }
+
+  function resetWindow() {
+    winX = 0;
+    winY = 0;
+    win.classList.remove('maximized', 'minimized');
+    applyPosition();
+  }
+
+  // Drag via titlebar (desktop only; dots excluded)
+  titlebar.addEventListener('pointerdown', (e) => {
+    if (!desktopMode.matches) return;
+    if (e.target.closest('.dot')) return;
+    if (win.classList.contains('maximized')) return;
+    e.preventDefault();
+
+    const startX = e.clientX - winX;
+    const startY = e.clientY - winY;
+    win.classList.add('dragging');
+    titlebar.setPointerCapture(e.pointerId);
+
+    function onMove(ev) {
+      winX = ev.clientX - startX;
+      winY = ev.clientY - startY;
+
+      // Keep the titlebar reachable inside the desktop surface
+      const s = surface.getBoundingClientRect();
+      const w = win.offsetWidth;
+      const h = win.offsetHeight;
+      const minX = 120 - w - (s.width - w) / 2;
+      const maxX = s.width - 120 - (s.width - w) / 2;
+      const minY = 4 - (s.height - h) / 2;
+      const maxY = (s.height + h) / 2 - 48;
+      winX = Math.max(minX, Math.min(maxX, winX));
+      winY = Math.max(minY, Math.min(maxY, winY));
+      applyPosition();
+    }
+
+    function onUp() {
+      win.classList.remove('dragging');
+      titlebar.removeEventListener('pointermove', onMove);
+      titlebar.removeEventListener('pointerup', onUp);
+      titlebar.removeEventListener('pointercancel', onUp);
+    }
+
+    titlebar.addEventListener('pointermove', onMove);
+    titlebar.addEventListener('pointerup', onUp);
+    titlebar.addEventListener('pointercancel', onUp);
+  });
+
+  // Traffic lights: red resets, yellow minimizes, green zooms
+  const dotRed = titlebar.querySelector('.dot.red');
+  const dotYellow = titlebar.querySelector('.dot.yellow');
+  const dotGreen = titlebar.querySelector('.dot.green');
+  if (dotRed) {
+    dotRed.title = 'Reset window';
+    dotRed.addEventListener('click', resetWindow);
+  }
+  if (dotYellow) {
+    dotYellow.title = 'Minimize';
+    dotYellow.addEventListener('click', () => win.classList.toggle('minimized'));
+  }
+  if (dotGreen) {
+    dotGreen.title = 'Zoom';
+    dotGreen.addEventListener('click', () => {
+      win.classList.remove('minimized');
+      win.classList.toggle('maximized');
+    });
+  }
+
+  // Double-click the titlebar to zoom, like macOS
+  titlebar.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.dot')) return;
+    win.classList.toggle('maximized');
+  });
+}
+
 // ---- Entrance transition: macOS boot screen ----
 export async function enter() {
   if (prefersReducedMotion()) return;
@@ -354,6 +457,7 @@ export function start() {
   startMatrix();
   startMenubarClock();
   clearIconEntrance();
+  initTerminalWindow();
   stickerClickCleanup = initStickerNav();
   fileTreeCleanup = initFileTree();
   hwViewerCleanup = initHardwareViewer();

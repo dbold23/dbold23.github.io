@@ -198,6 +198,8 @@
 /* Shared Footer */
 .shared-footer {
   display: none;
+  position: relative;
+  z-index: 10; /* sit above the paths' fixed background layers (bubbles, depth gradient) */
   background: var(--gray-dark);
   color: var(--white);
   padding: 5rem 2rem 3rem;

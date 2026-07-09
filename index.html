@@ -44,7 +44,7 @@
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
-    <noscript><style> body { opacity: 1 !important; } .path-section { display: block !important; position: static !important; } .corner-hotspot, .skip-link { display: none !important; } </style></noscript>
+    <noscript><style> body { opacity: 1 !important; } .path-section { display: block !important; position: static !important; } .corner-hotspot, .skip-link { display: none !important; } .fade-in { opacity: 1 !important; transform: none !important; } </style></noscript>
 </head>
 <body>
     <a class="skip-link" href="#homescreen">Skip to content</a>
@@ -302,32 +302,22 @@
         <canvas id="bubble-canvas" class="bubble-canvas"></canvas>
         <div class="ocean-depth-bg"></div>
 
-        <div class="card-deck-section">
-            <header class="deck-header">
-                <h2 class="deck-title">Research</h2>
-                <p class="deck-subtitle">Pick a card, any card</p>
+        <div class="ocean-cards">
+            <header class="ocean-header">
+                <h2 class="ocean-title">Research</h2>
             </header>
 
-            <div class="card-deck">
-
-                <!-- Card 0: Shark Ecology -->
-                <article class="deck-card" data-card="0"
-                         data-preview-title="Shark Ecology & Telemetry"
-                         data-preview-desc="Computer vision morphometrics, behavior classification from bio-logging tags, and multi-year photo-ID tracking of white sharks."
-                         style="--card-index: 0">
-                    <div class="deck-card-inner">
-                        <div class="card-header">
-                            <span class="card-tab-title">Shark Ecology</span>
-                            <span class="card-type">Telemetry</span>
-                        </div>
-                        <div class="card-image-frame">
-                            <img src="assets/me with a shark tag and antena.avif" alt="Shark tagging fieldwork" loading="lazy">
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-footer-label">California State University, Monterey Bay</span>
-                        </div>
-                        <div class="card-detail" aria-hidden="true">
-                            <h3>Shark Ecology & Telemetry</h3>
+            <article class="ocean-card fade-in" style="--card-index: 0">
+                <header class="ocean-card-header">
+                    <div>
+                        <h3>Shark Ecology & Telemetry</h3>
+                        <p class="ocean-card-org">California State University, Monterey Bay</p>
+                    </div>
+                    <span class="card-type">Telemetry</span>
+                </header>
+                <div class="ocean-card-banner">
+                    <img src="assets/me with a shark tag and antena.avif" alt="Shark tagging fieldwork" loading="lazy">
+                </div>
                             <p>Working in Dr. Salvador Jorgensen's Ocean Predator Ecology Lab, I develop computer vision tools for white shark research and lead fieldwork spanning morphometric analysis, behavior classification, and long-term photo-ID tracking.</p>
                             <ul>
                                 <li>Developed SharkHealthApp: YOLOv8-pose with a 15-keypoint schema for automated morphometric analysis from 20+ years of archival video, achieving 98% detection accuracy (mAP50)</li>
@@ -365,28 +355,19 @@
                             <div class="panel-gallery">
                                 <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Shark tagging operation"><source src="assets/shark-tagging.webm" type="video/webm"><source src="assets/shark-tagging.mp4" type="video/mp4"></video>
                             </div>
-                        </div>
-                    </div>
-                </article>
+            </article>
 
-                <!-- Card 1: Sustainable Aquaculture -->
-                <article class="deck-card" data-card="1"
-                         data-preview-title="Sustainable Aquaculture"
-                         data-preview-desc="Purple sea urchin ranching research: stocking density optimization, finishing feed enhancement, and eelgrass blue carbon initiatives at Moss Landing Marine Labs."
-                         style="--card-index: 1">
-                    <div class="deck-card-inner">
-                        <div class="card-header">
-                            <span class="card-tab-title">Aquaculture</span>
-                            <span class="card-type">Restoration</span>
-                        </div>
-                        <div class="card-image-frame">
-                            <img src="assets/aquaculutre facitly pretty pic between both rows of tanks.JPG" alt="Aquaculture facility tanks" loading="lazy">
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-footer-label">Moss Landing Labs</span>
-                        </div>
-                        <div class="card-detail" aria-hidden="true">
-                            <h3>Sustainable Aquaculture</h3>
+            <article class="ocean-card fade-in" style="--card-index: 1">
+                <header class="ocean-card-header">
+                    <div>
+                        <h3>Sustainable Aquaculture</h3>
+                        <p class="ocean-card-org">Moss Landing Labs</p>
+                    </div>
+                    <span class="card-type">Restoration</span>
+                </header>
+                <div class="ocean-card-banner">
+                    <img src="assets/aquaculutre facitly pretty pic between both rows of tanks.JPG" alt="Aquaculture facility tanks" loading="lazy">
+                </div>
                             <p>Lead Technician in Dr. Luke Gardner's lab at Moss Landing Marine Labs, independently designing and managing two experiments on purple sea urchin (<em>Strongylocentrotus purpuratus</em>) aquaculture. Two publications currently in review. Research also extends to eelgrass as a cornerstone for California aquaculture and blue carbon initiatives.</p>
                             <ul>
                                 <li>Independently designing and managing stocking density optimization and finishing feed roe enhancement experiments</li>
@@ -420,28 +401,19 @@
                                 <img src="assets/tank of urchins overhead view_compressed.jpg" alt="Urchin tanks" loading="lazy">
                                 <img src="assets/pic of everyone dissecting urchins_compressed.jpg" alt="Team dissecting urchins" loading="lazy">
                             </div>
-                        </div>
-                    </div>
-                </article>
+            </article>
 
-                <!-- Card 2: South Africa -->
-                <article class="deck-card" data-card="2"
-                         data-preview-title="South Africa Marine Research"
-                         data-preview-desc="31 hours of scientific diving across nudibranch surveys, BRUV deployments, shark egg casing analysis, and vessel operations in South African waters."
-                         style="--card-index: 2">
-                    <div class="deck-card-inner">
-                        <div class="card-header">
-                            <span class="card-tab-title">South Africa</span>
-                            <span class="card-type">Field Work</span>
-                        </div>
-                        <div class="card-image-frame">
-                            <img src="assets/On a boat in SA.avif" alt="On a research boat in South Africa" loading="lazy">
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-footer-label">International Research</span>
-                        </div>
-                        <div class="card-detail" aria-hidden="true">
-                            <h3>South Africa Marine Research</h3>
+            <article class="ocean-card fade-in" style="--card-index: 2">
+                <header class="ocean-card-header">
+                    <div>
+                        <h3>South Africa Marine Research</h3>
+                        <p class="ocean-card-org">International Research</p>
+                    </div>
+                    <span class="card-type">Field Work</span>
+                </header>
+                <div class="ocean-card-banner">
+                    <img src="assets/On a boat in SA.avif" alt="On a research boat in South Africa" loading="lazy">
+                </div>
                             <p>Research and Diver Development Program in South African coastal waters (July–August 2024). Logged 31 hours of scientific diving across diverse marine research projects, from subtidal ecology to vessel-based operations.</p>
                             <ul>
                                 <li>Nudibranch population surveys and species identification dives</li>
@@ -456,28 +428,19 @@
                                 <img src="assets/Picture of my in south africa with dive gear and a funny construction hat on.JPEG" alt="SA field work" loading="lazy">
                                 <img src="assets/Me doing trapping.avif" alt="Trapping operations" loading="lazy">
                             </div>
-                        </div>
-                    </div>
-                </article>
+            </article>
 
-                <!-- Card 3: Field Ops + Reflection -->
-                <article class="deck-card" data-card="3"
-                         data-preview-title="Marine Field Operations"
-                         data-preview-desc="NAUI Divemaster with 143 dives, AAUS Scientific Diver, and MOTC Certified Vessel Operator across California and Baja California."
-                         style="--card-index: 3">
-                    <div class="deck-card-inner">
-                        <div class="card-header">
-                            <span class="card-tab-title">Field Ops</span>
-                            <span class="card-type">Diving</span>
-                        </div>
-                        <div class="card-image-frame">
-                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy">
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-footer-label">Certified Vessel Operator</span>
-                        </div>
-                        <div class="card-detail" aria-hidden="true">
-                            <h3>Marine Field Operations</h3>
+            <article class="ocean-card fade-in" style="--card-index: 3">
+                <header class="ocean-card-header">
+                    <div>
+                        <h3>Marine Field Operations</h3>
+                        <p class="ocean-card-org">Certified Vessel Operator</p>
+                    </div>
+                    <span class="card-type">Diving</span>
+                </header>
+                <div class="ocean-card-banner">
+                    <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy">
+                </div>
                             <p>Certified professional diver and vessel operator with extensive field research experience across California and Baja California, Mexico. From kelp canopy surveys to offshore tagging operations, combining dive expertise with research vessel operations.</p>
                             <ul>
                                 <li>NAUI Divemaster: 143 logged dives, trained in dive planning, safety management, and underwater research coordination</li>
@@ -494,28 +457,19 @@
                             <blockquote class="panel-reflection">
                                 From kelp canopy surveys to offshore tagging operations, every day on the water has reinforced the same lesson: marine field research is where assumptions meet reality. The ocean doesn't care about your methods section. It demands adaptability, teamwork, and respect for the unpredictable.
                             </blockquote>
-                        </div>
-                    </div>
-                </article>
+            </article>
 
-                <!-- Card 4: Relay Station Training -->
-                <article class="deck-card" data-card="4"
-                         data-preview-title="Relay Station Training Program"
-                         data-preview-desc="Teaching students to build, deploy, and operate low-cost VHF acoustic relay stations for wildlife telemetry across the Galápagos and California."
-                         style="--card-index: 4">
-                    <div class="deck-card-inner">
-                        <div class="card-header">
-                            <span class="card-tab-title">Relay Stations</span>
-                            <span class="card-type">Training</span>
-                        </div>
-                        <div class="card-image-frame">
-                            <img src="assets/relay-station-sunset.avif" alt="Relay station deployment at sunset" width="645" height="797" loading="lazy">
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-footer-label">Galápagos & California</span>
-                        </div>
-                        <div class="card-detail" aria-hidden="true">
-                            <h3>Relay Station Training Program</h3>
+            <article class="ocean-card fade-in" style="--card-index: 4">
+                <header class="ocean-card-header">
+                    <div>
+                        <h3>Relay Station Training Program</h3>
+                        <p class="ocean-card-org">Galápagos & California</p>
+                    </div>
+                    <span class="card-type">Training</span>
+                </header>
+                <div class="ocean-card-banner">
+                    <img src="assets/relay-station-sunset.avif" alt="Relay station deployment at sunset" width="645" height="797" loading="lazy">
+                </div>
                             <p>Developed and led a training program teaching students to build, deploy, and operate low-cost VHF acoustic relay stations for wildlife telemetry. Each station uses a Raspberry Pi 5, RTL-SDR Blog V4, and SIM7028 NB-IoT cellular modem, achieving comparable detection to a $695 commercial receiver (R-1000) for under $100 in components.</p>
                             <ul>
                                 <li>Trained students on relay station assembly: Raspberry Pi 5, RTL-SDR Blog V4, SIM7028 NB-IoT HAT, and custom VHF antenna</li>
@@ -532,18 +486,7 @@
                             <div class="pres-embed">
                                 <iframe src="https://docs.google.com/presentation/d/1Ghkgao_iwUbkBy0n7kmHcbhW50ed88gM/embed?start=false&loop=false&delayms=3000" width="100%" height="400" frameborder="0" allowfullscreen loading="lazy"></iframe>
                             </div>
-                        </div>
-                    </div>
-                </article>
-
-            </div>
-
-            <!-- Shared preview panel (updated via JS on hover) -->
-            <div class="deck-preview">
-                <h3 class="deck-preview-title">Hover a card to explore</h3>
-                <p class="deck-preview-desc">Each card represents a research or presentation topic</p>
-                <button class="card-detail-btn deck-preview-btn" style="display: none;">Click card for more details</button>
-            </div>
+            </article>
         </div>
     </section>
 

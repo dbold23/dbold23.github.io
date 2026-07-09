@@ -85,139 +85,13 @@ export function stopBubbles() {
   window.removeEventListener('resize', resizeBubbleCanvas);
 }
 
-// ---- Card Deck: Hover fan + Click detail expand ----
-let backdrop = null;
-let detailOverlay = null;
-let escHandler = null;
-
-let activeCardIndex = null;
-
-function initCardDeck() {
-  const deck = document.querySelector('.card-deck');
-  if (!deck) return;
-
-  const cards = deck.querySelectorAll('.deck-card');
-  const preview = document.querySelector('.deck-preview');
-  const previewTitle = preview?.querySelector('.deck-preview-title');
-  const previewDesc = preview?.querySelector('.deck-preview-desc');
-  const previewBtn = preview?.querySelector('.deck-preview-btn');
-
-  // Create backdrop
-  backdrop = document.createElement('div');
-  backdrop.className = 'deck-backdrop';
-  document.body.appendChild(backdrop);
-
-  // Create detail overlay container (lives on body to avoid transform issues)
-  detailOverlay = document.createElement('div');
-  detailOverlay.className = 'deck-detail-overlay';
-  document.body.appendChild(detailOverlay);
-
-  // Hover cards → update preview panel
-  cards.forEach((card) => {
-    card.addEventListener('mouseenter', () => {
-      const idx = parseInt(card.dataset.card, 10);
-      if (idx === activeCardIndex) return;
-      activeCardIndex = idx;
-
-      if (previewTitle) previewTitle.textContent = card.dataset.previewTitle;
-      if (previewDesc) previewDesc.textContent = card.dataset.previewDesc;
-      if (previewBtn) previewBtn.style.display = '';
-    });
-  });
-
-  // Mouse leaves entire deck → reset preview
-  deck.addEventListener('mouseleave', () => {
-    activeCardIndex = null;
-    if (previewTitle) previewTitle.textContent = 'Hover a card to explore';
-    if (previewDesc) previewDesc.textContent = 'Each card represents a research or presentation topic';
-    if (previewBtn) previewBtn.style.display = 'none';
-  });
-
-  // Click "More details" in preview panel → open detail for active card
-  if (previewBtn) {
-    previewBtn.addEventListener('click', () => {
-      if (activeCardIndex === null) return;
-      const card = deck.querySelector(`[data-card="${activeCardIndex}"]`);
-      const detailSource = card?.querySelector('.card-detail');
-      if (detailSource) openDetail(detailSource);
-    });
-  }
-
-  // Also allow clicking the card itself to open details
-  deck.addEventListener('click', (e) => {
-    const card = e.target.closest('.deck-card');
-    if (!card) return;
-    const detailSource = card.querySelector('.card-detail');
-    if (detailSource) openDetail(detailSource);
-  });
-
-  // Backdrop click closes
-  backdrop.addEventListener('click', closeDetail);
-
-  // Escape key closes
-  escHandler = (e) => {
-    if (e.key === 'Escape' && detailOverlay.classList.contains('open')) {
-      closeDetail();
-    }
-  };
-  document.addEventListener('keydown', escHandler);
-}
-
-function openDetail(sourceEl) {
-  if (!detailOverlay || !backdrop) return;
-
-  // Clone the detail content into the overlay
-  detailOverlay.innerHTML = '';
-
-  // Add close button
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'deck-detail-close';
-  closeBtn.setAttribute('aria-label', 'Close details');
-  closeBtn.innerHTML = '&times;';
-  closeBtn.addEventListener('click', closeDetail);
-  detailOverlay.appendChild(closeBtn);
-
-  // Clone and append content (skip the close btn from source)
-  Array.from(sourceEl.children).forEach((child) => {
-    if (!child.classList.contains('card-close-btn')) {
-      detailOverlay.appendChild(child.cloneNode(true));
-    }
-  });
-
-  backdrop.classList.add('visible');
-  detailOverlay.classList.add('open');
-}
-
-function closeDetail() {
-  if (!detailOverlay || !backdrop) return;
-  detailOverlay.classList.remove('open');
-  backdrop.classList.remove('visible');
-}
-
-function destroyCardDeck() {
-  if (backdrop) {
-    backdrop.remove();
-    backdrop = null;
-  }
-  if (detailOverlay) {
-    detailOverlay.remove();
-    detailOverlay = null;
-  }
-  if (escHandler) {
-    document.removeEventListener('keydown', escHandler);
-    escHandler = null;
-  }
-}
-
 // Start/Stop (called by app.js when path is active)
 export function start() {
   startBubbles();
-  initCardDeck();
 }
 
 export function stop() {
   stopBubbles();
-  destroyCardDeck();
 }
 
 function resizeBubbleCanvas() {

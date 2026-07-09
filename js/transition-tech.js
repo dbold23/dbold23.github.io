@@ -195,47 +195,12 @@ function initFileTree() {
     if (!toggle) return;
 
     function onClick() {
+      // Folders open independently: expand/collapse in place with no
+      // accordion auto-close and no compensating scroll, so the view
+      // never jumps when you open or close something.
       const isOpen = folder.classList.contains('open');
-
-      // Record position of clicked toggle before DOM changes
-      const toggleTop = toggle.getBoundingClientRect().top;
-
-      // Close sibling folders — collapse INSTANTLY (skip CSS transition)
-      const parent = folder.parentElement;
-      const siblings = parent.querySelectorAll(':scope > .tree-folder');
-      siblings.forEach(f => {
-        if (f !== folder && f.classList.contains('open')) {
-          // Kill transition so height collapses immediately
-          const children = f.querySelector(':scope > .folder-children');
-          if (children) children.style.transition = 'none';
-
-          f.classList.remove('open');
-          const t = f.querySelector(':scope > .folder-toggle');
-          if (t) t.setAttribute('aria-expanded', 'false');
-
-          // Force reflow, then restore transition
-          if (children) {
-            children.offsetHeight; // force layout
-            children.style.transition = '';
-          }
-        }
-      });
-
-      // Toggle this folder
       folder.classList.toggle('open', !isOpen);
       toggle.setAttribute('aria-expanded', String(!isOpen));
-
-      // Correct scroll so clicked toggle stays in the same viewport position.
-      // The terminal body is its own scroller on desktop; fall back to the page.
-      const drift = toggle.getBoundingClientRect().top - toggleTop;
-      if (Math.abs(drift) > 2) {
-        const body = toggle.closest('.terminal-body');
-        if (body && body.scrollHeight > body.clientHeight) {
-          body.scrollTop += drift;
-        } else {
-          window.scrollBy(0, drift);
-        }
-      }
     }
 
     toggle.addEventListener('click', onClick);

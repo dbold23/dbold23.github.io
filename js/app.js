@@ -18,6 +18,16 @@ function scrollTopInstant() {
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 }
 
+function warmPathMedia(path) {
+  // Kick the entered path's lazy media so it loads behind the transition
+  // overlay instead of popping in after the reveal
+  const section = document.getElementById(`path-${path}`);
+  if (!section) return;
+  section.querySelectorAll('img[loading="lazy"], iframe[loading="lazy"]').forEach(el => {
+    el.loading = 'eager';
+  });
+}
+
 // ---- State ----
 const state = {
   activePath: null, // 'forest' | 'ocean' | 'tech' | 'mind' | null
@@ -49,6 +59,7 @@ async function enterPath(path) {
   if (state.transitioning || state.activePath === path) return;
   state.transitioning = true;
   scrollTopInstant();
+  warmPathMedia(path);
 
   // If coming from another path, exit it first
   if (state.activePath) {

@@ -126,18 +126,6 @@
   margin-bottom: 0;
 }
 
-.hero-hint {
-  color: rgba(255,255,255,0.6);
-  font-size: 0.9rem;
-  margin-top: 2rem;
-  opacity: 0;
-  animation: hintFadeIn 0.8s ease 3s forwards;
-}
-
-@keyframes hintFadeIn {
-  to { opacity: 1; }
-}
-
 /* ============================================
    Hotspot Regions
    ============================================ */

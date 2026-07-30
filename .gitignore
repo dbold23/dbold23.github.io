@@ -49,5 +49,8 @@ tagging_files/
 !assets/*.mp4
 !assets/*.webm
 
-# Claude Code local config
+# Local editor/agent config
 .claude/
+
+# Internal planning docs (not part of the published site)
+tasks/

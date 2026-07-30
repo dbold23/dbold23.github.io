@@ -72,15 +72,6 @@ function stopAmbient() {
   }
 }
 
-// Show hint after delay
-function showHint() {
-  const hint = document.getElementById('hero-hint');
-  if (!hint) return;
-  setTimeout(() => {
-    hint.classList.add('visible');
-  }, 3000);
-}
-
 // ---- Image-locked hotspot positioning ----
 // Coordinates of each hotspot's CENTER in the original image (0-100%)
 const HOTSPOT_IMAGE_COORDS = {
@@ -155,7 +146,6 @@ function initHotspotTracking() {
 // ---- Public API ----
 export function initHomescreen() {
   startAmbient();
-  showHint();
   initHotspotTracking();
 }
 

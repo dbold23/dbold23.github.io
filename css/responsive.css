@@ -68,7 +68,6 @@
 
   .corner-icon { width: clamp(40px, 8vw, 80px); height: clamp(40px, 8vw, 80px); }
   .corner-label { font-size: clamp(0.9rem, 2vw, 1.4rem); }
-  .hero-hint { font-size: 0.8rem; margin-top: 1.5rem; }
 
   /* Path content */
   .path-content { padding: 4rem 1rem 3rem; }
@@ -202,7 +201,6 @@
   .leaf { animation: none !important; display: none; }
   .corner-hotspot::before { animation: none !important; }
   .hero-name { animation: none !important; }
-  .hero-hint { animation: none !important; opacity: 1 !important; }
   .folder-children, .file-content { transition: none !important; }
   .folder-arrow { transition: none !important; }
   .blink-cursor { animation: none !important; }

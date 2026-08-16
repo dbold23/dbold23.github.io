@@ -19,15 +19,15 @@
 
 [data-active-path="mind"] .neural-bg { display: block; }
 
-/* ── Journal Wrapper ── */
-.journal-wrapper {
+/* ── Log wrapper ── */
+.log {
   max-width: 1020px;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
 /* ── Flyleaf (inscription page) ── */
-.journal-flyleaf {
+.log-flyleaf {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,7 +43,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.journal-flyleaf.hidden { display: none; }
+
 
 .flyleaf-inscription {
   position: relative;
@@ -94,646 +94,256 @@
   transform: translateY(-2px);
 }
 
-/* ── Journal (hidden until flyleaf opens) ── */
-.journal {
-  display: none;
-  animation: journalReveal 0.6s ease;
-  perspective: 1500px;
+/* ============================================
+   Captain's Log: full screen chapters
+   ============================================ */
+.log { position: relative; }
+
+.log-flyleaf.hidden { display: none; }
+
+/* Once open, the chapter owns the screen: no page header competing with it */
+#path-mind.log-open .path-header { display: none; }
+#path-mind.log-open .path-content { padding-top: 0; padding-bottom: 0; }
+
+/* The deck breaks out of .path-content so the images can go edge to edge */
+.log-deck {
   position: relative;
-}
-.journal.visible {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-/* All visible spreads stack in the same grid cell */
-.journal-spread.active,
-.journal-spread.page-turning-forward,
-.journal-spread.page-turning-backward,
-.journal-spread.peel-entering {
-  grid-row: 1;
-  grid-column: 1;
-}
-
-@keyframes journalReveal {
-  from { opacity: 0; transform: perspective(1200px) rotateY(-4deg); }
-  to   { opacity: 1; transform: perspective(1200px) rotateY(0); }
-}
-
-/* ── Journal Spread (two-page layout) ── */
-.journal-spread {
-  display: none;
-  grid-template-columns: 1fr 8px 1fr;
-  max-width: 960px;
-  min-height: 520px;
-  margin: 0 auto 2rem;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(199,125,255,0.15);
-  border-radius: 2px 16px 16px 2px;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  height: 100svh;
+  min-height: 560px;
   overflow: hidden;
-  box-shadow:
-    0 8px 32px rgba(0,0,0,0.3),
-    0 2px 8px rgba(0,0,0,0.2),
-    /* Page-edge depth — right side (stacked pages) */
-    4px 2px 0 -1px rgba(180,170,155,0.08),
-    6px 3px 0 -1px rgba(160,150,135,0.05);
-  transform: perspective(1200px) rotateY(0deg);
-  transform-style: preserve-3d;
-  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
-}
-.journal-spread.active { display: grid; }
-
-/* Hover — subtle 3D lift */
-.journal-spread:hover {
-  box-shadow:
-    0 16px 48px rgba(0,0,0,0.4),
-    0 0 30px rgba(199,125,255,0.12),
-    4px 2px 0 -1px rgba(180,170,155,0.1),
-    6px 3px 0 -1px rgba(160,150,135,0.07);
-  transform: perspective(1200px) rotateY(-0.5deg) translateY(-3px);
+  background: #0a0612;
 }
 
-/* ── Backface visibility for 3D page turns ── */
-.journal-page--left,
-.journal-page--right {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
+.log-deck[hidden] { display: none; }
 
-/* ── Page backface (injected by JS during turn) ── */
-.page-backface {
+/* ---- A chapter ---- */
+.log-chapter {
   position: absolute;
   inset: 0;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transform: rotateY(180deg);
-  background: linear-gradient(
-    135deg,
-    rgba(200, 190, 175, 0.12) 0%,
-    rgba(180, 170, 155, 0.08) 100%
-  );
-  z-index: 10;
-  pointer-events: none;
-  border-radius: inherit;
+  visibility: hidden;
+  /* The sweep reveals the incoming chapter from the bottom edge upward */
+  clip-path: inset(100% 0 0 0);
 }
 
-/* ── Page turn — Forward (right page flips around spine to the left) ── */
-.journal-spread.page-turning-forward {
-  display: grid;
-  z-index: 2;
-  overflow: visible;
-  /* Remove backdrop-filter during animation — it flattens preserve-3d */
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-.journal-spread.page-turning-forward .journal-page--right {
-  transform-origin: left center;
-  animation: pageTurnForward 0.85s cubic-bezier(0.4, 0, 0.15, 1) forwards;
-  filter: drop-shadow(-8px 4px 16px rgba(0,0,0,0.4));
-  z-index: 3;
-}
-.journal-spread.page-turning-forward .journal-page--left,
-.journal-spread.page-turning-forward .journal-spine {
-  animation: fadeOutSideLate 0.85s ease forwards;
+.log-chapter.is-current,
+.log-chapter.is-leaving {
+  visibility: visible;
+  clip-path: inset(0 0 0 0);
 }
 
-@keyframes pageTurnForward {
-  0%   { transform: rotateY(0deg); }
-  100% { transform: rotateY(-180deg); }
-}
-
-/* ── Page turn — Backward (left page flips around spine to the right) ── */
-.journal-spread.page-turning-backward {
-  display: grid;
-  z-index: 2;
-  overflow: visible;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-.journal-spread.page-turning-backward .journal-page--left {
-  transform-origin: right center;
-  animation: pageTurnBackward 0.85s cubic-bezier(0.4, 0, 0.15, 1) forwards;
-  filter: drop-shadow(8px 4px 16px rgba(0,0,0,0.4));
-  z-index: 3;
-}
-.journal-spread.page-turning-backward .journal-page--right,
-.journal-spread.page-turning-backward .journal-spine {
-  animation: fadeOutSideLate 0.85s ease forwards;
-}
-
-@keyframes pageTurnBackward {
-  0%   { transform: rotateY(0deg); }
-  100% { transform: rotateY(180deg); }
-}
-
-/* Non-turning side stays visible during first half, then fades */
-@keyframes fadeOutSideLate {
-  0%   { opacity: 1; }
-  45%  { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-/* ── Incoming spread (visible underneath the turning page) ── */
-.journal-spread.peel-entering {
-  display: grid;
-  opacity: 0;
-  animation: spreadFadeIn 0.4s ease 0.1s forwards;
-  z-index: 1;
-}
-@keyframes spreadFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* ── Left Page (photo) ── */
-.journal-page--left {
-  position: relative;
-  overflow: hidden;
-  min-height: 400px;
-  background: rgba(0,0,0,0.3);
-}
-
-.journal-page--left img {
+.log-media {
   position: absolute;
   inset: 0;
+}
+
+.log-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.85;
-  transition: opacity 0.4s ease;
-}
-.journal-spread:hover .journal-page--left img {
-  opacity: 1;
+  object-position: center 38%;
 }
 
-/* Ken Burns — slow drift while visible */
-.journal-spread.active .journal-page--left img {
-  animation: kenBurns 20s ease-in-out infinite alternate;
-}
-@keyframes kenBurns {
-  from { transform: scale(1) translate(0, 0); }
-  to   { transform: scale(1.06) translate(-1%, -1%); }
-}
-
-/* Purple edge glow near spine */
-.journal-page--left::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 30px;
-  background: linear-gradient(to left, rgba(199,125,255,0.08), transparent);
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Paper texture overlay on photo */
-.journal-page--left::after {
-  content: '';
+/* Enough darkness under the words to read them, and no more */
+.log-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
   pointer-events: none;
-}
-
-.journal-chapter-label {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: none;
-  color: rgba(255,255,255,0.7);
-  z-index: 2;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-  border-bottom: 1px solid rgba(255,255,255,0.3);
-  padding-bottom: 0.25rem;
-}
-
-.journal-page-num--left {
-  position: absolute;
-  bottom: 0.75rem;
-  left: 1rem;
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.5);
-  z-index: 2;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
-
-/* ── Spine (center divider) ── */
-.journal-spine {
   background:
-    /* Stitch marks */
-    repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 18px,
-      rgba(199,125,255,0.18) 18px,
-      rgba(199,125,255,0.18) 22px,
-      transparent 22px,
-      transparent 28px
-    ),
-    /* 3D depth gradient */
-    linear-gradient(
-      90deg,
-      rgba(0,0,0,0.35) 0%,
-      rgba(0,0,0,0.12) 25%,
-      rgba(255,255,255,0.04) 50%,
-      rgba(0,0,0,0.12) 75%,
-      rgba(0,0,0,0.35) 100%
-    );
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+    linear-gradient(to top, rgba(8, 4, 16, 0.94) 0%, rgba(8, 4, 16, 0.72) 26%, rgba(8, 4, 16, 0.18) 58%, rgba(8, 4, 16, 0.35) 100%),
+    linear-gradient(to right, rgba(8, 4, 16, 0.8) 0%, rgba(8, 4, 16, 0.25) 45%, transparent 70%);
 }
 
-/* ── Right Page (narrative) ── */
-.journal-page--right {
-  padding: 2rem 2.25rem;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  /* Warm paper tone + faint ruled lines */
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 1.84rem,
-      rgba(199,125,255,0.05) 1.84rem,
-      rgba(199,125,255,0.05) calc(1.84rem + 1px)
-    ),
-    linear-gradient(
-      180deg,
-      rgba(245, 240, 230, 0.06) 0%,
-      rgba(240, 235, 222, 0.04) 100%
-    );
-}
-
-/* Corner curl hint — folded page corner on bottom-right */
-.journal-spread.active .journal-page--right {
-  cursor: pointer;
-}
-.journal-spread.active .journal-page--left {
-  cursor: pointer;
-}
-
-/* Corner curl hint — left page (bottom-left, indicates backward) */
-.corner-curl-left {
+.log-copy {
   position: absolute;
-  bottom: 0;
   left: 0;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(
-    45deg,
-    rgba(199,125,255,0.35) 0%,
-    rgba(255,255,255,0.15) 35%,
-    rgba(199,125,255,0.08) 50%,
-    transparent 70%
-  );
-  clip-path: polygon(0% 0%, 0% 100%, 100% 100%);
-  box-shadow: 2px -2px 6px rgba(0,0,0,0.2);
-  opacity: 0.7;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-  z-index: 5;
-}
-
-.journal-spread.active .journal-page--left:hover .corner-curl-left {
-  width: 55px;
-  height: 55px;
-  opacity: 1;
-  background: linear-gradient(
-    45deg,
-    rgba(199,125,255,0.5) 0%,
-    rgba(255,255,255,0.25) 30%,
-    rgba(199,125,255,0.15) 50%,
-    transparent 70%
-  );
-}
-
-/* Corner curl hint — right page (bottom-right, indicates forward) */
-.journal-spread.active .journal-page--right::after {
-  content: '';
-  position: absolute;
   bottom: 0;
-  right: 0;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(
-    315deg,
-    rgba(199,125,255,0.25) 0%,
-    rgba(255,255,255,0.12) 35%,
-    rgba(199,125,255,0.08) 50%,
-    transparent 70%
-  );
-  clip-path: polygon(100% 0%, 100% 100%, 0% 100%);
-  box-shadow: -2px -2px 6px rgba(0,0,0,0.2);
-  opacity: 0.7;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-  z-index: 5;
+  width: min(92vw, 62ch);
+  padding: 0 clamp(1.25rem, 5vw, 4.5rem) clamp(5.5rem, 12vh, 8rem) clamp(1.25rem, 5vw, 4.5rem);
+  color: #fff;
 }
 
-.journal-spread.active .journal-page--right:hover::after {
-  width: 55px;
-  height: 55px;
-  opacity: 1;
-  background: linear-gradient(
-    315deg,
-    rgba(199,125,255,0.35) 0%,
-    rgba(255,255,255,0.18) 30%,
-    rgba(199,125,255,0.12) 50%,
-    transparent 70%
-  );
+.log-chapter-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mind-accent, #c77dff);
 }
 
-.journal-period {
+.log-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.55);
+}
+
+.log-period {
+  margin: 0 0 1.1rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.log-badge {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mind-accent);
-  margin-bottom: 0.5rem;
-}
-
-.journal-title {
-  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
-  color: var(--mind-warm);
-  margin-bottom: 1rem;
-  font-weight: 700;
-}
-/* Decorative ornament below title */
-.journal-title::after {
-  content: '\B7  \25C7  \B7';
-  display: block;
-  margin-top: 0.5rem;
-  font-size: 0.55rem;
-  color: rgba(199,125,255,0.3);
-  letter-spacing: 0.3em;
-}
-
-.journal-narrative {
-  font-family: Georgia, 'Palatino Linotype', 'Book Antiqua', serif;
-  color: rgba(255,255,255,0.87);
-  font-size: 0.95rem;
-  line-height: 1.85;
-  flex: 1;
-}
-.journal-narrative p {
-  margin-bottom: 0.9rem;
-}
-.journal-narrative p:last-child {
-  margin-bottom: 0;
-}
-
-/* Drop cap on first paragraph */
-.journal-narrative p:first-child::first-letter {
-  float: left;
-  font-size: 3.2em;
-  line-height: 0.8;
-  padding-right: 0.08em;
-  margin-top: 0.05em;
-  color: var(--mind-accent);
-  font-family: Georgia, serif;
-  font-weight: 700;
-}
-
-/* ── Callout boxes ── */
-.journal-callout {
-  margin-top: 1.25rem;
-  padding: 1rem 1.25rem;
-  background: rgba(199,125,255,0.1);
-  border-left: 3px solid var(--mind-accent);
-  border-radius: 0 12px 12px 0;
-}
-.journal-callout strong {
-  color: var(--mind-warm);
-  font-size: 1rem;
-  display: block;
-  margin-bottom: 0.25rem;
-}
-.journal-callout span {
-  color: rgba(255,255,255,0.75);
-  font-size: 0.85rem;
-}
-
-/* Highlight tag callout */
-.journal-highlight {
-  display: inline-block;
-  margin-top: 1rem;
-  background: rgba(157,78,221,0.2);
-  border: 1px solid rgba(199,125,255,0.3);
-  color: var(--mind-accent);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.3rem 0.9rem;
-  border-radius: 20px;
-  letter-spacing: 0.04em;
-}
-
-/* Stats callout */
-.journal-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-.journal-stat {
-  background: rgba(199,125,255,0.12);
-  border: 1px solid rgba(199,125,255,0.25);
-  color: var(--mind-accent);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-}
-
-/* Win badge (HABHub) */
-.journal-win-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,160,0,0.15));
-  border: 1px solid rgba(255,215,0,0.4);
-  color: #ffd700;
-  font-size: 0.75rem;
-  font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 0.3rem 0.85rem;
-  border-radius: 20px;
-  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  color: #1a1206;
+  background: linear-gradient(135deg, #f6d365, #d4a017);
 }
 
-/* Cert tags (Now + Next) */
-.journal-certs {
+.log-narrative p {
+  margin: 0 0 0.9rem;
+  font-size: clamp(0.95rem, 1.7vw, 1.08rem);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+}
+
+.log-narrative p:last-child { margin-bottom: 0; }
+
+.log-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.4rem;
+  margin-top: 1.1rem;
 }
-.journal-cert-tag {
-  background: rgba(232,168,124,0.15);
-  border: 1px solid rgba(232,168,124,0.35);
-  color: var(--mind-warm);
-  font-size: 0.75rem;
+
+.log-chip {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(157, 78, 221, 0.28);
+  border: 1px solid rgba(199, 125, 255, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-.journal-page-num--right {
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.35);
-  text-align: right;
-  margin-top: auto;
-  padding-top: 1rem;
-}
-
-/* ── Staggered content reveal ── */
-@keyframes contentFadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.journal-spread.active .journal-period    { animation: contentFadeUp 0.5s ease both; animation-delay: 0ms; }
-.journal-spread.active .journal-title     { animation: contentFadeUp 0.5s ease both; animation-delay: 80ms; }
-.journal-spread.active .journal-narrative { animation: contentFadeUp 0.5s ease both; animation-delay: 160ms; }
-.journal-spread.active .journal-callout,
-.journal-spread.active .journal-stats,
-.journal-spread.active .journal-highlight,
-.journal-spread.active .journal-certs,
-.journal-spread.active .journal-win-badge { animation: contentFadeUp 0.5s ease both; animation-delay: 240ms; }
-.journal-spread.active .journal-page-num--right { animation: contentFadeUp 0.4s ease both; animation-delay: 300ms; }
-.journal-spread.active .journal-chapter-label,
-.journal-spread.active .journal-page-num--left { animation: contentFadeUp 0.4s ease both; animation-delay: 100ms; }
-
-/* ── Featured spread (HABHub — gold accent) ── */
-.journal-spread--featured {
-  border-color: rgba(255,215,0,0.25);
-  background: rgba(255,215,0,0.04);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 20px rgba(255,215,0,0.08);
-}
-.journal-spread--featured:hover {
-  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 35px rgba(255,215,0,0.15);
-  border-color: rgba(255,215,0,0.4);
-}
-
-/* ── Chapter Tabs ── */
-.journal-tabs {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-/* Progress line behind tabs */
-.journal-tabs::before {
-  content: '';
+/* ---- The sweep: a lit waterline the next chapter arrives behind ---- */
+.log-sweep {
   position: absolute;
-  top: 50%;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(199,125,255,0.2), rgba(199,125,255,0.2), transparent);
-  z-index: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--mind-accent, #c77dff), #fff, var(--mind-accent, #c77dff), transparent);
+  box-shadow: 0 0 24px 6px rgba(199, 125, 255, 0.55);
 }
 
-.journal-tab {
-  position: relative;
-  z-index: 1;
-  font-family: Georgia, serif;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(199,125,255,0.15);
-  color: rgba(255,255,255,0.6);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.4rem 0.9rem;
-  border-radius: 4px 4px 16px 16px;
-  border-bottom-width: 2px;
+/* ---- Navigation ---- */
+.log-nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 clamp(1rem, 4vw, 2.5rem) clamp(1rem, 3vh, 1.75rem);
+}
+
+.log-arrow {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #fff;
+  background: rgba(20, 10, 35, 0.6);
+  border: 1px solid rgba(199, 125, 255, 0.35);
+  border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.log-arrow:hover:not(:disabled) {
+  background: rgba(157, 78, 221, 0.5);
+  transform: scale(1.06);
+}
+
+.log-arrow:disabled { opacity: 0.25; cursor: default; }
+
+.log-arrow:focus-visible {
+  outline: 2px solid var(--mind-accent, #c77dff);
+  outline-offset: 3px;
+}
+
+.log-rail {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.log-rail::-webkit-scrollbar { display: none; }
+
+.log-dot {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.4rem 0.8rem;
   white-space: nowrap;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(20, 10, 35, 0.5);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
-.journal-tab-numeral {
-  font-style: italic;
-}
-.journal-tab:hover {
-  background: rgba(199,125,255,0.15);
-  border-color: rgba(199,125,255,0.4);
-  color: var(--mind-accent);
-}
-.journal-tab.active {
-  background: rgba(199,125,255,0.2);
-  border-color: rgba(199,125,255,0.6);
-  color: var(--mind-accent);
-  box-shadow: 0 0 12px rgba(199,125,255,0.25);
-  transform: translateY(-2px);
+.log-dot:hover { color: #fff; background: rgba(157, 78, 221, 0.3); }
+
+.log-dot[aria-current="true"] {
+  color: #fff;
+  background: rgba(157, 78, 221, 0.45);
+  border-color: rgba(199, 125, 255, 0.5);
 }
 
-/* Gold tab for HABHub */
-.journal-tab--gold {
-  border-color: rgba(255,215,0,0.2);
-}
-.journal-tab--gold:hover {
-  border-color: rgba(255,215,0,0.5);
-  color: #ffd700;
-  background: rgba(255,215,0,0.12);
-}
-.journal-tab--gold.active {
-  border-color: rgba(255,215,0,0.6);
-  color: #ffd700;
-  background: rgba(255,215,0,0.15);
-  box-shadow: 0 0 12px rgba(255,215,0,0.25);
+.log-dot-num { font-weight: 700; letter-spacing: 0.06em; }
+
+.log-dot:focus-visible {
+  outline: 2px solid var(--mind-accent, #c77dff);
+  outline-offset: 2px;
 }
 
-/* Pulsing tab for Now + Next */
-.journal-tab--pulse.active {
-  animation: tab-pulse 2.4s ease-in-out infinite;
-}
-@keyframes tab-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(232,168,124,0.3); }
-  50%      { box-shadow: 0 0 20px rgba(232,168,124,0.7); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .journal-tab--pulse.active { animation: none; }
-}
-
-/* Tab label vs numeral */
-.journal-tab-label { margin-left: 0.3rem; }
-
-/* ── Reduced motion ── */
-@media (prefers-reduced-motion: reduce) {
-  .flyleaf-inscription::before { animation: none; }
-  .journal-spread.active .journal-page--left img { animation: none; }
-  .journal-spread.active .journal-period,
-  .journal-spread.active .journal-title,
-  .journal-spread.active .journal-narrative,
-  .journal-spread.active .journal-callout,
-  .journal-spread.active .journal-stats,
-  .journal-spread.active .journal-highlight,
-  .journal-spread.active .journal-certs,
-  .journal-spread.active .journal-win-badge,
-  .journal-spread.active .journal-page-num--right,
-  .journal-spread.active .journal-chapter-label,
-  .journal-spread.active .journal-page-num--left { animation: none; opacity: 1; }
-  .journal-spread.page-turning-forward,
-  .journal-spread.page-turning-backward,
-  .journal-spread.peel-entering { animation: none; opacity: 1; transform: none; }
-  .journal-spread.page-turning-forward .journal-page--right,
-  .journal-spread.page-turning-backward .journal-page--left {
-    animation: none; opacity: 1; filter: none; transform: none;
+@media (max-width: 768px) {
+  .log-copy {
+    width: 100%;
+    padding-bottom: clamp(6.5rem, 16vh, 9rem);
   }
-  .journal-spread.page-turning-forward .journal-page--left,
-  .journal-spread.page-turning-forward .journal-spine,
-  .journal-spread.page-turning-backward .journal-page--right,
-  .journal-spread.page-turning-backward .journal-spine { animation: none; opacity: 1; }
+  .log-dot-name { display: none; }
+  .log-arrow { width: 40px; height: 40px; font-size: 1.35rem; }
+  .log-media img { object-position: center 32%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .log-sweep { display: none; }
 }
 
 #path-mind .reflection-box {
@@ -741,52 +351,4 @@
   background: rgba(157,78,221,0.15);
 }
 
-/* ── Mobile journal nav arrows ── */
-.journal-nav-arrow { display: none; }
-.journal-swipe-hint { display: none; }
 
-@media (max-width: 640px) {
-  .journal-nav-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(199, 125, 255, 0.2);
-    border: 1px solid rgba(199, 125, 255, 0.4);
-    color: var(--mind-accent);
-    font-size: 1.4rem;
-    cursor: pointer;
-    z-index: 20;
-    transition: background 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .journal-nav-arrow:active {
-    background: rgba(199, 125, 255, 0.4);
-  }
-  .journal-nav-prev { left: 4px; }
-  .journal-nav-next { right: 4px; }
-
-  .journal-swipe-hint {
-    display: block;
-    position: absolute;
-    bottom: -2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: Georgia, serif;
-    font-style: italic;
-    font-size: 0.75rem;
-    color: rgba(199, 125, 255, 0.6);
-    white-space: nowrap;
-    transition: opacity 0.5s ease;
-    z-index: 20;
-  }
-  .journal-swipe-hint.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-}

@@ -5,32 +5,52 @@
 import { prefersReducedMotion } from './utils.js';
 
 // Lazy-play .lazy-video elements only while on screen
+let lazyVideoObserver = null;
+
 export function initLazyVideos() {
-  const videos = document.querySelectorAll('.lazy-video');
+  // Respect reduced motion: expose controls, never autoplay
+  if (!prefersReducedMotion()) {
+    // Only ever decode one clip at a time. Two looping videos playing together
+    // drop the whole page to about 15fps, which is what made an opened research
+    // bubble feel laggy.
+    let playing = null;
+
+    lazyVideoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            entry.target.pause();
+            if (playing === entry.target) playing = null;
+            return;
+          }
+          if (playing && playing !== entry.target && !playing.paused) {
+            // Another clip already holds the slot; wait until it scrolls away
+            entry.target.pause();
+            return;
+          }
+          playing = entry.target;
+          entry.target.play().catch(() => {});
+        });
+      },
+      { threshold: 0.25 }
+    );
+  }
+  attachLazyVideos(document);
+}
+
+// Wire up videos that were added after init (e.g. cloned out of a <template>)
+export function attachLazyVideos(root = document) {
+  const videos = root.querySelectorAll('.lazy-video');
   if (!videos.length) return;
 
-  // Respect reduced motion: expose controls, never autoplay
-  if (prefersReducedMotion()) {
+  if (!lazyVideoObserver) {
     videos.forEach((video) => {
       video.controls = true;
     });
     return;
   }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.play().catch(() => {});
-        } else {
-          entry.target.pause();
-        }
-      });
-    },
-    { threshold: 0.25 }
-  );
-
-  videos.forEach((video) => observer.observe(video));
+  videos.forEach((video) => lazyVideoObserver.observe(video));
 }
 
 // Fade-in observer for .fade-in elements

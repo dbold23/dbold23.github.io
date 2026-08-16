@@ -115,181 +115,180 @@ export async function enter() {
   overlay.classList.remove('active');
 }
 
-// ---- Captain's Log Journal ----
-let currentChapter = 0;
-let turning = false;
+// ---- Captain's Log ----
+// Full screen chapters. Moving on runs a lit sweep down or up the deck and the
+// arriving chapter is uncovered behind it, rather than fading in over the top.
 
-function initJournal() {
-  const flyleaf = document.getElementById('journal-flyleaf');
-  const journal = document.getElementById('journal');
-  const openBtn = document.getElementById('journal-open-btn');
-  if (!flyleaf || !journal || !openBtn) return;
+let current = 0;
+let moving = false;
+let logReady = false;
 
-  // Inject corner curl hints into each left page
-  journal.querySelectorAll('.journal-page--left').forEach(page => {
-    const curl = document.createElement('div');
-    curl.className = 'corner-curl-left';
-    page.appendChild(curl);
+const SWEEP_MS = 820;
+const SWEEP_EASE = 'cubic-bezier(0.65, 0, 0.2, 1)';
+
+function chapters() {
+  return Array.from(document.querySelectorAll('.log-chapter'));
+}
+
+function syncNav() {
+  const all = chapters();
+  document.querySelectorAll('.log-dot').forEach((dot) => {
+    const idx = parseInt(dot.dataset.chapter, 10);
+    if (idx === current) dot.setAttribute('aria-current', 'true');
+    else dot.removeAttribute('aria-current');
+    if (idx === current) dot.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
+  const prev = document.getElementById('log-prev');
+  const next = document.getElementById('log-next');
+  if (prev) prev.disabled = current === 0;
+  if (next) next.disabled = current === all.length - 1;
+}
+
+function setCurrent(idx) {
+  chapters().forEach((el) => {
+    const isIt = parseInt(el.dataset.chapter, 10) === idx;
+    el.classList.toggle('is-current', isIt);
+    el.classList.remove('is-leaving');
+    el.setAttribute('aria-hidden', isIt ? 'false' : 'true');
+  });
+  current = idx;
+  syncNav();
+}
+
+function goTo(idx) {
+  const all = chapters();
+  if (moving || idx === current || idx < 0 || idx >= all.length) return;
+
+  if (prefersReducedMotion()) { setCurrent(idx); return; }
+
+  const from = all.find((el) => parseInt(el.dataset.chapter, 10) === current);
+  const to = all.find((el) => parseInt(el.dataset.chapter, 10) === idx);
+  const sweep = document.getElementById('log-sweep');
+  if (!from || !to) { setCurrent(idx); return; }
+
+  moving = true;
+  const forward = idx > current;
+
+  // Outgoing stays put and is covered over; incoming is uncovered behind the line
+  from.classList.add('is-leaving');
+  to.classList.add('is-current');
+  to.setAttribute('aria-hidden', 'false');
+  to.style.zIndex = '4';
+  from.style.zIndex = '3';
+
+  const hidden = forward ? 'inset(100% 0 0 0)' : 'inset(0 0 100% 0)';
+  const shown = 'inset(0 0 0 0)';
+  const timing = { duration: SWEEP_MS, easing: SWEEP_EASE, fill: 'both' };
+
+  const reveal = to.animate([{ clipPath: hidden }, { clipPath: shown }], timing);
+
+  // The chapter being left lets its writing go first, so the two sets of words
+  // never sit on top of each other as the line passes
+  from.querySelector('.log-copy')?.animate(
+    [{ opacity: 1 }, { opacity: 0, offset: 0.4 }, { opacity: 0 }],
+    timing
+  );
+
+  // The image settles as it arrives, so the chapter reads as coming toward you
+  to.querySelector('.log-media')?.animate(
+    [{ transform: forward ? 'scale(1.08) translateY(2%)' : 'scale(1.08) translateY(-2%)' },
+     { transform: 'scale(1) translateY(0)' }],
+    { duration: SWEEP_MS + 260, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }
+  );
+
+  // Words arrive after the line has passed them
+  const copy = to.querySelector('.log-copy');
+  if (copy) {
+    copy.animate(
+      [{ opacity: 0, transform: 'translateY(18px)' },
+       { opacity: 0, transform: 'translateY(18px)', offset: 0.45 },
+       { opacity: 1, transform: 'translateY(0)' }],
+      { duration: SWEEP_MS + 320, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }
+    );
+  }
+
+  if (sweep) {
+    sweep.animate(
+      [{ top: forward ? '100%' : '0%', opacity: 0 },
+       { opacity: 1, offset: 0.12 },
+       { opacity: 1, offset: 0.86 },
+       { top: forward ? '0%' : '100%', opacity: 0 }],
+      timing
+    );
+  }
+
+  let settled = false;
+  const done = () => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(guard);
+    from.classList.remove('is-current', 'is-leaving');
+    from.setAttribute('aria-hidden', 'true');
+    from.style.zIndex = '';
+    to.style.zIndex = '';
+    current = idx;
+    syncNav();
+    moving = false;
+  };
+  // A backgrounded tab freezes the document timeline, so 'finish' may never
+  // arrive and the deck would stay locked. Settle it either way.
+  const guard = setTimeout(done, SWEEP_MS + 600);
+  reveal.addEventListener('finish', done, { once: true });
+  reveal.addEventListener('cancel', done, { once: true });
+}
+
+function initLog() {
+  const flyleaf = document.getElementById('journal-flyleaf');
+  const deck = document.getElementById('log-deck');
+  const openBtn = document.getElementById('journal-open-btn');
+  if (!flyleaf || !deck || !openBtn) return;
+
+  if (logReady) return;
+  logReady = true;
 
   openBtn.addEventListener('click', () => {
-    // Brief press animation before revealing
-    openBtn.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-      flyleaf.classList.add('hidden');
-      journal.classList.add('visible');
-      showChapter(0);
-    }, 150);
+    flyleaf.classList.add('hidden');
+    document.getElementById('path-mind')?.classList.add('log-open');
+    deck.hidden = false;
+    setCurrent(0);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   });
 
-  // Tab clicks
-  journal.querySelectorAll('.journal-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const idx = parseInt(tab.dataset.chapter, 10);
-      if (idx !== currentChapter && !turning) {
-        turnToChapter(idx);
-      }
-    });
+  document.getElementById('log-prev')?.addEventListener('click', () => goTo(current - 1));
+  document.getElementById('log-next')?.addEventListener('click', () => goTo(current + 1));
+
+  deck.querySelectorAll('.log-dot').forEach((dot) => {
+    dot.addEventListener('click', () => goTo(parseInt(dot.dataset.chapter, 10)));
   });
 
-  // Click on right page → next chapter, left page → previous chapter
-  journal.addEventListener('click', (e) => {
-    if (turning) return;
-    const rightPage = e.target.closest('.journal-page--right');
-    const leftPage = e.target.closest('.journal-page--left');
-    if (rightPage && currentChapter < 6) {
-      turnToChapter(currentChapter + 1);
-    } else if (leftPage && currentChapter > 0) {
-      turnToChapter(currentChapter - 1);
-    }
-  });
-
-  // Keyboard navigation
   document.addEventListener('keydown', (e) => {
-    if (!journal.classList.contains('visible') || turning) return;
-    if (e.key === 'ArrowRight' && currentChapter < 6) {
-      turnToChapter(currentChapter + 1);
-    } else if (e.key === 'ArrowLeft' && currentChapter > 0) {
-      turnToChapter(currentChapter - 1);
-    }
+    if (deck.hidden || moving) return;
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    else if (e.key === 'ArrowLeft') goTo(current - 1);
   });
 
-  // Touch: swipe navigation + arrow buttons + hint
   if (isTouchDevice()) {
     let startX = 0, startY = 0;
-    const SWIPE_THRESHOLD = 50;
-
-    journal.addEventListener('touchstart', (e) => {
+    deck.addEventListener('touchstart', (e) => {
       startX = e.changedTouches[0].clientX;
       startY = e.changedTouches[0].clientY;
     }, { passive: true });
-
-    journal.addEventListener('touchend', (e) => {
-      if (turning) return;
+    deck.addEventListener('touchend', (e) => {
       const dx = e.changedTouches[0].clientX - startX;
       const dy = e.changedTouches[0].clientY - startY;
-      if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy) * 1.5) {
-        if (dx < 0 && currentChapter < 6) turnToChapter(currentChapter + 1);
-        else if (dx > 0 && currentChapter > 0) turnToChapter(currentChapter - 1);
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        goTo(dx < 0 ? current + 1 : current - 1);
       }
     }, { passive: true });
-
-    // Arrow buttons
-    journal.insertAdjacentHTML('beforeend',
-      '<button class="journal-nav-arrow journal-nav-prev" aria-label="Previous page">&#8249;</button>' +
-      '<button class="journal-nav-arrow journal-nav-next" aria-label="Next page">&#8250;</button>'
-    );
-    journal.querySelector('.journal-nav-prev').addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!turning && currentChapter > 0) turnToChapter(currentChapter - 1);
-    });
-    journal.querySelector('.journal-nav-next').addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!turning && currentChapter < 6) turnToChapter(currentChapter + 1);
-    });
-
-    // Swipe hint
-    const hint = document.createElement('div');
-    hint.className = 'journal-swipe-hint';
-    hint.textContent = 'Swipe or tap arrows to turn pages';
-    journal.appendChild(hint);
-    const dismissHint = () => hint.classList.add('hidden');
-    journal.addEventListener('touchstart', dismissHint, { passive: true, once: true });
-    setTimeout(dismissHint, 3000);
   }
-}
 
-function showChapter(idx) {
-  const journal = document.getElementById('journal');
-  if (!journal) return;
-  journal.querySelectorAll('.journal-spread').forEach(s => {
-    s.classList.remove('active');
-  });
-  const target = journal.querySelector(`.journal-spread[data-chapter="${idx}"]`);
-  if (target) target.classList.add('active');
-  currentChapter = idx;
-  updateTabs();
-}
-
-function turnToChapter(idx) {
-  if (prefersReducedMotion()) { showChapter(idx); return; }
-
-  const journal = document.getElementById('journal');
-  if (!journal) return;
-  turning = true;
-
-  const isForward = idx > currentChapter;
-  const peelClass = isForward ? 'page-turning-forward' : 'page-turning-backward';
-
-  const current = journal.querySelector('.journal-spread.active');
-  const target = journal.querySelector(`.journal-spread[data-chapter="${idx}"]`);
-
-  if (current && target) {
-    // Inject backface element into the turning page
-    const turningPage = isForward
-      ? current.querySelector('.journal-page--right')
-      : current.querySelector('.journal-page--left');
-
-    const backface = document.createElement('div');
-    backface.className = 'page-backface';
-    turningPage.appendChild(backface);
-
-    // Show incoming spread underneath the turn
-    target.classList.add('peel-entering');
-
-    // Turn the outgoing page in 3D
-    current.classList.add(peelClass);
-
-    setTimeout(() => {
-      // Clean up outgoing
-      current.classList.remove('active', peelClass);
-      backface.remove();
-      // Promote incoming to active
-      target.classList.remove('peel-entering');
-      target.classList.add('active');
-      currentChapter = idx;
-      updateTabs();
-      turning = false;
-    }, 850);
-  } else {
-    showChapter(idx);
-    turning = false;
-  }
-}
-
-function updateTabs() {
-  const journal = document.getElementById('journal');
-  if (!journal) return;
-  journal.querySelectorAll('.journal-tab').forEach(tab => {
-    const idx = parseInt(tab.dataset.chapter, 10);
-    tab.classList.toggle('active', idx === currentChapter);
-  });
+  syncNav();
 }
 
 // ---- Start/Stop ----
 export function start() {
   startNeural();
-  initJournal();
+  initLog();
 }
 
 export function stop() {

@@ -6,6 +6,7 @@ import { prefersReducedMotion } from './utils.js';
 import { initLazyVideos, initFadeInObserver, observeNewFadeIns } from './effects.js';
 import { initHomescreen, destroyHomescreen } from './homescreen.js';
 import { initScrollManager, destroyScrollManager } from './scroll-manager.js';
+import { initResearchBubbles, closeResearchStage } from './research-bubbles.js';
 
 // Own the scroll position: prevents the browser from restoring a deep
 // scroll offset on reload/back-navigation into a path hash.
@@ -55,7 +56,9 @@ async function loadTransition(path) {
 }
 
 // ---- Path switching ----
-async function enterPath(path) {
+// `fromHistory` means the URL already says where we are, because the browser put
+// it there. Writing another entry in that case is what made Back a no-op.
+async function enterPath(path, fromHistory = false) {
   if (state.transitioning || state.activePath === path) return;
   state.transitioning = true;
   scrollTopInstant();
@@ -126,13 +129,19 @@ async function enterPath(path) {
   state.activePath = path;
   state.transitioning = false;
 
-  // Update URL hash
-  history.pushState(null, '', `#${path}`);
+  if (!fromHistory && window.location.hash !== `#${path}`) {
+    history.pushState(null, '', `#${path}`);
+  }
+
+  syncToHash();
 }
 
 async function exitCurrentPath() {
   const path = state.activePath;
   if (!path) return;
+
+  // An expanded research bubble must not survive a path change
+  closeResearchStage();
 
   const mod = transitionModules[path];
 
@@ -149,7 +158,7 @@ async function exitCurrentPath() {
   state.activePath = null;
 }
 
-async function goHome() {
+async function goHome(fromHistory = false) {
   if (state.transitioning) return;
   state.transitioning = true;
 
@@ -173,7 +182,12 @@ async function goHome() {
   scrollTopInstant();
 
   state.transitioning = false;
-  history.pushState(null, '', window.location.pathname);
+
+  if (!fromHistory && window.location.hash) {
+    history.pushState(null, '', window.location.pathname);
+  }
+
+  syncToHash();
 }
 
 // ---- Resume panel ----
@@ -189,6 +203,28 @@ function closeResume() {
   document.body.style.overflow = '';
 }
 
+// ---- Cross-path deep link: Research bubble -> Technology file tree ----
+function openTechFolder(folderId) {
+  const target = document.getElementById(folderId);
+  if (!target) return;
+
+  document.getElementById('tech-file-tree')?.classList.remove('minimized');
+
+  // Open the target and every folder that contains it, or a nested target
+  // stays collapsed inside a closed parent
+  for (let node = target; node; node = node.parentElement) {
+    if (!node.classList?.contains('tree-folder')) continue;
+    node.classList.add('open');
+    const toggle =
+      node.querySelector(':scope > .folder-toggle') || node.querySelector('.folder-toggle');
+    toggle?.setAttribute('aria-expanded', 'true');
+  }
+
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  target.classList.add('highlight');
+  setTimeout(() => target.classList.remove('highlight'), 1200);
+}
+
 // ---- Event listeners ----
 function setupEvents() {
   // Corner hotspot clicks
@@ -197,7 +233,8 @@ function setupEvents() {
   });
 
   // Nav pill: home button
-  document.querySelector('.nav-home')?.addEventListener('click', goHome);
+  // Wrap it: passing goHome directly hands the MouseEvent to `fromHistory`
+  document.querySelector('.nav-home')?.addEventListener('click', () => goHome());
 
   // Nav pill: path buttons
   document.querySelectorAll('.nav-btn').forEach((btn) => {
@@ -218,18 +255,38 @@ function setupEvents() {
     }
   });
 
-  // Hash routing
+  // Research bubbles asking to hand off to the Technology path
+  document.addEventListener('goto-tech-folder', async (e) => {
+    const folder = e.detail?.folder;
+    await enterPath('tech');
+    if (folder) requestAnimationFrame(() => openTechFolder(folder));
+  });
+
+  // Hash routing. popstate covers Back and Forward, which hashchange alone misses
+  // when the entry was written by pushState rather than by a link.
   window.addEventListener('hashchange', handleHash);
+  window.addEventListener('popstate', handleHash);
 }
 
-function handleHash() {
+const VALID_PATHS = ['forest', 'ocean', 'tech', 'mind'];
+
+// Back and Forward arrive whenever the user presses them, including mid-transition
+// when enterPath and goHome refuse to act. Rather than drop the navigation, note
+// that the URL and the page disagree and settle it once the transition finishes.
+function syncToHash() {
+  if (state.transitioning) return;
   const hash = window.location.hash.replace('#', '');
-  const validPaths = ['forest', 'ocean', 'tech', 'mind'];
-  if (validPaths.includes(hash)) {
-    enterPath(hash);
-  } else if (!hash) {
-    goHome();
+  if (VALID_PATHS.includes(hash)) {
+    if (state.activePath !== hash) enterPath(hash, true);
+  } else if (!hash && state.activePath) {
+    goHome(true);
   }
+}
+
+// Both hashchange and popstate mean the URL moved first and the page follows,
+// so neither should write a new history entry
+function handleHash() {
+  syncToHash();
 }
 
 // ---- Init ----
@@ -244,12 +301,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Init homescreen
   initHomescreen();
 
+  // Init research bubbles (ocean path)
+  initResearchBubbles();
+
   // Setup all events
   setupEvents();
 
-  // Check initial hash
+  // Check initial hash. The URL is already correct on load, so do not add to it.
   const hash = window.location.hash.replace('#', '');
-  if (['forest', 'ocean', 'tech', 'mind'].includes(hash)) {
-    enterPath(hash);
+  if (VALID_PATHS.includes(hash)) {
+    enterPath(hash, true);
   }
 });

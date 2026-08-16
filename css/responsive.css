@@ -30,23 +30,10 @@
   .dash-stats-grid { grid-template-columns: 1fr 1fr; }
   .stat-metrics { grid-template-columns: repeat(3, 1fr); }
 
-  /* Ocean cards — tablet */
-  .ocean-card-banner { height: clamp(180px, 28vh, 280px); }
+  /* Research bubbles — tablet */
+  .bubble-field { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .bubble-stage-shell { inset: 0; border-radius: 0; }
 
-  /* Mind journal — tablet */
-  .journal-spread {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    border-radius: 16px;
-  }
-  .journal-narrative p:first-child::first-letter { font-size: 2.8em; }
-  .journal-page--left {
-    min-height: 250px;
-    border-radius: 16px 16px 0 0;
-  }
-  .journal-spine { display: none; }
-  .journal-page--right { padding: 1.5rem; }
-  .journal-tab-label { display: none; }
 
   /* Forest map — tablet */
   .forest-map-sticky { width: 50%; }
@@ -93,32 +80,26 @@
   .laptop-base { width: 310px; }
   .sticker-peel { --sticker-size: 60px !important; }
 
-  /* Mind journal — mobile */
-  .journal-page--left { min-height: 200px; }
-  .journal-page--right { padding: 1.25rem; }
-  .journal-title { font-size: 1.1rem; }
-  .journal-narrative { font-size: 0.88rem; line-height: 1.75; }
-  .journal-narrative p:first-child::first-letter { font-size: 2.4em; }
-  .journal-tabs { gap: 0.35rem; }
-  .journal-tab { padding: 0.4rem 0.7rem; font-size: 0.7rem; }
 
-  /* Page peel — mobile: cross-fade instead of corner peel */
-  .journal-spread.page-turning-forward .journal-page--right,
-  .journal-spread.page-turning-backward .journal-page--left {
-    animation: fadeOutSideLate 0.4s ease forwards !important;
-    filter: none !important;
-    clip-path: none !important;
-  }
 
-  /* Ocean cards — mobile */
-  .ocean-cards { width: auto; padding: 4.5rem 0.75rem 3rem; }
-  .ocean-card { min-height: auto; margin-bottom: 2.5rem; padding: 1.25rem 1rem 1.5rem; border-radius: 16px; }
-  .ocean-card-banner { height: 180px; }
+  /* Research bubbles — mobile */
+  .ocean-reef { width: auto; padding: 4.5rem 1rem 3rem; }
   .ocean-header { margin-bottom: 2rem; }
   .ocean-title { font-size: clamp(1.5rem, 5vw, 2rem); }
-  .ocean-card .card-presentations { grid-template-columns: 1fr; }
-  .ocean-card .pres-embed iframe { height: 320px; }
-  .ocean-card .panel-gallery { grid-template-columns: 1fr 1fr; }
+  .bubble-field { grid-template-columns: 1fr 1fr; gap: 2rem 1.1rem; }
+  .pod { grid-column: 1 / -1; }
+  .pod-bubbles { grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  .bubble-name { padding: 0 8% 13%; font-size: 0.74rem; }
+
+  /* Expanded panel — mobile */
+  .bubble-stage-body { padding: 3.25rem 1rem 3rem; }
+  .rp-head { padding-right: 3rem; }
+  .rp-sections { grid-template-columns: 1fr; }
+  .rp-pres { grid-template-columns: 1fr; }
+  .rp-record { grid-template-columns: 1fr; }
+  .pres-embed iframe { height: 300px; }
+  .bubble-stage-close { width: 40px; height: 40px; font-size: 1.6rem; }
+  .bubble-stage-hint { display: none; }
 
   /* File tree — mobile */
   .terminal-window { margin: 1.5rem 0.5rem 0; border-radius: 8px; }

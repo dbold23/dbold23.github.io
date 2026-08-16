@@ -31,27 +31,28 @@
     <link rel="preload" as="image" href="assets/FinalHome.jpg" fetchpriority="high">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/homescreen.css">
-    <link rel="stylesheet" href="css/transitions.css">
-    <link rel="stylesheet" href="css/path-forest.css">
-    <link rel="stylesheet" href="css/path-ocean.css">
-    <link rel="stylesheet" href="css/path-tech.css">
-    <link rel="stylesheet" href="css/path-mind.css">
-    <link rel="stylesheet" href="css/shared.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/variables.css?v=20260816b">
+    <link rel="stylesheet" href="css/base.css?v=20260816b">
+    <link rel="stylesheet" href="css/homescreen.css?v=20260816b">
+    <link rel="stylesheet" href="css/transitions.css?v=20260816b">
+    <link rel="stylesheet" href="css/path-forest.css?v=20260816b">
+    <link rel="stylesheet" href="css/path-ocean.css?v=20260816b">
+    <link rel="stylesheet" href="css/path-tech.css?v=20260816b">
+    <link rel="stylesheet" href="css/path-mind.css?v=20260816b">
+    <link rel="stylesheet" href="css/shared.css?v=20260816b">
+    <link rel="stylesheet" href="css/responsive.css?v=20260816b">
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
     <noscript><style> body { opacity: 1 !important; } .path-section { display: block !important; position: static !important; } .corner-hotspot, .skip-link { display: none !important; } .fade-in { opacity: 1 !important; transform: none !important; } </style></noscript>
 </head>
 <body>
-    <a class="skip-link" href="#homescreen">Skip to content</a>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
     <!-- ============================================
          HOMESCREEN HUB
          ============================================ -->
+    <main id="main-content" tabindex="-1">
     <section id="homescreen" class="homescreen">
         <div class="hero-image-container">
             <img src="assets/FinalHome.jpg" alt="Daniel Sambold"
@@ -296,198 +297,873 @@
     </section>
 
     <!-- ============================================
-         OCEAN PATH
+         OCEAN PATH — Research
          ============================================ -->
     <section id="path-ocean" class="path-section" data-path="ocean" aria-label="Research">
         <canvas id="bubble-canvas" class="bubble-canvas"></canvas>
         <div class="ocean-depth-bg"></div>
 
-        <div class="ocean-cards">
+        <div class="ocean-reef">
             <header class="ocean-header">
                 <h2 class="ocean-title">Research</h2>
+                <p class="ocean-lede">Nine projects across the lab, the field, and the open water. Open a bubble for the question, the method and what came out of it. <button type="button" class="ocean-lede-link" data-goto-tech>Technology</button> has the schemas, the hardware and the repos if you want to build on any of it.</p>
             </header>
 
-            <article class="ocean-card fade-in" style="--card-index: 0">
-                <header class="ocean-card-header">
-                    <div>
-                        <h3>Shark Ecology & Telemetry</h3>
-                        <p class="ocean-card-org">California State University, Monterey Bay</p>
-                    </div>
-                    <span class="card-type">Telemetry</span>
-                </header>
-                <div class="ocean-card-banner">
-                    <img src="assets/me with a shark tag and antena.avif" alt="Shark tagging fieldwork" loading="lazy">
-                </div>
-                            <p>Working in Dr. Salvador Jorgensen's Ocean Predator Ecology Lab, I develop computer vision tools for white shark research and lead fieldwork spanning morphometric analysis, behavior classification, and long-term photo-ID tracking.</p>
-                            <ul>
-                                <li>Developed SharkHealthApp: YOLOv8-pose with a 15-keypoint schema for automated morphometric analysis from 20+ years of archival video, achieving 98% detection accuracy (mAP50)</li>
-                                <li>Built SharkScarAnnotator: multi-annotator collaborative platform with SAM2 segmentation and experience-weighted consensus scoring</li>
-                                <li>CNN-based behavior classification from dorsal-mounted camera footage paired with accelerometer and magnetometer sensor data</li>
-                                <li>CFD analysis using OpenFOAM to optimize acoustic tag geometry and minimize hydrodynamic drag on dorsal fins</li>
-                                <li>Photo-ID analysis tracking injury healing rates across multi-year study periods</li>
-                            </ul>
-                            <div class="card-tags">
-                                <span class="tag">Computer Vision</span>
-                                <span class="tag">Deep Learning</span>
-                                <span class="tag">Acoustic Telemetry</span>
-                                <span class="tag">White Sharks</span>
-                                <span class="tag">Photo-ID</span>
-                            </div>
-                            <div class="card-presentations">
-                                <h4>Presentations</h4>
-                                <div class="pres-embed">
-                                    <h5>NEPSS: White Shark Morphometric Analysis <span class="pres-date">March 2026</span></h5>
-                                    <iframe src="https://docs.google.com/presentation/d/1RixGeBlvak6r11nb0_x9OVpqSQp9bETEBU7nq7u_YXo/embed?start=false&loop=false&delayms=3000" title="NEPSS: White Shark Morphometric Analysis" width="100%" height="480" loading="lazy" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                                <div class="pres-embed">
-                                    <h5>WSN Poster: Assessing White Shark Body Condition <span class="pres-date">November 2025</span></h5>
-                                    <iframe src="https://drive.google.com/file/d/1SJLMesyUPDkBSq0p2w1uBO23hmrfeWPv/preview" title="WSN Poster: Assessing White Shark Body Condition" width="100%" height="480" loading="lazy" allowfullscreen></iframe>
-                                </div>
-                                <div class="pres-embed">
-                                    <h5>UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages <span class="pres-date">Summer 2025</span></h5>
-                                    <iframe src="https://docs.google.com/presentation/d/1W2EyKdI_vG46YGaLpdTB3HNlWjwZ71BhstlxmWGtZBM/embed?start=false&loop=false&delayms=3000" title="UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages" width="100%" height="480" loading="lazy" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                                <div class="pres-embed">
-                                    <h5>CSUMB Spring Showcase: From Fins to Frames <span class="pres-date">Spring 2025</span></h5>
-                                    <iframe src="https://drive.google.com/file/d/1tV3LgY9yx_AOt7AhUtrNvRmsAmwc17qx/preview" title="CSUMB Spring Showcase: From Fins to Frames" width="100%" height="480" loading="lazy" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                            <div class="panel-gallery">
-                                <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Shark tagging operation"><source src="assets/shark-tagging.webm" type="video/webm"><source src="assets/shark-tagging.mp4" type="video/mp4"></video>
-                            </div>
-            </article>
+            <div class="bubble-field">
+                <section class="pod" style="--members: 3">
+                    <header class="pod-head">
+                        <h3 class="pod-name">Jorgensen Lab</h3>
+                        <p class="pod-where">Ocean Predator Ecology, CSUMB</p>
+                    </header>
+                    <ul class="pod-bubbles">
+                        <li class="bubble-cell" style="--bob-delay: -0.4s; --bob-dur: 7.1s">
+                            <button type="button" class="research-bubble" data-panel="shark" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/shark.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">White Shark Ecology</span>
+                            </button>
+                        </li>
+                        <li class="bubble-cell" style="--bob-delay: -5.1s; --bob-dur: 7.8s">
+                            <button type="button" class="research-bubble" data-panel="anchor" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/anchor.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">anchor: Biologging</span>
+                            </button>
+                        </li>
+                        <li class="bubble-cell" style="--bob-delay: -0.9s; --bob-dur: 6.6s">
+                            <button type="button" class="research-bubble" data-panel="relay" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/relay.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">Relay Training</span>
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+                <section class="pod" style="--members: 1">
+                    <header class="pod-head">
+                        <h3 class="pod-name">Bioinspiration Lab</h3>
+                        <p class="pod-where">MBARI</p>
+                    </header>
+                    <ul class="pod-bubbles">
+                        <li class="bubble-cell" style="--bob-delay: -2.6s; --bob-dur: 6.3s">
+                            <button type="button" class="research-bubble" data-panel="fathomnet" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/fathomnet.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">FathomNet</span>
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+                <section class="pod" style="--members: 1">
+                    <header class="pod-head">
+                        <h3 class="pod-name">Gardner Lab</h3>
+                        <p class="pod-where">Moss Landing Marine Laboratories</p>
+                    </header>
+                    <ul class="pod-bubbles">
+                        <li class="bubble-cell" style="--bob-delay: -1.5s; --bob-dur: 6.8s">
+                            <button type="button" class="research-bubble" data-panel="aquaculture" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/aquaculture.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">Urchin Aquaculture</span>
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+                <section class="pod" style="--members: 1">
+                    <header class="pod-head">
+                        <h3 class="pod-name">Jue Lab</h3>
+                        <p class="pod-where">CSUMB</p>
+                    </header>
+                    <ul class="pod-bubbles">
+                        <li class="bubble-cell" style="--bob-delay: -3.8s; --bob-dur: 7.4s">
+                            <button type="button" class="research-bubble" data-panel="jue" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/jue.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">Microbial Bioremediation</span>
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+                <section class="pod" style="--members: 1">
+                    <header class="pod-head">
+                        <h3 class="pod-name">Cross-species</h3>
+                        <p class="pod-where">One method, several animals</p>
+                    </header>
+                    <ul class="pod-bubbles">
+                        <li class="bubble-cell" style="--bob-delay: -3.1s; --bob-dur: 6.9s">
+                            <button type="button" class="research-bubble" data-panel="porpoise" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/porpoise.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">Individual Re-ID</span>
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+                <section class="pod" style="--members: 2">
+                    <header class="pod-head">
+                        <h3 class="pod-name">Field work</h3>
+                        <p class="pod-where">On the water, and under it</p>
+                    </header>
+                    <ul class="pod-bubbles">
+                        <li class="bubble-cell" style="--bob-delay: -4.4s; --bob-dur: 7.0s">
+                            <button type="button" class="research-bubble" data-panel="southafrica" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/southafrica.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">South Africa</span>
+                            </button>
+                        </li>
+                        <li class="bubble-cell" style="--bob-delay: -2.0s; --bob-dur: 7.6s">
+                            <button type="button" class="research-bubble" data-panel="fieldops" aria-expanded="false" aria-haspopup="dialog">
+                                <img class="bubble-photo" src="assets/bubbles/fieldops.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                                <span class="bubble-gloss" aria-hidden="true"></span>
+                                <span class="bubble-name">Scientific Diving</span>
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
 
-            <article class="ocean-card fade-in" style="--card-index: 1">
-                <header class="ocean-card-header">
-                    <div>
-                        <h3>Sustainable Aquaculture</h3>
-                        <p class="ocean-card-org">Moss Landing Labs</p>
-                    </div>
-                    <span class="card-type">Restoration</span>
-                </header>
-                <div class="ocean-card-banner">
-                    <img src="assets/aquaculutre facitly pretty pic between both rows of tanks.JPG" alt="Aquaculture facility tanks" loading="lazy">
+        <!-- Expanded bubble: one dialog, filled from the templates below -->
+        <div class="bubble-stage" id="bubble-stage" hidden>
+            <div class="bubble-stage-scrim" data-stage-dismiss></div>
+            <div class="bubble-stage-shell" role="dialog" aria-modal="true">
+                <div class="bubble-stage-scroll">
+                    <div class="bubble-stage-body" id="bubble-stage-body"></div>
                 </div>
-                            <p>Lead Technician in Dr. Luke Gardner's lab at Moss Landing Marine Labs, independently designing and managing two experiments on purple sea urchin (<em>Strongylocentrotus purpuratus</em>) aquaculture. Two publications currently in review. Research also extends to eelgrass as a cornerstone for California aquaculture and blue carbon initiatives.</p>
-                            <ul>
-                                <li>Independently designing and managing stocking density optimization and finishing feed roe enhancement experiments</li>
-                                <li>Two publications in review on gonad development and finishing feed applications for <em>S. purpuratus</em></li>
-                                <li>Texture Profile Analysis (TPA) testing to assess gonad quality and commercial viability</li>
-                                <li>Eelgrass (<em>Zostera marina</em>) research: ecological benefits, aquaculture integration, and blue carbon potential</li>
-                            </ul>
-                            <div class="card-tags">
-                                <span class="tag">Aquaculture</span>
-                                <span class="tag">Kelp Restoration</span>
-                                <span class="tag">TPA Analysis</span>
-                                <span class="tag">Publications</span>
-                            </div>
-                            <div class="card-presentations">
-                                <h4>Presentations</h4>
-                                <div class="pres-embed">
-                                    <h5>Aquaculture America: Optimizing Urchin Aquaculture: Carotenoid Application &amp; Pellet Processing <span class="pres-date">February 2026</span></h5>
-                                    <iframe src="https://docs.google.com/presentation/d/1Nwos3ypT35YX3H3rUV2GQ7u2_vwrguo2jR4b6yTR0O8/embed?start=false&loop=false&delayms=3000" title="Aquaculture America: Optimizing Urchin Aquaculture: Carotenoid Application &amp; Pellet Processing" width="100%" height="480" loading="lazy" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                                <div class="pres-embed">
-                                    <h5>Aquaculture America: Examining Finishing Feed Applications for Purple Urchin Roe Enhancement <span class="pres-date">February 2026</span></h5>
-                                    <iframe src="https://docs.google.com/presentation/d/1t-dCpJUjdFiUsrBt20CfH7SAqe_diBm5zpX82PWTItE/embed?start=false&loop=false&delayms=3000" title="Aquaculture America: Examining Finishing Feed Applications for Purple Urchin Roe Enhancement" width="100%" height="480" loading="lazy" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                                <div class="pres-embed">
-                                    <h5>Eelgrass (Zostera marina): A Cornerstone for California Aquaculture &amp; Blue Carbon <span class="pres-date">Spring 2025</span></h5>
-                                    <iframe src="https://drive.google.com/file/d/1OeJPpiUWOLWpTIKoe0ZOAYprLbZe2TdC/preview" title="Eelgrass (Zostera marina): A Cornerstone for California Aquaculture &amp; Blue Carbon" width="100%" height="480" loading="lazy" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                            <div class="panel-gallery">
-                                <img src="assets/bunch of purple urchins.avif" alt="Purple urchins" loading="lazy">
-                                <img src="assets/tank of urchins overhead view_compressed.jpg" alt="Urchin tanks" loading="lazy">
-                                <img src="assets/pic of everyone dissecting urchins_compressed.jpg" alt="Team dissecting urchins" loading="lazy">
-                            </div>
-            </article>
+                <button type="button" class="bubble-stage-close" id="bubble-stage-close" aria-label="Close, or press Escape">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <p class="bubble-stage-hint" aria-hidden="true"><kbd>Esc</kbd> to close</p>
+            </div>
+        </div>
 
-            <article class="ocean-card fade-in" style="--card-index: 2">
-                <header class="ocean-card-header">
-                    <div>
-                        <h3>South Africa Marine Research</h3>
-                        <p class="ocean-card-org">International Research</p>
-                    </div>
-                    <span class="card-type">Field Work</span>
-                </header>
-                <div class="ocean-card-banner">
-                    <img src="assets/On a boat in SA.avif" alt="On a research boat in South Africa" loading="lazy">
-                </div>
-                            <p>Research and Diver Development Program in South African coastal waters (July–August 2024). Logged 31 hours of scientific diving across diverse marine research projects, from subtidal ecology to vessel-based operations.</p>
-                            <ul>
-                                <li>Nudibranch population surveys and species identification dives</li>
-                                <li>Swell shark egg casing measurement and analysis</li>
-                                <li>BRUV (Baited Remote Underwater Video) camera deployments</li>
-                                <li>Fish dissections and quadrat-based invertebrate counts</li>
-                                <li>Microplastic sampling in coastal waters</li>
-                                <li>Advanced vessel operations: docking, anchoring, navigation, and equipment deployment/recovery at sea</li>
-                            </ul>
-                            <div class="panel-gallery">
-                                <img src="assets/Me sampling for microplastics in SA.avif" alt="Microplastic sampling" loading="lazy">
-                                <img src="assets/Picture of my in south africa with dive gear and a funny construction hat on.JPEG" alt="SA field work" loading="lazy">
-                                <img src="assets/Me doing trapping.avif" alt="Trapping operations" loading="lazy">
-                            </div>
-            </article>
+        <!-- ---- Panel content. Kept in templates so the presentation
+             embeds only load when a bubble is actually opened. ---- -->
 
-            <article class="ocean-card fade-in" style="--card-index: 3">
-                <header class="ocean-card-header">
-                    <div>
-                        <h3>Marine Field Operations</h3>
-                        <p class="ocean-card-org">Certified Vessel Operator</p>
-                    </div>
-                    <span class="card-type">Diving</span>
+        <template data-panel="shark">
+            <article class="rp rp--paper">
+                <header class="rp-head">
+                    <p class="rp-org">Ocean Predator Ecology Lab, CSUMB</p>
+                    <h3 class="rp-title">White Shark Ecology &amp; Telemetry</h3>
+                    <p class="rp-byline">Mentor: Dr. Salvador Jorgensen</p>
+                    <p class="rp-dateline">Spring 2023 – Present &middot; Monterey Bay, California</p>
                 </header>
-                <div class="ocean-card-banner">
-                    <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy">
-                </div>
-                            <p>Certified professional diver and vessel operator with extensive field research experience across California and Baja California, Mexico. From kelp canopy surveys to offshore tagging operations, combining dive expertise with research vessel operations.</p>
-                            <ul>
-                                <li>NAUI Divemaster: 143 logged dives, trained in dive planning, safety management, and underwater research coordination</li>
-                                <li>AAUS Scientific Diver: designed and conducted study on thermal thresholds in kelp forest health at San Carlos Beach, Monterey</li>
-                                <li>MOTC Certified Vessel Operator for research vessel operations</li>
-                                <li>Kelp canopy surveys, offshore tagging operations, species identification, and environmental monitoring</li>
-                            </ul>
-                            <div class="card-presentations">
-                                <h4>Presentations</h4>
+                <section class="rp-abstract">
+                    <h4>Abstract</h4>
+                    <p>An archive running 2012–2026, a population of individually recognizable white sharks, and one question underneath all of it: how much of an animal’s health can you read off its body? This work turns that footage into measurements, and runs the fieldwork that keeps producing more of it.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Automated keypoint tracking on a swimming white shark"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
+                            <figcaption><span class="rp-fignum">Figure 1</span>Automated keypoint tracking turns 4,850 archival videos into measurable landmarks.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Background</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
                                 <ul>
-                                    <li><strong>Scientific Diving Presentation</strong>: Techniques and applications of scientific diving in marine field research</li>
+                                    <li>Can body condition be measured reliably enough from video to track a population over time?</li>
+                                    <li>Do bite and boat-strike injuries heal at rates that say something about individual condition?</li>
+                                    <li>What are sharks doing when no one is watching, and can sensors tell us?</li>
                                 </ul>
                             </div>
-                            <blockquote class="panel-reflection">
-                                From kelp canopy surveys to offshore tagging operations, every day on the water has reinforced the same lesson: marine field research is where assumptions meet reality. The ocean doesn't care about your methods section. It demands adaptability, teamwork, and respect for the unpredictable.
-                            </blockquote>
-            </article>
-
-            <article class="ocean-card fade-in" style="--card-index: 4">
-                <header class="ocean-card-header">
-                    <div>
-                        <h3>Relay Station Training Program</h3>
-                        <p class="ocean-card-org">Galápagos & California</p>
-                    </div>
-                    <span class="card-type">Training</span>
-                </header>
-                <div class="ocean-card-banner">
-                    <img src="assets/relay-station-sunset.avif" alt="Relay station deployment at sunset" width="645" height="797" loading="lazy">
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Shark tagging operation from a small vessel"><source src="assets/shark-tagging.webm" type="video/webm"><source src="assets/shark-tagging.mp4" type="video/mp4"></video>
+                            <figcaption><span class="rp-fignum">Figure 2</span>Tagging from a small vessel. Most of the method is getting the boat and the animal in the same place calmly.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Field methods</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Tagging operations from small vessels: approach, tag placement, recovery</li>
+                                    <li>Dorsal fin mounted camera and sensor package deployment and retrieval</li>
+                                    <li>Photo identification capture feeding a multi-year individual catalogue</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/me with a shark tag and antena.avif" alt="Holding a shark tag and a VHF receiving antenna in the field" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 3</span>VHF tracking between tagging trips, following known animals across seasons.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Results to date</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>A 16-keypoint pose model reaching 0.96 box mAP50, measuring animals from video rather than counting them</li>
+                                    <li>4,850 videos, 661 GB, spanning 2012–2026 across Año Nuevo, Aptos, the Farallon Islands and Point Reyes</li>
+                                    <li>Multi-year photo-ID series tracking injury healing rates in known individuals</li>
+                                    <li>Dorsal-camera footage and sensor records paired for behavior work, reconstructed in <em>anchor</em></li>
+                                    <li>Tag geometry iterated against hydrodynamic drag so instrumentation changes behavior as little as possible</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
                 </div>
-                            <p>Developed and led a training program teaching students to build, deploy, and operate low-cost VHF acoustic relay stations for wildlife telemetry. Each station uses a Raspberry Pi 5, RTL-SDR Blog V4, and SIM7028 NB-IoT cellular modem, achieving comparable detection to a $695 commercial receiver (R-1000) for under $100 in components.</p>
-                            <ul>
-                                <li>Trained students on relay station assembly: Raspberry Pi 5, RTL-SDR Blog V4, SIM7028 NB-IoT HAT, and custom VHF antenna</li>
-                                <li>Signal processing pipeline with adaptive pulse detection, auto-calibration, and spectrum analysis</li>
-                                <li>Comparable tag detection to $695 commercial receivers (R-1000) for under $100 in components</li>
-                                <li>Galápagos deployments: marine species tracking in collaboration with local researchers</li>
-                                <li>California deployments: expanding the acoustic telemetry network across multiple sites statewide</li>
-                            </ul>
-                            <div class="card-tags">
-                                <span class="tag">Acoustic Telemetry</span>
-                                <span class="tag">Training</span>
-                                <span class="tag">Galápagos</span>
-                            </div>
-                            <div class="pres-embed">
-                                <iframe src="https://docs.google.com/presentation/d/1Ghkgao_iwUbkBy0n7kmHcbhW50ed88gM/embed?start=false&loop=false&delayms=3000" title="Relay Station project presentation" width="100%" height="400" frameborder="0" allowfullscreen loading="lazy"></iframe>
-                            </div>
+                <section class="rp-block">
+                    <h4>Presentations</h4>
+                    <div class="rp-pres">
+                        <div class="pres-embed">
+                            <h5>NEPSS: White Shark Morphometric Analysis <span class="pres-date">March 2026</span></h5>
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1RixGeBlvak6r11nb0_x9OVpqSQp9bETEBU7nq7u_YXo/embed?start=false&loop=false&delayms=3000" data-embed-title="NEPSS presentation: White Shark Morphometric Analysis"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                        <div class="pres-embed">
+                            <h5>WSN Poster: Assessing White Shark Body Condition <span class="pres-date">November 2025</span></h5>
+                            <button type="button" class="pres-facade" data-embed="https://drive.google.com/file/d/1SJLMesyUPDkBSq0p2w1uBO23hmrfeWPv/preview" data-embed-title="WSN poster: Assessing White Shark Body Condition"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                        <div class="pres-embed">
+                            <h5>UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages <span class="pres-date">Summer 2025</span></h5>
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1W2EyKdI_vG46YGaLpdTB3HNlWjwZ71BhstlxmWGtZBM/embed?start=false&loop=false&delayms=3000" data-embed-title="UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                        <div class="pres-embed">
+                            <h5>CSUMB Spring Showcase: From Fins to Frames <span class="pres-date">Spring 2025</span></h5>
+                            <button type="button" class="pres-facade" data-embed="https://drive.google.com/file/d/1tV3LgY9yx_AOt7AhUtrNvRmsAmwc17qx/preview" data-embed-title="CSUMB Spring Showcase: From Fins to Frames"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                    </div>
+                </section>
+                <div class="rp-tags">
+                    <span class="tag">White Sharks</span>
+                    <span class="tag">Biologging</span>
+                    <span class="tag">Photo-ID</span>
+                    <span class="tag">Morphometrics</span>
+                    <span class="tag">Acoustic Telemetry</span>
+                </div>
+                <p class="rp-crosslink">
+                    Implementations
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-shark-morpho">Technology / shark-morphometrics</button>
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-shark-annotator">Technology / shark-annotator</button>
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-shark-rag">Technology / shark-rag</button>
+                </p>
             </article>
-        </div>
+        </template>
+
+        <template data-panel="fathomnet">
+            <article class="rp rp--paper">
+                <header class="rp-head">
+                    <p class="rp-org">Monterey Bay Aquarium Research Institute</p>
+                    <h3 class="rp-title">FathomNet</h3>
+                    <p class="rp-byline">Summer Intern, Bioinspiration Lab</p>
+                    <p class="rp-dateline">June – August 2026 &middot; Moss Landing, California</p>
+                </header>
+                <section class="rp-abstract">
+                    <h4>Abstract</h4>
+                    <p>FathomNet is the open image database the deep-sea machine learning community trains on. When I arrived it could only store bounding boxes, so a decade of ROV imagery could say where an animal was but never what shape it was. Over one summer I extended it end to end to hold points and segmentation masks, then filled the existing corpus, scaling from a SAM 2 pilot to a full-corpus SAM 3 run. Every mask is graded rather than accepted, with rejects held back under an explicit deferred count so the accept rate cannot be quietly inflated.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/fathomnet-masks.avif" alt="A deep-sea frame with segmentation masks over a crinoid and neighbouring animals" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 1</span>The output: an animal described by its outline rather than by a rectangle.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">What came out of it</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Annotation geometry went from boxes only to points and COCO compressed-RLE masks, across the data model, the REST API and the Python client</li>
+                                    <li>The RLE codec was ported to Java under 17 round-trip tests, so masks from SAM or any COCO tool survive the trip byte for byte with no new server dependency</li>
+                                    <li>Existing boxes were converted to graded masks database-wide, scaling from a SAM 2 pilot to a full-corpus SAM 3 run</li>
+                                    <li>Every mask is scored and tiered into accept, review and reject, with rejects held under an explicit deferred count so the accept rate cannot be quietly inflated</li>
+                                    <li>Exports carry the new geometry across COCO, YOLO and Pascal VOC with per-record license propagation</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <figure class="rp-plate rp-plate--wide">
+                    <img src="assets/panels/mbari-presentation.avif" alt="Presenting the summer internship work from the podium at MBARI, with the FathomNet database on screen" decoding="async">
+                    <figcaption><span class="rp-fignum">Figure 2</span>Presenting the summer’s work at MBARI, August 2026.</figcaption>
+                </figure>
+                <section class="rp-block">
+                    <h4>Talk &amp; paper</h4>
+                    <!-- TODO: drop the recording at assets/mbari-final-presentation.{webm,mp4} and
+                             replace this line with:
+                        <video class="lazy-video" controls preload="none" width="1280" height="720"
+                               aria-label="Recording of the final internship presentation at MBARI">
+                            <source src="assets/mbari-final-presentation.webm" type="video/webm">
+                            <source src="assets/mbari-final-presentation.mp4" type="video/mp4">
+                        </video> -->
+                    <p class="rp-pending">Recording of the final presentation being added</p>
+                    <!-- TODO: swap for <a class="rp-link" href="URL" target="_blank" rel="noopener">Read the paper</a> -->
+                    <p class="rp-pending">Paper publishing to MBARI’s intern papers site, September 2026</p>
+                </section>
+                <div class="rp-tags">
+                    <span class="tag">FathomNet</span>
+                    <span class="tag">Segmentation</span>
+                    <span class="tag">Open Data</span>
+                    <span class="tag">Deep Sea Imagery</span>
+                </div>
+                <p class="rp-crosslink">
+                    The schema and the orchestrator
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-mbari">Technology / MBARI</button>
+                </p>
+            </article>
+        </template>
+
+        <template data-panel="anchor">
+            <article class="rp rp--paper">
+                <header class="rp-head">
+                    <p class="rp-org">Jorgensen Lab, CSUMB</p>
+                    <h3 class="rp-title">anchor: Biologging Trajectory Reconstruction</h3>
+                    <p class="rp-byline">Lead Developer &middot; co-developed with D. Moran</p>
+                    <p class="rp-dateline">May – August 2026 &middot; CSUMB</p>
+                </header>
+                <section class="rp-abstract">
+                    <h4>Abstract</h4>
+                    <p>A biologging tag reconstructs an animal’s track by dead reckoning from accelerometer and magnetometer data. Over hours that track drifts badly, and a behavior classifier trained on it can quietly learn to recognize the individual animal instead of the behavior. anchor is the correction for both problems.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Keypoint tracking on a swimming shark, used as optical ground truth"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
+                            <figcaption><span class="rp-fignum">Figure 1</span>Optical ground truth: video keypoints give a tailbeat the tag can be checked against.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Validation against optical ground truth</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Validation framework comparing tag-derived kinematics to independent optical ground truth</li>
+                                    <li>DeepLabCut and SLEAP keypoint exports converted into tailbeat frequency, amplitude, and body lengths per second</li>
+                                    <li>Drone and aquarium video speed calibration, with paired multi-tag runs scored by Cohen’s kappa</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/anchor-track-diagnostics.avif" alt="Diagnostic panels from a reconstructed track: drift over time, tilt-compensated heading, and speed coloured by behavior state" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 2</span>Per-deployment diagnostics: drift against elapsed time, and speed coloured by classified behavior state.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Evaluation without leakage</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Rebuilt classifier evaluation around subject-level leave-one-out cross validation</li>
+                                    <li>Per-class precision, recall, F1, balanced accuracy, and macro-F1</li>
+                                    <li>Replaced an evaluation path that leaked individual-animal signal between train and test</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/anchor-track-map.avif" alt="A reconstructed animal track drawn over bathymetry in Elkhorn Slough" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 3</span>A reconstructed track over slough bathymetry, after GPS and acoustic fixes are threaded through the smoother.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Arresting the drift</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>GPS and acoustic fixes threaded through a particle filter and FFBS smoother</li>
+                                    <li>Reported against held-out drift RMSE rather than in-sample fit</li>
+                                    <li>CF-1.8 NetCDF, Movebank, and GeoJSON interchange so tracks leave the project in standard formats</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <div class="rp-tags">
+                    <span class="tag">Biologging</span>
+                    <span class="tag">Dead Reckoning</span>
+                    <span class="tag">Particle Filtering</span>
+                    <span class="tag">Behavior Classification</span>
+                </div>
+                <p class="rp-crosslink">
+                    Interchange formats and the smoother
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-anchor">Technology / anchor</button>
+                </p>
+            </article>
+        </template>
+
+        <template data-panel="porpoise">
+            <article class="rp rp--paper">
+                <header class="rp-head">
+                    <p class="rp-org">Independent, with Jorgensen Lab and partner catalogues</p>
+                    <h3 class="rp-title">Individual Re-Identification Across Species</h3>
+                    <p class="rp-byline">Design and evaluation</p>
+                    <p class="rp-dateline">2025 – Present &middot; Monterey Bay</p>
+                </header>
+                <section class="rp-abstract">
+                    <h4>Abstract</h4>
+                    <p>A harbor porpoise surfaces for about a second. A sevengill shark comes over the side of a boat once and goes back. In both cases a photograph is all you get, and the question is the same one: have we seen this animal before? Answer it well enough and a sighting becomes a resighting, which is what turns photographs into a mark-recapture study without ever putting a tag on anything. The machinery is shared. What changes between species is which part of the animal carries the signature.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/porpoise-match.avif" alt="A query dorsal fin beside its top five ranked matches from the catalogue" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 1</span>A query fin and its ranked matches, drawn from a catalogue of 198 known animals.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Harbor porpoise, by fin outline</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>SAM 2 segments the body, protrusion geometry extracts the dorsal fin, and MegaDescriptor-L-384 embeds the crop through an ArcFace head with cosine-similarity ranking</li>
+                                    <li>198 individuals, 2,393 sightings, 2,153 images</li>
+                                    <li>MegaDescriptor-L-384, DINOv2-base and a two-backbone ensemble were benchmarked on this catalogue before one was chosen</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/porpoise-cmc.avif" alt="Cumulative match characteristic curves for the re-identification model" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 2</span>CMC curves. The same evaluation applies whatever the animal, which is the point of sharing the machinery.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Sevengill shark, by spot constellation</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Broadnose sevengill (<em>Notorynchus cepedianus</em>) carry natural freckling, matched as a spot constellation rather than an outline, so the same re-identification problem needs a different feature entirely</li>
+                                    <li>Three tracks run in parallel: a fine-tuned MiewID head-crop embedding, a spot-graph GNN, and ALFRE-ID zero-shot local features</li>
+                                    <li>1,099 images catalogued, 51 individuals labelled so far</li>
+                                    <li>The useful finding so far is a negative one: below roughly 1,000 to 2,000 images, local-feature aggregation beats fine-tuned metric learning, so the zero-shot track leads</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/porpoise-accuracy-vs-gallery.png" alt="Accuracy plotted against gallery size" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 3</span>Accuracy against gallery size, which is what decides whether any of this scales to a larger catalogue.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Reporting it honestly</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Temporal split (train ≤ 2022, test 2023+), which is the unbiased evaluation: 30.5% rank-1 and 57.4% rank-5, on MegaDescriptor with SGD, cosine schedule, scale 64</li>
+                                    <li>Leave-one-out on 94 individuals with at least 5 sightings gives 93.0% rank-1, and that number is inflated: the metric head sees the test animals during training. It is useful for the gallery-size experiment and for nothing else.</li>
+                                    <li>The gap between the two is the actual result. Dorsal fin shape changes over years, which is what the temporal split exposes, so a model tested on the years it trained on is answering an easier question than a field programme ever asks.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/bubbles/porpoise.avif" alt="Two photographs of the same dorsal fin taken years apart" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 4</span>The same animal, two encounters, years apart. Everything else is machinery for noticing that.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">4</span><span class="rp-fold-title">Where it goes next</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>The catalogue platform is built to host any patterned marine species, with leopard sharks and eagle rays as the next candidates, because the expensive part is never the model, it is the labelled catalogue and the field relationships behind it.</li>
+                                    <li>Open-set matching is the harder half: telling a known animal from one the catalogue has never seen, with a confidence a biologist can act on.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <div class="rp-tags">
+                    <span class="tag">Re-Identification</span>
+                    <span class="tag">Metric Learning</span>
+                    <span class="tag">Photo-ID</span>
+                    <span class="tag">Mark-Recapture</span>
+                    <span class="tag">Open-Set</span>
+                </div>
+                <p class="rp-crosslink">
+                    The pipeline and the catalogue
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-porpoise-id">Technology / porpoise-fin-id</button>
+                </p>
+            </article>
+        </template>
+
+        <template data-panel="aquaculture">
+            <article class="rp rp--paper">
+                <header class="rp-head">
+                    <p class="rp-org">Aquaculture Lab, Moss Landing Marine Laboratories</p>
+                    <h3 class="rp-title">Sustainable Urchin Aquaculture</h3>
+                    <p class="rp-byline">Lead Technician &middot; Mentor: Dr. Luke Gardner</p>
+                    <p class="rp-dateline">Spring 2024 – Present &middot; Moss Landing, California</p>
+                </header>
+                <section class="rp-abstract">
+                    <h4>Abstract</h4>
+                    <p>Purple urchins strip a kelp forest and then sit in the barrens they made, starving, with gonads too small to sell. If you can fatten those animals in tanks, removing them stops being a cost centre and starts being a fishery. Two experiments test whether that works, run end to end from hypothesis through manuscript. Related work looks at eelgrass (<em>Zostera marina</em>) as a cornerstone for California aquaculture and blue carbon.</p>
+                </section>
+                <figure class="rp-plate rp-plate--wide">
+                    <img src="assets/panels/aquaculture-facility.avif" alt="The aquaculture facility at Moss Landing, between two rows of culture tanks" decoding="async">
+                    <figcaption><span class="rp-fignum">Figure 1</span>The facility at Moss Landing. Both experiments run down these two rows.</figcaption>
+                </figure>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/urchin-tank.avif" alt="Overhead view of a purple urchin culture tank" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 2</span>A density treatment tank. Every animal in it is a data point on survival and gonad index.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Experiment one: stocking density</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <p>How many urchins can share a tank before gonad development and survival suffer? The answer sets the economics of the whole idea.</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/urchin-dissection.avif" alt="The lab team dissecting urchins to assess gonad development" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 3</span>Dissection and gonad scoring, the measurement the whole experiment turns on.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Experiment two: finishing feed</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <p>Whether a short finishing diet can push roe from starved to market grade, assessed by Texture Profile Analysis alongside carotenoid application and pellet processing.</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/bunch of purple urchins.avif" alt="A dense cluster of purple sea urchins" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 4</span><em>Strongylocentrotus purpuratus</em> at barrens density, the condition the work starts from.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Study animals</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <p><em>Strongylocentrotus purpuratus</em>, collected from barrens where they have grazed the kelp down and stalled at low gonad index.</p>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <section class="rp-block">
+                    <h4>Manuscripts in review</h4>
+                    <ol class="rp-pubs">
+                        <li>Sambold, D., &amp; Gardner, L. Effects of Stocking Density on Gonad Development and Survival in Purple Sea Urchin (<em>Strongylocentrotus purpuratus</em>) Aquaculture. <em>In review.</em></li>
+                        <li>Sambold, D., &amp; Gardner, L. Examining Finishing Feed Applications for Purple Urchin (<em>Strongylocentrotus purpuratus</em>) Roe Enhancement. <em>In review.</em></li>
+                    </ol>
+                </section>
+                <section class="rp-block">
+                    <h4>Presentations</h4>
+                    <div class="rp-pres">
+                        <div class="pres-embed">
+                            <h5>Aquaculture America: Carotenoid Application &amp; Pellet Processing <span class="pres-date">February 2026</span></h5>
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1Nwos3ypT35YX3H3rUV2GQ7u2_vwrguo2jR4b6yTR0O8/embed?start=false&loop=false&delayms=3000" data-embed-title="Aquaculture America: Optimizing Urchin Aquaculture, Carotenoid Application and Pellet Processing"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                        <div class="pres-embed">
+                            <h5>Aquaculture America: Finishing Feed for Roe Enhancement <span class="pres-date">February 2026</span></h5>
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1t-dCpJUjdFiUsrBt20CfH7SAqe_diBm5zpX82PWTItE/embed?start=false&loop=false&delayms=3000" data-embed-title="Aquaculture America: Examining Finishing Feed Applications for Purple Urchin Roe Enhancement"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                        <div class="pres-embed">
+                            <h5>Eelgrass: A Cornerstone for California Aquaculture &amp; Blue Carbon <span class="pres-date">Spring 2025</span></h5>
+                            <button type="button" class="pres-facade" data-embed="https://drive.google.com/file/d/1OeJPpiUWOLWpTIKoe0ZOAYprLbZe2TdC/preview" data-embed-title="Eelgrass, Zostera marina: A Cornerstone for California Aquaculture and Blue Carbon"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                    </div>
+                </section>
+                <div class="rp-tags">
+                    <span class="tag">Aquaculture</span>
+                    <span class="tag">Kelp Restoration</span>
+                    <span class="tag">TPA Analysis</span>
+                    <span class="tag">Blue Carbon</span>
+                </div>
+            </article>
+        </template>
+
+        <template data-panel="jue">
+            <article class="rp rp--paper">
+                <header class="rp-head">
+                    <p class="rp-org">Jue Lab, CSUMB</p>
+                    <h3 class="rp-title">Microbial Bioremediation</h3>
+                    <p class="rp-byline">Research Assistant &middot; Mentor: Dr. Nathaniel Jue</p>
+                    <p class="rp-dateline">Spring 2025 – Present &middot; CSUMB</p>
+                </header>
+                <section class="rp-abstract">
+                    <h4>Abstract</h4>
+                    <p>Ninety-two bacterial strains, four experimental groups, and one question: will any of them eat a pesticide. The real question underneath is which strains metabolize the compound rather than merely tolerating it, and how confident that call can be given how noisy plate reader data is. Growth curves come off the reader by the thousand, so the analysis had to be automated before the biology could be answered at all.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/tecan-classification-summary.png" alt="Growth curve classification summary across bacterial strains" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 1</span>Curve quality screened per strain, so a bad well never reaches the biology.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Analysis</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Modified Gompertz growth modeling with Haldane substrate inhibition kinetics</li>
+                                    <li>A classifier that screens curve quality automatically instead of by eye</li>
+                                    <li>Bayesian hierarchical modeling and bootstrap confidence intervals over strain-level estimates</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/tecan-confusion-matrix.png" alt="Confusion matrix for the automated curve quality classifier" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 2</span>Classifier performance against synthetic curves with known ground truth.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Validation</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <p>The pipeline was validated against 480 synthetic curves with known ground truth before any real plate was scored, so a wrong answer would show up as a wrong answer.</p>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <div class="rp-tags">
+                    <span class="tag">Bioremediation</span>
+                    <span class="tag">Growth Kinetics</span>
+                    <span class="tag">Bayesian Modeling</span>
+                </div>
+                <p class="rp-crosslink">
+                    Implementation
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-jue">Technology / Jue-Lab</button>
+                </p>
+            </article>
+        </template>
+
+        <template data-panel="relay">
+            <article class="rp rp--program">
+                <header class="rp-head">
+                    <p class="rp-org">Galápagos &amp; California</p>
+                    <h3 class="rp-title">Low-Cost VHF Relay Stations</h3>
+                    <p class="rp-byline">Design, field deployment, and training</p>
+                    <p class="rp-dateline">2024 – Present</p>
+                </header>
+                <dl class="rp-record">
+                    <div><dt>Sites</dt><dd>the Galápagos and multiple California coastal sites</dd></div>
+                    <div><dt>Max range</dt><dd>1,700 ft on a Yagi directional antenna</dd></div>
+                    <div><dt>Detection rate</dt><dd>62% in field testing</dd></div>
+                    <div><dt>Cost per station</dt><dd>under $100, against a $695 commercial receiver</dd></div>
+                </dl>
+                <section class="rp-abstract">
+                    <h4>The programme</h4>
+                    <p>A commercial VHF telemetry receiver costs $695, which is the real reason so much of the world has no telemetry coverage. I built one for under $100, deployed it in the Galápagos and across California sites, measured what it actually detects in the field rather than on a datasheet, and taught local teams to build and repair their own.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/relay-station-sunset.avif" alt="A relay station deployed in a coastal marsh at sunset" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 1</span>A station on site. Everything above the waterline was assembled from parts under $100.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">What the station is</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Raspberry Pi 5, RTL-SDR Blog V4 and a SIM7028 NB-IoT modem behind a Yagi directional antenna, logging VHF wildlife tags and relaying over cellular</li>
+                                    <li>An auto-calibration sweep tunes SDR gain across 15–45 dB on boot, so a station is set up for its site rather than for a bench</li>
+                                    <li>A watchdog daemon checks system health every 60 seconds, because a station that fails quietly is worse than no station</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/relay-range-map.png" alt="Map of measured detection range around a deployed relay station" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 2</span>Measured detection range around a deployed station.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Deployments</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Galápagos: marine species tracking with local researchers</li>
+                                    <li>California: expanding a VHF telemetry network across multiple coastal sites statewide</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/relay-antenna-analysis.avif" alt="Antenna performance analysis from field testing" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 3</span>Antenna analysis from field testing.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Tuning in the field</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <p>Antenna geometry and gain measured on site rather than assumed, because a station is only as good as the day it was set up</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/relay-snr-comparison.png" alt="Spectrograms showing how tag pulses appear at strong, medium, weak and very weak signal strengths" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 4</span>How a tag pulse actually looks at four signal strengths, which is what the detection rate is measured against.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">4</span><span class="rp-fold-title">What it detects</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>1,700 ft maximum range at a 62% detection rate, measured at Monterey Bay coastal sites rather than quoted from a datasheet</li>
+                                    <li>Adaptive pulse detection with ghost filtering, and a coefficient of variation test that separates a real repeating tag from noise</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/relay-detailed-verification.avif" alt="Detection verification output from a deployed relay station" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 5</span>Verification from a student-built unit. The test is whether it detects a real tag, not whether it powers on.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">5</span><span class="rp-fold-title">Teaching it out</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Students assemble a full station end to end, from bare board to a unit logging tags in the field, then site it and maintain it</li>
+                                    <li>Hardware only its builder can repair is a demo. A station a local team can rebuild from parts is infrastructure, and that is the difference the programme is built around.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <section class="rp-block">
+                    <h4>Programme overview</h4>
+                    <div class="rp-pres">
+                        <div class="pres-embed">
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1Ghkgao_iwUbkBy0n7kmHcbhW50ed88gM/embed?start=false&loop=false&delayms=3000" data-embed-title="Relay Station Training Program overview"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                        </div>
+                    </div>
+                </section>
+                <div class="rp-tags">
+                    <span class="tag">VHF Telemetry</span>
+                    <span class="tag">Field Instrumentation</span>
+                    <span class="tag">Galápagos</span>
+                    <span class="tag">Training</span>
+                </div>
+                <p class="rp-crosslink">
+                    Build it yourself
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-relay">Technology / relay-station</button>
+                </p>
+            </article>
+        </template>
+
+        <template data-panel="southafrica">
+            <article class="rp rp--field">
+                <header class="rp-head">
+                    <p class="rp-org">South African coastal waters</p>
+                    <h3 class="rp-title">Research &amp; Diver Development Program</h3>
+                    <p class="rp-byline">Survey diver and vessel crew</p>
+                    <p class="rp-dateline">July – August 2024</p>
+                </header>
+                <dl class="rp-record">
+                    <div><dt>Dates</dt><dd>July – August 2024</dd></div>
+                    <div><dt>Location</dt><dd>South African coastal waters</dd></div>
+                    <div><dt>Logged</dt><dd>31 hours of scientific diving</dd></div>
+                    <div><dt>Role</dt><dd>Survey diver and vessel crew</dd></div>
+                </dl>
+                <section class="rp-abstract">
+                    <h4>Field notes</h4>
+                    <p>Six weeks of working dives on a coastline none of us knew, running whatever survey the day called for. It is the clearest lesson I have had in how much of marine science is method discipline under conditions you did not choose.</p>
+                </section>
+                <figure class="rp-plate rp-plate--wide">
+                    <img src="assets/On a boat in SA.avif" alt="Working on a research boat off the South African coast" decoding="async">
+                    <figcaption><span class="rp-fignum">Plate 1</span>The office for six weeks. Whatever survey the day called for, run off this deck.</figcaption>
+                </figure>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/sa-divegear.avif" alt="In dive gear on the boat before a survey dive" decoding="async">
+                            <figcaption><span class="rp-fignum">Plate 2</span>Kitted up before a survey dive.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Subtidal surveys</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Nudibranch population surveys and species identification dives</li>
+                                    <li>Quadrat-based invertebrate counts</li>
+                                    <li>Swell shark egg casing measurement and analysis</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/Me sampling for microplastics in SA.avif" alt="Sampling coastal water for microplastics" decoding="async">
+                            <figcaption><span class="rp-fignum">Plate 3</span>Microplastic sampling from the surface.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Video &amp; sampling</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>BRUV (baited remote underwater video) camera deployments</li>
+                                    <li>Microplastic sampling in coastal waters</li>
+                                    <li>Fish dissections and specimen work</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/Me doing trapping.avif" alt="Setting traps during field sampling" decoding="async">
+                            <figcaption><span class="rp-fignum">Plate 4</span>Setting traps. Gear handling at sea is most of the day.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Vessel operations</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Docking, loading, anchoring, and navigation</li>
+                                    <li>Equipment deployment and recovery at sea</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <div class="rp-tags">
+                    <span class="tag">Field Work</span>
+                    <span class="tag">BRUV</span>
+                    <span class="tag">Subtidal Ecology</span>
+                    <span class="tag">Scientific Diving</span>
+                </div>
+            </article>
+        </template>
+
+        <template data-panel="fieldops">
+            <article class="rp rp--field">
+                <header class="rp-head">
+                    <p class="rp-org">California &amp; Baja California, Mexico</p>
+                    <h3 class="rp-title">Field Operations &amp; Scientific Diving</h3>
+                    <p class="rp-dateline">2024 – Present</p>
+                </header>
+                <dl class="rp-record">
+                    <div><dt>Certifications</dt><dd>NAUI Divemaster, AAUS Scientific Diver, MOTC Vessel Operator</dd></div>
+                    <div><dt>Logged dives</dt><dd>143</dd></div>
+                    <div><dt>Range</dt><dd>California and Baja California, Mexico</dd></div>
+                    <div><dt>Also</dt><dd>CITI certified, Responsible Conduct of Research</dd></div>
+                </dl>
+                <section class="rp-abstract">
+                    <h4>Field notes</h4>
+                    <p>The hours behind every other bubble on this page. Diving and vessel work are not a separate interest; they are what makes the rest of the research possible on the days the weather cooperates.</p>
+                </section>
+                <figure class="rp-plate rp-plate--wide">
+                    <img src="assets/panels/portrait-ocean.avif" alt="On the coast between dives" decoding="async">
+                    <figcaption><span class="rp-fignum">Plate 1</span>Between dives. Most of this work is weather, logistics and gear that has to come back.</figcaption>
+                </figure>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/fieldops.avif" alt="Working a survey dive in a California kelp forest" decoding="async">
+                            <figcaption><span class="rp-fignum">Plate 2</span>Kelp forest survey work at San Carlos Beach.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Own dive study</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <p>Designed and conducted “Thermal Thresholds: The Role of Temperature Fluctuations in Shaping Kelp Forest Health at San Carlos Beach, Monterey, CA” as the research component of AAUS certification.</p>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <img src="assets/panels/scripps.avif" alt="Coastal research site at La Jolla" decoding="async">
+                            <figcaption><span class="rp-fignum">Plate 3</span>Working coastline in southern California.</figcaption>
+                        </figure>
+                        <details class="rp-fold">
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Operational work</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Kelp canopy surveys and species identification transects across California and Baja</li>
+                                    <li>Dive planning and safety oversight for other people’s field days, not only my own</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <blockquote class="rp-quote">From kelp canopy surveys to offshore tagging operations, every day on the water has reinforced the same lesson: marine field research is where assumptions meet reality. The ocean does not care about your methods section. It demands adaptability, teamwork, and respect for the unpredictable.</blockquote>
+                <div class="rp-tags">
+                    <span class="tag">Scientific Diving</span>
+                    <span class="tag">Vessel Operations</span>
+                    <span class="tag">Kelp Forests</span>
+                </div>
+            </article>
+        </template>
     </section>
 
     <!-- ============================================
@@ -560,6 +1236,63 @@
                 <div class="terminal-cmd">$ tree --interactive</div>
                 <div class="tree-root">~/research-projects/</div>
 
+                <!-- ============ HOW IT FITS TOGETHER ============ -->
+                <div class="tree-folder" id="folder-apparatus">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">how-it-fits-together.md</span>
+                        <span class="folder-desc">One Apparatus, Not Ten Projects</span>
+                    </button>
+                    <div class="folder-children">
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">pipeline.txt</span>
+                                <span class="file-desc">Field to Finding</span>
+                            </button>
+                            <div class="file-content">
+                                <div class="arch-diagram">  FIELD                 INGEST                MODELS               OUTPUT
+  ─────                 ──────                ──────               ──────
+
+┌──────────────┐   ┌──────────────────┐   ┌───────────────┐   ┌──────────────┐
+│ VHF relay    │──▶│ detections       │──▶│               │   │ Movebank     │
+│ stations     │   │ (SQLite queue,   │   │  anchor       │──▶│ CF-1.8 NetCDF│
+│ Galápagos+CA │   │  NB-IoT relay)   │   │  PF + FFBS    │   │ GeoJSON      │
+└──────────────┘   └──────────────────┘   │  track + behav│   └──────────────┘
+                                          └───────▲───────┘
+┌──────────────┐   ┌──────────────────┐           │
+│ biologging   │──▶│ accel + mag      │───────────┘
+│ tags         │   │ records          │
+└──────────────┘   └──────────────────┘
+                                          ┌───────────────┐   ┌──────────────┐
+┌──────────────┐   ┌──────────────────┐   │ YOLO pose     │──▶│ morphometrics│
+│ dorsal cams, │──▶│ SharkScar-       │──▶│ 16 keypoints  │   │ body conditn │
+│ ROV + boat   │   │ Annotator        │   │ 0.96 box mAP50│   └──────────────┘
+│ video        │   │ 15-pt skeleton   │   └───────────────┘
+└──────────────┘   └────────┬─────────┘   ┌───────────────┐   ┌──────────────┐
+                            │             │ PorpoiseID    │──▶│ resightings, │
+                            └────────────▶│ ArcFace re-ID │   │ catalogues   │
+                                          └───────────────┘   └──────────────┘
+
+                   ┌──────────────────────────────────────────────────────┐
+                   │  FathomNet: the interchange layer under all of it.    │
+                   │  COCO compressed-RLE geometry, per-record licensing,  │
+                   │  export to COCO / YOLO / Pascal VOC. Labels made in   │
+                   │  one tool are readable by every other one.            │
+                   └──────────────────────────────────────────────────────┘</div>
+                                <p>These are not ten separate projects. The relay stations and the biologging tags produce the raw records, the annotation platform turns imagery into labels, the pose and re-identification models consume those labels, <em>anchor</em> reconstructs where the animal actually went, and the FathomNet work is the interchange format that lets any of it be read by anyone else. Every piece exists because the piece upstream of it produced something the piece downstream could not yet use.</p>
+                                <p>The through line is the same in all of it: measure the animal rather than count it, and report the number that survives an honest split.</p>
+                                <div class="card-tags">
+                                    <span class="tag">Systems Thinking</span>
+                                    <span class="tag">Interoperability</span>
+                                    <span class="tag">Field to Model</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ============ NOAA SAT HACK ============ -->
                 <div class="tree-folder" id="folder-noaa">
                     <div class="tree-connector">├──</div>
@@ -577,9 +1310,9 @@
                                 <span class="file-desc">HABHub Dashboard</span>
                             </button>
                             <div class="file-content">
-                                <div class="file-badge">1st Place &mdash; NOAA Satellite Hack 2025</div>
+                                <div class="file-badge">1st Place, NOAA Satellite Hack 2025</div>
                                 <img src="assets/NOAA SAT HACK SLIDE OF SUMMARY_compressed.jpg" alt="NOAA SatHack Summary" loading="lazy">
-                                <p>Real-time HAB monitoring combining NOAA VIIRS satellite data, buoy measurements, and ensemble ML. Built 3 custom REST APIs, dual dashboards for farmers and public safety, and automated alert system.</p>
+                                <p>Real-time HAB monitoring combining NOAA VIIRS satellite data, buoy measurements, and ensemble ML. Built 3 custom REST APIs, dual dashboards for growers and public safety, and automated alert system.</p>
                                 <ul>
                                     <li>Automated NOAA ERDDAP fetching, 3D spatiotemporal datacube</li>
                                     <li>XGBoost + CNN-LSTM + Kernel SVM ensemble (86%+ accuracy)</li>
@@ -675,13 +1408,13 @@
                                                 <p>Custom-built edge station: Raspberry Pi 5 + RTL-SDR Blog V4 + SIM7028 NB-IoT HAT. Each unit operates autonomously in the field for weeks, detecting VHF wildlife tags across the 151 MHz band.</p>
                                             </div>
                                             <div class="hw-part-desc" data-for="pi" style="display:none;">
-                                                <p><strong>Raspberry Pi 5</strong> &mdash; The brain of each relay station. Runs the 927-line FFT detection engine, Flask dashboard, and offline event queue. Processes 256K IQ samples per scan cycle. Connects to the SDR via USB and the cellular HAT via GPIO.</p>
+                                                <p><strong>Raspberry Pi 5</strong>: The brain of each relay station. Runs the 927-line FFT detection engine, Flask dashboard, and offline event queue. Processes 256K IQ samples per scan cycle. Connects to the SDR via USB and the cellular HAT via GPIO.</p>
                                             </div>
                                             <div class="hw-part-desc" data-for="sdr" style="display:none;">
-                                                <p><strong>RTL-SDR Blog V4</strong> &mdash; Software Defined Radio tuned to 151 MHz VHF wildlife band. Auto-calibration sweeps gain from 15&ndash;45 dB on boot to find optimal sensitivity. Feeds raw IQ samples to the Pi for real-time spectral analysis.</p>
+                                                <p><strong>RTL-SDR Blog V4</strong>: Software Defined Radio tuned to 151 MHz VHF wildlife band. Auto-calibration sweeps gain from 15&ndash;45 dB on boot to find optimal sensitivity. Feeds raw IQ samples to the Pi for real-time spectral analysis.</p>
                                             </div>
                                             <div class="hw-part-desc" data-for="hat" style="display:none;">
-                                                <p><strong>SIM7028 NB-IoT HAT</strong> &mdash; Cellular modem for field deployment without WiFi. Communicates via AT commands over serial (/dev/ttyAMA0). Sends ~650 byte detection alerts. Automatic WiFi&rarr;NB-IoT failover with exponential backoff.</p>
+                                                <p><strong>SIM7028 NB-IoT HAT</strong>: Cellular modem for field deployment without WiFi. Communicates via AT commands over serial (/dev/ttyAMA0). Sends ~650 byte detection alerts. Automatic WiFi&rarr;NB-IoT failover with exponential backoff.</p>
                                             </div>
                                         </div>
                                         <div class="card-tags">
@@ -711,7 +1444,7 @@
                                             <li>Multi-channel FFT across 151.19&ndash;151.45 MHz (20 kHz channels)</li>
                                             <li>Adaptive baseline with rolling deque for noise floor tracking</li>
                                             <li>Pulse pattern validation: handles missed pulses via 2x&ndash;3x interval estimation</li>
-                                            <li>Tag locking at 90%+ confidence &mdash; skips validation for confirmed detections</li>
+                                            <li>Tag locking at 90%+ confidence, which skips validation for confirmed detections</li>
                                             <li>Bandwidth filtering rejects broadband noise (&gt;15 kHz signal width)</li>
                                         </ul>
                                         <div class="card-tags">
@@ -857,7 +1590,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="dash-footer">RelayStation v2 &mdash; Radio Tag Detection System</div>
+                                                <div class="dash-footer">RelayStation v2 &middot; Radio Tag Detection System</div>
                                             </div>
                                         </div>
                                         <p>Dual dashboard architecture: local Flask station dashboard for real-time tag detection and system health, plus a centralized FastAPI server with 35+ REST endpoints, 8-table SQLite schema, HMAC auth, and Leaflet geographic mapping for multi-station fleet monitoring.</p>
@@ -966,7 +1699,7 @@
                                     <div class="file-content">
                                         <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="YOLOv8 pose detection on white shark (early 5-keypoint model)"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
                                         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem; margin-bottom:1rem; font-style:italic;">Shown: first-generation 5-keypoint model. Current pipeline uses the 16-keypoint schema described below.</p>
-                                        <p>YOLOv8-pose model trained on 16 anatomical keypoints&mdash;9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips&mdash;for white shark body condition assessment from underwater video. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
+                                        <p>YOLOv8-pose model trained on 16 anatomical keypoints: 9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips, for white shark body condition assessment from underwater video. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
                                                 <div class="stat-val">16-pt</div>
@@ -1031,7 +1764,7 @@
                             <button class="folder-toggle" aria-expanded="false">
                                 <span class="folder-arrow">▶</span>
                                 <span class="folder-name">porpoise-fin-id/</span>
-                                <span class="folder-desc">DINOv2 + ArcFace Re-ID</span>
+                                <span class="folder-desc">Dorsal Fin Re-ID</span>
                             </button>
                             <div class="folder-children">
                                 <!-- pipeline.py - Identification Pipeline -->
@@ -1045,11 +1778,11 @@
                                         <div class="file-gallery">
                                             <img src="assets/porpoise-match-example.png" alt="Porpoise dorsal fin match example showing query and top-5 candidates" loading="lazy">
                                         </div>
-                                        <p>Automated harbor porpoise individual identification from dorsal fin photos. SAM 2 segments the body, protrusion geometry extracts the fin, MegaDescriptor-L-384 embeds the crop through an ArcFace head, and cosine similarity ranks the 198-individual catalog.</p>
+                                        <p>Automated harbor porpoise individual identification from dorsal fin photos. SAM 2 segments the body, protrusion geometry extracts the fin, MegaDescriptor-L-384, chosen over DINOv2-base and a two-backbone ensemble on this catalogue, embeds the crop through an ArcFace head, and cosine similarity ranks the 198-individual catalog.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
                                                 <div class="stat-val">93.0%</div>
-                                                <div class="stat-label">Rank-1 Acc.</div>
+                                                <div class="stat-label">Rank-1, LOO</div>
                                             </div>
                                             <div class="stat-metric">
                                                 <div class="stat-val">198</div>
@@ -1066,7 +1799,6 @@
                                         </div>
                                         <div class="card-tags">
                                             <span class="tag">SAM 2</span>
-                                            <span class="tag">DINOv2</span>
                                             <span class="tag">ArcFace</span>
                                             <span class="tag">MegaDescriptor</span>
                                             <span class="tag">PyTorch</span>
@@ -1085,7 +1817,7 @@
                                             <img src="assets/porpoise-cmc-curve.png" alt="Cumulative match characteristic curve" loading="lazy">
                                             <img src="assets/porpoise-accuracy-vs-gallery.png" alt="Accuracy vs gallery size showing more photos improve matching" loading="lazy">
                                         </div>
-                                        <p>Leave-one-out evaluation on individuals with &ge;5 sightings yields 93.0% rank-1 and 98.3% rank-5 accuracy. Temporal split (train &le;2022, test 2023+) gives 30.5% rank-1 &mdash; reflecting the real-world challenge of fin shape change over years. Gallery size experiments confirm more photos per individual directly improve re-ID accuracy.</p>
+                                        <p>Leave-one-out evaluation on individuals with &ge;5 sightings yields 93.0% rank-1 and 98.3% rank-5 accuracy. Temporal split (train &le;2022, test 2023+) gives 30.5% rank-1, which reflects the real challenge of fin shape change over years. Gallery size experiments confirm more photos per individual directly improve re-ID accuracy.</p>
                                         <div class="card-tags">
                                             <span class="tag">CMC Curve</span>
                                             <span class="tag">Leave-One-Out</span>
@@ -1182,13 +1914,71 @@
                                         <span class="file-desc">Multi-Format Export</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Export pipeline supporting COCO JSON, Google Forms CSV, Keypoint CSV (wide format), and Google Sheets (3-tab: Scars, Keypoints, Admin Flags) with auto-sync on every annotation save. Google Drive integration auto-resolves video IDs with 3-tier resolution (local &rarr; cached &rarr; Drive). Deployed at annotate.shark-id.org on AWS EC2 with Docker Compose and nginx reverse proxy.</p>
+                                        <p>Export pipeline supporting COCO JSON, Google Forms CSV, Keypoint CSV (wide format), and Google Sheets (3-tab: Scars, Keypoints, Admin Flags) with auto-sync on every annotation save. Google Drive integration auto-resolves video IDs with 3-tier resolution (local &rarr; cached &rarr; Drive). Deployed at <a href="https://annotate.shark-id.org" target="_blank" rel="noopener">annotate.shark-id.org</a> on AWS EC2 with Docker Compose and nginx reverse proxy.</p>
                                         <div class="card-tags">
                                             <span class="tag">Google Sheets API</span>
                                             <span class="tag">Google Drive API</span>
                                             <span class="tag">Docker</span>
                                             <span class="tag">AWS EC2</span>
                                             <span class="tag">nginx</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- anchor (nested sub-folder) -->
+                        <div class="tree-folder" id="folder-anchor">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="folder-toggle" aria-expanded="false">
+                                <span class="folder-arrow">▶</span>
+                                <span class="folder-name">anchor/</span>
+                                <span class="folder-desc">Track Reconstruction Toolkit</span>
+                            </button>
+                            <div class="folder-children">
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">smoother.py</span>
+                                        <span class="file-desc">Particle Filter + FFBS</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <p>Sequential Monte Carlo particle filter with a forward-filter backward-sample smoother. Dead reckoning from accelerometer and magnetometer data drifts without bound; GPS and acoustic fixes enter as observations and the backward pass redistributes the correction across the whole track rather than snapping it at each fix. Bathymetry enters as a constraint, so a reconstructed track cannot cross land.</p>
+                                        <div class="card-tags">
+                                            <span class="tag">Particle Filter</span>
+                                            <span class="tag">FFBS</span>
+                                            <span class="tag">Bathymetry Constraint</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">io/</span>
+                                        <span class="file-desc">Interchange Formats</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <p>A reconstructed track is only useful if it leaves the project. Readers and writers for CF-1.8 NetCDF, Movebank and GeoJSON, so a track can go into a national archive, a movement-ecology repository or a GIS without a bespoke converter. DeepLabCut and SLEAP keypoint exports come in the other direction as optical ground truth.</p>
+                                        <div class="card-tags">
+                                            <span class="tag">CF-1.8 NetCDF</span>
+                                            <span class="tag">Movebank</span>
+                                            <span class="tag">GeoJSON</span>
+                                            <span class="tag">DeepLabCut</span>
+                                            <span class="tag">SLEAP</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">eval/splits.py</span>
+                                        <span class="file-desc">Subject-Level Splitting</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <p>Splits are taken by animal, never by record. A random split puts the same individual on both sides, and a behavior classifier can then score well by recognising the animal rather than the behavior. Subject-level leave-one-out, with per-class precision, recall and F1 reported next to balanced accuracy and macro-F1 so a majority class cannot hide inside a single headline number.</p>
+                                        <div class="card-tags">
+                                            <span class="tag">Subject-level LOO</span>
+                                            <span class="tag">Leakage Control</span>
+                                            <span class="tag">Macro-F1</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1246,7 +2036,7 @@
                                         <span class="file-desc">Paper Acquisition</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Automated literature discovery via OpenAlex API with Unpaywall PDF downloading. Pre-configured for 20 shark research domains&mdash;morphometrics, telemetry, ecology, machine learning, genetics, behavior, conservation, and more&mdash;targeting white sharks, leopard sharks, and orcas. Gradio UI with 7 tabs for chat, upload, library management, summarization, and settings.</p>
+                                        <p>Automated literature discovery via OpenAlex API with Unpaywall PDF downloading. Pre-configured for 20 shark research domains, from morphometrics, telemetry, ecology, machine learning, genetics, behavior, conservation, through conservation, targeting white sharks, leopard sharks, and orcas. Gradio UI with 7 tabs for chat, upload, library management, summarization, and settings.</p>
                                         <div class="card-tags">
                                             <span class="tag">OpenAlex</span>
                                             <span class="tag">Unpaywall</span>
@@ -1280,6 +2070,107 @@
                     </div>
                 </div>
 
+                <!-- ============ MBARI ============ -->
+                <div class="tree-folder" id="folder-mbari">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">MBARI/</span>
+                        <span class="folder-desc">FathomNet, Summer 2026</span>
+                    </button>
+                    <div class="folder-children">
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">migrations/</span>
+                                <span class="file-desc">Schema Evolution, 10 Steps</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Ten SQL Server migrations with rollback scripts, restructuring annotations into an observation, localization and geometry hierarchy. Several contributors can now attach geometry to the same animal while license, observer and review state stay attached to each contribution rather than to the animal.</p>
+                                <div class="card-tags">
+                                    <span class="tag">SQL Server</span>
+                                    <span class="tag">Flyway</span>
+                                    <span class="tag">Hibernate Envers</span>
+                                    <span class="tag">Schema Design</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">RleCodec.java</span>
+                                <span class="file-desc">pycocotools RLE, Ported</span>
+                            </button>
+                            <div class="file-content">
+                                <p>The REST API could describe a bounding box and nothing else. Extending it to points and COCO compressed RLE segmentation meant the Java side had to speak the same codec Python tooling writes, so pycocotools' RLE implementation was ported and covered by 17 unit tests. Masks produced by SAM or any COCO tool round trip byte for byte, with no new dependency added to the server.</p>
+                                <div class="stat-metrics">
+                                    <div class="stat-metric">
+                                        <div class="stat-val">17</div>
+                                        <div class="stat-label">Unit Tests</div>
+                                    </div>
+                                    <div class="stat-metric">
+                                        <div class="stat-val">3</div>
+                                        <div class="stat-label">Export Formats</div>
+                                    </div>
+                                </div>
+                                <div class="card-tags">
+                                    <span class="tag">Java 21</span>
+                                    <span class="tag">Quarkus</span>
+                                    <span class="tag">COCO RLE</span>
+                                    <span class="tag">JAX-RS</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">bbox2seg.py</span>
+                                <span class="file-desc">Corpus Wide Mask Generation</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Converts existing bounding boxes into segmentation masks across the whole database, scaling from a SAM 2 pilot to a full corpus SAM 3 run. Sharded by image over a WAL mode SQLite manifest used as a lock free work queue: workers claim shards with BEGIN IMMEDIATE leases so a dead worker's shards are reclaimed automatically, commits are temp and rename so a crash never marks a half written shard complete, and one long lived worker per GPU keeps the model loaded once.</p>
+                                <p>Nothing is accepted on faith. Each mask takes the best of three multimask candidates by predicted IoU, carries a stability score computed from mask logits, and lands in one of three tiers on dual thresholds. Rejects are routed to a sidecar with an explicit deferred count, so the accept rate cannot be inflated by quietly dropping the hard cases.</p>
+                                <div class="card-tags">
+                                    <span class="tag">SAM 2 / SAM 3</span>
+                                    <span class="tag">Multi-GPU</span>
+                                    <span class="tag">SQLite WAL</span>
+                                    <span class="tag">Crash Recovery</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">segment_service.py</span>
+                                <span class="file-desc">ONNX Smart Select</span>
+                            </button>
+                            <div class="file-content">
+                                <p>The annotation editor shipped with a stub behind its SegmentationProvider seam that returned a disc where a mask should be. Filled with a loopback ONNX service running SlimSAM-77-uniform through ONNX Runtime and CoreML, so Smart Select returns the outline of the actual animal.</p>
+                                <div class="card-tags">
+                                    <span class="tag">ONNX Runtime</span>
+                                    <span class="tag">SlimSAM</span>
+                                    <span class="tag">CoreML</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">dataset_planner.py</span>
+                                <span class="file-desc">Training Slice Characterization</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Answers what you actually get if you train on a proposed slice of an annotated survey corpus, from bounded SQL aggregates rather than a full export. Reports an exclusion waterfall attributing every dropped annotation to one named stage, per concept trainability thresholds and the untrainable long tail, train and test leakage counts under four candidate split keys, and unlabelled positive contamination.</p>
+                                <div class="card-tags">
+                                    <span class="tag">Data Curation</span>
+                                    <span class="tag">Leakage Analysis</span>
+                                    <span class="tag">Positive-Unlabeled</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ============ JUE LAB ============ -->
                 <div class="tree-folder" id="folder-jue">
                     <div class="tree-connector">├──</div>
@@ -1299,12 +2190,12 @@
                             <div class="file-content">
                                 <p>End-to-end pipeline for TECAN plate reader growth curve analysis on bacteria remediation strains. Automates the full workflow from raw data to publication-ready figures.</p>
                                 <ul>
-                                    <li><strong>Parse</strong> &mdash; Read raw TECAN output, preprocess 96-well plate data</li>
-                                    <li><strong>Process</strong> &mdash; Clean, normalize, blank-subtract, average triplicates</li>
-                                    <li><strong>Analyze</strong> &mdash; Fit Gompertz growth models, classify curves (GOOD/BAD)</li>
-                                    <li><strong>Haldane</strong> &mdash; Fit mechanistic substrate inhibition ODE to pesticide strains</li>
-                                    <li><strong>Advanced Stats</strong> &mdash; GP truncation, Bayesian hierarchical models (NUTS/DEMetropolisZ), bootstrap CIs, WAIC/LOO model comparison</li>
-                                    <li><strong>Plot &amp; Validate</strong> &mdash; 480 synthetic curves + interactive manual audit tool</li>
+                                    <li><strong>Parse</strong>: Read raw TECAN output, preprocess 96-well plate data</li>
+                                    <li><strong>Process</strong>: Clean, normalize, blank-subtract, average triplicates</li>
+                                    <li><strong>Analyze</strong>: Fit Gompertz growth models, classify curves (GOOD/BAD)</li>
+                                    <li><strong>Haldane</strong>: Fit mechanistic substrate inhibition ODE to pesticide strains</li>
+                                    <li><strong>Advanced Stats</strong>: GP truncation, Bayesian hierarchical models (NUTS/DEMetropolisZ), bootstrap CIs, WAIC/LOO model comparison</li>
+                                    <li><strong>Plot &amp; Validate</strong>: 480 synthetic curves + interactive manual audit tool</li>
                                 </ul>
                                 <div class="card-tags">
                                     <span class="tag">Python</span>
@@ -1449,191 +2340,184 @@
         <div class="path-content">
             <div class="path-header fade-in">
                 <h2 class="path-title">Captain's Log</h2>
-                <p class="path-intro">The story behind the science: seven chapters, one thread</p>
+                <p class="path-intro">The story behind the science: eight chapters, one thread</p>
             </div>
 
-            <!-- Captain's Log Research Journal -->
-            <div class="journal-wrapper fade-in">
+            <!-- Captain's Log: full screen chapters -->
+            <div class="log" id="log">
 
-                <!-- Flyleaf (inscription page) -->
-                <div class="journal-flyleaf" id="journal-flyleaf">
+                <div class="log-flyleaf" id="journal-flyleaf">
                     <p class="flyleaf-inscription">"The frontier in marine science is not just about reaching new places, but about seeing what is already there in radically new ways."</p>
                     <button class="flyleaf-open-btn" id="journal-open-btn">Open the Log</button>
                 </div>
 
-                <!-- Journal (revealed after flyleaf) -->
-                <div class="journal" id="journal">
-
-                    <!-- Chapter I: Origins -->
-                    <div class="journal-spread active" data-chapter="0">
-                        <div class="journal-page--left">
-                            <img src="assets/scripps-lj.jpg" alt="Scripps Institution of Oceanography pier and La Jolla coastline" loading="lazy">
-                            <span class="journal-chapter-label">Chapter I</span>
-                            <span class="journal-page-num--left">1</span>
+                <div class="log-deck" id="log-deck" hidden>
+                    <article class="log-chapter is-current" data-chapter="0" aria-hidden="false">
+                        <div class="log-media">
+                            <img src="assets/scripps-lj.jpg" alt="Scripps Institution of Oceanography pier and La Jolla coastline" loading="lazy" decoding="async">
                         </div>
-                        <div class="journal-spine"></div>
-                        <div class="journal-page--right">
-                            <div class="journal-period">Before College</div>
-                            <h3 class="journal-title">Origins</h3>
-                            <div class="journal-narrative">
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter I</p>
+                            <h3 class="log-title">Origins</h3>
+                            <p class="log-period">Before College</p>
+                            <div class="log-narrative">
                                 <p>The first time I saw ROV footage of a hydrothermal vent, the shimmering fluid and tube worms crowding a chimney in complete darkness, something shifted. It was during a thesis defense I'd stumbled into, a graduate student describing species that had never been cataloged, ecosystems sustained by chemistry instead of sunlight, DNA analysis revealing evolutionary histories that rewrote textbooks.</p>
                                 <p>That experience showed me that entire ecosystems on our own planet remain unknown, and that the tools we build to observe them determine what we can discover. It is the reason I now build those tools.</p>
                             </div>
-                            <span class="journal-page-num--right">2</span>
                         </div>
-                    </div>
-
-                    <!-- Chapter II: CSUMB -->
-                    <div class="journal-spread" data-chapter="1">
-                        <div class="journal-page--left">
-                            <img src="assets/Elkhornslougheducation.jpg" alt="Teaching kids at Elkhorn Slough during education volunteering" loading="lazy">
-                            <span class="journal-chapter-label">Chapter II</span>
-                            <span class="journal-page-num--left">3</span>
+                    </article>
+                    <article class="log-chapter" data-chapter="1" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/Elkhornslougheducation.jpg" alt="Teaching kids at Elkhorn Slough during education volunteering" loading="lazy" decoding="async">
                         </div>
-                        <div class="journal-spine"></div>
-                        <div class="journal-page--right">
-                            <div class="journal-period">Fall 2021 – Spring 2026</div>
-                            <h3 class="journal-title">CSUMB</h3>
-                            <div class="journal-narrative">
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter II</p>
+                            <h3 class="log-title">CSUMB</h3>
+                            <p class="log-period">Fall 2021 – Spring 2026</p>
+                            <div class="log-narrative">
                                 <p>California State University, Monterey Bay became the place where curiosity found structure. A B.S. in Marine Science with a Biology minor gave me the foundation, but the coursework that actually shaped my thinking went deeper: Marine Ecology, Scientific Diving, Statistics, GIS, and Python Programming.</p>
                                 <p>Each course added a new lens. Statistics taught me to question what I thought I saw. GIS taught me to think spatially. Python taught me that the bottleneck in science is rarely data, it's the tools to make sense of it. Beyond the classroom, volunteer work is where I found my love for conservation and teaching. Guiding kids through the mudflats and channels of Elkhorn Slough, watching them discover crabs and birds for the first time, reminded me why this work matters beyond the lab.</p>
                             </div>
-                            <div class="journal-callout">
-                                <strong>CSUMB</strong>
-                                <span>B.S. Marine Science · Biology Minor · Spring 2026</span>
-                                <span>UROC Innovation Scholar · MOTC Certified · AAUS Scientific Diver</span>
-                            </div>
-                            <span class="journal-page-num--right">4</span>
                         </div>
-                    </div>
-
-                    <!-- Chapter III: First Dives -->
-                    <div class="journal-spread" data-chapter="2">
-                        <div class="journal-page--left">
-                            <img src="assets/Picture of my in south africa with dive gear and a funny construction hat on.JPEG" alt="In dive gear during South Africa research program" loading="lazy">
-                            <span class="journal-chapter-label">Chapter III</span>
-                            <span class="journal-page-num--left">5</span>
+                    </article>
+                    <article class="log-chapter" data-chapter="2" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/Picture of my in south africa with dive gear and a funny construction hat on.JPEG" alt="In dive gear during South Africa research program" loading="lazy" decoding="async">
                         </div>
-                        <div class="journal-spine"></div>
-                        <div class="journal-page--right">
-                            <div class="journal-period">Spring – Summer 2024</div>
-                            <h3 class="journal-title">First Dives</h3>
-                            <div class="journal-narrative">
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter III</p>
+                            <h3 class="log-title">First Dives</h3>
+                            <p class="log-period">Spring – Summer 2024</p>
+                            <div class="log-narrative">
                                 <p>Spring 2024 was when research stopped being theoretical. At Moss Landing Marine Labs, I was elbow-deep in urchin conditioning tanks. In the Ocean Predator Ecology Lab, I was reviewing hours of white shark footage, learning to read injury patterns the way a doctor reads an X-ray. Every kelp canopy dive at San Carlos Beach taught me that the ocean doesn't wait for you to be ready.</p>
                                 <p>After earning my NAUI Divemaster, South Africa changed everything. The research diving program threw me into conditions I wasn't ready for, surge, cold water, unfamiliar species, boats that never stopped moving. What I gained was the understanding that fieldwork is where science becomes honest.</p>
                             </div>
-                            <span class="journal-highlight">NAUI Divemaster · 143 logged dives</span>
-                            <span class="journal-page-num--right">6</span>
+                            <div class="log-chips">
+                                <span class="log-chip">NAUI Divemaster · 143 logged dives</span>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Chapter IV: Scaling Up -->
-                    <div class="journal-spread" data-chapter="3">
-                        <div class="journal-page--left">
-                            <img src="assets/shark-video-obtaining.avif" alt="Filming a white shark from the research vessel" width="915" height="1600" loading="lazy">
-                            <span class="journal-chapter-label">Chapter IV</span>
-                            <span class="journal-page-num--left">7</span>
+                    </article>
+                    <article class="log-chapter" data-chapter="3" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/shark-video-obtaining.avif" alt="Filming a white shark from the research vessel" loading="lazy" decoding="async">
                         </div>
-                        <div class="journal-spine"></div>
-                        <div class="journal-page--right">
-                            <div class="journal-period">Fall 2024 – Summer 2025</div>
-                            <h3 class="journal-title">Scaling Up</h3>
-                            <div class="journal-narrative">
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter IV</p>
+                            <h3 class="log-title">Scaling Up</h3>
+                            <p class="log-period">Fall 2024 – Summer 2025</p>
+                            <div class="log-narrative">
                                 <p>Being selected as a UROC Innovation Scholar, funded by CSUN's HSI Equity Innovation Hub and Apple, gave me the resources to think bigger. I wasn't just collecting data anymore; I was building systems to process it. Marine ecology research on latitudinal biodiversity gradients using PISCO and NOAA CUTI datasets taught me to think at scale.</p>
-                                <p>Outside the lab, I took on leadership roles in conservation and education, roles that reminded me that science without community is just data. And in the lab, the SharkHealthApp was taking shape: dual YOLO models achieving 96% pose accuracy, semi-supervised learning, automated keypoint tracking from archival footage.</p>
+                                <p>Outside the lab, I took on leadership roles in conservation and education, roles that reminded me that science without community is just data. And in the lab, the SharkHealthApp was taking shape: dual YOLO models, semi-supervised learning, and automated keypoint tracking pulled from archival footage.</p>
                             </div>
-                            <div class="journal-stats">
-                                <span class="journal-stat">96% Pose Accuracy</span>
-                                <span class="journal-stat">UROC Innovation Scholar</span>
+                            <div class="log-chips">
+                                <span class="log-chip">UROC Innovation Scholar</span>
+                                <span class="log-chip">PISCO &amp; NOAA CUTI</span>
                             </div>
-                            <span class="journal-page-num--right">8</span>
                         </div>
-                    </div>
-
-                    <!-- Chapter V: HABHub (featured/gold) -->
-                    <div class="journal-spread journal-spread--featured" data-chapter="4">
-                        <div class="journal-page--left">
-                            <img src="assets/NOAA SAT HACK SLIDE OF SUMMARY_compressed.jpg" alt="HABHub dashboard and NOAA SatHack presentation" loading="lazy">
-                            <span class="journal-chapter-label">Chapter V</span>
-                            <span class="journal-page-num--left">9</span>
+                    </article>
+                    <article class="log-chapter" data-chapter="4" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/NOAA SAT HACK SLIDE OF SUMMARY_compressed.jpg" alt="HABHub dashboard and NOAA SatHack presentation" loading="lazy" decoding="async">
                         </div>
-                        <div class="journal-spine"></div>
-                        <div class="journal-page--right">
-                            <div class="journal-win-badge">1st Place · NOAA SatHack 2025</div>
-                            <div class="journal-period">October 2025</div>
-                            <h3 class="journal-title">HABHub</h3>
-                            <div class="journal-narrative">
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter V</p>
+                            <h3 class="log-title">HABHub</h3>
+                            <p class="log-period">October 2025</p>
+                            <p class="log-badge">1st Place · NOAA SatHack 2025</p>
+                            <div class="log-narrative">
                                 <p>A week-long hackathon, inspired by my work in aquaculture and the colleges and communities that need these tools most. We built a real-time harmful algal bloom monitoring system for Monterey Bay, fusing NOAA VIIRS satellite imagery with NDBC buoy observations and CalHABMAP toxin records. A 47-feature XGBoost model generating 8-day HAB forecasts.</p>
                                 <p>The full stack came together under pressure: Python data pipeline, Flask REST API, Docker deployment, three React/TypeScript dashboards serving aquaculture farmers, beachgoers, and marine mammal researchers. When they announced first place, it was proof that the tools I'd been building actually worked when it mattered.</p>
                             </div>
-                            <span class="journal-page-num--right">10</span>
                         </div>
-                    </div>
-
-                    <!-- Chapter VI: Hardware -->
-                    <div class="journal-spread" data-chapter="5">
-                        <div class="journal-page--left">
-                            <img src="assets/relay-range-map.png" alt="Relay station field deployment range map" loading="lazy">
-                            <span class="journal-chapter-label">Chapter VI</span>
-                            <span class="journal-page-num--left">11</span>
+                    </article>
+                    <article class="log-chapter" data-chapter="5" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/relay-range-map.png" alt="Relay station field deployment range map" loading="lazy" decoding="async">
                         </div>
-                        <div class="journal-spine"></div>
-                        <div class="journal-page--right">
-                            <div class="journal-period">Ongoing</div>
-                            <h3 class="journal-title">Hardware</h3>
-                            <div class="journal-narrative">
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter VI</p>
+                            <h3 class="log-title">Hardware</h3>
+                            <p class="log-period">Ongoing</p>
+                            <div class="log-narrative">
                                 <p>VHF wildlife tag relay stations, Raspberry Pi, RTL-SDR, and NB-IoT cellular, deployed off-grid at Elkhorn Slough. Solar-powered and bridging MQTT to AWS EC2, the kind of system where failure means losing data that took months of fieldwork to create.</p>
-                                <p>Alongside the stations, I'm developing a custom aerial platform for automated white shark population assessments and a CNN-based pipeline for behavior classification from dorsal-mounted camera footage fused with accelerometer and magnetometer data. A multi-task deep learning framework for angle-tolerant morphometric extraction, presented at NEPSS 2026 in February.</p>
+                                <p>Alongside the stations I am building a custom aerial platform for automated white shark population assessments. The behavior work that started here, reading movement out of accelerometer and magnetometer records, grew into anchor, which became a project of its own. The morphometric side of it went to NEPSS in February 2026.</p>
                             </div>
-                            <div class="journal-stats">
-                                <span class="journal-stat">1,700+ ft Range</span>
-                                <span class="journal-stat">Solar Powered</span>
-                                <span class="journal-stat">NEPSS 2026</span>
+                            <div class="log-chips">
+                                <span class="log-chip">1,700+ ft Range</span>
+                                <span class="log-chip">Solar Powered</span>
+                                <span class="log-chip">NEPSS 2026</span>
                             </div>
-                            <span class="journal-page-num--right">12</span>
                         </div>
-                    </div>
+                    </article>
+                    <article class="log-chapter" data-chapter="6" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/panels/mbari-presentation.avif" alt="Presenting the summer internship work from the podium at MBARI" loading="lazy" decoding="async">
+                        </div>
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter VII</p>
+                            <h3 class="log-title">MBARI</h3>
+                            <p class="log-period">Summer 2026</p>
+                            <div class="log-narrative">
+                                <p>A summer at the Monterey Bay Aquarium Research Institute put me inside the database the whole field trains on. FathomNet holds a decade of deep sea imagery, and when I arrived it could only record a box drawn around an animal. A box tells you where something is. It cannot tell you what shape it is, and shape is what you need if you want to measure an animal rather than simply count it.</p>
+                                <p>So I spent the summer widening the database until it could hold outlines, and then filling it. The part I am proudest of is not the scale but the grading. Every mask the model produces gets scored and sorted into accept, review, or reject, and the ones we throw away are counted out loud, so nobody can quietly inflate how well it worked.</p>
+                            </div>
+                            <div class="log-chips">
+                                <span class="log-chip">Bioinspiration Lab</span>
+                                <span class="log-chip">FathomNet</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="log-chapter" data-chapter="7" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy" decoding="async">
+                        </div>
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter VIII</p>
+                            <h3 class="log-title">Now + Next</h3>
+                            <p class="log-period">Present</p>
+                            <div class="log-narrative">
+                                <p>I finished the degree in spring 2026, and the thread running through all of it has not changed. Field ecology, computer vision, and hardware all point at the same thing: building instruments that let us see what we could not see before, then leaving them somewhere other people can pick them up.</p>
+                                <p>What comes next is the less glamorous half of that. Validation rather than demos. Evaluation that does not flatter the model. Instruments cheap enough that a local team can rebuild one from parts after I have gone home. Science should serve the places and the people it studies, which is a much easier thing to say than to build.</p>
+                            </div>
+                            <div class="log-chips">
+                                <span class="log-chip">MOTC Certified</span>
+                                <span class="log-chip">AAUS Scientific Diver</span>
+                                <span class="log-chip">143 Logged Dives</span>
+                                <span class="log-chip">NAUI Divemaster</span>
+                            </div>
+                        </div>
+                    </article>
 
-                    <!-- Chapter VII: Now + Next -->
-                    <div class="journal-spread" data-chapter="6">
-                        <div class="journal-page--left">
-                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy">
-                            <span class="journal-chapter-label">Chapter VII</span>
-                            <span class="journal-page-num--left">13</span>
-                        </div>
-                        <div class="journal-spine"></div>
-                        <div class="journal-page--right">
-                            <div class="journal-period">Present</div>
-                            <h3 class="journal-title">Now + Next</h3>
-                            <div class="journal-narrative">
-                                <p>Continuing as researcher and steward. Everything I've worked toward, from field ecology to computer vision to hardware deployments, converges on the same goal: building tools that let us observe what we couldn't before and making that knowledge accessible to the people and communities who need it.</p>
-                                <p>Whether it's conservation monitoring, marine health assessment, or education outreach, the thread is the same. Science should serve the places and people it studies.</p>
-                            </div>
-                            <div class="journal-certs">
-                                <span class="journal-cert-tag">MOTC Certified</span>
-                                <span class="journal-cert-tag">AAUS Scientific Diver</span>
-                                <span class="journal-cert-tag">143+ Logged Dives</span>
-                                <span class="journal-cert-tag">NAUI Divemaster</span>
-                            </div>
-                            <span class="journal-page-num--right">14</span>
-                        </div>
-                    </div>
+                    <div class="log-sweep" id="log-sweep" aria-hidden="true"></div>
 
-                    <!-- Chapter Tabs -->
-                    <nav class="journal-tabs" aria-label="Journal chapters">
-                        <button class="journal-tab active" data-chapter="0"><span class="journal-tab-numeral">I</span><span class="journal-tab-label">Origins</span></button>
-                        <button class="journal-tab" data-chapter="1"><span class="journal-tab-numeral">II</span><span class="journal-tab-label">CSUMB</span></button>
-                        <button class="journal-tab" data-chapter="2"><span class="journal-tab-numeral">III</span><span class="journal-tab-label">First Dives</span></button>
-                        <button class="journal-tab" data-chapter="3"><span class="journal-tab-numeral">IV</span><span class="journal-tab-label">Scaling Up</span></button>
-                        <button class="journal-tab journal-tab--gold" data-chapter="4"><span class="journal-tab-numeral">V</span><span class="journal-tab-label">HABHub</span></button>
-                        <button class="journal-tab" data-chapter="5"><span class="journal-tab-numeral">VI</span><span class="journal-tab-label">Hardware</span></button>
-                        <button class="journal-tab journal-tab--pulse" data-chapter="6"><span class="journal-tab-numeral">VII</span><span class="journal-tab-label">Now + Next</span></button>
+                    <nav class="log-nav" aria-label="Chapters">
+                        <button type="button" class="log-arrow log-prev" id="log-prev" aria-label="Previous chapter">&#8249;</button>
+                        <ol class="log-rail">
+                            <li><button type="button" class="log-dot" data-chapter="0" aria-current="true"><span class="log-dot-num">I</span><span class="log-dot-name">Origins</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="1"><span class="log-dot-num">II</span><span class="log-dot-name">CSUMB</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="2"><span class="log-dot-num">III</span><span class="log-dot-name">First Dives</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="3"><span class="log-dot-num">IV</span><span class="log-dot-name">Scaling Up</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="4"><span class="log-dot-num">V</span><span class="log-dot-name">HABHub</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="5"><span class="log-dot-num">VI</span><span class="log-dot-name">Hardware</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="6"><span class="log-dot-num">VII</span><span class="log-dot-name">MBARI</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="7"><span class="log-dot-num">VIII</span><span class="log-dot-name">Now + Next</span></button></li>
+                        </ol>
+                        <button type="button" class="log-arrow log-next" id="log-next" aria-label="Next chapter">&#8250;</button>
                     </nav>
-
                 </div>
             </div>
         </div>
     </section>
+
+    </main>
 
     <!-- ============================================
          RESUME SLIDE-OUT PANEL
@@ -1641,165 +2525,188 @@
     <aside id="resume-panel" class="resume-panel" aria-label="Resume">
         <button class="resume-close" id="resume-close" aria-label="Close resume">&times;</button>
         <div class="resume-panel-content">
+            <!-- CV:START generated by tools/build_cv.py, do not edit by hand -->
             <h2>Resume / CV</h2>
-            <a href="assets/Sambold_Daniel_CV.docx" download class="cv-download-btn">Download Full CV (.docx)</a>
-
+            <p class="cv-contact"><a href="mailto:daniel.sambold@gmail.com">daniel.sambold@gmail.com</a> &middot; <a href="https://github.com/dbold23" target="_blank" rel="noopener">github.com/dbold23</a> &middot; <a href="https://www.linkedin.com/in/daniel-sambold-620b37221" target="_blank" rel="noopener">LinkedIn</a></p>
+            <p class="cv-downloads">
+                <a href="assets/Sambold_Daniel_CV.pdf" download class="cv-download-btn">Download CV (PDF)</a>
+                <a href="assets/Sambold_Daniel_CV.docx" download class="cv-download-alt">or .docx</a>
+            </p>
             <h3>Education</h3>
             <div class="resume-item">
                 <h4>California State University, Monterey Bay</h4>
-                <p class="resume-meta">B.S. Marine Science | Minor: Biology | Expected: Spring 2026</p>
+                <p class="resume-meta">Graduated Spring 2026 | B.S. Marine Science, Minor in Biology</p>
                 <ul>
                     <li>UROC Innovation Scholar (funded by CSUN HSI Equity Innovation Hub &amp; Apple)</li>
                 </ul>
             </div>
-
             <h3>Technical Skills</h3>
             <div class="resume-item">
                 <ul>
-                    <li><strong>Programming:</strong> Python (Flask, PyTorch, OpenCV, Streamlit), R (GAMs, Bayesian hierarchical modeling, ggplot2), MATLAB, SQL, Bash/Unix, TypeScript (React)</li>
-                    <li><strong>ML &amp; Computer Vision:</strong> Swin Transformers, YOLO, SAM 3 segmentation, XGBoost, CNN-LSTM, DINOv2 embeddings, ArcFace metric learning, FAISS vector search, monocular depth estimation</li>
-                    <li><strong>Data Infrastructure &amp; Cloud:</strong> Docker, AWS (EC2, S3, SageMaker), CUDA, Google APIs, REST API development, NOAA VIIRS/ERDDAP satellite data, GIS spatial analysis</li>
-                    <li><strong>Hardware &amp; Autonomous Systems:</strong> Raspberry Pi, RTL-SDR, Arduino, NB-IoT cellular modem, flight controller programming, OTA firmware updates, 3D modeling</li>
-                    <li><strong>Ocean Instrumentation:</strong> VHF telemetry, acoustic/accelerometer/magnetometer bio-logging tags, MQTT/IoT sensor networks, BRUV deployment, CFD modeling (OpenFOAM)</li>
-                    <li><strong>Marine Operations:</strong> NAUI Divemaster (143 dives), AAUS Scientific Diver, MOTC Certified Vessel Operator</li>
+                    <li><strong>Languages:</strong> Python, R, Java 21, SQL/T-SQL, JavaScript/TypeScript, MATLAB, Bash/Unix</li>
+                    <li><strong>ML &amp; Computer Vision:</strong> PyTorch, YOLO detection and YOLOv8-pose keypoints, SAM 2 / SAM 3 / SlimSAM segmentation, DINOv2 embeddings, ArcFace metric learning, XGBoost, scikit-learn, CNN-LSTM, positive-unlabeled learning, active learning and human-in-the-loop annotation, leakage-aware subject-level validation, ONNX Runtime</li>
+                    <li><strong>Data Engineering:</strong> Microsoft SQL Server, PostgreSQL, SQLite, Flyway migrations, Hibernate ORM/Envers, JPA, JPQL; schema design with composite and filtered indexes; Quarkus, JAX-RS/REST, Flask REST APIs; Docker; AWS (EC2, S3, SageMaker); distributed work-queue orchestration (lease-based claiming, crash recovery, multi-GPU worker pools); Celery/Redis</li>
+                    <li><strong>Data Formats &amp; Standards:</strong> COCO (compressed-RLE / pycocotools interoperability), YOLO, Pascal VOC, Darwin Core, CF-1.8 NetCDF, Movebank, GeoTIFF, GeoJSON, Parquet</li>
+                    <li><strong>Ocean &amp; Geospatial Data:</strong> NOAA VIIRS / ERDDAP satellite data, NDBC buoy data, GIS spatial analysis, Shapely, pyproj, rasterio; acoustic, accelerometer and magnetometer bio-logging tags; VHF telemetry; adaptive signal processing; water quality monitoring; BRUV deployment; CFD modeling (OpenFOAM)</li>
+                    <li><strong>Statistics:</strong> GAMs, Bayesian hierarchical modeling, Gaussian process regression, bootstrap confidence intervals, sequential Monte Carlo particle filtering and FFBS smoothing</li>
+                    <li><strong>Marine Operations:</strong> AAUS Scientific Diver; NAUI Divemaster (143 logged dives); MOTC Certified Vessel Operator</li>
                 </ul>
             </div>
-
-            <h3>Publications</h3>
+            <h3>Research &amp; Engineering Experience</h3>
             <div class="resume-item">
+                <h4>Summer Intern, Bioinspiration Lab (FathomNet)</h4>
+                <p class="resume-meta">Jun – Aug 2026 | Monterey Bay Aquarium Research Institute (MBARI), Moss Landing, CA</p>
                 <ul>
-                    <li>Sambold, D., &amp; Gardner, L. Effects of Stocking Density on Gonad Development and Survival in Purple Sea Urchin (<em>Strongylocentrotus purpuratus</em>) Aquaculture. <em>In review.</em></li>
-                    <li>Sambold, D., &amp; Gardner, L. Examining Finishing Feed Applications for Purple Urchin (<em>Strongylocentrotus purpuratus</em>) Roe Enhancement. <em>In review.</em></li>
+                    <li>Designed and prototyped a 10-migration SQL Server schema evolution with rollback scripts, restructuring annotations into an observation → localization → geometry hierarchy so multiple contributors' geometries attach to one animal while license, observer and review state stay per contribution.</li>
+                    <li>Extended FathomNet's annotation data model and REST API from bounding boxes only to point and COCO compressed-RLE segmentation geometry across JPA entities, repositories, services and resources, porting pycocotools' RLE codec to Java with 17 unit tests so masks from SAM or COCO tooling round-trip byte for byte with no new dependency.</li>
+                    <li>Extended MBARI's open-source FathomNet Python client to export point and segmentation annotations alongside bounding boxes across COCO, YOLO and Pascal VOC, with per-record license propagation and a gate for datasets whose terms are unknown.</li>
+                    <li>Converted existing bounding-box annotations into graded segmentation masks across the FathomNet database, scaling from a SAM 2 pilot to a full-corpus SAM 3 run. Built the sharded, crash-safe orchestrator: shard by image, a WAL-mode SQLite manifest as a lock-free work queue with BEGIN IMMEDIATE lease claims so a dead worker's shards are reclaimed automatically, temp-and-rename commits so a crash never marks a half-written shard complete, and one long-lived worker per GPU with the model loaded once.</li>
+                    <li>Graded every mask rather than accepting it: best-of-three multimask selection by SAM's predicted IoU, a stability score computed from mask logits, and AUTO_ACCEPT / REVIEW / REJECT tiers on dual thresholds, with rejects routed to a sidecar carrying an explicit deferred count so accept rate could not be inflated.</li>
+                    <li>Built a loopback ONNX segmentation service (SlimSAM-77-uniform, ONNX Runtime / CoreML) filling FathomNet's SegmentationProvider seam so the editor's Smart Select returns real object masks instead of the shipped stub's disc.</li>
+                    <li>Built a dataset planning tool that characterizes a proposed ML training slice of an annotated survey imagery corpus from bounded SQL aggregates: an exclusion waterfall attributing every dropped annotation to one named stage, per-concept trainability thresholds and the untrainable long tail, train/test leakage counts under four candidate split keys, and unlabelled-positive contamination.</li>
                 </ul>
             </div>
-
-            <h3>Awards &amp; Honors</h3>
             <div class="resume-item">
-                <h4>1st Place, NOAA SatHack 2025 | Harmful Algal Bloom Forecasting</h4>
-                <p class="resume-meta">October 2025</p>
+                <h4>Lead Developer, anchor: Biologging Trajectory Reconstruction &amp; Behavior Classification</h4>
+                <p class="resume-meta">May – Aug 2026 | Jorgensen Lab, CSUMB  |  co-developed with D. Moran</p>
                 <ul>
-                    <li>Built HABHub: real-time HAB monitoring platform integrating NOAA VIIRS satellite imagery, NDBC buoy data, and CalHABMAP toxin records</li>
-                    <li>Engineered 47-feature XGBoost prediction model with Flask REST API serving 3 dashboards</li>
-                    <li>Deployed containerized production system (Docker, Railway/Render) with React/TypeScript frontends</li>
+                    <li>Built the validation framework checking biologger-derived kinematics against independent optical ground truth, converting DeepLabCut and SLEAP keypoint exports into tailbeat frequency, amplitude and body lengths per second across four species, with drone and aquarium video speed calibration and paired multi-tag runs scored by Cohen's kappa.</li>
+                    <li>Rebuilt behavior-classifier evaluation for subject-level leave-one-out cross-validation with per-class precision/recall/F1, balanced accuracy and macro-F1, replacing an evaluation path that leaked individual-animal signal between train and test.</li>
+                    <li>Implemented verified-position correction threading GPS and acoustic fixes through a particle filter and FFBS smoother to arrest dead-reckoning drift, reported with held-out drift RMSE; added CF-1.8 NetCDF, Movebank and GeoJSON interchange.</li>
                 </ul>
             </div>
             <div class="resume-item">
-                <h4>UROC Innovation Scholar | CSUMB</h4>
-                <p class="resume-meta">August 2024 – Present</p>
-                <ul><li>Research program funded by CSUN HSI Equity Innovation Hub and Apple</li></ul>
-            </div>
-
-            <h3>Research Experience</h3>
-            <div class="resume-item">
-                <h4>Research Assistant | Jue Lab, CSUMB</h4>
-                <p class="resume-meta">Mentor: Dr. Nathaniel Jue | Spring 2025 – Present</p>
+                <h4>Undergraduate Researcher, Ocean Predator Ecology Lab, CSUMB</h4>
+                <p class="resume-meta">Spring 2023 – Present | Mentor: Dr. Salvador Jorgensen</p>
                 <ul>
-                    <li>Built 10-stage automated analysis pipeline for TECAN plate reader data, processing 92 bacterial strains across 4 experimental groups to assess pesticide bioremediation potential</li>
-                    <li>Implemented modified Gompertz growth modeling, Haldane substrate inhibition kinetics, and a two-stage ML classifier (HistGBT)</li>
-                    <li>Applied Bayesian hierarchical modeling, Gaussian process regression, and bootstrap confidence intervals</li>
+                    <li>Developed multiple computer vision pipelines for pose detection and automated shark morphometric analysis across 4,850 archival videos (661 GB, 2012–2026, 4 sites), reaching 0.96 box mAP50, with a SQLite backend structured around Darwin Core concepts.</li>
+                    <li>Built an active learning pipeline with an iterative human-in-the-loop platform for pose, segmentation and 3D interpretation tasks.</li>
+                    <li>Built SharkScarAnnotator, a multi-annotator platform whose 15-point labelling skeleton feeds the 16-keypoint pose model, with consensus scoring weighted by annotator experience and confidence.</li>
+                    <li>Processing accelerometer and magnetometer sensor data alongside dorsal-mounted camera video to correlate movement signatures with observed white shark behaviors.</li>
+                    <li>Performed computational fluid dynamics analysis (OpenFOAM) of acoustic tags mounted to shark dorsal fins, iterating tag geometry to minimize hydrodynamic drag.</li>
                 </ul>
             </div>
             <div class="resume-item">
-                <h4>Lead Technician | Aquaculture Lab, Moss Landing Marine Labs</h4>
-                <p class="resume-meta">Mentor: Dr. Luke Gardner | Spring 2024 – Present</p>
+                <h4>Research Assistant, Jue Lab, CSUMB</h4>
+                <p class="resume-meta">Spring 2025 – Present | Mentor: Dr. Nathaniel Jue</p>
                 <ul>
-                    <li>Independently designing and managing two experiments on purple sea urchin aquaculture: stocking density optimization and finishing feed roe enhancement</li>
-                    <li>Managing full experimental lifecycle: hypothesis development, tank setup, water quality monitoring, data collection, statistical analysis, and manuscript preparation</li>
-                    <li>Performing Texture Profile Analysis (TPA) testing to assess gonad quality and commercial viability</li>
+                    <li>Built a 6-stage automated analysis pipeline for TECAN plate reader data covering 92 bacterial strains across 4 experimental groups, assessing pesticide bioremediation potential.</li>
+                    <li>Implemented modified Gompertz growth modeling, Haldane substrate inhibition kinetics, a HistGBT classifier for automated curve quality screening, and Bayesian hierarchical modeling with bootstrap confidence intervals; validated the full pipeline against 480 synthetic ground-truth curves.</li>
                 </ul>
             </div>
             <div class="resume-item">
-                <h4>Undergraduate Researcher | Ocean Predator Ecology Lab, CSUMB</h4>
-                <p class="resume-meta">Mentor: Dr. Salvador Jorgensen | Spring 2023 – Present</p>
+                <h4>Lead Technician, Aquaculture Lab, Moss Landing Marine Laboratories</h4>
+                <p class="resume-meta">Spring 2024 – Present | Mentor: Dr. Luke Gardner</p>
                 <ul>
-                    <li><strong>SharkHealthApp (UROC Research):</strong> Developed Flask web app integrating YOLOv8-pose with 15-keypoint schema for automated shark detection and morphometric analysis from 20+ years of archival video. Built active learning pipeline achieving 98% detection accuracy (mAP50). Built SharkScarAnnotator with SAM2 segmentation and experience-weighted consensus scoring.</li>
-                    <li><strong>Behavior Classification:</strong> Developing CNN-based pipeline to classify white shark behaviors from dorsal-mounted camera footage with accelerometer and magnetometer sensor data</li>
-                    <li><strong>CFD Analysis:</strong> Performed computational fluid dynamics analysis using OpenFOAM to model hydrodynamic drag on acoustic tags mounted to shark dorsal fins</li>
+                    <li>Independently designing and managing two purple sea urchin (Strongylocentrotus purpuratus) aquaculture experiments, stocking density optimization and finishing feed roe enhancement, across the full lifecycle from hypothesis through manuscript; two manuscripts in review.</li>
+                    <li>Performing Texture Profile Analysis (TPA) to assess gonad quality and commercial viability; contributing to kelp forest restoration through sustainable urchin ranching.</li>
                 </ul>
             </div>
-
-            <h3>Engineering &amp; Technology Projects</h3>
+            <h3>Selected Projects</h3>
             <div class="resume-item">
-                <h4>Harbor Porpoise Individual Re-ID System | PorpoisedID</h4>
+                <h4>HABHub: Harmful Algal Bloom Forecasting Platform</h4>
+                <p class="resume-meta">1st Place, NOAA SatHack 2025</p>
+                <ul>
+                    <li>Real-time HAB monitoring integrating NOAA VIIRS satellite imagery via ERDDAP, NDBC buoy data and CalHABMAP toxin records for Monterey Bay; 47-feature XGBoost model behind 3 custom REST APIs, with dual dashboards, one for growers and one for public safety, plus automated alerting; containerized production deploy.</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>Individual Re-Identification Across Species</h4>
                 <p class="resume-meta">2025 – Present</p>
                 <ul>
-                    <li>Automated re-identification pipeline: SAM2 body segmentation, protrusion-based fin extraction, and multi-backbone feature comparison across 198 individuals (2,393 sightings)</li>
-                    <li>MiewID + ArcFace metric learning achieved 69.4% rank-1 / 87.4% rank-5 in temporal-split evaluation</li>
-                    <li>Gradio web interface; SQLite catalog; Docker/Kubernetes deployment</li>
+                    <li>One re-identification approach applied to more than one animal: SAM 2 segmentation, feature embedding through an ArcFace metric head, and cosine-similarity ranking against a gallery of known individuals, so photographic sightings support mark-recapture without physical tags.</li>
+                    <li>Harbor porpoise, by dorsal fin outline. MegaDescriptor-L-384 embeddings across 198 individuals (2,393 sightings, 2,153 images), after benchmarking MegaDescriptor-L-384, DINOv2-base and a two-backbone ensemble. Unbiased temporal split (train ≤ 2022, test 2023+): 30.5% rank-1, 57.4% rank-5. Leave-one-out on 94 individuals with at least 5 sightings reaches 93.0% rank-1 but is inflated by design and reported only for the gallery-size experiment.</li>
+                    <li>Broadnose sevengill shark (<em>Notorynchus cepedianus</em>), by spot constellation rather than outline: 1,099 images catalogued, 51 individuals labelled, three tracks in parallel (a fine-tuned MiewID head-crop embedding, a spot-graph GNN, and ALFRE-ID zero-shot local features). At this data scale local-feature aggregation outperforms fine-tuned metric learning, so the zero-shot track leads.</li>
+                    <li>Catalogue platform built to host any patterned marine species, with leopard sharks and eagle rays as the next candidates. Gradio interface, SQLite catalog, Docker deployment.</li>
                 </ul>
             </div>
             <div class="resume-item">
                 <h4>VHF Wildlife Tag Detection System</h4>
                 <p class="resume-meta">2024 – Present</p>
                 <ul>
-                    <li>Full-stack IoT architecture: Raspberry Pi 5, RTL-SDR Blog V4, SIM7028 NB-IoT HAT, and custom VHF antenna</li>
-                    <li>Achieved comparable tag detection to a $695 commercial receiver for under $100 in components</li>
+                    <li>Raspberry Pi 5, RTL-SDR Blog V4 and SIM7028 NB-IoT receiver with adaptive pulse detection, auto-calibration and field-tested gain sweep optimization. Measured 1,700 ft maximum range at a 62% detection rate for under $100 in components, against a $695 commercial receiver, adding autonomous logging and cellular relay.</li>
                 </ul>
             </div>
             <div class="resume-item">
                 <h4>Autonomous Aerial Platform for Marine Survey</h4>
                 <p class="resume-meta">2024 – Present</p>
                 <ul>
-                    <li>Building custom FPV aircraft for testing CV detection via aerial imagery</li>
-                    <li>Flight controller programming, motor/ESC configuration, radio telemetry systems</li>
+                    <li>Custom FPV aircraft for testing computer vision detection from aerial imagery; flight controller programming, motor/ESC configuration and radio telemetry systems.</li>
                 </ul>
             </div>
-
+            <h3>Publications</h3>
+            <div class="resume-item">
+                <ul>
+                    <li>Sambold, D., &amp; Gardner, L. Effects of Stocking Density on Gonad Development and Survival in Purple Sea Urchin (Strongylocentrotus purpuratus) Aquaculture. In review.</li>
+                    <li>Sambold, D., &amp; Gardner, L. Examining Finishing Feed Applications for Purple Urchin (Strongylocentrotus purpuratus) Roe Enhancement. In review.</li>
+                </ul>
+            </div>
             <h3>Presentations</h3>
             <div class="resume-item">
                 <ul>
-                    <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. "Assessing White Shark Body Condition..." Poster, WSN, November 2025, San Diego, CA.</li>
-                    <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. "Assessing Shark Body Condition..." Poster, NEPSS, March 2026, Newport, OR.</li>
-                    <li>Sambold, D. "From Fins to Frames: An AI-Powered Tool for Morphometric Shark Analysis." UROC Spring Showcase, CSUMB, Spring 2025.</li>
-                    <li>Sambold, D. &amp; Jorgensen, S. "Classifying White Shark Behaviors from Sensor Packages." UROC Summer Symposium, CSUMB, Summer 2025.</li>
-                    <li>Sambold, D. &amp; Gardner, L. "Optimizing Urchin Ranching: Precision Roe Phenotyping via Organoleptic Analysis." WRAC Workshop, November 2025, San Francisco, CA.</li>
-                    <li>Sambold, D. "HAB Hub: Integrating Satellite, Buoy, and Toxin Data for Real-Time HAB Monitoring in Monterey Bay." ESIP, January 2025, Online.</li>
+                    <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. “Assessing Shark Body Condition.” Poster, NEPSS, March 2026, Newport, OR.</li>
+                    <li>Sambold, D., &amp; Gardner, L. “Optimizing Urchin Aquaculture: Carotenoid Application &amp; Pellet Processing.” Aquaculture America, February 2026, Las Vegas, NV.</li>
+                    <li>Sambold, D., &amp; Gardner, L. “Examining Finishing Feed Applications for Purple Urchin Roe Enhancement.” Aquaculture America, February 2026, Las Vegas, NV.</li>
+                    <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. “Assessing White Shark Body Condition.” Poster, Western Society of Naturalists, November 2025, San Diego, CA.</li>
+                    <li>Sambold, D., &amp; Gardner, L. “Optimizing Urchin Ranching: Precision Roe Phenotyping via Organoleptic Analysis.” WRAC Workshop, November 2025, San Francisco, CA.</li>
+                    <li>Sambold, D., &amp; Jorgensen, S. “Classifying White Shark Behaviors from Sensor Packages.” UROC Summer Symposium, CSUMB, Summer 2025.</li>
+                    <li>Sambold, D. “From Fins to Frames: An AI-Powered Tool for Morphometric Shark Analysis.” UROC Spring Showcase, CSUMB, Spring 2025.</li>
+                    <li>Sambold, D. “HAB Hub: Integrating Satellite, Buoy, and Toxin Data for Real-Time HAB Monitoring in Monterey Bay.” ESIP, January 2026, Online.</li>
                 </ul>
             </div>
-
             <h3>Field Experience &amp; Certifications</h3>
             <div class="resume-item">
-                <h4>NAUI Divemaster | 143 logged dives</h4>
-                <p class="resume-meta">July 2024 – Present</p>
-                <ul><li>Certified professional dive leader; trained in dive planning, safety management, and underwater research coordination</li></ul>
-            </div>
-            <div class="resume-item">
-                <h4>Research &amp; Diver Development Program | South Africa</h4>
+                <h4>Research &amp; Diver Development Program, South Africa</h4>
                 <p class="resume-meta">July – August 2024</p>
                 <ul>
-                    <li>31 hours scientific diving: nudibranch surveys, shark egg casing measurement, BRUV deployment, fish dissections</li>
-                    <li>Advanced vessel operations: docking, loading, anchoring, navigation, equipment deployment/recovery at sea</li>
+                    <li>31 hours of scientific diving: nudibranch population surveys, swell shark egg casing measurement, BRUV deployments, fish dissections and quadrat-based invertebrate counts, microplastic sampling.</li>
+                    <li>Advanced vessel operations: docking, loading, anchoring, navigation, and equipment deployment and recovery at sea.</li>
                 </ul>
             </div>
             <div class="resume-item">
-                <h4>MOTC Certified Vessel Operator | CSUMB</h4>
+                <h4>AAUS Scientific Diver, CSUMB</h4>
+                <p class="resume-meta">Spring 2024</p>
+                <ul>
+                    <li>Designed and conducted “Thermal Thresholds: The Role of Temperature Fluctuations in Shaping Kelp Forest Health at San Carlos Beach, Monterey, CA.”</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>NAUI Divemaster, 143 logged dives</h4>
+                <p class="resume-meta">July 2024 – Present</p>
+                <ul>
+                    <li>Certified professional dive leader; dive planning, safety management and underwater research coordination.</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>MOTC Certified Vessel Operator, CSUMB</h4>
                 <p class="resume-meta">2024</p>
             </div>
             <div class="resume-item">
-                <h4>AAUS Scientific Diver | CSUMB</h4>
-                <p class="resume-meta">Spring 2024</p>
-                <ul><li>Designed and conducted study: "Thermal Thresholds: The Role of Temperature Fluctuations in Shaping Kelp Forest Health at San Carlos Beach, Monterey, CA"</li></ul>
+                <h4>CITI Certified, Responsible Conduct of Research</h4>
             </div>
-
             <h3>Leadership &amp; Outreach</h3>
             <div class="resume-item">
-                <h4>Trail Committee Chair | Advocates for Nisene Marks State Park</h4>
+                <h4>Trail Committee Chair, Advocates for Nisene Marks State Park</h4>
                 <p class="resume-meta">2024 – 2025</p>
-                <ul><li>Led hazard assessments with 30+ volunteers; developed GIS-based stewardship mapping for park management</li></ul>
-            </div>
-            <div class="resume-item">
-                <h4>Educational Aide | Elkhorn Slough Foundation</h4>
-                <p class="resume-meta">2024 – 2025</p>
-                <ul><li>Led environmental education programs for students grades 4-10; participated in habitat restoration and community science</li></ul>
-            </div>
-
-            <h3>Additional Training</h3>
-            <div class="resume-item">
                 <ul>
-                    <li>CITI Certified: Research Ethics and Responsible Conduct of Research</li>
-                    <li>Career Development in Marine Sciences (ENVS 302): Scientific communication and professional development</li>
+                    <li>Led hazard assessments with 30+ volunteers; developed GIS-based stewardship mapping for park management.</li>
                 </ul>
             </div>
+            <div class="resume-item">
+                <h4>Educational Aide, Elkhorn Slough Foundation</h4>
+                <p class="resume-meta">2024 – 2025</p>
+                <ul>
+                    <li>Led environmental education programs for students in grades 4–10; habitat restoration and community science.</li>
+                </ul>
+            </div>
+            <div class="resume-item">
+                <h4>Relay Station Training Program, Galápagos &amp; California</h4>
+                <p class="resume-meta">2024 – Present</p>
+                <ul>
+                    <li>Designed and built a low-cost VHF telemetry relay station, deployed it in the Galápagos and multiple California coastal sites, and taught local teams to build, site and repair their own.</li>
+                </ul>
+            </div>
+            <!-- CV:END -->
         </div>
     </aside>
     <div id="resume-backdrop" class="resume-backdrop"></div>

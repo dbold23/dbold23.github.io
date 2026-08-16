@@ -18,17 +18,15 @@
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 50px;
-  opacity: 0;
-  pointer-events: none;
   transition: opacity 0.4s ease, transform 0.4s ease;
-  transform: translateX(-50%) translateY(-20px);
-}
-
-.v2-nav.visible {
-  opacity: 1;
-  pointer-events: all;
   transform: translateX(-50%) translateY(0);
 }
+
+/* On the homescreen the pill carries only the CV: Home is where you already are,
+   and the path switcher has nothing to switch between yet. display, not just
+   visibility, so the pill shrinks to fit instead of reserving empty space. */
+.v2-nav:not(.visible) .nav-home,
+.v2-nav:not(.visible) .nav-paths { display: none; }
 
 .nav-home {
   width: 32px;
@@ -44,9 +42,22 @@
 .nav-home svg { width: 100%; height: 100%; color: var(--white); }
 .nav-home:hover { background: rgba(255,255,255,0.15); }
 
+/* Only the path switcher waits for a path to be entered. Home and CV stay live,
+   so a visitor can reach the CV without first guessing a corner of the hero.
+   visibility, not just opacity, or the buttons keep their tab stops. */
 .nav-paths {
   display: flex;
   gap: 0.35rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.v2-nav.visible .nav-paths {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
 }
 
 .nav-btn {
@@ -120,6 +131,9 @@
 
 /* Resume Slide-Out Panel */
 .resume-panel {
+  /* Off-screen is not hidden: without this the whole CV stays tabbable and its
+     headings stay in the screen-reader outline from every path */
+  visibility: hidden;
   position: fixed;
   top: 0;
   right: 0;
@@ -134,6 +148,7 @@
 }
 
 .resume-panel.open {
+  visibility: visible;
   transform: translateX(0);
 }
 
@@ -160,6 +175,13 @@
 }
 
 .resume-panel-content h2 { color: var(--ocean-deep); margin-bottom: 1rem; }
+.cv-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
 .cv-download-btn {
   display: inline-block;
   padding: 0.6rem 1.4rem;
@@ -169,10 +191,16 @@
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
   transition: background 0.3s;
 }
 .cv-download-btn:hover { background: var(--ocean-mid); }
+.cv-download-alt {
+  font-size: 0.85rem;
+  color: var(--gray-mid);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cv-download-alt:hover { color: var(--ocean-deep); }
 .resume-panel-content h3 { color: var(--ocean-deep); margin-top: 2rem; border-bottom: 2px solid var(--ocean-light); padding-bottom: 0.5rem; }
 .resume-panel-content h4 { color: var(--ocean-mid); margin-bottom: 0.3rem; }
 .resume-meta { color: var(--gray-mid); font-size: 0.9rem; margin-bottom: 0.5rem; }
@@ -270,3 +298,11 @@
 .footer-bottom p { opacity: 0.7; margin-bottom: 0.3rem; font-size: 0.9rem; }
 .footer-mission { font-weight: 600; font-size: 1rem !important; opacity: 0.9 !important; }
 .footer-meta { font-size: 0.85rem !important; }
+
+.cv-contact {
+  margin-bottom: 0.9rem;
+  font-size: 0.9rem;
+  color: var(--gray-mid);
+}
+
+.cv-contact a { color: var(--ocean-deep); text-decoration: underline; text-underline-offset: 3px; }

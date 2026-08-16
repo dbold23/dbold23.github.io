@@ -52,5 +52,8 @@ tagging_files/
 # Local editor/agent config
 .claude/
 
-# Internal planning docs (not part of the published site)
+# Internal planning docs and working notes (not part of the published site)
 tasks/
+
+# Python build tooling
+tools/__pycache__/

@@ -22,11 +22,18 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* On the homescreen the pill carries only the CV: Home is where you already are,
-   and the path switcher has nothing to switch between yet. display, not just
-   visibility, so the pill shrinks to fit instead of reserving empty space. */
-.v2-nav:not(.visible) .nav-home,
-.v2-nav:not(.visible) .nav-paths { display: none; }
+/* The homescreen carries no chrome at all. Home is where you already are, the
+   path switcher has nothing to switch between yet, and the CV belongs with the
+   rest of the navigation rather than floating on its own over the landing
+   image — the four corner hotspots are the only thing that should compete with
+   it there.
+
+   The pill itself is hidden, not just its contents: with nothing left inside
+   it, an empty pill would still paint its background, border and blur as a
+   small dark lozenge at the top of the page. `.visible` is added on entering a
+   path and removed on returning home (js/app.js), so the CV comes back the
+   moment there is a nav to put it in. */
+.v2-nav:not(.visible) { display: none; }
 
 .nav-home {
   width: 32px;

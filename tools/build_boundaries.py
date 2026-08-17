@@ -63,7 +63,8 @@ import os
 import urllib.parse
 import urllib.request
 
-from shapely.geometry import Polygon
+from shapely.geometry import MultiPolygon, Polygon
+from shapely.ops import unary_union
 
 OSM_POLY = "https://polygons.openstreetmap.fr/get_geojson.py?id={rel}&params=0"
 CCED = (
@@ -98,7 +99,61 @@ SIMPLIFY_M = 45.0
 # outlying parcels that read as noise.
 MIN_RING_SHARE = 0.10
 
+# A simplified ring can end up with needles: a channel arm narrower than the
+# tolerance gets its two banks pulled together until the outline runs out a
+# hundred metres and comes back within a few metres of itself. GEOS's
+# topology-preserving mode stops that becoming an actual crossing, but a 7
+# degree spike still DRAWS as one — two lines a pixel apart, which reads as the
+# boundary overlapping itself.
+#
+# The unsimplified geometry has no angle under 179 degrees, so this is entirely
+# our own artefact and removing it restores the source's own shape. Only the
+# tip vertex goes, and only where both arms are long enough that it is a needle
+# rather than a genuinely sharp corner (a parcel corner has short arms).
+MIN_SPIKE_ANGLE = 25.0
+MIN_SPIKE_ARM_M = 30.0
+
+# The same artefact one step larger: instead of a single needle tip, the ring
+# leaves the shoreline, loops through two or three vertices and comes back to
+# within a few metres of where it left, enclosing a sliver. It draws as a hook
+# hanging off the boundary — most visibly where Elkhorn's channel meets the
+# reserve, where the return point was 4.9 m from the departure point.
+#
+# An excursion is only cut when it comes back this close AND wandered much
+# further than the gap it closes; that second test is what stops a gentle
+# curve, whose ends are also close together, from being flattened.
+MIN_SLOT_M = 15.0
+MIN_SLOT_DETOUR = 3.0
+MAX_SLOT_SPAN = 6
+
 SQM_PER_ACRE = 4046.8564224
+
+# Features that should be drawn as ONE shape rather than as overlapping
+# outlines. Elkhorn is the reserve plus the slough it exists to protect, and
+# they share a shoreline: drawn separately you get two outlines a metre apart,
+# a 400-acre reserve sliver lying over the channel, and the rail causeway
+# showing up as a hairline exclusion slotted down the middle of the water.
+# None of that is legible at 33 m per pixel and none of it is the point.
+#
+# `close_m` is a morphological close (dilate then erode) applied after the
+# union. It swallows any gap or slot narrower than roughly twice itself, which
+# is what removes the causeway exclusion and welds the reserve to the water
+# along their shared bank. 30 m is chosen against the measured slots — the
+# widest is 44 m across — and is small enough that no real inlet is bridged.
+MERGES = {
+    "elkhorn": {
+        "name": "Elkhorn Slough Reserve and tidal channel",
+        "kind": "water",
+        "wall": False,
+        "close_m": 30.0,
+        "note": (
+            "The reserve's land holdings and the slough itself, dissolved into "
+            "one outline. Interior exclusions narrower than ~60 m are closed, "
+            "including the rail causeway that runs down the channel — it is "
+            "real, and it is two pixels wide at the zoom this is drawn at."
+        ),
+    },
+}
 
 # `published` is the operator's own stated acreage, used only as a sanity
 # check on the fetch — a relation that has been vandalised or half-assembled
@@ -111,7 +166,7 @@ PARKS = [
     {"key": "henrycowell", "step": "scmts", "name": "Henry Cowell Redwoods",
      "osmRelation": 7091570, "published": 4623},
     {"key": "elkhorn", "step": "elkhorn", "name": "Elkhorn Slough Ecological Reserve",
-     "osmRelation": 17185995, "published": 1700},
+     "osmRelation": 17185995, "published": 1700, "merge": "elkhorn"},
     # The reserve is the LAND. Elkhorn Slough itself — seven miles of tidal
     # channel, the thing the card is actually about — is a separate feature and
     # was simply missing, so the drawn extent hugged the uplands and left the
@@ -132,12 +187,15 @@ PARKS = [
     {"key": "elkhornWater", "step": "elkhorn",
      "name": "Elkhorn Slough (tidal channel)",
      "nhdPermanentId": "137232076", "kind": "water",
-     "simplify": 8.0, "wall": False},
+     "simplify": 8.0, "wall": False, "merge": "elkhorn"},
     {"key": "paloCorona", "step": "bigsur", "name": "Palo Corona Regional Park",
      "osmRelation": 15100521, "published": 4500},
     {"key": "santaLucia", "step": "santalucia", "name": "Santa Lucia Preserve",
      "ccedObjectId": 8029, "published": 15078},
 ]
+
+
+SPIKES_REMOVED = []
 
 
 def fetch_osm(rel):
@@ -216,6 +274,75 @@ def ring_area_acres(ring):
     return abs(signed_area(ring)) / SQM_PER_ACRE
 
 
+def despike(poly):
+    """Drop needle tips left behind by simplification. Returns (poly, n)."""
+    coords = list(poly.exterior.coords)[:-1]
+    removed = 0
+
+    changed = True
+    while changed and len(coords) > 4:
+        changed = False
+        n = len(coords)
+        for i in range(n):
+            a = coords[(i - 1) % n]
+            b = coords[i]
+            c = coords[(i + 1) % n]
+            v1 = (a[0] - b[0], a[1] - b[1])
+            v2 = (c[0] - b[0], c[1] - b[1])
+            n1 = math.hypot(*v1)
+            n2 = math.hypot(*v2)
+            if n1 < 1e-9 or n2 < 1e-9 or min(n1, n2) < MIN_SPIKE_ARM_M:
+                continue
+            dot = max(-1.0, min(1.0, (v1[0] * v2[0] + v1[1] * v2[1]) / (n1 * n2)))
+            if math.degrees(math.acos(dot)) >= MIN_SPIKE_ANGLE:
+                continue
+            # Only if dropping it leaves a polygon that is still sound.
+            trial = Polygon(coords[:i] + coords[i + 1:])
+            if trial.is_valid and not trial.is_empty:
+                coords = coords[:i] + coords[i + 1:]
+                removed += 1
+                changed = True
+                break
+
+    return (Polygon(coords) if removed else poly), removed
+
+
+def deslot(poly):
+    """Cut excursions that return to where they started. Returns (poly, n)."""
+    coords = list(poly.exterior.coords)[:-1]
+    removed = 0
+
+    changed = True
+    while changed and len(coords) > 6:
+        changed = False
+        n = len(coords)
+        for i in range(n):
+            for span in range(2, MAX_SLOT_SPAN + 1):
+                if n - (span - 1) < 4:
+                    continue
+                chord = math.dist(coords[i], coords[(i + span) % n])
+                if chord >= MIN_SLOT_M:
+                    continue
+                path = sum(
+                    math.dist(coords[(i + t) % n], coords[(i + t + 1) % n])
+                    for t in range(span)
+                )
+                if path < MIN_SLOT_DETOUR * max(chord, 1.0):
+                    continue  # a gentle curve, not an excursion
+                drop = {(i + t) % n for t in range(1, span)}
+                trial_coords = [c for t, c in enumerate(coords) if t not in drop]
+                trial = Polygon(trial_coords)
+                if trial.is_valid and not trial.is_empty:
+                    coords = trial_coords
+                    removed += len(drop)
+                    changed = True
+                    break
+            if changed:
+                break
+
+    return (Polygon(coords) if removed else poly), removed
+
+
 def simplify(ring, tol_m):
     """Simplify a closed ring without letting it cross itself.
 
@@ -247,6 +374,11 @@ def simplify(ring, tol_m):
     if out.geom_type == "MultiPolygon":
         out = max(out.geoms, key=lambda g: g.area)
 
+    out, spikes = despike(out)
+    out, slots = deslot(out)
+    if spikes or slots:
+        SPIKES_REMOVED.append(spikes + slots)
+
     return [[x / mlon, y / 111320.0] for x, y in out.exterior.coords]
 
 
@@ -275,6 +407,71 @@ def self_intersections(ring):
             if segments_cross(pts[i], pts[i + 1], pts[j], pts[j + 1]):
                 count += 1
     return count
+
+
+def merge_group(name, spec, rings, sources):
+    """Dissolve a group's rings into one outline and close its gaps.
+
+    Union first, which removes every shared edge and every overlap — the
+    reserve sliver lying across the channel stops being its own outline and
+    becomes part of the shore. Then a morphological close, which fills the
+    slots the union cannot: a causeway excluded from the water is a notch open
+    at one end, so no amount of unioning closes it.
+    """
+    lat0 = sum(p[1] for r in rings for p in r) / sum(len(r) for r in rings)
+    mlon = 111320.0 * math.cos(math.radians(lat0))
+
+    parts = []
+    for ring in rings:
+        poly = Polygon([(p[0] * mlon, p[1] * 111320.0) for p in ring])
+        if not poly.is_valid:
+            poly = poly.buffer(0)
+        if not poly.is_empty:
+            parts.append(poly)
+
+    d = spec["close_m"]
+    merged = unary_union(parts).buffer(d, join_style=1).buffer(-d, join_style=1)
+    merged = merged.simplify(spec.get("simplify", SIMPLIFY_M), preserve_topology=True)
+
+    polys = list(merged.geoms) if merged.geom_type == "MultiPolygon" else [merged]
+    polys = [p for p in polys if not p.is_empty]
+
+    spikes = 0
+    cleaned = []
+    for poly in polys:
+        poly, k = despike(poly)
+        poly, m = deslot(poly)
+        spikes += k + m
+        cleaned.append(poly)
+    polys = sorted(cleaned, key=lambda p: -p.area)
+    if spikes:
+        print(f"  {'':34s} {spikes} needle/hook vertices removed where the union met itself")
+
+    coords = [
+        [[[round(x / mlon, 5), round(y / 111320.0, 5)] for x, y in p.exterior.coords]]
+        for p in polys
+    ]
+    acres = sum(p.area for p in polys) / SQM_PER_ACRE
+    pts = sum(len(c[0]) for c in coords)
+    print(
+        f"  {spec['name']:34s} {len(rings):4d} ring(s) -> {len(polys)}  "
+        f"{pts:6d} pts, closed at {d:.0f} m  {acres:8.0f} ac  [merged, no curtain]"
+        if not spec.get("wall", True)
+        else f"  {spec['name']:34s} merged -> {len(polys)}, {acres:.0f} ac"
+    )
+    return {
+        "type": "Feature",
+        "properties": {
+            "key": name,
+            "name": spec["name"],
+            "step": name,
+            "kind": spec.get("kind", "land"),
+            "wall": spec.get("wall", True),
+            "source": " + ".join(sources),
+            "note": spec.get("note"),
+        },
+        "geometry": {"type": "MultiPolygon", "coordinates": coords},
+    }, round(acres)
 
 
 def orbit_frames(features):
@@ -319,6 +516,7 @@ def main():
 
     features = []
     audit = []
+    pending = {}  # merge group -> {"rings": [...], "sources": [...]}
     print(
         f"simplify {SIMPLIFY_M:.0f} m, topology-preserving"
         f" | drop rings under {MIN_RING_SHARE:.0%} of largest\n"
@@ -358,11 +556,13 @@ def main():
         cutoff = biggest * MIN_RING_SHARE
 
         kept, kept_ac, dropped_ac, dropped_n = [], 0.0, 0.0, 0
+        kept_unsimplified = []
         for ring, ac in zip(rings, areas):
             if ac < cutoff:
                 dropped_ac += ac
                 dropped_n += 1
                 continue
+            kept_unsimplified.append(ring)
             kept.append([simplify(ring, park.get("simplify", SIMPLIFY_M))])
             kept_ac += ac
 
@@ -373,6 +573,15 @@ def main():
             check = f"(published {park['published']}, {delta:+.0f}%)"
         else:
             check = "(no published acreage to check against)"
+
+        group = park.get("merge")
+        if group:
+            # Held back: this park is dissolved into a group below, and
+            # simplifying it here first would round its shared shoreline
+            # differently from its neighbour's and leave a seam in the union.
+            slot = pending.setdefault(group, {"rings": [], "sources": []})
+            slot["rings"].extend(kept_unsimplified)
+            slot["sources"].append(source)
 
         tol = park.get("simplify", SIMPLIFY_M)
         marks = "" if park.get("wall", True) else "  [no curtain]"
@@ -398,6 +607,21 @@ def main():
             props["ccedObjectId"] = park["ccedObjectId"]
         if note:
             props["note"] = note
+
+        if group:
+            audit.append(
+                {
+                    "park": park["name"],
+                    "outlying_rings_dropped": dropped_n,
+                    "outlying_acres_dropped": round(dropped_ac),
+                    "interior_exclusions_dropped": holes,
+                    "interior_acres_dropped": round(holes_ac),
+                    "acres_drawn": round(kept_ac),
+                    "acres_published": park.get("published"),
+                    "merged_into": group,
+                }
+            )
+            continue
 
         features.append(
             {
@@ -425,6 +649,11 @@ def main():
                 "acres_published": park.get("published"),
             }
         )
+
+    for group, slot in pending.items():
+        feature, acres = merge_group(group, MERGES[group], slot["rings"], slot["sources"])
+        features.append(feature)
+        audit.append({"park": MERGES[group]["name"], "acres_drawn": acres, "merged": True})
 
     out = {
         "type": "FeatureCollection",

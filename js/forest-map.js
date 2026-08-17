@@ -188,7 +188,18 @@ function loadMapLibre() {
    `lon`/`lat`/`zoom` below are the fallback for the window between first
    paint and the boundaries arriving, and for the case where that fetch fails
    entirely. They are the old hand-picked stops and still frame the sites
-   sensibly, just not concentrically. */
+   sensibly, just not concentrically.
+
+   PITCH IS CAPPED AT 56, and that is a measurement rather than a taste.
+   With 3D terrain on, MapLibre picks each tile's zoom by its distance from
+   the camera, so a frame holds several resolutions at once and the bands
+   sweep across the imagery as the orbit turns — the thing that reads as the
+   map "constantly changing resolution". Counting distinct raster zoom levels
+   in frame at one stop: 3 at pitch 64, 3 at 60, and 2 from 56 down. Two is
+   the floor while terrain is enabled, so 56 buys the whole available
+   improvement and nothing below it helps. These were 64 at Nisene and 62 at
+   Big Sur, which did make those canyons read more dramatically; that is what
+   the steadier picture cost. */
 const SITES = [
   {
     step: 'scmts',
@@ -214,7 +225,7 @@ const SITES = [
     lat: 37.00101,
     zoom: 13.3,
     bearing: 200,
-    pitch: 64,
+    pitch: 56,
   },
   {
     step: 'elkhorn',
@@ -226,7 +237,7 @@ const SITES = [
     lat: 36.8033,
     zoom: 11.9,
     bearing: 75,
-    pitch: 58,
+    pitch: 56,
   },
   {
     step: 'bigsur',
@@ -238,7 +249,7 @@ const SITES = [
     lat: 36.5386,
     zoom: 11.2,
     bearing: 158,
-    pitch: 62,
+    pitch: 56,
   },
   {
     step: 'santalucia',
@@ -324,30 +335,31 @@ function buildStyle() {
         encoding: 'terrarium',
       },
     },
+    /* No 'raster-fade-duration' on either raster layer, deliberately. The
+       raster painter passes map.terrain into its fade function and returns
+       {opacity: 1} unconditionally when terrain is on, so the property is
+       inert here — it was set to 200 for a long time and never once did
+       anything. Setting it back only looks like a decision.
+
+       There is no hillshade layer either, and that is the same DEM source the
+       terrain mesh uses. Sharing it is worse than redundant: MapLibre's
+       TerrainSourceCache MUTATES the shared cache's tileSize to 1024 and
+       turns roundZoom off, so the hillshade was drawing two zoom levels
+       coarser than it asked for — which is what the "same source for a
+       hillshade layer and for 3D terrain" warning in the console was about.
+       The fix could have been a second DEM source, but the honest read is
+       that this layer was never earning its cost: the note it used to carry
+       said the imagery already supplies the shading and doubling it up
+       smears every north slope. Dropping it also takes one full draped layer
+       out of every terrain tile's render-to-texture pass, which is the
+       workload that gets WebGL contexts killed (see the context-loss
+       handling in wireInteraction). */
     layers: [
       { id: 'bg', type: 'background', paint: { 'background-color': '#0f2a1e' } },
-      { id: 'base', type: 'raster', source: 'base', paint: { 'raster-fade-duration': 200 } },
+      { id: 'base', type: 'raster', source: 'base' },
       /* Sharper canopy, but only once the reader has zoomed past the composed
          shots — below z16 this source is the worse picture, so it stays off. */
-      {
-        id: 'base-hi',
-        type: 'raster',
-        source: 'clarity',
-        minzoom: CLARITY_MINZOOM,
-        paint: { 'raster-fade-duration': 200 },
-      },
-      {
-        id: 'hillshade',
-        type: 'hillshade',
-        source: 'dem',
-        paint: {
-          // Gentle: the imagery already carries most of the shading, and
-          // doubling it up turns every north slope into a black smear.
-          'hillshade-exaggeration': 0.45,
-          'hillshade-shadow-color': '#04140c',
-          'hillshade-highlight-color': '#dff5e2',
-        },
-      },
+      { id: 'base-hi', type: 'raster', source: 'clarity', minzoom: CLARITY_MINZOOM },
     ],
     terrain: { source: 'dem', exaggeration: TERRAIN_EXAGGERATION },
   };
@@ -1046,7 +1058,7 @@ function watchSteps() {
          back to the same one — that reader would return to a still frame.
          Not during a flight: that one starts its own orbit on arrival, and
          two of them would fight over the bearing. */
-      if (!exploring && !map?.isEasing()) startDrift();
+      if (!exploring && !document.hidden && !map?.isEasing()) startDrift();
     },
     { threshold: 0 }
   );
@@ -1056,19 +1068,38 @@ function watchSteps() {
 /* app.js calls start() while #path-forest is still display:none (app.js:105
    runs before .active lands on :110), so the canvas would size to 0x0. */
 function watchSize() {
+  /* Coalesced to one call per frame. Every distinct viewport height makes
+     MapLibre's Terrain destroy and reallocate its coords texture, depth
+     texture and framebuffer — and the panel height is a 0.4 s CSS transition
+     on mobile (css/responsive.css), so an unthrottled observer fired 32
+     resizes and 22 framebuffer reallocations for a single tap to explore.
+     That is the heaviest GPU churn in the file and the likeliest way to get
+     a context killed for real.
+
+     MapLibre already watches this same element on its own 50 ms throttle, so
+     the resize() below is belt-and-braces; this observer is really here for
+     the re-frame under it. */
+  let pending = 0;
+
   ro = new ResizeObserver((entries) => {
     const box = entries[0]?.contentRect;
     if (!map || !box || box.width < 2 || box.height < 2) return;
-    map.resize();
 
-    /* The frame is a fraction of the panel, so a panel that changed size is
-       now framing the wrong amount of park. Zoom only — centre, bearing and
-       pitch are all still correct — and never on top of a flight in progress
-       or a reader who has taken the camera. */
-    const site = byStep(activeStep);
-    const zoom = site && frames[activeStep] ? zoomForFrame(frames[activeStep], site.pitch) : null;
-    if (zoom != null && !exploring && !map.isEasing()) map.setZoom(zoom);
+    cancelAnimationFrame(pending);
+    pending = requestAnimationFrame(() => {
+      if (!map) return;
+      map.resize();
+
+      /* The frame is a fraction of the panel, so a panel that changed size is
+         now framing the wrong amount of park. Zoom only — centre, bearing and
+         pitch are all still correct — and never on top of a flight in
+         progress or a reader who has taken the camera. */
+      const site = byStep(activeStep);
+      const zoom = site && frames[activeStep] ? zoomForFrame(frames[activeStep], site.pitch) : null;
+      if (zoom != null && !exploring && !map.isEasing()) map.setZoom(zoom);
+    });
   });
+
   ro.observe(host);
 }
 
@@ -1129,6 +1160,55 @@ function wireInteraction() {
     if (e.target.closest('.maplibregl-ctrl-group button')) setExploring(true);
   });
 
+  /* THE BLACK MAP.
+
+     MapLibre 4.7.1 cannot recover a terrain style from a lost WebGL context,
+     and fails at it silently. It registers the handlers and calls
+     preventDefault(), so the browser does offer a restore — but its
+     _contextRestored only builds a new Painter. map.terrain and
+     painter.renderToTexture still reference the DEAD painter, and every
+     cached tile texture belongs to a context that no longer exists. Forcing
+     a loss and restore on this page leaves 0 of 17 imagery textures valid
+     and renderToTexture undefined.
+
+     What the reader sees is the panel's own background colour with all the
+     chrome still drawn on top, no console error, and the orbit still
+     turning the bearing — a map that looks alive and blank. It never heals:
+     fresh tiles keep arriving and uploading fine, and none of them are
+     drawn.
+
+     So the only recovery is to build the map again. init() handles the
+     teardown, but two details matter: it must not run inside the handler,
+     because it removes the very canvas that fired the event; and destroy()
+     resets activeStep to 'overview', so the step has to be carried across
+     or the reader gets a 3.2 s flight back from the coast. */
+  let contextDead = false;
+
+  map.on('webglcontextlost', () => {
+    contextDead = true;
+    stopDrift();
+    if (ui) ui.fail.hidden = false;
+  });
+
+  map.on('webglcontextrestored', () => {
+    const container = host; // destroy() nulls this
+    const step = activeStep; // ...and resets this to 'overview'
+    requestAnimationFrame(() => {
+      if (!container) return;
+      init(container);
+      activeStep = step;
+    });
+  });
+
+  /* Nothing to orbit for on a tab nobody is looking at. rAF is already
+     throttled when hidden, but the section observer would happily restart the
+     drift on a backgrounded tab, and this map's every frame is a full terrain
+     render. */
+  on(document, 'visibilitychange', () => {
+    if (document.hidden) stopDrift();
+    else if (!exploring && !map?.isEasing()) startDrift();
+  });
+
   map.on('move', updateReadout);
   map.on('error', (e) => {
     if (String(e?.error?.message || '').includes('tile')) onTileError();
@@ -1137,7 +1217,11 @@ function wireInteraction() {
   map.on('data', (e) => {
     if (e.dataType === 'source' && e.tile) {
       tileErrors = 0;
-      if (ui && !ui.fail.hidden) ui.fail.hidden = true;
+      /* ...but not once the context is gone. Tiles keep loading perfectly
+         after a context loss — only drawing is dead — so without this guard
+         the very next tile would clear the failure message one frame after
+         it appeared. */
+      if (ui && !ui.fail.hidden && !contextDead) ui.fail.hidden = true;
     }
   });
 }
@@ -1191,6 +1275,27 @@ export function init(container) {
         scrollZoom: false,
         keyboard: true,
         fadeDuration: REDUCED ? 0 : 300,
+
+        /* Hold a whole revolution's worth of tiles.
+           MapLibre sizes its tile cache as (tiles across + 1) x (tiles down
+           + 1) x maxTileCacheZoomLevels, which defaults to 5 — about 75 tiles
+           in this panel. That is tuned for a map that sits still. This one
+           orbits, so tiles leave the frame behind the camera and come back a
+           revolution later, and at 75 the cache was pinned at exactly its
+           maximum and evicting them in between: measured 11 tile loads per
+           revolution, every revolution, forever. Each reload draws first from
+           an overzoomed parent and then sharpens, which is the imagery
+           visibly changing resolution as the view turns.
+
+           At 12 the cache holds 180 and steady-state loads per revolution
+           measured ZERO — the orbit closes on itself entirely from cache. 24
+           was no better (it only got to 6 before, mid-warm), so this is the
+           knee, not the ceiling.
+
+           Note maxTileCacheSize is the WRONG knob and cannot do this: the
+           vendored code takes Math.min(maxTileCacheSize, computed), so it can
+           only ever shrink the cache. */
+        maxTileCacheZoomLevels: 12,
       });
 
       /* Compact by choice, not by width. Five credits do not fit across a

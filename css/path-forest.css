@@ -483,19 +483,16 @@ body:has(.forest-map-sticky[data-camera="exploring"]) .leaf {
   text-align: center;
 }
 
+/* The title sits directly on the scroll prompt now — the paragraph that used
+   to separate them is gone, so the gap it was carrying moves up here. The
+   prompt is the instruction; the title only has to name the section and get
+   out of the way. */
 .forest-intro-title {
-  margin: 0 0 0.6rem;
+  margin: 0 0 1.6rem;
   font-size: clamp(1.6rem, 3.2vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.01em;
   color: #fff;
-}
-
-.forest-intro-copy {
-  margin: 0 0 1.8rem;
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: rgba(226, 245, 230, 0.75);
 }
 
 .forest-intro .scroll-prompt { color: rgba(255, 255, 255, 0.4); }

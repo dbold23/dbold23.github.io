@@ -44,7 +44,6 @@
   .forest-card h3 { font-size: 1.3rem; }
   .forest-card p { font-size: 0.9rem; }
   .forest-card ul { font-size: 0.85rem; }
-  .marker-label { font-size: 11px; }
 }
 
 @media (max-width: 640px) {
@@ -132,38 +131,58 @@
   /* Contact */
   .contact-links { flex-direction: column; align-items: center; }
 
-  /* Forest map — mobile: map fullscreen, cards as bottom overlay */
+  /* Forest map — mobile: the satellite panel becomes a band pinned to the top
+     and the cards scroll beneath it. The old layout floated the cards ON TOP
+     of the map, which with real imagery would bury Esri's attribution (a
+     licence condition, not a nicety) under an opaque card. */
   .forest-map-sticky {
     width: 100%;
     float: none;
+    z-index: 8;
+    height: 52vh;
+    height: 52svh; /* svh so the iOS toolbar collapsing doesn't resize the map */
+    transition: height 0.4s var(--ease-out);
+  }
+  .forest-map-sticky[data-camera="exploring"] {
+    height: 78vh;
+    height: 78svh; /* they asked for room; give them room */
   }
   .forest-step {
     margin-left: 0;
-    position: relative;
-    z-index: 7;
-    pointer-events: none;
-  }
-  .forest-step {
-    min-height: 100vh;
-    align-items: flex-end;
-    padding: 0 1rem 2rem;
-  }
-  .forest-card {
-    pointer-events: auto;
+    min-height: 74vh;
+    min-height: 74svh;
+    align-items: center;
+    padding: 1.5rem 1rem;
   }
   .forest-step[data-step="overview"] {
-    min-height: 80vh;
+    min-height: 30vh;
+    min-height: 30svh;
   }
   .forest-card {
     max-width: 100%;
-    border-radius: 16px 16px 0 0;
-    background: rgba(15, 42, 30, 0.9);
-    max-height: 45vh;
-    overflow-y: auto;
   }
   .forest-philosophy { font-size: 0.82rem; }
-  .marker-label { font-size: 10px; }
-  .map-marker { touch-action: manipulation; }
+
+  /* The edge dissolve is aimed at the vertical seam against the card column,
+     which does not exist once the panel is full width. */
+  .forest-map-sticky::after {
+    background: radial-gradient(ellipse 130% 100% at 50% 45%, transparent 40%, rgba(15, 42, 30, 0.55) 100%);
+  }
+
+  .fmap-ui { font-size: 0.72rem; }
+
+  /* Clear of the fixed .v2-nav, which spans x 44-344 at the top on a phone */
+  .fmap-readout { top: 5.2rem; }
+
+  /* The panel is full-bleed here, so the bottom edge is both the crowded
+     corner and the thumb zone. The credit is a chip rather than a wrapped
+     full-width bar now, so these only have to clear each other. */
+  .fmap-resume {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 3.2rem;
+  }
+  .fmap-hint { bottom: 3.2rem; }
 }
 
 /* Very small screens — collapse nav labels to dots only */
@@ -186,5 +205,4 @@
   .folder-arrow { transition: none !important; }
   .blink-cursor { animation: none !important; }
   .dash-pulse-dot { animation: none !important; }
-  .marker-pulse { animation: none !important; }
 }

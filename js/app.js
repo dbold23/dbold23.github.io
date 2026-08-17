@@ -50,7 +50,9 @@ const transitionModules = {};
 
 async function loadTransition(path) {
   if (transitionModules[path]) return transitionModules[path];
-  const mod = await import(`./transition-${path}.js`);
+  // Version-stamped like the stylesheets in index.html, so a returning
+  // visitor cannot pair new CSS with a cached transition module.
+  const mod = await import(`./transition-${path}.js?v=20260816m`);
   transitionModules[path] = mod;
   return mod;
 }

@@ -177,7 +177,9 @@
   float: left;
   z-index: 6;
   overflow: hidden;
-  background: rgba(8, 25, 40, 0.5);
+  /* The terminus of #path-forest's own gradient, so the panel reads as part of
+     the page before the first tile lands rather than as a blue-grey hole. */
+  background: #0f2a1e;
 }
 
 .forest-map-container {
@@ -186,76 +188,278 @@
   height: 100%;
 }
 
-.forest-map-svg {
+/* ============================================
+   Satellite map ("the camera yields")
+   ============================================
+   Real Esri imagery. Two states, set by js/forest-map.js on
+   .forest-map-sticky[data-camera]:
+
+     following  — the scroll owns the camera. The imagery is graded to sit
+                  inside the forest palette, because right now it is
+                  illustration.
+     exploring  — the reader owns the camera. The grade comes off, because
+                  now it is an instrument and should tell the truth.
+
+   Grading and un-grading is also the primary affordance: the picture visibly
+   brightens the moment you take hold of it. */
+
+.fmap {
   width: 100%;
   height: 100%;
-  display: block;
+  background: #0f2a1e;
+  cursor: grab;
+}
+.fmap:active { cursor: grabbing; }
+
+/* A touchscreen laptop reports (hover: hover) and (pointer: fine), so the JS
+   treats it as desktop and leaves dragPan enabled at init — and MapLibre sets
+   touch-action: none on the canvas container across 55% of the viewport. A
+   finger-scroll over the map would then be swallowed and the reader could not
+   scroll the page at all. Hand the vertical gesture back until they actually
+   take the map. !important because the vendor sheet sets this inline-ish on
+   the same element and the failure mode is a reader who cannot scroll. */
+.forest-map-sticky[data-camera="following"] .maplibregl-canvas-container,
+.forest-map-sticky[data-camera="following"] .maplibregl-canvas {
+  touch-action: pan-y !important;
 }
 
-#map-viewport {
-  transform-origin: 0 0;
-  will-change: transform;
+/* One filter on the whole canvas. WebGL renders to a single surface, so
+   unlike the old tile-by-tile DOM there is no seam risk here at all. */
+.forest-map-sticky .maplibregl-canvas {
+  filter: saturate(0.86) brightness(0.94) contrast(1.04);
+  transition: filter 0.45s var(--ease-out);
+}
+.forest-map-sticky[data-camera="exploring"] .maplibregl-canvas {
+  filter: none;
 }
 
-/* Land */
-.map-land { fill: var(--forest-dark); }
-
-/* Coastline */
-.map-coastline {
-  stroke: var(--forest-light);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* ---- Map Regions ---- */
-.map-region {
-  transition: fill 0.5s ease, stroke-opacity 0.5s ease, stroke-width 0.5s ease;
-}
-
-/* ---- Map Markers ---- */
-.marker-dot {
-  fill: var(--forest-bright);
-  transition: r 0.3s ease, fill 0.3s ease;
-}
-
-.marker-pulse {
-  fill: var(--forest-bright);
-  opacity: 0;
-  animation: markerPulse 2.5s ease-out infinite;
-}
-
-@keyframes markerPulse {
-  0% { r: 6; opacity: 0.5; }
-  100% { r: 22; opacity: 0; }
-}
-
-.marker-label {
-  fill: rgba(255,255,255,0.85);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
+/* Vignette + the right-edge dissolve into the card column. The hard vertical
+   seam is what makes an embedded map look pasted on; dissolving it makes the
+   page look like it opened onto imagery. */
+.forest-map-sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 450;
   pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s var(--ease-out);
+  background:
+    linear-gradient(to right, transparent 78%, #0f2a1e 100%),
+    radial-gradient(ellipse 120% 90% at 50% 45%, transparent 35%, rgba(15, 42, 30, 0.62) 100%);
+}
+.forest-map-sticky[data-camera="exploring"]::after { opacity: 0.28; }
+
+/* ---- Park boundaries ---- */
+
+/* Park boundaries have no CSS: MapLibre draws them in WebGL, so the casing,
+   the glow and the active/idle states all live in the paint expressions in
+   forest-map.js rather than in stylesheet rules on SVG paths. */
+
+/* ---- Overlay chrome ---- */
+
+/* Above the map library's own controls. At a lower stacking level the scale
+   bar drew over the bottom of the Resume pill and ate clicks on that strip —
+   and Resume is an escape hatch, so it must never be partly buried. The fail
+   overlay is the first child, so the buttons still paint above it. */
+.fmap-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 1100;
+  pointer-events: none;
+  font-size: 0.75rem;
+}
+/* Buttons only. The blanket `.fmap-ui > *` this replaces also armed the
+   readout and the live region, and opacity:0 does not stop hit-testing — so
+   the hidden readout sat as an invisible 186x29 blocker over the map's
+   top-left corner, swallowing click-to-explore and drag-to-pan there. */
+.fmap-ui > button { pointer-events: auto; }
+
+.fmap-hint,
+.fmap-resume {
+  position: absolute;
+  padding: 0.42rem 0.8rem;
+  border: 1px solid rgba(123, 201, 111, 0.35);
+  border-radius: 999px;
+  background: rgba(10, 32, 22, 0.88);
+  color: rgba(235, 250, 238, 0.95);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+.fmap-hint:hover,
+.fmap-resume:hover {
+  background: rgba(18, 52, 36, 0.95);
+  border-color: var(--forest-bright);
+}
+.fmap-hint b { color: var(--forest-bright); font-weight: 800; }
+
+/* Centred, so its keyframes must carry the -50% or the animation would undo
+   the centring on the way in. */
+/* Clear of the scale bar and the credit chip, which both live in the bottom
+   strip — a pill sitting level with them reads as clutter even where the boxes
+   do not actually overlap. */
+.fmap-hint {
+  left: 50%;
+  bottom: 2.8rem;
+  transform: translateX(-50%);
+  animation: fmapFadeCentered 0.4s var(--ease-out) both;
+}
+.fmap-hint[hidden],
+.fmap-resume[hidden] { display: none; }
+
+/* Opacity-only, because the mobile rule re-centres this with a transform and
+   a transform in the keyframes would fight it. */
+/* Cleared above the scale bar, which Leaflet parks in the same bottom-left
+   corner. Stacking alone would keep Resume clickable, but two controls
+   sitting on top of each other reads as broken. */
+.fmap-resume {
+  left: 1rem;
+  bottom: 3.6rem;
+  border-color: var(--forest-bright);
+  animation: fmapAppear 0.3s var(--ease-out) both;
 }
 
-.map-marker.active .marker-dot {
-  fill: #fff;
-  r: 8;
-  filter: drop-shadow(0 0 8px var(--forest-bright));
+@keyframes fmapAppear {
+  from { opacity: 0; }
 }
 
-.map-marker.active .marker-label {
-  fill: #fff;
+@keyframes fmapFadeCentered {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
 }
 
-.map-marker.active .marker-pulse {
-  animation: markerPulseActive 2s ease-out infinite;
+/* Coordinates are noise while the page is driving and proof while the reader
+   is — so they only exist in the exploring state. */
+.fmap-readout {
+  position: absolute;
+  left: 1rem;
+  /* Top-LEFT, not top-right. The site's own .v2-nav is position:fixed and
+     floats across the middle of the viewport top (x 353-911 at 1280w), which
+     is exactly where the right edge of this 55%-wide panel sits. */
+  top: 1rem;
+  margin: 0;
+  padding: 0.3rem 0.6rem;
+  border-radius: 7px;
+  background: rgba(10, 32, 22, 0.8);
+  color: rgba(200, 230, 205, 0.85);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+}
+.forest-map-sticky[data-camera="exploring"] .fmap-readout { opacity: 1; }
+
+/* Screen-reader announcements only */
+.fmap-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-@keyframes markerPulseActive {
-  0% { r: 8; opacity: 0.4; }
-  100% { r: 26; opacity: 0; }
+.fmap-fail {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 2rem;
+  text-align: center;
+  background: #0f2a1e;
+  color: rgba(220, 240, 224, 0.9);
 }
+.fmap-fail[hidden] { display: none; }
+.fmap-fail-sub { font-size: 0.72rem; color: rgba(200, 230, 205, 0.6); }
+
+/* ---- MapLibre controls, restyled into the forest palette ---- */
+
+.forest-map-sticky .maplibregl-ctrl-group {
+  background: rgba(10, 32, 22, 0.9);
+  border: 1px solid rgba(123, 201, 111, 0.25);
+  box-shadow: none;
+  opacity: 0.55;
+  transition: opacity 0.3s var(--ease-out);
+}
+.forest-map-sticky[data-camera="exploring"] .maplibregl-ctrl-group { opacity: 1; }
+
+.forest-map-sticky .maplibregl-ctrl-group button + button {
+  border-top: 1px solid rgba(123, 201, 111, 0.2);
+}
+.forest-map-sticky .maplibregl-ctrl-group button:hover {
+  background: rgba(24, 60, 42, 0.95);
+}
+/* The control glyphs ship as dark SVG data-URIs meant for a white button;
+   inverting is the one-line way to make the whole set read on a dark chip. */
+.forest-map-sticky .maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(1) brightness(1.6);
+}
+
+/* The credit is a licence condition, not decoration — it has to stay legible
+   over imagery, so it gets the dark pill rather than the vendor's white one.
+
+   It is COMPACT (see the AttributionControl options), and that is a fix, not
+   a dodge. Five sources have to be named here — Esri, Vantor/Earthstar, OSM,
+   AWS Terrain, Meta/WRI — which is 690 px of text, and this panel is 696 px
+   wide. Expanded, it wrapped to two full-width lines pinned to the very
+   bottom edge, so the centred "click to explore" pill sat on top of the
+   middle of it and the right-edge dissolve swallowed the end of it. The text
+   was there and unreadable, which credits nobody. Collapsed to a chip it is
+   one click away and intact. */
+.forest-map-sticky .maplibregl-ctrl-attrib {
+  background: rgba(10, 32, 22, 0.82);
+  color: rgba(205, 230, 210, 0.85);
+  font-size: 0.62rem;
+  line-height: 1.5;
+}
+.forest-map-sticky .maplibregl-ctrl-attrib a { color: rgba(160, 215, 170, 0.95); }
+
+/* Expanded, it grows upward out of the bottom-anchored control container, so
+   it clears the edge on its own. The width cap is what keeps it clear of the
+   dissolve into the card column. */
+.forest-map-sticky .maplibregl-ctrl-attrib.maplibregl-compact-show {
+  max-width: min(74%, 30rem);
+}
+.forest-map-sticky .maplibregl-ctrl-attrib-button {
+  background-color: rgba(123, 201, 111, 0.16);
+  border-radius: 50%;
+}
+
+.forest-map-sticky .maplibregl-ctrl-scale {
+  background: rgba(10, 32, 22, 0.72);
+  border-color: rgba(123, 201, 111, 0.5);
+  color: rgba(225, 245, 228, 0.9);
+}
+
+/* MapLibre's cooperative-gesture overlay ("use ⌘ + scroll to zoom"), pulled
+   into the palette so it does not flash as a white sheet over the imagery. */
+.forest-map-sticky .maplibregl-cooperative-gesture-screen {
+  background: rgba(6, 20, 14, 0.6);
+  color: #eafbee;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+/* The falling-leaf decoration must not compete with an instrument the reader
+   is actively using. Two selectors, deliberately: each .leaf carries its own
+   animation (animation-play-state does not inherit), and each also carries an
+   inline opacity from transition-forest.js — so the fade has to be applied to
+   the container, which has none, rather than lose to the inline style. */
+body:has(.forest-map-sticky[data-camera="exploring"]) .leaf-container {
+  opacity: 0.15;
+  transition: opacity 0.45s var(--ease-out);
+}
+body:has(.forest-map-sticky[data-camera="exploring"]) .leaf {
+  animation-play-state: paused;
+}
+.leaf-container { transition: opacity 0.45s var(--ease-out); }
+
 
 /* ---- Scroll Steps (right column) ---- */
 .forest-step {
@@ -273,6 +477,28 @@
   align-items: flex-end;
   padding-bottom: 4rem;
 }
+
+.forest-intro {
+  max-width: 420px;
+  text-align: center;
+}
+
+.forest-intro-title {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.forest-intro-copy {
+  margin: 0 0 1.8rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(226, 245, 230, 0.75);
+}
+
+.forest-intro .scroll-prompt { color: rgba(255, 255, 255, 0.4); }
 
 /* Scroll prompt */
 .scroll-prompt {

@@ -262,12 +262,8 @@ SECTIONS = [
                     "March 2026, Newport, OR.",
                     "Sambold, D., & Gardner, L. “Optimizing Urchin Aquaculture: Carotenoid Application & Pellet "
                     "Processing.” Aquaculture America, February 2026, Las Vegas, NV.",
-                    "Sambold, D., & Gardner, L. “Examining Finishing Feed Applications for Purple Urchin Roe "
-                    "Enhancement.” Aquaculture America, February 2026, Las Vegas, NV.",
                     "Sambold, D., Gupta, I., & Jorgensen, S. “Assessing White Shark Body Condition.” Poster, Western "
                     "Society of Naturalists, November 2025, San Diego, CA.",
-                    "Sambold, D., & Gardner, L. “Optimizing Urchin Ranching: Precision Roe Phenotyping via Organoleptic "
-                    "Analysis.” WRAC Workshop, November 2025, San Francisco, CA.",
                     "Sambold, D., & Jorgensen, S. “Classifying White Shark Behaviors from Sensor Packages.” UROC Summer "
                     "Symposium, CSUMB, Summer 2025.",
                     "Sambold, D. “From Fins to Frames: An AI-Powered Tool for Morphometric Shark Analysis.” UROC Spring "

@@ -31,16 +31,16 @@
     <link rel="preload" as="image" href="assets/FinalHome.jpg" fetchpriority="high">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/variables.css?v=20260816b">
-    <link rel="stylesheet" href="css/base.css?v=20260816b">
-    <link rel="stylesheet" href="css/homescreen.css?v=20260816b">
-    <link rel="stylesheet" href="css/transitions.css?v=20260816b">
-    <link rel="stylesheet" href="css/path-forest.css?v=20260816b">
-    <link rel="stylesheet" href="css/path-ocean.css?v=20260816b">
-    <link rel="stylesheet" href="css/path-tech.css?v=20260816b">
-    <link rel="stylesheet" href="css/path-mind.css?v=20260816b">
-    <link rel="stylesheet" href="css/shared.css?v=20260816b">
-    <link rel="stylesheet" href="css/responsive.css?v=20260816b">
+    <link rel="stylesheet" href="css/variables.css?v=20260816m">
+    <link rel="stylesheet" href="css/base.css?v=20260816m">
+    <link rel="stylesheet" href="css/homescreen.css?v=20260816m">
+    <link rel="stylesheet" href="css/transitions.css?v=20260816m">
+    <link rel="stylesheet" href="css/path-forest.css?v=20260816m">
+    <link rel="stylesheet" href="css/path-ocean.css?v=20260816m">
+    <link rel="stylesheet" href="css/path-tech.css?v=20260816m">
+    <link rel="stylesheet" href="css/path-mind.css?v=20260816m">
+    <link rel="stylesheet" href="css/shared.css?v=20260816m">
+    <link rel="stylesheet" href="css/responsive.css?v=20260816m">
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
@@ -190,9 +190,13 @@
                 </div>
                 <!-- Overview step (full coast, scroll prompt) -->
                 <div class="forest-step" data-step="overview">
-                    <div class="scroll-prompt">
-                        <span>Scroll to explore</span>
-                        <svg width="20" height="12" viewBox="0 0 20 12" fill="none"><path d="M1 1l9 9 9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <div class="forest-intro">
+                        <h3 class="forest-intro-title">Ground Truth</h3>
+                        <p class="forest-intro-copy">Five organisations, from the Santa Cruz Mountains to the Big Sur coast. The satellite imagery is real &mdash; drag it, zoom in, and go look for yourself.</p>
+                        <div class="scroll-prompt">
+                            <span>Scroll to explore</span>
+                            <svg width="20" height="12" viewBox="0 0 20 12" fill="none" aria-hidden="true"><path d="M1 1l9 9 9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
                     </div>
                 </div>
 
@@ -2646,9 +2650,7 @@
                 <ul>
                     <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. “Assessing Shark Body Condition.” Poster, NEPSS, March 2026, Newport, OR.</li>
                     <li>Sambold, D., &amp; Gardner, L. “Optimizing Urchin Aquaculture: Carotenoid Application &amp; Pellet Processing.” Aquaculture America, February 2026, Las Vegas, NV.</li>
-                    <li>Sambold, D., &amp; Gardner, L. “Examining Finishing Feed Applications for Purple Urchin Roe Enhancement.” Aquaculture America, February 2026, Las Vegas, NV.</li>
                     <li>Sambold, D., Gupta, I., &amp; Jorgensen, S. “Assessing White Shark Body Condition.” Poster, Western Society of Naturalists, November 2025, San Diego, CA.</li>
-                    <li>Sambold, D., &amp; Gardner, L. “Optimizing Urchin Ranching: Precision Roe Phenotyping via Organoleptic Analysis.” WRAC Workshop, November 2025, San Francisco, CA.</li>
                     <li>Sambold, D., &amp; Jorgensen, S. “Classifying White Shark Behaviors from Sensor Packages.” UROC Summer Symposium, CSUMB, Summer 2025.</li>
                     <li>Sambold, D. “From Fins to Frames: An AI-Powered Tool for Morphometric Shark Analysis.” UROC Spring Showcase, CSUMB, Spring 2025.</li>
                     <li>Sambold, D. “HAB Hub: Integrating Satellite, Buoy, and Toxin Data for Real-Time HAB Monitoring in Monterey Bay.” ESIP, January 2026, Online.</li>
@@ -2744,6 +2746,6 @@
     </footer>
 
     <!-- JavaScript (ES Modules) -->
-    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/app.js?v=20260816m"></script>
 </body>
 </html>

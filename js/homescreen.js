@@ -103,9 +103,25 @@ function imageToContainer(imgEl, imgX, imgY) {
   return { x: cx, y: cy };
 }
 
+// Below this the hotspots are laid out as a grid by responsive.css, and the
+// inline positions this writes would win over it.
+const ANCHOR_MIN_WIDTH = 641;
+
 function repositionHotspots() {
   const img = document.querySelector('.hero-portrait');
   if (!img || !img.naturalWidth) return;
+
+  if (window.innerWidth < ANCHOR_MIN_WIDTH) {
+    for (const name of Object.keys(HOTSPOT_IMAGE_COORDS)) {
+      const el = document.querySelector(`.corner-${name}`);
+      if (!el) continue;
+      el.style.removeProperty('left');
+      el.style.removeProperty('top');
+      // Still needed: two hotspots sit at opacity 0 until this lands
+      el.classList.add('positioned');
+    }
+    return;
+  }
 
   for (const [name, coords] of Object.entries(HOTSPOT_IMAGE_COORDS)) {
     const el = document.querySelector(`.corner-${name}`);

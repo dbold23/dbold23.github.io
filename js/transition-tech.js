@@ -339,24 +339,36 @@ function initTerminalWindow() {
     titlebar.addEventListener('pointercancel', onUp);
   });
 
-  // Traffic lights: red resets, yellow minimizes, green zooms
+  // Traffic lights: red resets, yellow minimizes, green zooms.
+  //
+  // Desktop only, and gated the same way the drag already is. The dots are 12px
+  // — a quarter of a touch target — and on a phone the window is position:
+  // relative, so `minimized` hides .terminal-body and blanks the entire
+  // Technology path with nothing but that same 12px dot to undo it, and
+  // `maximized` applies left/top as relative offsets that shove the window off
+  // the side of the screen. Neither is recoverable by a reader who hit one by
+  // accident reaching for the file tree.
   const dotRed = titlebar.querySelector('.dot.red');
   const dotYellow = titlebar.querySelector('.dot.yellow');
   const dotGreen = titlebar.querySelector('.dot.green');
+  const windowChrome = (fn) => (event) => {
+    if (!desktopMode.matches) return;
+    fn(event);
+  };
   if (dotRed) {
     dotRed.title = 'Reset window';
-    dotRed.addEventListener('click', resetWindow);
+    dotRed.addEventListener('click', windowChrome(resetWindow));
   }
   if (dotYellow) {
     dotYellow.title = 'Minimize';
-    dotYellow.addEventListener('click', () => win.classList.toggle('minimized'));
+    dotYellow.addEventListener('click', windowChrome(() => win.classList.toggle('minimized')));
   }
   if (dotGreen) {
     dotGreen.title = 'Zoom';
-    dotGreen.addEventListener('click', () => {
+    dotGreen.addEventListener('click', windowChrome(() => {
       win.classList.remove('minimized');
       win.classList.toggle('maximized');
-    });
+    }));
   }
 
   // Double-click the titlebar to zoom, like macOS

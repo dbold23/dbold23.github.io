@@ -4,7 +4,13 @@
 .homescreen {
   position: relative;
   width: 100vw;
+  /* svh, because iOS resolves vh to the LARGE viewport: at 100vh the bottom row
+     of the mobile nav grid lands at y 641-698 against a 635px first-paint fold,
+     i.e. two of the four entries are invisible until you scroll a page that
+     does not scroll. svh rather than dvh so the hero does not reflow while the
+     toolbar collapses under a finger. */
   height: 100vh;
+  height: 100svh;
   overflow: hidden;
   background: var(--black);
 }

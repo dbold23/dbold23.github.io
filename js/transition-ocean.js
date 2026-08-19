@@ -109,7 +109,8 @@ export async function start() {
   // a canvas that has handed out a 2D context can never hand out a WebGL one.
   if (canvas && window.WebGLRenderingContext) {
     try {
-      const mod = await import('./ocean-water.js?v=20260818i');
+      // Same token this module was loaded with — see ASSET_V in app.js.
+      const mod = await import(`./ocean-water.js${new URL(import.meta.url).search}`);
       if (await mod.initOceanWater(canvas)) {
         water = mod;
         return;

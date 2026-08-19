@@ -94,8 +94,13 @@
 .path-hero {
   position: relative;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  /* min-height, not height. At 375px the overlay computes to about 714px of
+     copy inside a 724px box — ten pixels of headroom — and at 320px, or one
+     notch of iOS Dynamic Type, it overflows a box that was clipping it with no
+     way to scroll. svh so a collapsing toolbar does not resize it mid-read. */
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: visible;
   display: flex;
   align-items: flex-end;
 }
@@ -415,8 +420,12 @@
 .forest-map-sticky .maplibregl-ctrl-attrib {
   background: rgba(10, 32, 22, 0.82);
   color: rgba(205, 230, 210, 0.85);
-  font-size: 0.62rem;
-  line-height: 1.5;
+  /* Esri, Vantor/Earthstar, OSM, AWS Terrain and Meta/WRI all require this
+     credit. It was 0.62rem — 9.92px — which is below the threshold at which
+     incidental text is legible at all, for the one string on this map that is
+     contractual rather than decorative. */
+  font-size: 0.72rem;
+  line-height: 1.55;
 }
 .forest-map-sticky .maplibregl-ctrl-attrib a { color: rgba(160, 215, 170, 0.95); }
 
@@ -462,7 +471,38 @@ body:has(.forest-map-sticky[data-camera="exploring"]) .leaf {
 
 
 /* ---- Scroll Steps (right column) ---- */
+/* ---- One location per swipe ----
+   The steps are a list of places, and reading them is a sequence of stops, not
+   a continuous scroll: a card should arrive where it can be read and stay there
+   until the reader asks for the next one. Snapping is the browser's own
+   mechanism for that, and using it rather than a script means the map's camera
+   keeps working untouched — the step observer still picks whichever step is
+   nearest the middle, it just gets handed settled positions instead of
+   arbitrary ones.
+
+   scroll-padding-top is what makes it correct rather than merely tidy. The
+   snapport is the viewport minus anything pinned over it: nothing on a wide
+   screen, where the map is floated beside the cards, and a band across the top
+   on a phone, where it is pinned above them. Without it a card would settle
+   with its first lines behind the map, which is the half-swallowed state this
+   is meant to remove. */
+html:has(body[data-active-path="forest"]) {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 0;
+}
+
+/* Holding the map is not reading the cards, and the band changes height when
+   you take hold of it — so the stops it was measured against no longer exist. */
+html:has(.forest-map-sticky[data-camera="exploring"]) {
+  scroll-snap-type: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(body[data-active-path="forest"]) { scroll-snap-type: none; }
+}
+
 .forest-step {
+  scroll-snap-align: center;
   min-height: 85vh;
   margin-left: 55%;
   display: flex;
@@ -470,6 +510,19 @@ body:has(.forest-map-sticky[data-camera="exploring"]) .leaf {
   justify-content: center;
   padding: 3rem 2rem;
 }
+
+/* The top of the section has to be a stop of its own. Snapping is mandatory,
+   so a region with no snap point in it is a region the scroll cannot rest in —
+   without this the hero would be scrolled away and unreachable.
+
+   The footer needs one for the same reason and is easier to miss: it is a
+   sibling of the whole main element, a thousand pixels of it, and with the last
+   card as the final stop there was no way to reach any of it. Being taller than
+   the snapport it snaps loosely — the spec lets the scroll rest anywhere that
+   keeps the area covering the window — so it reads as ordinary scrolling once
+   you are inside it, which is what a footer should do. */
+.forest-hero { scroll-snap-align: start; }
+#shared-footer { scroll-snap-align: start; }
 
 /* Overview step */
 .forest-step[data-step="overview"] {

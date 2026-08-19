@@ -61,9 +61,28 @@
   /* The lap distance has to clear the tallest bubble at both ends, or one
      would pop out of existence at the top edge instead of leaving through it */
   --field-h: min(calc(100svh - 7.5rem), 54rem);
-  --bubble: clamp(8.5rem, 15vw, 12rem);
+  /* The floor used to be 8.5rem, which held the discs at full size while the
+     window kept taking width away from the corridor they cross. Between the
+     640px breakpoint and about 900px that left nine full-size discs and their
+     231px labels sharing 433px of travel, and the titles landed on the photos.
+     Letting the disc track the viewport all the way down keeps the footprint
+     and the space it has to fit in shrinking together. */
+  --bubble: clamp(5.2rem, 15vw, 12rem);
+
+  /* The label, not the disc, is the widest part of a bubble, and it is centred
+     on the disc and swings with it. So the stage a disc's CENTRE may cross is
+     not the stage the disc may cross: it has to stop half a label plus a full
+     sway short of each edge, or the outermost titles get cut off by the window.
+     Everything below follows from that one fact.
+
+     0.54 rather than 0.5 of a disc because the generator scales the discs up to
+     1.08, and it is the biggest one that has to fit. */
+  --label-w: min(15rem, calc(var(--bubble) * 1.7));
+  --sway-max: 2rem;
+  --edge: max(0px, calc(var(--label-w) / 2 + var(--sway-max) - var(--bubble) * 0.54));
 
   position: relative;
+  width: calc(100% - var(--edge) * 2);
   height: var(--field-h);
   min-height: 26rem;
   margin: calc(5.5rem + env(safe-area-inset-top, 0px)) auto 4rem;
@@ -81,8 +100,16 @@
      rides across the nav pill at full opacity before wrapping. */
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  /* Three times the field's width, centred. The field insets itself by --edge
+     so that disc CENTRES stay clear of the window, which means the labels —
+     wider than their discs — hang outside the field's own box. Anything outside
+     the mask image is masked away, so a mask the size of the box was slicing
+     the first letters off the outermost titles. The gradient only varies
+     vertically, so stretching it sideways changes nothing about how it looks. */
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  -webkit-mask-position: center top;
+  mask-position: center top;
 }
 
 .bubble-cell {
@@ -117,6 +144,13 @@
   from { transform: translate3d(calc(var(--sway) * -1), 0, 0) rotate(-1.6deg); }
   to   { transform: translate3d(var(--sway), 0, 0) rotate(1.6deg); }
 }
+
+/* The generator hands out a unitless amplitude in [0.8, 1.9); this is where it
+   becomes a length. Scaling it off --sway-max rather than off a literal means
+   the amplitude the field reserves room for and the amplitude it actually
+   swings are the same number by construction — a narrow screen changes one
+   value and both follow. */
+.bubble-cell { --sway: calc(var(--sway-k, 1) * var(--sway-max, 2rem) / 1.9); }
 
 /* Reaching for a bubble stops that bubble. Everything else keeps drifting, so
    the field stays alive while the one being aimed at holds still. */
@@ -273,8 +307,10 @@
   z-index: 2;
   width: max-content;
   /* Wider than the disc reads as a caption over the water; much wider starts
-     colliding with the neighbouring lane */
-  max-width: min(15rem, 170%);
+     colliding with the neighbouring lane. The field insets itself by half of
+     this, so the two have to agree — hence the shared custom property rather
+     than a second literal here. */
+  max-width: var(--label-w, 15rem);
   margin: 0;
   transform: translateX(-50%);
   text-align: center;
@@ -1336,5 +1372,82 @@
       from { opacity: 0; transform: translateY(26px); }
       to { opacity: 1; transform: none; }
     }
+  }
+}
+
+/* ---- "What am I looking at" for the water ---- */
+.water-info {
+  position: fixed;
+  /* Left of the drift toggle, sharing its baseline and its safe-area inset */
+  right: calc(clamp(0.9rem, 2.5vw, 1.6rem) + 6.4rem);
+  bottom: calc(clamp(0.9rem, 2.5vw, 1.6rem) + env(safe-area-inset-bottom, 0px));
+  z-index: 6;
+  display: none;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid rgba(184, 230, 245, 0.22);
+  border-radius: 50%;
+  background: rgba(4, 18, 48, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(184, 230, 245, 0.62);
+  font: inherit;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+[data-active-path="ocean"] .water-info { display: grid; }
+
+.water-info:hover,
+.water-info[aria-expanded="true"] {
+  color: var(--ocean-foam);
+  border-color: rgba(184, 230, 245, 0.5);
+  background: rgba(4, 18, 48, 0.72);
+}
+
+.water-info:focus-visible {
+  outline: 2px solid var(--ocean-foam);
+  outline-offset: 3px;
+}
+
+.water-note {
+  position: fixed;
+  right: clamp(0.9rem, 2.5vw, 1.6rem);
+  bottom: calc(clamp(0.9rem, 2.5vw, 1.6rem) + 3rem + env(safe-area-inset-bottom, 0px));
+  z-index: 7;
+  width: min(20rem, calc(100vw - 2rem));
+  margin: 0;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid rgba(184, 230, 245, 0.24);
+  border-radius: 12px;
+  background: rgba(4, 18, 48, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+  color: rgba(226, 240, 248, 0.9);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.water-note[hidden] { display: none; }
+
+@media (max-width: 640px) {
+  /* The drift toggle is hidden here — nothing drifts in the static grid — so
+     the info button takes its place at the edge rather than floating over a
+     bubble where the toggle used to sit beside it. */
+  .water-info {
+    right: clamp(0.9rem, 2.5vw, 1.6rem);
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 0.95rem;
+  }
+
+  .water-note {
+    bottom: calc(clamp(0.9rem, 2.5vw, 1.6rem) + 3.4rem + env(safe-area-inset-bottom, 0px));
   }
 }

@@ -337,72 +337,58 @@ function initDriftFocus() {
 //
 // Hovering a bubble pauses it, and it resumes wherever the rest of the field
 // has got to by then — so a bubble held under the pointer keeps that offset for
-// the whole visit, and any overlap it drifted into looks stuck rather than
-// incidental. The wrap is the one moment it can be put back without anything
-// visibly jumping: `animationiteration` fires with the cell translated a full
-// field height down, below the mask, where nothing about it is on screen.
+// the whole visit, and the layout it was placed into is gone. The layout is the
+// whole design: lanes are an even ladder and phases are the golden ratio
+// precisely so that no two bubbles are ever at the same height in neighbouring
+// lanes. Let the phases wander and that stops being true.
 //
-// Stacking is handled in CSS by --z, which orders the discs by size so an
-// overlap reads as depth. This is the other half: the sway restarts from its
-// own designed offset, so the bubble comes back around in step.
+// Every cell runs the same rise for the same duration and is separated only by
+// its delay, so they all share one start time — and a paused cell is simply one
+// whose start time has slipped later. Putting it back is one write. The wrap is
+// when to do it: `animationiteration` fires with the cell translated a full
+// field height down, under the mask, where the correction cannot be seen.
+//
+// This replaces a version that re-picked the cell's LANE at each wrap, reading
+// nine getBoundingClientRect()s and forcing a reflow to do it. That fought the
+// layout it was meant to protect, and the forced layout — on a page carrying a
+// live WebGL canvas and eighteen animating layers, roughly every five seconds —
+// was a visible hitch. Correcting the phase instead restores the designed
+// positions exactly and touches nothing that costs a frame.
 function initLapReset() {
   const field = document.getElementById('bubble-field');
   if (!field) return;
 
-  const cells = () => Array.from(field.querySelectorAll('.bubble-cell'));
+  // Nothing drifts out of phase without a hover to pause it, and only a fine
+  // pointer can hover. On a touch screen this would be a listener that never
+  // has anything to correct.
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  // The designed lane set, reused rather than re-randomised, so a reshuffled
-  // field still has the spread the layout was chosen for.
-  const lanes = cells().map((c) =>
-    parseFloat(getComputedStyle(c).getPropertyValue('--lane')) || 0.5);
+  const riseOf = (cell) => (cell.getAnimations
+    ? cell.getAnimations().find((a) => a.animationName === 'bubble-rise')
+    : null);
 
   field.addEventListener('animationiteration', (event) => {
     if (event.animationName !== 'bubble-rise') return;
     const cell = event.target;
     if (!cell.classList || !cell.classList.contains('bubble-cell')) return;
 
-    const mine = cell.getBoundingClientRect();
+    const rise = riseOf(cell);
+    if (!rise || rise.startTime === null) return;
 
-    // Lanes overlap horizontally on purpose — at a desktop width the designed
-    // ones sit 99px apart while a bubble is 192px wide — and it is only the
-    // phase spread that keeps neighbours off each other. A hover-pause costs
-    // this bubble that phase for good, so what gets re-picked is the lane.
-    //
-    // Both axes have to be tested, not just height. Against the designed
-    // phases, 20 of the 72 pairs are within a bubble's height of each other at
-    // any given wrap and NONE of them actually overlap; filtering on height
-    // alone would reshuffle a field that has no collisions in it at all.
-    const near = cells()
-      .filter((c) => c !== cell)
-      .map((c) => c.getBoundingClientRect())
-      .filter((r) => Math.abs(r.top - mine.top) < mine.width
-        && Math.abs(r.left - mine.left) < mine.width);
+    // Pausing can only ever push a start time later, so the earliest one in the
+    // field is the one nothing has happened to. Taking the minimum fresh each
+    // time rather than remembering a reference means it cannot be anchored to a
+    // cell that was itself paused, and it re-derives correctly if the whole
+    // field is restarted by the section being hidden and shown again.
+    let truth = rise.startTime;
+    field.querySelectorAll('.bubble-cell').forEach((c) => {
+      const a = riseOf(c);
+      if (a && a.startTime !== null && a.startTime < truth) truth = a.startTime;
+    });
 
-    if (near.length) {
-      const travel = field.clientWidth - mine.width;
-      if (travel > 0) {
-        let best = null;
-        let bestGap = -1;
-        lanes.forEach((lane) => {
-          const x = mine.left - cell.offsetLeft + lane * travel;
-          const gap = Math.min(...near.map((r) => Math.abs(r.left - x)));
-          if (gap > bestGap) {
-            bestGap = gap;
-            best = lane;
-          }
-        });
-        if (best !== null) cell.style.setProperty('--lane', best.toFixed(3));
-      }
-    }
-
-    const float = cell.querySelector('.bubble-float');
-    if (!float) return;
-
-    // Restart by removing the animation and forcing a reflow between. Setting
-    // it back in the same frame would be coalesced into no change at all.
-    float.style.animation = 'none';
-    void float.offsetWidth;
-    float.style.animation = '';
+    // Reading and writing start times touches animation state only — no
+    // geometry is measured, so nothing here forces a layout.
+    if (rise.startTime > truth) rise.startTime = truth;
   });
 }
 
@@ -433,6 +419,36 @@ function setDrift(running) {
   // The water behind is motion too, and someone who asked for stillness meant
   // all of it. It is also the expensive half.
   document.dispatchEvent(new CustomEvent('ocean-motion', { detail: { run: running } }));
+}
+
+// A footnote for the water: the sharks in it are the user's own models, and
+// nothing on screen says so.
+function initWaterInfo() {
+  const button = document.getElementById('water-info');
+  const note = document.getElementById('water-note');
+  if (!button || !note) return;
+
+  const setOpen = (open) => {
+    note.hidden = !open;
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setOpen(note.hidden);
+  });
+
+  // Dismiss the way a popover should: anywhere else, or Escape
+  document.addEventListener('click', (event) => {
+    if (!note.hidden && !note.contains(event.target)) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !note.hidden) {
+      setOpen(false);
+      button.focus();
+    }
+  });
 }
 
 function initDriftToggle() {
@@ -467,6 +483,7 @@ export function initResearchBubbles() {
 
   initDriftFocus();
   initLapReset();
+  initWaterInfo();
   initDriftToggle();
 
   // Escape hatches: the close button, the scrim, and Escape

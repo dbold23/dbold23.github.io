@@ -46,13 +46,76 @@
 }
 
 @media (max-width: 640px) {
-  /* Homescreen: hotspots become simpler on mobile */
+  /* On a phone the portrait is cropped to the subject — the whole frame is him,
+     there is no empty corner for a label to sit in, and the hotspots' anchoring
+     to features in the photograph buys nothing because the surfboard and the
+     corners are off screen anyway. So the four of them stop pretending to be
+     corners and become what they actually are: the navigation.
+
+     They were also the smallest type on the page: clamp(0.9rem, 2vw, 1.4rem)
+     resolves to its 14.4px floor at 375px, below the 17.6px the 968px
+     breakpoint above had already set, and under a third of the 49px they get on
+     a desktop.
+
+     Four full-width rows down the bottom of the screen, thumb-first: the
+     furthest is still inside the reach arc, and each is a whole line of text
+     rather than half of one. Heights are in svh so the stack keeps its
+     proportion between a 635px first paint and an 812px scrolled-down one. */
   .corner-hotspot {
-    padding: 0.5rem;
+    top: auto;
+    right: auto;
+    left: 1rem;
+    width: calc(100% - 2rem);
+    height: clamp(3.4rem, 7.6svh, 4.4rem);
+    padding: 0;
+    gap: 0;
+    opacity: 1;
+    border-radius: 14px;
+    background: rgba(4, 14, 34, 0.52);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
   }
 
-  .corner-icon { width: clamp(40px, 8vw, 80px); height: clamp(40px, 8vw, 80px); }
-  .corner-label { font-size: clamp(0.9rem, 2vw, 1.4rem); }
+  .corner-forest { bottom: calc(3 * (clamp(3.4rem, 7.6svh, 4.4rem) + 0.55rem) + 1.1rem); }
+  .corner-ocean  { bottom: calc(2 * (clamp(3.4rem, 7.6svh, 4.4rem) + 0.55rem) + 1.1rem); }
+  .corner-tech   { bottom: calc(1 * (clamp(3.4rem, 7.6svh, 4.4rem) + 0.55rem) + 1.1rem); }
+  .corner-mind   { bottom: 1.1rem; }
+
+  /* The invisible hotspot over the surfboard has nothing to point at here */
+  .corner-tech-board { display: none; }
+
+  /* The icons are decoration that a single row has no room for */
+  .corner-icon { display: none; }
+
+  .corner-label {
+    font-size: 1.22rem;
+    letter-spacing: 0.06em;
+    border-bottom: 0;
+    padding: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Name and titles ride at the top, where the photograph is sky and forest
+     rather than face — the one band of this crop with nothing in it. */
+  .hero-title {
+    top: calc(4.6rem + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    transform: translateX(-50%);
+    width: calc(100% - 1.5rem);
+  }
+
+  .hero-name { font-size: clamp(2.1rem, 8.4vw, 2.8rem); }
+  .hero-subtitle { font-size: 0.98rem; line-height: 1.5; }
+
+  /* Ground both ends: the stack at the bottom, the title under the nav pill */
+  .homescreen::after {
+    background:
+      linear-gradient(to top, rgba(2, 9, 24, 0.88) 0%, rgba(2, 9, 24, 0.5) 30%, transparent 54%),
+      linear-gradient(to bottom, rgba(2, 9, 24, 0.72) 0%, rgba(2, 9, 24, 0.3) 16%, transparent 30%),
+      radial-gradient(ellipse at 55% 40%, transparent 25%, rgba(0, 0, 0, 0.4) 80%);
+  }
 
   /* Path content */
   .path-content { padding: 4rem 1rem 3rem; }
@@ -80,21 +143,62 @@
 
 
 
-  /* Research bubbles — mobile. A narrow screen cannot hold nine lanes, so the
-     bubbles shrink and the lanes pull in towards the middle; the phase spread
-     is what keeps them apart, and that is vertical. */
+  /* Research bubbles — mobile. They keep rising, in a narrower corridor, and
+     the titles stay ABOVE their discs where they belong.
+
+     What makes that possible is the pairing of lane to phase, not the CSS —
+     see tools/build_bubble_field.py. Measured here at 375px: 190px of lateral
+     travel, discs up to 102px, labels up to 161x35 above them. Against that
+     footprint a 68rem field clears every one of the 36 pairs with 5% to spare;
+     it was 84rem while the phases were evenly spaced, which needed the extra
+     height to buy back what the spacing was giving away. The stage is still
+     taller than the screen — nine discs do not fit in one viewport with their
+     names on, and shrinking them until they do is what made the names
+     unreadable in the first place. You scroll, but less far. */
   .ocean-reef { width: auto; padding: 0 0.5rem; }
+
   .bubble-field {
-    --field-h: min(calc(100svh - 6rem), 44rem);
-    --bubble: clamp(6.5rem, 32vw, 9rem);
-    margin-top: calc(4.5rem + env(safe-area-inset-top, 0px));
+    --field-h: 68rem;
+    --bubble: clamp(5.2rem, 25vw, 7rem);
+    /* Shorter labels and a shorter sway than the desktop, which is what buys
+       back the width the discs need to stagger rather than queue. The corridor
+       itself is not set here — path-ocean.css derives it from exactly these two
+       numbers, so a phone gets the same guarantee the desktop does instead of a
+       second hand-tuned width that has to be kept in step with them. */
+    --label-w: min(8.5rem, 36vw);
+    --sway-max: 1.3rem;
+    margin: calc(5.4rem + env(safe-area-inset-top, 0px)) auto 3rem;
+    /* The desktop mask puts its fade at 13%/93% of the field, which is a
+       sensible place on a field one screen tall and an arbitrary one on a field
+       taller than the screen. Absolute stops instead: a bubble rises up to
+       1.15x its own width above the field box, and with no mask at all that is
+       what was sliding across the nav pill. Everything outside the gradient is
+       masked out, so the overshoot is hidden and the last 5.5rem of the climb
+       dissolves into it. */
+    -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0, #000 5.5rem, #000 calc(100% - 4rem), transparent 100%);
+    mask-image: linear-gradient(to bottom,
+      transparent 0, #000 5.5rem, #000 calc(100% - 4rem), transparent 100%);
   }
-  .bubble-name { bottom: calc(100% + 0.4rem); max-width: min(9.5rem, 185%); font-size: 0.76rem; }
+
+  .bubble-name {
+    bottom: calc(100% + 0.3rem);
+    z-index: 3;
+    font-size: 0.76rem;
+    line-height: 1.26;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.92), 0 2px 12px rgba(0, 0, 0, 0.7);
+  }
 
   /* Expanded panel — mobile */
   .bubble-stage { --rp-break: 0rem; }
   .rp { row-gap: 1.5rem; }
-  .rp-head { min-height: 62vh; padding-top: 45vh; }
+  /* The cover was 62vh tall with 45vh of top padding — 503px of a 635px screen
+     spent before a word of the article. Half a screen is plenty for a title. */
+  .rp-head {
+    min-height: 46svh;
+    padding-top: 26svh;
+    padding-bottom: 1.4rem;
+  }
   .rp-title { font-size: clamp(1.9rem, 8.4vw, 2.6rem); }
   .rp-sections { grid-template-columns: 1fr; }
   .pres-strip { grid-auto-columns: minmax(38%, 1fr); overflow-x: auto; padding-bottom: 0.3rem; }
@@ -143,19 +247,35 @@
     width: 100%;
     float: none;
     z-index: 8;
-    height: 52vh;
-    height: 52svh; /* svh so the iOS toolbar collapsing doesn't resize the map */
+    /* The map is sticky and the cards scroll under it, so its height is a
+       direct tax on the reading window. At 52svh it left 305px on a 635px
+       screen for cards that run 500-791px, and the exploring state left 140px,
+       which is a card read through a letterbox. */
+    height: 34vh;
+    height: 34svh; /* svh so the iOS toolbar collapsing doesn't resize the map */
     transition: height 0.4s var(--ease-out);
   }
   .forest-map-sticky[data-camera="exploring"] {
-    height: 78vh;
-    height: 78svh; /* they asked for room; give them room */
+    height: 56vh;
+    height: 56svh; /* they asked for room; give them room, not the whole screen */
+  }
+  /* The map is pinned across the top here, so the window a card can actually be
+     read in is what is left underneath it. Everything below is that one number:
+     the snapport starts at the map's bottom edge, and a step is exactly one
+     window tall so there is no dead scroll between one location and the next.
+     It was 74svh holding cards that run 351-414px, and the leftover was what
+     made a card drift up behind the map on the way past — and what made getting
+     back to the top take as long as it did. */
+  html:has(body[data-active-path="forest"]) {
+    scroll-padding-top: calc(5.5rem + env(safe-area-inset-top, 0px) + 34svh);
   }
   .forest-step {
+    /* start, not center: a card taller than the window then overflows downward,
+       where it can still be read, instead of upward behind the map. */
+    scroll-snap-align: start;
     margin-left: 0;
-    min-height: 74vh;
-    min-height: 74svh;
-    align-items: center;
+    min-height: calc(66svh - 5.5rem - env(safe-area-inset-top, 0px));
+    align-items: flex-start;
     padding: 1.5rem 1rem;
   }
   .forest-step[data-step="overview"] {
@@ -192,10 +312,19 @@
 /* Very small screens — collapse nav labels to dots only */
 @media (max-width: 420px) {
   .nav-btn-label { display: none; }
-  .nav-btn { padding: 0.35rem; }
+  /* 0.35rem of padding around a 10px dot is a 23.2px target — 27% of the
+     minimum area, for the only control that moves between the four sections. */
+  .nav-btn {
+    padding: 0.35rem;
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
   .nav-btn-dot { width: 10px; height: 10px; }
   .nav-btn.active .nav-btn-label { display: inline; }
-  .nav-btn.active { padding: 0.25rem 0.55rem; }
+  .nav-btn.active { padding: 0.25rem 0.55rem; min-width: 0; }
+  .nav-home,
+  .nav-cv { min-width: 44px; min-height: 44px; }
 }
 
 /* Reduced motion */
@@ -209,4 +338,238 @@
   .folder-arrow { transition: none !important; }
   .blink-cursor { animation: none !important; }
   .dash-pulse-dot { animation: none !important; }
+}
+
+/* ============================================
+   Captain's Log on a phone: the copy has to be reachable
+   ============================================
+   .log-copy is absolutely positioned against the bottom of a deck that is
+   100svh and overflow:hidden, and the deck has no scroll container — swiping
+   changes chapter, it does not scroll. So anything taller than the viewport is
+   cut off the TOP and cannot be got back.
+
+   Measured at 375x635, which is an iPhone with its toolbars showing: all eight
+   chapters overflow, every one loses its chapter number, and six of the eight
+   lose their title outright — CSUMB, First Dives, Scaling Up, HABHub, MBARI and
+   Now + Next. It does not show at 375x812 because a headless viewport has no
+   browser chrome, which is why svh is the unit that matters here.
+
+   The copy keeps sitting on the bottom edge when it fits, and scrolls when it
+   does not. margin-top:auto on the first child rather than justify-content:
+   flex-end — with flex-end, overflow above the start edge is unreachable. */
+@media (max-width: 768px) {
+  .log-copy {
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 4.25rem;
+    /* Room for the whole turn-page bar, not most of it. The bar is a fixed
+       height — 3rem of gradient, a 56px button, and its own bottom padding —
+       so this is a constant too rather than a share of the viewport. At the
+       old 9svh the last line of a chapter finished 7px inside the buttons,
+       which is enough to take the tap. */
+    padding-bottom: 8.25rem;
+  }
+
+  .log-copy > :first-child { margin-top: auto; }
+}
+
+/* ============================================
+   Conservation hero and map chrome on a phone
+   ============================================ */
+@media (max-width: 640px) {
+  /* 3rem gutters either side is 96px of a 375px screen — a quarter of it —
+     which pushed the philosophy paragraph to twelve lines. */
+  .path-hero-overlay { padding: 3rem 1.25rem 2.5rem; }
+
+  /* The attribution is collapsed behind this chip by default and it is the only
+     way to reach a credit the imagery licences require. 24x24 is 45% of a
+     minimum touch target. */
+  .forest-map-sticky .maplibregl-ctrl-attrib-button {
+    width: 34px;
+    height: 34px;
+    background-size: 18px 18px;
+  }
+}
+
+/* ============================================
+   Technology path on a phone
+   ============================================ */
+@media (max-width: 968px) {
+  /* The window chrome is desktop-only behaviour (see transition-tech.js), so
+     the dots should not take a tap either. They are 12px. */
+  .terminal-dots { pointer-events: none; }
+}
+
+@media (max-width: 640px) {
+  /* The file tree IS the navigation of this path, and every toggle measured
+     19.8px tall — buttons do not inherit the terminal's line-height, so the
+     0.15rem padding was the whole box. That is 45% of a minimum target. */
+  .folder-toggle,
+  .file-toggle {
+    min-height: 44px;
+    padding: 0.55rem 0.5rem;
+    line-height: 1.25;
+  }
+
+  /* #path-tech is the one path with no .path-content wrapper, so nothing was
+     holding it clear of the fixed nav pill — the pill sat across the top half
+     of the desktop icons and took their taps. */
+  .desktop-surface { padding-top: calc(4.75rem + env(safe-area-inset-top, 0px)); }
+}
+
+/* The page is viewport-fit=cover, so the pill needs the inset or it rides under
+   the notch on a landscape iPhone. */
+.v2-nav {
+  top: calc(1.5rem + env(safe-area-inset-top, 0px));
+}
+
+/* ============================================
+   Follow-ups from measuring the mobile pass
+   ============================================ */
+@media (max-width: 768px) {
+  /* Giving .log-copy a scroll path let it run under .log-nav, which has no
+     background — two lines of prose were reading through the roman-numeral rail
+     and the arrows. */
+  .log-nav {
+    padding-top: 3rem;
+    background: linear-gradient(to top,
+      rgba(8, 4, 16, 0.96) 0%, rgba(8, 4, 16, 0.86) 55%, transparent 100%);
+  }
+
+  /* ---- Turning pages, and nothing else ----
+     The chapter rail is a phone-sized problem: eight numerals want 401px and
+     have 239px, so three chapters were off the end of a strip you had to drag
+     sideways to reach — and that strip sat in the same band as the copy's own
+     scroll, so a drag meant for the prose moved the rail instead. Both go away
+     with the rail. What is left is what a book gives you: turn forward, turn
+     back, or swipe. Swiping already worked and still does; it just is not
+     competing with a scroller any more.
+
+     The two arrows take the corners and grow to 56px, and the count sits
+     between them so losing the rail does not mean losing your place. */
+  .log-rail { display: none; }
+
+  .log-nav { justify-content: space-between; gap: 0.5rem; }
+
+  .log-arrow {
+    width: 56px;
+    height: 56px;
+    font-size: 2rem;
+  }
+
+  .log-count {
+    display: block;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    color: rgba(233, 213, 255, 0.72);
+    text-shadow: 0 1px 6px rgba(8, 4, 16, 0.9);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  /* .corner-tech .corner-label carries transform: translate(4%, 10px) to sit it
+     on the surfboard. Specificity 0,2,0 beats the mobile label rule, so in the
+     grid TECHNOLOGY was riding 10px lower than ABOUT ME beside it. */
+  .corner-tech .corner-label { transform: none; }
+
+  /* The map's live readout is the only feedback in the exploring state */
+  .fmap-readout { font-size: 0.8rem; }
+
+  /* Zoom and compass were left at MapLibre's 29px while the attribution button
+     next to them was already widened */
+  .forest-map-sticky .maplibregl-ctrl-group button { width: 44px; height: 44px; }
+  .forest-map-sticky .maplibregl-ctrl-attrib-button {
+    width: 44px;
+    height: 44px;
+    background-size: 20px 20px;
+  }
+}
+
+/* ============================================
+   The nav pill is fixed, so every path has to clear it
+   ============================================
+   It occupies y 24-81 at 375px. Anything that starts at the top of the
+   viewport goes under it — and on two paths that was content, not decoration. */
+@media (max-width: 768px) {
+  /* The map is sticky at top: 0, so the pill sat on the map itself */
+  .forest-map-sticky { top: calc(5.5rem + env(safe-area-inset-top, 0px)); }
+
+  /* ...which means the sticky band has that much less room to work in */
+  .forest-map-sticky,
+  .forest-map-sticky[data-camera="exploring"] {
+    max-height: calc(100svh - 6.1rem - env(safe-area-inset-top, 0px));
+  }
+
+  /* The log deck is a full-height stage; its chapter label starts at the top */
+  .log-copy { padding-top: 5.4rem; }
+}
+
+/* ============================================
+   Conservation cards on a phone
+   ============================================
+   The map is sticky at the top and the cards scroll under it, so a card taller
+   than the window loses its top to the map before you can read it — which is
+   exactly what "the top of the box gets cut off" is. Measured at 375x635 the
+   cards ran 466-780px against a reading window of 280px.
+
+   So the cards lose the weight they do not need at this width: the image is a
+   third of some of them, the padding was 24px a side, and the type was set for
+   a 360px desktop column. */
+@media (max-width: 640px) {
+  .forest-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  /* The two cards that carry a photograph were the two that did not fit — the
+     image plus its margin is ~200px of a 359px window, and the map above is
+     already showing the place. The text is what the card is for. */
+  .forest-card .card-img-wrap { display: none; }
+
+  .forest-card h3 { font-size: 1.12rem; margin-bottom: 0.4rem; }
+  .forest-card p { font-size: 0.86rem; line-height: 1.55; margin-bottom: 0.6rem; }
+  .forest-card ul { font-size: 0.8rem; line-height: 1.45; margin-bottom: 0.6rem; }
+  .forest-card li { margin-bottom: 0.3rem; }
+  .forest-card .tag { font-size: 0.66rem; padding: 0.18rem 0.5rem; }
+
+  /* Start the step's card just under the map rather than centring it in a
+     74svh box, so its top edge is the first thing that arrives */
+  .forest-step {
+    align-items: flex-start;
+    padding: 0.9rem 0.9rem 2rem;
+  }
+}
+
+/* ============================================
+   Forest map: no strip above the band
+   ============================================
+   The band was pinned below the nav pill, at top: 5.5rem. That left 88px of
+   page between the top of the window and the top of the map, and the cards
+   scroll through it — so a line or two of the previous location's text sat
+   stranded above the visual on the way past. Covering that strip would work;
+   not having it is better. The band starts at the very top of the window now
+   and the pill floats over it, which is what the pill does over every other
+   path anyway.
+
+   Its height grows by exactly what its top gave up, so the map shows the same
+   amount of ground and — more to the point — the bottom edge does not move.
+   That edge is where a snapped card comes to rest (scroll-padding-top above)
+   and where the reading window starts, and both are written in terms of it. */
+@media (max-width: 640px) {
+  .forest-map-sticky {
+    top: 0;
+    height: calc(34svh + 5.5rem + env(safe-area-inset-top, 0px));
+    max-height: 100svh;
+  }
+  .forest-map-sticky[data-camera="exploring"] {
+    height: calc(56svh + 5.5rem + env(safe-area-inset-top, 0px));
+    max-height: 100svh;
+  }
 }

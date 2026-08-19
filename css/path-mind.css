@@ -302,6 +302,11 @@
 
 .log-rail::-webkit-scrollbar { display: none; }
 
+/* Only ever shown where the rail is not — see the phone block in
+   responsive.css. Kept out of the flow rather than merely invisible so that
+   exactly one of the two is in the accessibility tree at a time. */
+.log-count { display: none; }
+
 .log-dot {
   display: flex;
   align-items: baseline;

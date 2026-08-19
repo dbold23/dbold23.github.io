@@ -2,7 +2,7 @@
 // Mind Path: Iris clip-path zoom + Neural Network SVG
 // ============================================
 
-import { randomRange, prefersReducedMotion, sleep, isTouchDevice } from './utils.js';
+import { randomRange, prefersReducedMotion, sleep } from './utils.js';
 
 let neuralAnimId = null;
 let nodes = [];
@@ -142,6 +142,17 @@ function syncNav() {
   const next = document.getElementById('log-next');
   if (prev) prev.disabled = current === 0;
   if (next) next.disabled = current === all.length - 1;
+
+  // The phone layout turns the rail off, so this is the only thing left saying
+  // where in the book you are. Roman, to match the numerals the rail uses and
+  // the "Chapter IV" above each entry.
+  const count = document.getElementById('log-count');
+  if (count) count.textContent = `${roman(current + 1)} / ${roman(all.length)}`;
+}
+
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+function roman(n) {
+  return ROMAN[n - 1] || String(n);
 }
 
 function setCurrent(idx) {
@@ -267,7 +278,12 @@ function initLog() {
     else if (e.key === 'ArrowLeft') goTo(current - 1);
   });
 
-  if (isTouchDevice()) {
+  // Bound unconditionally rather than behind a touch test. The test was
+  // matchMedia('(pointer: coarse)') read once, at the moment the log is first
+  // opened; a touchscreen laptop reports fine and got no swipe at all. Touch
+  // events do not fire on a device that has no touch, so there is nothing to
+  // guard against.
+  {
     let startX = 0, startY = 0;
     deck.addEventListener('touchstart', (e) => {
       startX = e.changedTouches[0].clientX;

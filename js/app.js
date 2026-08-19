@@ -48,11 +48,18 @@ const footer = document.getElementById('shared-footer');
 // ---- Transition modules (lazy-loaded) ----
 const transitionModules = {};
 
+// The cache token this file was itself loaded with, taken from its own URL
+// rather than written out again. index.html is the single place the token
+// lives; a copy here is a copy that goes stale, and this one had — it sat four
+// bumps behind the stylesheets, so every transition module was served from
+// cache no matter what had changed in it.
+const ASSET_V = new URL(import.meta.url).search;
+
 async function loadTransition(path) {
   if (transitionModules[path]) return transitionModules[path];
   // Version-stamped like the stylesheets in index.html, so a returning
   // visitor cannot pair new CSS with a cached transition module.
-  const mod = await import(`./transition-${path}.js?v=20260818i`);
+  const mod = await import(`./transition-${path}.js${ASSET_V}`);
   transitionModules[path] = mod;
   return mod;
 }
@@ -106,8 +113,19 @@ async function enterPath(path, fromHistory = false) {
 
   if (mod.start) mod.start();
 
-  // Show path section
+  // Show path section.
+  //
+  // Every OTHER section is cleared here as well, not just the one exitCurrentPath
+  // knew about. `state.activePath` is only recorded at the very bottom of this
+  // function, so anything that throws between here and there — initScrollManager
+  // building the forest map, say, which is the one step that can fail on a phone
+  // that has run out of WebGL contexts — leaves a section marked active that no
+  // later exitCurrentPath will ever look at, because state.activePath is still
+  // null. The next path then stacks on top of it and you get two paths at once.
   const section = document.getElementById(`path-${path}`);
+  document.querySelectorAll('.path-section.active').forEach((el) => {
+    if (el !== section) el.classList.remove('active');
+  });
   if (section) {
     section.classList.add('active');
     scrollTopInstant();
@@ -125,11 +143,18 @@ async function enterPath(path, fromHistory = false) {
   // Observe fade-in elements in the new path
   if (state.fadeObserver) observeNewFadeIns(state.fadeObserver);
 
-  // Init scroll manager for this path
-  initScrollManager(path, mod);
-
+  // Record where we are BEFORE the last risky call, so a throw inside it cannot
+  // strand the app with a visible section it does not know about, and cannot
+  // leave `transitioning` true and wedge navigation for the rest of the visit.
   state.activePath = path;
   state.transitioning = false;
+
+  // Init scroll manager for this path
+  try {
+    initScrollManager(path, mod);
+  } catch (err) {
+    console.warn(`Scroll manager failed for ${path}; the page still works.`, err);
+  }
 
   if (!fromHistory && window.location.hash !== `#${path}`) {
     history.pushState(null, '', `#${path}`);

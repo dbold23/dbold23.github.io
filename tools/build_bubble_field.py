@@ -57,31 +57,50 @@ BUBBLES = [
     ('fieldops',    'Getting to where the data is'),
 ]
 
-# Lanes are fractions of the width a bubble can travel across: 0 sits flush with
-# the left edge of the stage, 1 flush with the right, so nothing is ever half off
-# screen however wide the viewport gets. They are spread out and then nudged off
-# the even spacing, so the field never resolves into a row.
+# Two numbers place each bubble: a lane across the stage and a phase round the
+# lap. What matters is not either sequence on its own but that they are not the
+# same sequence.
 #
-# Phases run on the golden ratio, which puts two bubbles in neighbouring lanes
-# most of a screen apart vertically — the only arrangement that keeps nine of
-# them from colliding while they all travel at the same speed.
-LANES = [0.04, 0.17, 0.30, 0.44, 0.53, 0.66, 0.79, 0.90, 0.98]
-LANE_JITTER = [0.015, -0.012, 0.021, -0.007, 0.019, -0.016, 0.010, -0.021, -0.013]
-PHASE_JITTER = [0.012, -0.021, 0.017, -0.009, 0.024, -0.014, 0.006, -0.019, 0.011]
+# The lane is a fraction of the width a bubble can travel: 0 sits flush with the
+# left edge of the stage, 1 flush with the right, so nothing is ever half off
+# screen however wide the viewport gets. They are an even ladder — nine rungs,
+# an eighth apart — which sounds like it should read as a grid and does not,
+# because no two bubbles are ever at the same height.
+#
+# The phase is the golden ratio, which is what makes that true. Walk the field
+# in phase order and the lanes come out 0.00, 0.62, 0.25, 0.88, 0.50, 0.12,
+# 0.75, 0.38, 1.00: every bubble crosses the stage from the one below it. That
+# decorrelation is the whole layout. It is also what I broke — spacing the
+# phases evenly put lane and phase both in step with the list index, so the nine
+# of them marched up the screen in strict left-to-right order, which is exactly
+# the diagonal queue it looked like.
+#
+# Scored over all 362,880 lane orderings against the real footprint (a 160px
+# label sitting on a 94px disc, on the mobile lap where the clearance is
+# tightest), this pairing is the best there is: 1.20 where 1.0 means the
+# footprints just touch. Even phases score 0.99 on the phone and 0.54 on the
+# desktop, where the footprints frankly overlap.
+GOLDEN = 0.6180339887
+
+LANES = [i / 8 for i in range(9)]
+# Nudged off the exact rungs so the ladder is not literally a ladder. Small
+# enough not to spend the clearance: 1.20 -> 1.20 on mobile, 1.44 -> 1.37 wide.
+LANE_JITTER = [0.018, -0.014, 0.022, -0.009, 0.016, -0.020, 0.011, -0.017, -0.012]
 
 RISE_SECONDS = 46          # one lap of the field, top to bottom
-GOLDEN = 0.6180339887
 
 
 def cell(i, key, label):
     lane = min(1.0, max(0.0, LANES[i] + LANE_JITTER[i]))
-    phase = ((i * GOLDEN) % 1.0) + PHASE_JITTER[i]
-    phase %= 1.0
+    phase = (i * GOLDEN) % 1.0
 
     # Sway periods are deliberately mutual non-multiples, so no two bubbles
     # ever fall into step for long
     sway_dur = 9.4 + (i * 1.37) % 5.6
     sway_delay = -(i * 2.9) % sway_dur
+    # Unitless: the stylesheet turns this into a length, because the amplitude
+    # that reads as drift on a 192px desktop disc throws a 160px label clean off
+    # the side of a phone.
     sway = 0.8 + (i * 0.31) % 1.1
     scale = 0.92 + (i * 0.37) % 0.16
 
@@ -97,7 +116,7 @@ def cell(i, key, label):
         f'--rise-delay: -{phase * RISE_SECONDS:.1f}s; '
         f'--sway-dur: {sway_dur:.1f}s; '
         f'--sway-delay: -{sway_delay:.1f}s; '
-        f'--sway: {sway:.2f}rem; '
+        f'--sway-k: {sway:.2f}; '
         f'--scale: {scale:.2f}; '
         f'--z: {z}'
     )

@@ -31,7 +31,6 @@
   .stat-metrics { grid-template-columns: repeat(3, 1fr); }
 
   /* Research bubbles — tablet */
-  .bubble-field { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .bubble-stage-shell { inset: 0; border-radius: 0; }
 
 
@@ -81,22 +80,27 @@
 
 
 
-  /* Research bubbles — mobile */
-  .ocean-reef { width: auto; padding: 4.5rem 1rem 3rem; }
-  .ocean-header { margin-bottom: 2rem; }
-  .ocean-title { font-size: clamp(1.5rem, 5vw, 2rem); }
-  .bubble-field { grid-template-columns: 1fr 1fr; gap: 2rem 1.1rem; }
-  .pod { grid-column: 1 / -1; }
-  .pod-bubbles { grid-template-columns: 1fr 1fr; gap: 1.1rem; }
-  .bubble-name { padding: 0 8% 13%; font-size: 0.74rem; }
+  /* Research bubbles — mobile. A narrow screen cannot hold nine lanes, so the
+     bubbles shrink and the lanes pull in towards the middle; the phase spread
+     is what keeps them apart, and that is vertical. */
+  .ocean-reef { width: auto; padding: 0 0.5rem; }
+  .bubble-field {
+    --field-h: min(calc(100svh - 6rem), 44rem);
+    --bubble: clamp(6.5rem, 32vw, 9rem);
+    margin-top: calc(4.5rem + env(safe-area-inset-top, 0px));
+  }
+  .bubble-name { bottom: calc(100% + 0.4rem); max-width: min(9.5rem, 185%); font-size: 0.76rem; }
 
   /* Expanded panel — mobile */
-  .bubble-stage-body { padding: 3.25rem 1rem 3rem; }
-  .rp-head { padding-right: 3rem; }
+  .bubble-stage { --rp-break: 0rem; }
+  .rp { row-gap: 1.5rem; }
+  .rp-head { min-height: 62vh; padding-top: 45vh; }
+  .rp-title { font-size: clamp(1.9rem, 8.4vw, 2.6rem); }
   .rp-sections { grid-template-columns: 1fr; }
-  .rp-pres { grid-template-columns: 1fr; }
+  .pres-strip { grid-auto-columns: minmax(38%, 1fr); overflow-x: auto; padding-bottom: 0.3rem; }
   .rp-record { grid-template-columns: 1fr; }
-  .pres-embed iframe { height: 300px; }
+  .rp-topbar { padding-right: 3.6rem; }
+  .rp-topbar-org { display: none; }
   .bubble-stage-close { width: 40px; height: 40px; font-size: 1.6rem; }
   .bubble-stage-hint { display: none; }
 

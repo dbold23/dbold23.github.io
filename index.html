@@ -27,20 +27,30 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
     <link rel="preload" as="image" href="assets/FinalHome.jpg" fetchpriority="high">
 
+    <!-- Module resolution for the vendored three.js (ocean path only) -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/three.module.min.js",
+        "three/addons/": "./vendor/three/"
+      }
+    }
+    </script>
+
     <!-- Styles -->
-    <link rel="stylesheet" href="css/variables.css?v=20260816u">
-    <link rel="stylesheet" href="css/base.css?v=20260816u">
-    <link rel="stylesheet" href="css/homescreen.css?v=20260816u">
-    <link rel="stylesheet" href="css/transitions.css?v=20260816u">
-    <link rel="stylesheet" href="css/path-forest.css?v=20260816u">
-    <link rel="stylesheet" href="css/path-ocean.css?v=20260816u">
-    <link rel="stylesheet" href="css/path-tech.css?v=20260816u">
-    <link rel="stylesheet" href="css/path-mind.css?v=20260816u">
-    <link rel="stylesheet" href="css/shared.css?v=20260816u">
-    <link rel="stylesheet" href="css/responsive.css?v=20260816u">
+    <link rel="stylesheet" href="css/variables.css?v=20260818i">
+    <link rel="stylesheet" href="css/base.css?v=20260818i">
+    <link rel="stylesheet" href="css/homescreen.css?v=20260818i">
+    <link rel="stylesheet" href="css/transitions.css?v=20260818i">
+    <link rel="stylesheet" href="css/path-forest.css?v=20260818i">
+    <link rel="stylesheet" href="css/path-ocean.css?v=20260818i">
+    <link rel="stylesheet" href="css/path-tech.css?v=20260818i">
+    <link rel="stylesheet" href="css/path-mind.css?v=20260818i">
+    <link rel="stylesheet" href="css/shared.css?v=20260818i">
+    <link rel="stylesheet" href="css/responsive.css?v=20260818i">
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
@@ -307,130 +317,113 @@
         <div class="ocean-depth-bg"></div>
 
         <div class="ocean-reef">
-            <header class="ocean-header">
-                <h2 class="ocean-title">Research</h2>
-                <p class="ocean-lede">Nine projects across the lab, the field, and the open water. Open a bubble for the question, the method and what came out of it. <button type="button" class="ocean-lede-link" data-goto-tech>Technology</button> has the schemas, the hardware and the repos if you want to build on any of it.</p>
-            </header>
-
-            <div class="bubble-field">
-                <section class="pod" style="--members: 3">
-                    <header class="pod-head">
-                        <h3 class="pod-name">Jorgensen Lab</h3>
-                        <p class="pod-where">Ocean Predator Ecology, CSUMB</p>
-                    </header>
-                    <ul class="pod-bubbles">
-                        <li class="bubble-cell" style="--bob-delay: -0.4s; --bob-dur: 7.1s">
-                            <button type="button" class="research-bubble" data-panel="shark" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/shark.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">White Shark Ecology</span>
-                            </button>
-                        </li>
-                        <li class="bubble-cell" style="--bob-delay: -5.1s; --bob-dur: 7.8s">
-                            <button type="button" class="research-bubble" data-panel="anchor" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/anchor.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">anchor: Biologging</span>
-                            </button>
-                        </li>
-                        <li class="bubble-cell" style="--bob-delay: -0.9s; --bob-dur: 6.6s">
-                            <button type="button" class="research-bubble" data-panel="relay" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/relay.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">Relay Training</span>
-                            </button>
-                        </li>
-                    </ul>
-                </section>
-                <section class="pod" style="--members: 1">
-                    <header class="pod-head">
-                        <h3 class="pod-name">Bioinspiration Lab</h3>
-                        <p class="pod-where">MBARI</p>
-                    </header>
-                    <ul class="pod-bubbles">
-                        <li class="bubble-cell" style="--bob-delay: -2.6s; --bob-dur: 6.3s">
-                            <button type="button" class="research-bubble" data-panel="fathomnet" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/fathomnet.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">FathomNet</span>
-                            </button>
-                        </li>
-                    </ul>
-                </section>
-                <section class="pod" style="--members: 1">
-                    <header class="pod-head">
-                        <h3 class="pod-name">Gardner Lab</h3>
-                        <p class="pod-where">Moss Landing Marine Laboratories</p>
-                    </header>
-                    <ul class="pod-bubbles">
-                        <li class="bubble-cell" style="--bob-delay: -1.5s; --bob-dur: 6.8s">
-                            <button type="button" class="research-bubble" data-panel="aquaculture" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/aquaculture.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">Urchin Aquaculture</span>
-                            </button>
-                        </li>
-                    </ul>
-                </section>
-                <section class="pod" style="--members: 1">
-                    <header class="pod-head">
-                        <h3 class="pod-name">Jue Lab</h3>
-                        <p class="pod-where">CSUMB</p>
-                    </header>
-                    <ul class="pod-bubbles">
-                        <li class="bubble-cell" style="--bob-delay: -3.8s; --bob-dur: 7.4s">
-                            <button type="button" class="research-bubble" data-panel="jue" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/jue.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">Microbial Bioremediation</span>
-                            </button>
-                        </li>
-                    </ul>
-                </section>
-                <section class="pod" style="--members: 1">
-                    <header class="pod-head">
-                        <h3 class="pod-name">Cross-species</h3>
-                        <p class="pod-where">One method, several animals</p>
-                    </header>
-                    <ul class="pod-bubbles">
-                        <li class="bubble-cell" style="--bob-delay: -3.1s; --bob-dur: 6.9s">
-                            <button type="button" class="research-bubble" data-panel="porpoise" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/porpoise.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">Individual Re-ID</span>
-                            </button>
-                        </li>
-                    </ul>
-                </section>
-                <section class="pod" style="--members: 2">
-                    <header class="pod-head">
-                        <h3 class="pod-name">Field work</h3>
-                        <p class="pod-where">On the water, and under it</p>
-                    </header>
-                    <ul class="pod-bubbles">
-                        <li class="bubble-cell" style="--bob-delay: -4.4s; --bob-dur: 7.0s">
-                            <button type="button" class="research-bubble" data-panel="southafrica" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/southafrica.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">South Africa</span>
-                            </button>
-                        </li>
-                        <li class="bubble-cell" style="--bob-delay: -2.0s; --bob-dur: 7.6s">
-                            <button type="button" class="research-bubble" data-panel="fieldops" aria-expanded="false" aria-haspopup="dialog">
-                                <img class="bubble-photo" src="assets/bubbles/fieldops.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
-                                <span class="bubble-gloss" aria-hidden="true"></span>
-                                <span class="bubble-name">Scientific Diving</span>
-                            </button>
-                        </li>
-                    </ul>
-                </section>
-            </div>
+            <!-- Research is the only path with no visible heading now. The
+                 outline still needs one, and Technology does the same thing. -->
+            <h2 class="visually-hidden">Research</h2>
+            <!-- BUBBLE FIELD: generated by tools/build_bubble_field.py -->
+            <ul class="bubble-field" id="bubble-field" aria-label="Research projects">
+                <li class="bubble-cell" style="--lane: 0.055; --rise-delay: -0.6s; --sway-dur: 9.4s; --sway-delay: -0.0s; --sway: 0.80rem; --scale: 0.92; --z: 92">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-shark">What sharks do when no one is watching</p>
+                        <button type="button" class="research-bubble" data-panel="shark" aria-labelledby="bubble-label-shark" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/shark.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.158; --rise-delay: -27.5s; --sway-dur: 10.8s; --sway-delay: -7.9s; --sway: 1.11rem; --scale: 0.97; --z: 97">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-anchor">Tracking animals without drift</p>
+                        <button type="button" class="research-bubble" data-panel="anchor" aria-labelledby="bubble-label-anchor" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/anchor.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.321; --rise-delay: -11.6s; --sway-dur: 12.1s; --sway-delay: -6.3s; --sway: 1.42rem; --scale: 1.02; --z: 102">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-relay">Telemetry where there is none</p>
+                        <button type="button" class="research-bubble" data-panel="relay" aria-labelledby="bubble-label-relay" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/relay.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.433; --rise-delay: -38.9s; --sway-dur: 13.5s; --sway-delay: -4.8s; --sway: 1.73rem; --scale: 1.07; --z: 107">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-fathomnet">Speeding up deep-sea data ingestion</p>
+                        <button type="button" class="research-bubble" data-panel="fathomnet" aria-labelledby="bubble-label-fathomnet" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/fathomnet.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.549; --rise-delay: -22.8s; --sway-dur: 14.9s; --sway-delay: -3.3s; --sway: 0.94rem; --scale: 0.96; --z: 96">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-aquaculture">Turning &ldquo;zombie&rdquo; urchins into a fishery</p>
+                        <button type="button" class="research-bubble" data-panel="aquaculture" aria-labelledby="bubble-label-aquaculture" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/aquaculture.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.644; --rise-delay: -3.5s; --sway-dur: 10.7s; --sway-delay: -6.8s; --sway: 1.25rem; --scale: 1.01; --z: 101">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-jue">Which growth curves can be trusted</p>
+                        <button type="button" class="research-bubble" data-panel="jue" aria-labelledby="bubble-label-jue" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/jue.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.800; --rise-delay: -32.9s; --sway-dur: 12.0s; --sway-delay: -6.6s; --sway: 1.56rem; --scale: 1.06; --z: 106">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-porpoise">Mark-recapture without tagging</p>
+                        <button type="button" class="research-bubble" data-panel="porpoise" aria-labelledby="bubble-label-porpoise" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/porpoise.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.879; --rise-delay: -14.1s; --sway-dur: 13.4s; --sway-delay: -6.5s; --sway: 1.87rem; --scale: 0.95; --z: 95">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-southafrica">Surveying an unfamiliar coast</p>
+                        <button type="button" class="research-bubble" data-panel="southafrica" aria-labelledby="bubble-label-southafrica" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/southafrica.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.967; --rise-delay: -43.9s; --sway-dur: 14.8s; --sway-delay: -6.3s; --sway: 1.08rem; --scale: 1.00; --z: 100">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-fieldops">Getting to where the data is</p>
+                        <button type="button" class="research-bubble" data-panel="fieldops" aria-labelledby="bubble-label-fieldops" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/fieldops.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+            <!-- /BUBBLE FIELD -->
         </div>
+
+        <!-- The bubbles move on their own and there is no other content to look
+             at, so there has to be a way to stop them. Kept in the same register
+             as the Esc hint: corner chrome, not a control panel. -->
+        <button type="button" class="drift-toggle" id="drift-toggle">
+            <span class="drift-glyph" aria-hidden="true"></span>
+            <span class="drift-word">Pause</span>
+        </button>
 
         <!-- Expanded bubble: one dialog, filled from the templates below -->
         <div class="bubble-stage" id="bubble-stage" hidden>
             <div class="bubble-stage-scrim" data-stage-dismiss></div>
             <div class="bubble-stage-shell" role="dialog" aria-modal="true">
+                <div class="rp-rail" aria-hidden="true"><span></span></div>
+                <div class="rp-topbar" aria-hidden="true">
+                    <span class="rp-topbar-org"></span>
+                    <span class="rp-topbar-title"></span>
+                </div>
                 <div class="bubble-stage-scroll">
                     <div class="bubble-stage-body" id="bubble-stage-body"></div>
                 </div>
@@ -447,6 +440,7 @@
         <template data-panel="shark">
             <article class="rp rp--paper">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/title background of Summer symposium talk about ml for dorsal mounted cameras on sharks.avif" alt="" aria-hidden="true" decoding="async">
                     <p class="rp-org">Ocean Predator Ecology Lab, CSUMB</p>
                     <h3 class="rp-title">White Shark Ecology &amp; Telemetry</h3>
                     <p class="rp-byline">Mentor: Dr. Salvador Jorgensen</p>
@@ -459,10 +453,10 @@
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Automated keypoint tracking on a swimming white shark"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
+                            <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="Automated keypoint tracking on a swimming white shark"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
                             <figcaption><span class="rp-fignum">Figure 1</span>Automated keypoint tracking turns 4,850 archival videos into measurable landmarks.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Background</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -478,7 +472,7 @@
                             <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Shark tagging operation from a small vessel"><source src="assets/shark-tagging.webm" type="video/webm"><source src="assets/shark-tagging.mp4" type="video/mp4"></video>
                             <figcaption><span class="rp-fignum">Figure 2</span>Tagging from a small vessel. Most of the method is getting the boat and the animal in the same place calmly.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Field methods</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -491,10 +485,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/me with a shark tag and antena.avif" alt="Holding a shark tag and a VHF receiving antenna in the field" decoding="async">
+                            <img src="assets/me with a shark tag and antena.avif" alt="Holding a shark tag and a VHF receiving antenna in the field" width="254" height="215" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 3</span>VHF tracking between tagging trips, following known animals across seasons.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Results to date</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -508,25 +502,27 @@
                         </details>
                     </section>
                 </div>
-                <section class="rp-block">
+                <section class="rp-block rp-block--gallery">
                     <h4>Presentations</h4>
-                    <div class="rp-pres">
-                        <div class="pres-embed">
-                            <h5>NEPSS: White Shark Morphometric Analysis <span class="pres-date">March 2026</span></h5>
-                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1RixGeBlvak6r11nb0_x9OVpqSQp9bETEBU7nq7u_YXo/embed?start=false&loop=false&delayms=3000" data-embed-title="NEPSS presentation: White Shark Morphometric Analysis"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                    <div class="pres-gallery">
+                        <div class="pres-stage">
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1RixGeBlvak6r11nb0_x9OVpqSQp9bETEBU7nq7u_YXo/embed?start=false&loop=false&delayms=3000" data-embed-title="NEPSS presentation: White Shark Morphometric Analysis" aria-label="Open NEPSS presentation: White Shark Morphometric Analysis"><img class="pres-shot" src="assets/pres/shark-1.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Open</span></button>
+                            <p class="pres-caption"><span class="pres-caption-title">NEPSS: White Shark Morphometric Analysis</span><span class="pres-date">March 2026</span></p>
                         </div>
-                        <div class="pres-embed">
-                            <h5>WSN Poster: Assessing White Shark Body Condition <span class="pres-date">November 2025</span></h5>
-                            <button type="button" class="pres-facade" data-embed="https://drive.google.com/file/d/1SJLMesyUPDkBSq0p2w1uBO23hmrfeWPv/preview" data-embed-title="WSN poster: Assessing White Shark Body Condition"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
-                        </div>
-                        <div class="pres-embed">
-                            <h5>UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages <span class="pres-date">Summer 2025</span></h5>
-                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1W2EyKdI_vG46YGaLpdTB3HNlWjwZ71BhstlxmWGtZBM/embed?start=false&loop=false&delayms=3000" data-embed-title="UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
-                        </div>
-                        <div class="pres-embed">
-                            <h5>CSUMB Spring Showcase: From Fins to Frames <span class="pres-date">Spring 2025</span></h5>
-                            <button type="button" class="pres-facade" data-embed="https://drive.google.com/file/d/1tV3LgY9yx_AOt7AhUtrNvRmsAmwc17qx/preview" data-embed-title="CSUMB Spring Showcase: From Fins to Frames"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
-                        </div>
+                        <ul class="pres-strip">
+                            <li>
+                                <button type="button" class="pres-thumb is-active" aria-pressed="true" data-embed="https://docs.google.com/presentation/d/1RixGeBlvak6r11nb0_x9OVpqSQp9bETEBU7nq7u_YXo/embed?start=false&loop=false&delayms=3000" data-embed-title="NEPSS presentation: White Shark Morphometric Analysis" data-shot="assets/pres/shark-1.avif" data-title="NEPSS: White Shark Morphometric Analysis" data-date="March 2026"><img src="assets/pres/shark-1.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-thumb-label">NEPSS: White Shark Morphometric Analysis</span></button>
+                            </li>
+                            <li>
+                                <button type="button" class="pres-thumb" aria-pressed="false" data-embed="https://drive.google.com/file/d/1SJLMesyUPDkBSq0p2w1uBO23hmrfeWPv/preview" data-embed-title="WSN poster: Assessing White Shark Body Condition" data-shot="assets/pres/shark-2.avif" data-title="WSN Poster: Assessing White Shark Body Condition" data-date="November 2025"><img src="assets/pres/shark-2.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-thumb-label">WSN Poster: Assessing White Shark Body Condition</span></button>
+                            </li>
+                            <li>
+                                <button type="button" class="pres-thumb" aria-pressed="false" data-embed="https://docs.google.com/presentation/d/1W2EyKdI_vG46YGaLpdTB3HNlWjwZ71BhstlxmWGtZBM/embed?start=false&loop=false&delayms=3000" data-embed-title="UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages" data-shot="assets/pres/shark-3.avif" data-title="UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages" data-date="Summer 2025"><img src="assets/pres/shark-3.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-thumb-label">UROC Summer Showcase: Classifying White Shark Behaviors from Sensor Packages</span></button>
+                            </li>
+                            <li>
+                                <button type="button" class="pres-thumb" aria-pressed="false" data-embed="https://drive.google.com/file/d/1tV3LgY9yx_AOt7AhUtrNvRmsAmwc17qx/preview" data-embed-title="CSUMB Spring Showcase: From Fins to Frames" data-shot="assets/pres/shark-4.avif" data-title="CSUMB Spring Showcase: From Fins to Frames" data-date="Spring 2025"><img src="assets/pres/shark-4.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-thumb-label">CSUMB Spring Showcase: From Fins to Frames</span></button>
+                            </li>
+                        </ul>
                     </div>
                 </section>
                 <div class="rp-tags">
@@ -548,6 +544,7 @@
         <template data-panel="fathomnet">
             <article class="rp rp--paper">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/panels/fathomnet-masks.avif" alt="" aria-hidden="true" decoding="async">
                     <p class="rp-org">Monterey Bay Aquarium Research Institute</p>
                     <h3 class="rp-title">FathomNet</h3>
                     <p class="rp-byline">Summer Intern, Bioinspiration Lab</p>
@@ -560,10 +557,10 @@
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/fathomnet-masks.avif" alt="A deep-sea frame with segmentation masks over a crinoid and neighbouring animals" decoding="async">
+                            <img src="assets/panels/fathomnet-masks.avif" alt="A deep-sea frame with segmentation masks over a crinoid and neighbouring animals" width="1100" height="594" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 1</span>The output: an animal described by its outline rather than by a rectangle.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">What came out of it</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -578,7 +575,7 @@
                     </section>
                 </div>
                 <figure class="rp-plate rp-plate--wide">
-                    <img src="assets/panels/mbari-presentation.avif" alt="Presenting the summer internship work from the podium at MBARI, with the FathomNet database on screen" decoding="async">
+                    <img src="assets/panels/mbari-presentation.avif" alt="Presenting the summer internship work from the podium at MBARI, with the FathomNet database on screen" width="1100" height="814" loading="lazy" decoding="async">
                     <figcaption><span class="rp-fignum">Figure 2</span>Presenting the summer’s work at MBARI, August 2026.</figcaption>
                 </figure>
                 <section class="rp-block">
@@ -610,6 +607,7 @@
         <template data-panel="anchor">
             <article class="rp rp--paper">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/panels/anchor-track-map.avif" alt="" aria-hidden="true" decoding="async">
                     <p class="rp-org">Jorgensen Lab, CSUMB</p>
                     <h3 class="rp-title">anchor: Biologging Trajectory Reconstruction</h3>
                     <p class="rp-byline">Lead Developer &middot; co-developed with D. Moran</p>
@@ -622,10 +620,10 @@
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <video class="lazy-video" muted loop playsinline preload="none" width="512" height="288" aria-label="Keypoint tracking on a swimming shark, used as optical ground truth"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
+                            <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="Keypoint tracking on a swimming shark, used as optical ground truth"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
                             <figcaption><span class="rp-fignum">Figure 1</span>Optical ground truth: video keypoints give a tailbeat the tag can be checked against.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Validation against optical ground truth</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -638,10 +636,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/anchor-track-diagnostics.avif" alt="Diagnostic panels from a reconstructed track: drift over time, tilt-compensated heading, and speed coloured by behavior state" decoding="async">
+                            <img src="assets/panels/anchor-track-diagnostics.avif" alt="Diagnostic panels from a reconstructed track: drift over time, tilt-compensated heading, and speed coloured by behavior state" width="1100" height="816" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 2</span>Per-deployment diagnostics: drift against elapsed time, and speed coloured by classified behavior state.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Evaluation without leakage</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -652,12 +650,12 @@
                             </div>
                         </details>
                     </section>
-                    <section class="rp-section">
+                    <section class="rp-section rp-section--feature">
                         <figure class="rp-plate">
-                            <img src="assets/panels/anchor-track-map.avif" alt="A reconstructed animal track drawn over bathymetry in Elkhorn Slough" decoding="async">
-                            <figcaption><span class="rp-fignum">Figure 3</span>A reconstructed track over slough bathymetry, after GPS and acoustic fixes are threaded through the smoother.</figcaption>
+                            <video class="lazy-video" muted loop playsinline preload="none" width="584" height="832" aria-label="The particle filter running over Elkhorn Slough: a cloud of candidate positions moving down the channel while the posterior track is drawn behind it"><source src="assets/anchor-track-filter.webm" type="video/webm"><source src="assets/anchor-track-filter.mp4" type="video/mp4"></video>
+                            <figcaption><span class="rp-fignum">Figure 3</span>The filter running down Elkhorn Slough. Four thousand candidate positions are resampled against the wet boundary at every step; the cloud is where the animal might be, and the red line behind it is where the posterior says it went. Dead reckoning alone would have walked straight out of the channel hours ago.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Arresting the drift</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -685,6 +683,7 @@
         <template data-panel="porpoise">
             <article class="rp rp--paper">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/panels/porpoise-animal.avif" alt="" aria-hidden="true" decoding="async" style="object-position:50% 28%">
                     <p class="rp-org">Independent, with Jorgensen Lab and partner catalogues</p>
                     <h3 class="rp-title">Individual Re-Identification Across Species</h3>
                     <p class="rp-byline">Design and evaluation</p>
@@ -697,10 +696,10 @@
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/porpoise-match.avif" alt="A query dorsal fin beside its top five ranked matches from the catalogue" decoding="async">
-                            <figcaption><span class="rp-fignum">Figure 1</span>A query fin and its ranked matches, drawn from a catalogue of 198 known animals.</figcaption>
+                            <img src="assets/panels/porpoise-animal.avif" alt="A harbor porpoise surfacing, its small triangular dorsal fin clear of the water" width="1100" height="592" loading="lazy" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 1</span>About a second of animal, once. The notches and scarring along that fin are the whole signature, which is why the pipeline starts by finding it.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Harbor porpoise, by fin outline</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -713,10 +712,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/porpoise-cmc.avif" alt="Cumulative match characteristic curves for the re-identification model" decoding="async">
+                            <img src="assets/panels/porpoise-cmc.avif" alt="Cumulative match characteristic curves for the re-identification model" width="1100" height="706" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 2</span>CMC curves. The same evaluation applies whatever the animal, which is the point of sharing the machinery.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Sevengill shark, by spot constellation</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -730,10 +729,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/porpoise-accuracy-vs-gallery.png" alt="Accuracy plotted against gallery size" decoding="async">
+                            <img src="assets/porpoise-accuracy-vs-gallery.png" alt="Accuracy plotted against gallery size" width="1600" height="807" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 3</span>Accuracy against gallery size, which is what decides whether any of this scales to a larger catalogue.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Reporting it honestly</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -746,10 +745,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/bubbles/porpoise.avif" alt="Two photographs of the same dorsal fin taken years apart" decoding="async">
-                            <figcaption><span class="rp-fignum">Figure 4</span>The same animal, two encounters, years apart. Everything else is machinery for noticing that.</figcaption>
+                            <img src="assets/panels/porpoise-resight.avif" alt="The same harbor porpoise photographed four years after Figure 1, from the same side, in different water" width="1100" height="562" loading="lazy" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 4</span>Pointer again, same flank, four years after Figure&nbsp;1. That is a resighting, and it is the only thing any of this machinery exists to notice.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">4</span><span class="rp-fold-title">Where it goes next</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -777,6 +776,7 @@
         <template data-panel="aquaculture">
             <article class="rp rp--paper">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/panels/aquaculture-facility.avif" alt="" aria-hidden="true" decoding="async" style="object-position:50% 76%">
                     <p class="rp-org">Aquaculture Lab, Moss Landing Marine Laboratories</p>
                     <h3 class="rp-title">Sustainable Urchin Aquaculture</h3>
                     <p class="rp-byline">Lead Technician &middot; Mentor: Dr. Luke Gardner</p>
@@ -787,16 +787,16 @@
                     <p>Purple urchins strip a kelp forest and then sit in the barrens they made, starving, with gonads too small to sell. If you can fatten those animals in tanks, removing them stops being a cost centre and starts being a fishery. Two experiments test whether that works, run end to end from hypothesis through manuscript. Related work looks at eelgrass (<em>Zostera marina</em>) as a cornerstone for California aquaculture and blue carbon.</p>
                 </section>
                 <figure class="rp-plate rp-plate--wide">
-                    <img src="assets/panels/aquaculture-facility.avif" alt="The aquaculture facility at Moss Landing, between two rows of culture tanks" decoding="async">
+                    <img src="assets/panels/aquaculture-facility.avif" alt="The aquaculture facility at Moss Landing, between two rows of culture tanks" width="1100" height="1955" loading="lazy" decoding="async">
                     <figcaption><span class="rp-fignum">Figure 1</span>The facility at Moss Landing. Both experiments run down these two rows.</figcaption>
                 </figure>
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/urchin-tank.avif" alt="Overhead view of a purple urchin culture tank" decoding="async">
+                            <img src="assets/panels/urchin-tank.avif" alt="Overhead view of a purple urchin culture tank" width="1100" height="825" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 2</span>A density treatment tank. Every animal in it is a data point on survival and gonad index.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Experiment one: stocking density</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <p>How many urchins can share a tank before gonad development and survival suffer? The answer sets the economics of the whole idea.</p>
@@ -805,10 +805,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/urchin-dissection.avif" alt="The lab team dissecting urchins to assess gonad development" decoding="async">
+                            <img src="assets/panels/urchin-dissection.avif" alt="The lab team dissecting urchins to assess gonad development" width="1100" height="825" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 3</span>Dissection and gonad scoring, the measurement the whole experiment turns on.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Experiment two: finishing feed</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <p>Whether a short finishing diet can push roe from starved to market grade, assessed by Texture Profile Analysis alongside carotenoid application and pellet processing.</p>
@@ -817,10 +817,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/bunch of purple urchins.avif" alt="A dense cluster of purple sea urchins" decoding="async">
+                            <img src="assets/bunch of purple urchins.avif" alt="A dense cluster of purple sea urchins" width="480" height="360" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 4</span><em>Strongylocentrotus purpuratus</em> at barrens density, the condition the work starts from.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Study animals</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <p><em>Strongylocentrotus purpuratus</em>, collected from barrens where they have grazed the kelp down and stalled at low gonad index.</p>
@@ -835,21 +835,24 @@
                         <li>Sambold, D., &amp; Gardner, L. Examining Finishing Feed Applications for Purple Urchin (<em>Strongylocentrotus purpuratus</em>) Roe Enhancement. <em>In review.</em></li>
                     </ol>
                 </section>
-                <section class="rp-block">
+                <section class="rp-block rp-block--gallery">
                     <h4>Presentations</h4>
-                    <div class="rp-pres">
-                        <div class="pres-embed">
-                            <h5>Aquaculture America: Carotenoid Application &amp; Pellet Processing <span class="pres-date">February 2026</span></h5>
-                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1Nwos3ypT35YX3H3rUV2GQ7u2_vwrguo2jR4b6yTR0O8/embed?start=false&loop=false&delayms=3000" data-embed-title="Aquaculture America: Optimizing Urchin Aquaculture, Carotenoid Application and Pellet Processing"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                    <div class="pres-gallery">
+                        <div class="pres-stage">
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1Nwos3ypT35YX3H3rUV2GQ7u2_vwrguo2jR4b6yTR0O8/embed?start=false&loop=false&delayms=3000" data-embed-title="Aquaculture America: Optimizing Urchin Aquaculture, Carotenoid Application and Pellet Processing" aria-label="Open Aquaculture America: Optimizing Urchin Aquaculture, Carotenoid Application and Pellet Processing"><img class="pres-shot" src="assets/pres/aquaculture-1.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Open</span></button>
+                            <p class="pres-caption"><span class="pres-caption-title">Aquaculture America: Carotenoid Application &amp; Pellet Processing</span><span class="pres-date">February 2026</span></p>
                         </div>
-                        <div class="pres-embed">
-                            <h5>Aquaculture America: Finishing Feed for Roe Enhancement <span class="pres-date">February 2026</span></h5>
-                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1t-dCpJUjdFiUsrBt20CfH7SAqe_diBm5zpX82PWTItE/embed?start=false&loop=false&delayms=3000" data-embed-title="Aquaculture America: Examining Finishing Feed Applications for Purple Urchin Roe Enhancement"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
-                        </div>
-                        <div class="pres-embed">
-                            <h5>Eelgrass: A Cornerstone for California Aquaculture &amp; Blue Carbon <span class="pres-date">Spring 2025</span></h5>
-                            <button type="button" class="pres-facade" data-embed="https://drive.google.com/file/d/1OeJPpiUWOLWpTIKoe0ZOAYprLbZe2TdC/preview" data-embed-title="Eelgrass, Zostera marina: A Cornerstone for California Aquaculture and Blue Carbon"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
-                        </div>
+                        <ul class="pres-strip">
+                            <li>
+                                <button type="button" class="pres-thumb is-active" aria-pressed="true" data-embed="https://docs.google.com/presentation/d/1Nwos3ypT35YX3H3rUV2GQ7u2_vwrguo2jR4b6yTR0O8/embed?start=false&loop=false&delayms=3000" data-embed-title="Aquaculture America: Optimizing Urchin Aquaculture, Carotenoid Application and Pellet Processing" data-shot="assets/pres/aquaculture-1.avif" data-title="Aquaculture America: Carotenoid Application &amp;amp; Pellet Processing" data-date="February 2026"><img src="assets/pres/aquaculture-1.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-thumb-label">Aquaculture America: Carotenoid Application &amp; Pellet Processing</span></button>
+                            </li>
+                            <li>
+                                <button type="button" class="pres-thumb" aria-pressed="false" data-embed="https://docs.google.com/presentation/d/1t-dCpJUjdFiUsrBt20CfH7SAqe_diBm5zpX82PWTItE/embed?start=false&loop=false&delayms=3000" data-embed-title="Aquaculture America: Examining Finishing Feed Applications for Purple Urchin Roe Enhancement" data-shot="assets/pres/aquaculture-2.avif" data-title="Aquaculture America: Finishing Feed for Roe Enhancement" data-date="February 2026"><img src="assets/pres/aquaculture-2.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-thumb-label">Aquaculture America: Finishing Feed for Roe Enhancement</span></button>
+                            </li>
+                            <li>
+                                <button type="button" class="pres-thumb" aria-pressed="false" data-embed="https://drive.google.com/file/d/1OeJPpiUWOLWpTIKoe0ZOAYprLbZe2TdC/preview" data-embed-title="Eelgrass, Zostera marina: A Cornerstone for California Aquaculture and Blue Carbon" data-shot="assets/pres/aquaculture-3.avif" data-title="Eelgrass: A Cornerstone for California Aquaculture &amp;amp; Blue Carbon" data-date="Spring 2025"><img src="assets/pres/aquaculture-3.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-thumb-label">Eelgrass: A Cornerstone for California Aquaculture &amp; Blue Carbon</span></button>
+                            </li>
+                        </ul>
                     </div>
                 </section>
                 <div class="rp-tags">
@@ -863,7 +866,8 @@
 
         <template data-panel="jue">
             <article class="rp rp--paper">
-                <header class="rp-head">
+                <header class="rp-head rp-head--data">
+                    <img class="rp-cover" src="assets/panels/tecan-degradation-ranking.avif" alt="" aria-hidden="true" decoding="async">
                     <p class="rp-org">Jue Lab, CSUMB</p>
                     <h3 class="rp-title">Microbial Bioremediation</h3>
                     <p class="rp-byline">Research Assistant &middot; Mentor: Dr. Nathaniel Jue</p>
@@ -871,34 +875,38 @@
                 </header>
                 <section class="rp-abstract">
                     <h4>Abstract</h4>
-                    <p>Ninety-two bacterial strains, four experimental groups, and one question: will any of them eat a pesticide. The real question underneath is which strains metabolize the compound rather than merely tolerating it, and how confident that call can be given how noisy plate reader data is. Growth curves come off the reader by the thousand, so the analysis had to be automated before the biology could be answered at all.</p>
+                    <p>92 bacterial strains across 6 experimental groups run by 3 operators, and one question: will any of them eat a pesticide. The real question underneath is which strains metabolize the compound rather than merely tolerating it, and how confident that call can be given how noisy plate reader data is. Growth curves come off the reader by the thousand, so the analysis had to be automated before the biology could be answered at all.</p>
                 </section>
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/tecan-classification-summary.png" alt="Growth curve classification summary across bacterial strains" decoding="async">
-                            <figcaption><span class="rp-fignum">Figure 1</span>Curve quality screened per strain, so a bad well never reaches the biology.</figcaption>
+                            <img src="assets/panels/tecan-degradation-ranking.avif" alt="The twenty strongest pesticide-degrading candidates ranked by degradation capacity, with confidence intervals, coloured by pesticide" width="1100" height="870" loading="lazy" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 1</span>The answer, on real plates: the twenty best candidates across five pesticides, ranked by growth rate times yield and attenuated by how strongly the compound inhibits them.</figcaption>
                         </figure>
-                        <details class="rp-fold">
-                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Analysis</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">What the plates said</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
-                                    <li>Modified Gompertz growth modeling with Haldane substrate inhibition kinetics</li>
-                                    <li>A classifier that screens curve quality automatically instead of by eye</li>
-                                    <li>Bayesian hierarchical modeling and bootstrap confidence intervals over strain-level estimates</li>
+                                    <li>161 averaged growth curves fitted with a modified Gompertz model, then ranked by degradation capacity: growth rate times yield, attenuated by the substrate inhibition constant</li>
+                                    <li>A Haldane inhibition model fitted alongside Gompertz and compared by AIC, so inhibition is tested rather than assumed</li>
+                                    <li>Bayesian hierarchical modeling with partial pooling and bootstrap confidence intervals over strain-level estimates</li>
                                 </ul>
                             </div>
                         </details>
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/tecan-confusion-matrix.png" alt="Confusion matrix for the automated curve quality classifier" decoding="async">
-                            <figcaption><span class="rp-fignum">Figure 2</span>Classifier performance against synthetic curves with known ground truth.</figcaption>
+                            <img src="assets/tecan-confusion-matrix.png" alt="Confusion matrix for the automated curve quality classifier, scored against synthetic curves with known ground truth" width="923" height="887" loading="lazy" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 2</span>Classifier performance against the synthetic suite, where the true grade of every curve is known. Synthetic is how the grader was trained and measured; the ranking above is what it was then pointed at.</figcaption>
                         </figure>
-                        <details class="rp-fold">
-                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Validation</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Trusting the call</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
-                                <p>The pipeline was validated against 480 synthetic curves with known ground truth before any real plate was scored, so a wrong answer would show up as a wrong answer.</p>
+                                <ul>
+                                    <li>Scoring 161 curves by eye is slow and subjective, so a two-stage classifier grades each one good, borderline or bad before it reaches the biology</li>
+                                    <li>Trained on 480 synthetic curves with known ground truth plus 85 audited real ones, at a 70/30 held-out split, reaching 99.5%</li>
+                                    <li>Then checked against an independent 555-curve synthetic suite on a separate seed: 98.7%, with no data leakage</li>
+                                </ul>
                             </div>
                         </details>
                     </section>
@@ -918,6 +926,7 @@
         <template data-panel="relay">
             <article class="rp rp--program">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/relay-station-sunset.avif" alt="" aria-hidden="true" decoding="async" style="object-position:50% 45%">
                     <p class="rp-org">Galápagos &amp; California</p>
                     <h3 class="rp-title">Low-Cost VHF Relay Stations</h3>
                     <p class="rp-byline">Design, field deployment, and training</p>
@@ -936,10 +945,10 @@
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/relay-station-sunset.avif" alt="A relay station deployed in a coastal marsh at sunset" decoding="async">
+                            <img src="assets/relay-station-sunset.avif" alt="A relay station deployed in a coastal marsh at sunset" width="646" height="798" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 1</span>A station on site. Everything above the waterline was assembled from parts under $100.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">What the station is</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -952,10 +961,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/relay-range-map.png" alt="Map of measured detection range around a deployed relay station" decoding="async">
+                            <img src="assets/relay-range-map.png" alt="Map of measured detection range around a deployed relay station" width="1600" height="1556" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 2</span>Measured detection range around a deployed station.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Deployments</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -967,10 +976,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/relay-antenna-analysis.avif" alt="Antenna performance analysis from field testing" decoding="async">
+                            <img src="assets/relay-antenna-analysis.avif" alt="Antenna performance analysis from field testing" width="1600" height="792" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 3</span>Antenna analysis from field testing.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Tuning in the field</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <p>Antenna geometry and gain measured on site rather than assumed, because a station is only as good as the day it was set up</p>
@@ -979,10 +988,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/relay-snr-comparison.png" alt="Spectrograms showing how tag pulses appear at strong, medium, weak and very weak signal strengths" decoding="async">
+                            <img src="assets/relay-snr-comparison.png" alt="Spectrograms showing how tag pulses appear at strong, medium, weak and very weak signal strengths" width="1600" height="1132" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 4</span>How a tag pulse actually looks at four signal strengths, which is what the detection rate is measured against.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">4</span><span class="rp-fold-title">What it detects</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -994,10 +1003,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/relay-detailed-verification.avif" alt="Detection verification output from a deployed relay station" decoding="async">
+                            <img src="assets/relay-detailed-verification.avif" alt="Detection verification output from a deployed relay station" width="1600" height="1386" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 5</span>Verification from a student-built unit. The test is whether it detects a real tag, not whether it powers on.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">5</span><span class="rp-fold-title">Teaching it out</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -1008,11 +1017,11 @@
                         </details>
                     </section>
                 </div>
-                <section class="rp-block">
+                <section class="rp-block rp-block--gallery">
                     <h4>Programme overview</h4>
-                    <div class="rp-pres">
-                        <div class="pres-embed">
-                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1Ghkgao_iwUbkBy0n7kmHcbhW50ed88gM/embed?start=false&loop=false&delayms=3000" data-embed-title="Relay Station Training Program overview"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Load presentation</span></button>
+                    <div class="pres-gallery">
+                        <div class="pres-stage">
+                            <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1Ghkgao_iwUbkBy0n7kmHcbhW50ed88gM/embed?start=false&loop=false&delayms=3000" data-embed-title="Relay Station Training Program overview" aria-label="Open Relay Station Training Program overview"><img class="pres-shot" src="assets/pres/relay-1.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Open</span></button>
                         </div>
                     </div>
                 </section>
@@ -1032,6 +1041,7 @@
         <template data-panel="southafrica">
             <article class="rp rp--field">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/On a boat in SA.avif" alt="" aria-hidden="true" decoding="async">
                     <p class="rp-org">South African coastal waters</p>
                     <h3 class="rp-title">Research &amp; Diver Development Program</h3>
                     <p class="rp-byline">Survey diver and vessel crew</p>
@@ -1048,16 +1058,16 @@
                     <p>Six weeks of working dives on a coastline none of us knew, running whatever survey the day called for. It is the clearest lesson I have had in how much of marine science is method discipline under conditions you did not choose.</p>
                 </section>
                 <figure class="rp-plate rp-plate--wide">
-                    <img src="assets/On a boat in SA.avif" alt="Working on a research boat off the South African coast" decoding="async">
+                    <img src="assets/On a boat in SA.avif" alt="Working on a research boat off the South African coast" width="480" height="360" loading="lazy" decoding="async">
                     <figcaption><span class="rp-fignum">Plate 1</span>The office for six weeks. Whatever survey the day called for, run off this deck.</figcaption>
                 </figure>
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/sa-divegear.avif" alt="In dive gear on the boat before a survey dive" decoding="async">
+                            <img src="assets/panels/sa-divegear.avif" alt="In dive gear on the boat before a survey dive" width="1100" height="1467" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Plate 2</span>Kitted up before a survey dive.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Subtidal surveys</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -1070,10 +1080,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/Me sampling for microplastics in SA.avif" alt="Sampling coastal water for microplastics" decoding="async">
+                            <img src="assets/Me sampling for microplastics in SA.avif" alt="Sampling coastal water for microplastics" width="978" height="804" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Plate 3</span>Microplastic sampling from the surface.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Video &amp; sampling</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -1086,10 +1096,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/Me doing trapping.avif" alt="Setting traps during field sampling" decoding="async">
+                            <img src="assets/Me doing trapping.avif" alt="Setting traps during field sampling" width="768" height="1024" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Plate 4</span>Setting traps. Gear handling at sea is most of the day.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Vessel operations</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -1112,6 +1122,7 @@
         <template data-panel="fieldops">
             <article class="rp rp--field">
                 <header class="rp-head">
+                    <img class="rp-cover" src="assets/panels/fieldops.avif" alt="" aria-hidden="true" decoding="async">
                     <p class="rp-org">California &amp; Baja California, Mexico</p>
                     <h3 class="rp-title">Field Operations &amp; Scientific Diving</h3>
                     <p class="rp-dateline">2024 – Present</p>
@@ -1127,16 +1138,16 @@
                     <p>The hours behind every other bubble on this page. Diving and vessel work are not a separate interest; they are what makes the rest of the research possible on the days the weather cooperates.</p>
                 </section>
                 <figure class="rp-plate rp-plate--wide">
-                    <img src="assets/panels/portrait-ocean.avif" alt="On the coast between dives" decoding="async">
+                    <img src="assets/panels/portrait-ocean.avif" alt="On the coast between dives" width="1100" height="733" loading="lazy" decoding="async">
                     <figcaption><span class="rp-fignum">Plate 1</span>Between dives. Most of this work is weather, logistics and gear that has to come back.</figcaption>
                 </figure>
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/fieldops.avif" alt="Working a survey dive in a California kelp forest" decoding="async">
+                            <img src="assets/panels/fieldops.avif" alt="Working a survey dive in a California kelp forest" width="1100" height="767" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Plate 2</span>Kelp forest survey work at San Carlos Beach.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Own dive study</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <p>Designed and conducted “Thermal Thresholds: The Role of Temperature Fluctuations in Shaping Kelp Forest Health at San Carlos Beach, Monterey, CA” as the research component of AAUS certification.</p>
@@ -1145,10 +1156,10 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/scripps.avif" alt="Coastal research site at La Jolla" decoding="async">
+                            <img src="assets/panels/scripps.avif" alt="Coastal research site at La Jolla" width="1100" height="715" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Plate 3</span>Working coastline in southern California.</figcaption>
                         </figure>
-                        <details class="rp-fold">
+                        <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Operational work</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
@@ -2593,8 +2604,8 @@
                 <h4>Research Assistant, Jue Lab, CSUMB</h4>
                 <p class="resume-meta">Spring 2025 – Present | Mentor: Dr. Nathaniel Jue</p>
                 <ul>
-                    <li>Built a 6-stage automated analysis pipeline for TECAN plate reader data covering 92 bacterial strains across 4 experimental groups, assessing pesticide bioremediation potential.</li>
-                    <li>Implemented modified Gompertz growth modeling, Haldane substrate inhibition kinetics, a HistGBT classifier for automated curve quality screening, and Bayesian hierarchical modeling with bootstrap confidence intervals; validated the full pipeline against 480 synthetic ground-truth curves.</li>
+                    <li>Built a 11-stage automated analysis pipeline for TECAN plate reader data covering 92 bacterial strains across 6 experimental groups, assessing pesticide bioremediation potential.</li>
+                    <li>Implemented modified Gompertz growth modeling, Haldane substrate inhibition kinetics, a HistGBT classifier for automated curve quality screening, and Bayesian hierarchical modeling with bootstrap confidence intervals; trained the curve-quality classifier on 480 synthetic and 85 audited real curves, then validated it against an independent 555-curve synthetic suite at 98.7% accuracy.</li>
                 </ul>
             </div>
             <div class="resume-item">
@@ -2745,6 +2756,6 @@
     </footer>
 
     <!-- JavaScript (ES Modules) -->
-    <script type="module" src="js/app.js?v=20260816u"></script>
+    <script type="module" src="js/app.js?v=20260818i"></script>
 </body>
 </html>

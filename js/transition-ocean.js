@@ -1,8 +1,14 @@
 // ============================================
-// Ocean Path: Wave clip-path + Canvas Bubble System
+// Ocean Path: Wave clip-path + the water behind the research bubbles
 // ============================================
+//
+// The background is a WebGL volume (js/ocean-water.js): sharks making runs
+// through scattered bubbles. The flat canvas bubbles below are what runs if
+// that will not start — no WebGL, or the context is refused.
 
 import { randomRange, prefersReducedMotion } from './utils.js';
+
+let water = null;         // the 3D module, once it has loaded and started
 
 let bubblePool = [];
 let bubbleAnimId = null;
@@ -55,7 +61,11 @@ export function startBubbles() {
   bubbleCanvas = document.getElementById('bubble-canvas');
   if (!bubbleCanvas) return;
 
+  // Null if something already claimed the canvas for WebGL, which is possible
+  // if the 3D water got a context and then failed later on
   bubbleCtx = bubbleCanvas.getContext('2d');
+  if (!bubbleCtx) return;
+
   resizeBubbleCanvas();
   window.addEventListener('resize', resizeBubbleCanvas);
 
@@ -65,6 +75,8 @@ export function startBubbles() {
   for (let i = 0; i < count; i++) {
     bubblePool.push(new Bubble(bubbleCanvas.width, bubbleCanvas.height));
   }
+
+  bubbleCanvas.classList.add('is-lit');
 
   function animate() {
     bubbleCtx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
@@ -86,11 +98,35 @@ export function stopBubbles() {
 }
 
 // Start/Stop (called by app.js when path is active)
-export function start() {
+export async function start() {
+  if (water) {
+    water.resume();
+    return;
+  }
+
+  const canvas = document.getElementById('bubble-canvas');
+  // The 2D fallback needs the same canvas, so WebGL has to get first refusal:
+  // a canvas that has handed out a 2D context can never hand out a WebGL one.
+  if (canvas && window.WebGLRenderingContext) {
+    try {
+      const mod = await import('./ocean-water.js?v=20260818i');
+      if (await mod.initOceanWater(canvas)) {
+        water = mod;
+        return;
+      }
+    } catch (err) {
+      console.warn('Ocean water: falling back to flat bubbles.', err);
+    }
+  }
+
   startBubbles();
 }
 
 export function stop() {
+  if (water) {
+    water.pause();
+    return;
+  }
   stopBubbles();
 }
 

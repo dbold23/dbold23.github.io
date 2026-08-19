@@ -5,10 +5,13 @@ Bubbles are circular and render at roughly 200-230 CSS px, so 440x440 covers
 2x displays. Sources are the existing full-size assets; output lands in
 assets/bubbles/ so the originals stay untouched.
 
-Usage: python3 tools/build_bubble_thumbs.py
+Usage: python3 tools/build_bubble_thumbs.py [name ...]
+With no arguments every thumbnail is rebuilt; naming one or more
+bubbles rebuilds only those.
 """
 
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -42,6 +45,17 @@ BOX_JOBS = {
     # The lab logo sits off centre in its own file, with black padding around it.
     # Crop to the artwork itself so it lands centred in the circle.
     "jue": (ASSETS / "jue-lab-logo.avif", (28, 23, 477, 472)),
+    # The re-ID bubble used to be a zoom into the match figure — two 131x45 fin
+    # crops blown up to 440, which read as an abstract dark wedge rather than an
+    # animal. This is a catalogue frame instead: a harbour porpoise broadside,
+    # dorsal fin clear of the water, which is the feature the matcher keys on.
+    # Square crop is height-limited (2474x1252), taken right of centre so the fin
+    # sits inside the circle and the label scrim lands on water, not on the back.
+    "porpoise": (
+        Path("/Volumes/External Dive 2TB/projects/marine-cv/porpoise-id/data"
+             "/raw_images/Pirate/2021/060121D_Pirate ID_L_Burrows_2711CE.JPG"),
+        (513, 0, 1765, 1252),
+    ),
 }
 
 
@@ -81,14 +95,28 @@ def main():
     OUT.mkdir(exist_ok=True)
     written = []
 
+    # Named on the command line rebuilds just those. Some sources live outside
+    # the repo, so rebuilding one bubble should not require every other one's
+    # source to still be sitting where it was.
+    only = set(sys.argv[1:])
+    wanted = (lambda n: not only or n in only)
+
     for name, (src, focus, zoom) in JOBS.items():
+        if not wanted(name):
+            continue
         written.append(save(square(Image.open(ASSETS / src), focus, zoom), name))
 
     for name, (src, box) in BOX_JOBS.items():
+        if not wanted(name):
+            continue
         im = Image.open(src).convert("RGB")
         written.append(save(im.crop(box).resize((SIZE, SIZE), Image.LANCZOS), name))
 
     name, video, frame, focus, zoom = VIDEO_JOB
+    if not wanted(name):
+        for p in sorted(written):
+            print(f"{p.relative_to(ROOT)}: {p.stat().st_size:,} bytes")
+        return
     with tempfile.TemporaryDirectory() as tmp:
         still = Path(tmp) / "frame.png"
         subprocess.run(

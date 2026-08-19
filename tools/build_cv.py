@@ -169,7 +169,9 @@ SECTIONS = [
                     f"bioremediation potential.",
                     "Implemented modified Gompertz growth modeling, Haldane substrate inhibition kinetics, a HistGBT classifier "
                     "for automated curve quality screening, and Bayesian hierarchical modeling with bootstrap confidence "
-                    f"intervals; validated the full pipeline against {JUE['synthetic_curves']} synthetic ground-truth curves.",
+                    f"intervals; trained the curve-quality classifier on {JUE['train_synthetic']} synthetic and "
+                    f"{JUE['train_real']} audited real curves, then validated it against an independent "
+                    f"{JUE['validation_curves']}-curve synthetic suite at {JUE['validation_accuracy']} accuracy.",
                 ],
             },
             {

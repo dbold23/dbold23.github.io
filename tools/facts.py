@@ -83,11 +83,27 @@ RELAY = {
 # ------------------------------------------------------------------ jue -----
 
 JUE = {
-    # Parse, Process, Analyze, Haldane, Advanced Stats, Plot & Validate
-    'pipeline_stages': '6',
+    # All reconciled against TECAN_growth_curves/README.md in the project repo.
+    # run_full_pipeline.py is the "Master orchestrator (11-step pipeline)"
+    # (README.md:110); the old 6 counted analysis stages and skipped the
+    # preprocessing, inter-operator and genomic steps either side of them.
+    'pipeline_stages': '11',
     'strains': '92',
-    'groups': '4',
-    'synthetic_curves': '480',
+    # README.md:62 — "161 averaged curves, 6 groups, 3 operators, 2018-2025".
+    # Groups 1-4 are one operator, 5 and 6 are the other two; the old 4 counted
+    # only the first operator's.
+    'groups': '6',
+    'curves': '161',
+    'operators': '3',
+    # README.md:58 — 480 synthetic + 85 real audited curves are the TRAINING
+    # set, at a 70/30 held-out split. The independent validation is a separate
+    # 555-curve suite on a different seed (README.md:83). Calling 480 the
+    # validation set, as this file used to, swapped the two.
+    'train_synthetic': '480',
+    'train_real': '85',
+    'validation_curves': '555',
+    'validation_accuracy': '98.7%',
+    'heldout_accuracy': '99.5%',
 }
 
 # --------------------------------------------------------------- habhub -----

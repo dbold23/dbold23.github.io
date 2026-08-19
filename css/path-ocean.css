@@ -22,7 +22,8 @@
 
 [data-active-path="ocean"] .ocean-depth-bg { display: block; }
 
-/* Bubble canvas (fixed background layer) */
+/* The water: a WebGL volume when the GPU allows it, flat canvas bubbles when
+   it does not. Either way it is a fixed backdrop that never takes a click. */
 .bubble-canvas {
   position: fixed;
   inset: 0;
@@ -31,122 +32,192 @@
   pointer-events: none;
   z-index: 1;
   display: none;
+  /* Held back until the first frame is drawn, so the scene does not appear
+     as a single black rectangle over the depth gradient */
+  opacity: 0;
+  transition: opacity 0.9s ease;
 }
 
 [data-active-path="ocean"] .bubble-canvas { display: block; }
 
-/* ---- Reef: the bubble field ---- */
+.bubble-canvas.is-lit { opacity: 1; }
+
+/* ---- The reef: nine bubbles rising through one screen of water ---- */
+/*
+   There is no heading and no grid any more. The stage is one viewport tall,
+   every bubble is absolutely placed in a lane of its own, and the whole thing
+   runs on two CSS animations per bubble — a rise that wraps, and a sway. No
+   script touches it.
+*/
 .ocean-reef {
   position: relative;
   z-index: 5;
-  width: min(92vw, 1180px);
+  width: min(94vw, 1240px);
   margin: 0 auto;
-  padding: calc(6rem + env(safe-area-inset-top, 0px)) 0 6rem;
-}
-
-.ocean-header {
-  text-align: center;
-  margin-bottom: 3.5rem;
-}
-
-.ocean-title {
-  color: var(--ocean-foam);
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  font-weight: 800;
-  margin-bottom: 0.75rem;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-
-.ocean-lede {
-  max-width: 46rem;
-  margin: 0 auto;
-  color: rgba(255,255,255,0.72);
-  font-size: clamp(0.9rem, 1.6vw, 1.02rem);
-  line-height: 1.65;
-}
-
-.ocean-lede-link {
-  font: inherit;
-  color: var(--ocean-foam);
-  background: none;
-  border: none;
   padding: 0;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(184,230,245,0.45);
 }
 
-.ocean-lede-link:hover { text-decoration-color: var(--ocean-foam); }
-
-/* ---- The field: one pod per affiliation ---- */
 .bubble-field {
-  --field-gap: clamp(1.1rem, 2.6vw, 2rem);
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
-  gap: clamp(2.5rem, 6vw, 4rem) var(--field-gap);
-  align-items: start;
-}
+  /* The lap distance has to clear the tallest bubble at both ends, or one
+     would pop out of existence at the top edge instead of leaving through it */
+  --field-h: min(calc(100svh - 7.5rem), 54rem);
+  --bubble: clamp(8.5rem, 15vw, 12rem);
 
-/* A pod claims one column per project, so a three-project lab reads as a
-   cluster and a single-project lab does not get padded out to match it */
-.pod {
-  grid-column: span var(--members, 1);
   position: relative;
-  padding-top: 0.35rem;
-}
-
-.pod-head {
-  margin-bottom: clamp(0.9rem, 2vw, 1.35rem);
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(184, 230, 245, 0.14);
-}
-
-.pod-name {
-  margin: 0;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--ocean-foam);
-}
-
-.pod-where {
-  margin: 0.15rem 0 0;
-  font-size: 0.74rem;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.pod-bubbles {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
-  gap: var(--field-gap);
+  height: var(--field-h);
+  min-height: 26rem;
+  margin: calc(5.5rem + env(safe-area-inset-top, 0px)) auto 4rem;
   list-style: none;
-  margin: 0;
   padding: 0;
-}
 
-/* Nudge alternate bubbles so a cluster drifts rather than marching in a line.
-   Margin, not transform: the bob animation owns transform. */
-@media (min-width: 641px) {
-  .pod-bubbles > .bubble-cell:nth-child(even) { margin-top: clamp(0.9rem, 2.5vw, 1.9rem); }
-  .pod-bubbles > .bubble-cell:nth-child(3n)   { margin-top: clamp(0.3rem, 1vw, 0.8rem); }
+  /* Bubbles dissolve at the surface rather than sliding under the nav pill,
+     and gather out of the dark at the bottom instead of appearing all at once */
+  -webkit-mask-image: linear-gradient(
+    to bottom, transparent 0, #000 13%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(
+    to bottom, transparent 0, #000 13%, #000 93%, transparent 100%);
+  /* Masks tile by default. Without this the gradient repeats above the stage,
+     so a bubble fades out at the surface and then fades straight back in and
+     rides across the nav pill at full opacity before wrapping. */
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 
 .bubble-cell {
-  animation: bubble-bob var(--bob-dur, 7s) ease-in-out infinite;
-  animation-delay: var(--bob-delay, 0s);
+  --width: calc(var(--bubble) * var(--scale, 1));
+
+  position: absolute;
+  top: 0;
+  /* The lane is a fraction of the width the bubble can actually travel across,
+     so lane 0 and lane 1 both land fully inside the stage */
+  left: calc((100% - var(--width)) * var(--lane, 0.5));
+  width: var(--width);
+  /* Bigger reads as nearer, so overlap is depth rather than markup order */
+  z-index: var(--z, 100);
+  animation: bubble-rise var(--rise-dur, 46s) linear infinite var(--rise-delay, 0s);
+  will-change: transform;
 }
 
-@keyframes bubble-bob {
-  0%, 100% { transform: translateY(0) }
-  50%      { transform: translateY(-11px) }
+@keyframes bubble-rise {
+  from { transform: translate3d(0, var(--field-h), 0); }
+  to   { transform: translate3d(0, calc(var(--width) * -1.15), 0); }
 }
 
-/* Hovering a pod lifts its whole cluster and settles the others back */
-.bubble-field:has(.pod:hover) .pod:not(:hover) { opacity: 0.55; }
-.bubble-field .pod { transition: opacity 0.35s ease; }
+/* Sway lives on its own element: the button below owns transform for hover,
+   and the cell above owns it for the rise */
+.bubble-float {
+  /* Anchor for the label, which hangs above the disc */
+  position: relative;
+  animation: bubble-sway var(--sway-dur, 11s) ease-in-out infinite alternate var(--sway-delay, 0s);
+}
+
+@keyframes bubble-sway {
+  from { transform: translate3d(calc(var(--sway) * -1), 0, 0) rotate(-1.6deg); }
+  to   { transform: translate3d(var(--sway), 0, 0) rotate(1.6deg); }
+}
+
+/* Reaching for a bubble stops that bubble. Everything else keeps drifting, so
+   the field stays alive while the one being aimed at holds still. */
+@media (hover: hover) and (pointer: fine) {
+  /* Guarded: a touch browser keeps :hover on the last thing tapped, which
+     would strand that bubble mid-water for the rest of the visit */
+  .bubble-cell:hover,
+  .bubble-cell:hover .bubble-float {
+    animation-play-state: paused;
+  }
+}
+
+/* :focus-visible, not :focus-within — closing a panel hands focus back to the
+   bubble it came from, and :focus-within would latch there and freeze it for
+   good. This way a mouse user gets their bubble back and a keyboard user keeps
+   the pause they actually need. */
+.bubble-cell:has(:focus-visible),
+.bubble-cell:has(:focus-visible) .bubble-float {
+  animation-play-state: paused;
+}
+
+/* And an open panel stops all of it. The morph measures the bubble's rect on
+   the way in and again on the way out; a bubble that drifted in between would
+   collapse back onto empty water. */
+#path-ocean:has(#bubble-stage:not([hidden])) .bubble-cell,
+#path-ocean:has(#bubble-stage:not([hidden])) .bubble-float {
+  animation-play-state: paused;
+}
+
+/* That rule is load-bearing, so a browser without :has() must not drift at
+   all — it would get bubbles that never stop and a morph aimed at coordinates
+   they have already left. It gets the still layout instead. */
+@supports not selector(:has(*)) {
+  .bubble-cell,
+  .bubble-float { animation: none; }
+}
+
+/* ---- Stopping the drift ----
+   Automatically-moving content needs a way to stop it (WCAG 2.2.2), and this
+   page has nothing else on it to look at instead. The state lives as an
+   attribute on the path so it can reuse the very same play-state rules the
+   hover and open-panel pauses use — one mechanism, so a bubble always stops
+   exactly where it is rather than jumping. */
+.drift-toggle {
+  position: fixed;
+  right: clamp(0.9rem, 2.5vw, 1.6rem);
+  bottom: calc(clamp(0.9rem, 2.5vw, 1.6rem) + env(safe-area-inset-bottom, 0px));
+  z-index: 6;
+  display: none;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.36rem 0.72rem 0.36rem 0.6rem;
+  border: 1px solid rgba(184, 230, 245, 0.22);
+  border-radius: 999px;
+  background: rgba(4, 18, 48, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(184, 230, 245, 0.62);
+  font: inherit;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+[data-active-path="ocean"] .drift-toggle { display: inline-flex; }
+
+.drift-toggle:hover,
+.drift-toggle:focus-visible {
+  color: var(--ocean-foam);
+  border-color: rgba(184, 230, 245, 0.5);
+  background: rgba(4, 18, 48, 0.72);
+}
+
+.drift-toggle:focus-visible {
+  outline: 2px solid var(--ocean-foam);
+  outline-offset: 3px;
+}
+
+/* Two bars while things are moving, a triangle once they have stopped */
+.drift-glyph {
+  width: 0.62rem;
+  height: 0.62rem;
+  background: currentColor;
+  clip-path: polygon(0 0, 38% 0, 38% 100%, 0 100%, 0 0, 62% 0, 100% 0, 100% 100%, 62% 100%);
+}
+
+#path-ocean[data-drift="off"] .drift-glyph {
+  clip-path: polygon(6% 0, 100% 50%, 6% 100%);
+}
+
+#path-ocean[data-drift="off"] .bubble-cell,
+#path-ocean[data-drift="off"] .bubble-float {
+  animation-play-state: paused;
+}
+
+/* Under a reduced-motion preference nothing is drifting in the first place,
+   so a control that stops the drift would be a button that does nothing */
+@media (prefers-reduced-motion: reduce) {
+  .drift-toggle { display: none !important; }
+}
 
 /* ---- A single bubble ---- */
 .research-bubble {
@@ -174,8 +245,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Sits back so the label stays readable, comes forward on hover */
-  filter: saturate(0.92) brightness(0.82);
+  /* No longer carrying text, so it can sit further forward than it used to */
+  filter: saturate(0.96) brightness(0.92);
   transform: scale(1.02);
   transition: filter 0.45s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -189,22 +260,42 @@
   background:
     radial-gradient(circle at 30% 24%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.10) 22%, transparent 46%),
     radial-gradient(circle at 72% 78%, rgba(61,157,217,0.30) 0%, transparent 52%),
-    linear-gradient(to top, rgba(4, 18, 48, 0.92) 0%, rgba(4, 18, 48, 0.62) 24%, rgba(4, 18, 48, 0.22) 48%, transparent 70%);
+    linear-gradient(to top, rgba(4, 18, 48, 0.6) 0%, rgba(4, 18, 48, 0.34) 28%, transparent 64%);
 }
 
+/* Set above the bubble, not written across it. Absolute so it costs the cell no
+   height: the rise keyframe travels a distance measured from --field-h and the
+   bubble's own width, and a label in flow would push every disc off its lane. */
 .bubble-name {
   position: absolute;
-  inset: auto 0 0 0;
+  left: 50%;
+  bottom: calc(100% + 0.55rem);
   z-index: 2;
-  /* Generous side padding: text must stay inside the circle, not the box */
-  padding: 0 15% 14%;
+  width: max-content;
+  /* Wider than the disc reads as a caption over the water; much wider starts
+     colliding with the neighbouring lane */
+  max-width: min(15rem, 170%);
+  margin: 0;
+  transform: translateX(-50%);
   text-align: center;
-  font-size: clamp(0.76rem, 1.3vw, 0.9rem);
-  font-weight: 700;
+  font-family: var(--font-serif);
+  font-size: clamp(0.84rem, 0.74rem + 0.45vw, 1.05rem);
+  font-weight: 500;
   line-height: 1.25;
+  letter-spacing: -0.008em;
   text-wrap: balance;
-  color: var(--white);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  color: #e8f5fc;
+  text-shadow: 0 1px 3px rgba(2, 10, 28, 0.92), 0 2px 16px rgba(2, 10, 28, 0.7);
+  pointer-events: none;
+  transition: color 0.35s ease;
+}
+
+/* The label belongs to the bubble under it, so it lights with it. It sits
+   before the button in the DOM, which is why this reaches down from the float
+   rather than across from the button. */
+.bubble-float:has(.research-bubble:hover) .bubble-name,
+.bubble-float:has(.research-bubble:focus-visible) .bubble-name {
+  color: var(--ocean-foam);
 }
 
 /* Hover / focus */
@@ -232,7 +323,33 @@
 .research-bubble.is-open { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .bubble-cell { animation: none; }
+  /* Nothing drifts. The absolute lanes would stack all nine at the top of the
+     stage, so the field falls back to an ordinary scattered grid — still nine
+     bubbles, just standing still. */
+  .bubble-field {
+    display: grid;
+    /* Nine projects, so three rows of three — auto-fit would spread them to
+       seven across with two orphans underneath */
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.2rem, 3vw, 2.4rem);
+    max-width: 46rem;
+    height: auto;
+    min-height: 0;
+    margin-inline: auto;
+    /* The surface fade only makes sense on something that rises */
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .bubble-cell {
+    position: static;
+    width: auto;
+    animation: none;
+  }
+  .bubble-float { animation: none; }
+  /* Keep it from reading as a strict grid, without moving anything */
+  .bubble-cell:nth-child(even) { margin-top: clamp(0.8rem, 2.2vw, 1.8rem); }
+  .bubble-cell:nth-child(3n)   { margin-top: clamp(0.3rem, 1vw, 0.8rem); }
+
   .research-bubble,
   .bubble-photo { transition: none; }
   .research-bubble:hover { transform: none; }
@@ -245,6 +362,19 @@
   position: fixed;
   inset: 0;
   z-index: 1200;
+
+  /* One ink palette for the reader, shared by the shell and the article */
+  --rp-ink: #061431;
+  --rp-ink-soft: #0a2044;
+  --rp-foam: var(--ocean-foam);
+  --rp-body: rgba(226, 240, 248, 0.84);
+  --rp-body-dim: rgba(226, 240, 248, 0.56);
+  --rp-rule: rgba(184, 230, 245, 0.16);
+
+  /* The reading grid: a text measure, a wider band for figures, then bleed */
+  --rp-gutter: clamp(1.15rem, 5vw, 3.25rem);
+  --rp-measure: 36rem;
+  --rp-break: 8.5rem;
 }
 
 .bubble-stage[hidden] { display: none; }
@@ -261,16 +391,17 @@
 
 .bubble-stage.is-open .bubble-stage-scrim { opacity: 1; }
 
+/* Edge to edge: the panel is the page while it is open */
 .bubble-stage-shell {
   position: absolute;
-  inset: clamp(0px, 2.5vh, 28px) clamp(0px, 2.5vw, 40px);
+  inset: 0;
   /* FLIP morph scales this box down onto the bubble it came from */
   transform-origin: 0 0;
-  border-radius: 22px;
+  border-radius: 0;
   overflow: hidden;
-  background: rgba(8, 28, 74, 0.94);
-  border: 1px solid rgba(184, 230, 245, 0.26);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  background: var(--rp-ink);
+  border: 0;
+  box-shadow: none;
 }
 
 .bubble-stage-scroll {
@@ -281,18 +412,78 @@
 }
 
 .bubble-stage-body {
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.1rem, 4vw, 3.25rem) clamp(3rem, 6vw, 4.5rem);
+  padding: 0;
   opacity: 0;
   transition: opacity 0.3s ease 0.16s;
 }
 
 .bubble-stage.is-open .bubble-stage-body { opacity: 1; }
 
+/* ---- Reading progress ---- */
+.rp-rail {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  z-index: 6;
+  background: rgba(184, 230, 245, 0.1);
+  pointer-events: none;
+}
+
+.rp-rail span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--ocean-light), var(--ocean-foam));
+}
+
+/* ---- Title bar, once the cover has scrolled away ---- */
+.rp-topbar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  padding: 0.85rem 4.5rem 0.85rem var(--rp-gutter);
+  background: rgba(6, 20, 49, 0.86);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--rp-rule);
+  transform: translateY(-102%);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.bubble-stage.is-stuck .rp-topbar { transform: none; }
+
+.rp-topbar-org {
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rp-foam);
+  white-space: nowrap;
+}
+
+.rp-topbar-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #eaf6fc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .bubble-stage-close {
   position: absolute;
   top: clamp(0.6rem, 1.6vw, 1.1rem);
   right: clamp(0.6rem, 1.6vw, 1.1rem);
-  z-index: 4;
+  z-index: 7;
   width: 46px;
   height: 46px;
   display: grid;
@@ -339,229 +530,389 @@
 @media (prefers-reduced-motion: reduce) {
   .bubble-stage-scrim,
   .bubble-stage-body { transition: none; }
+  .rp-topbar { transition: none; }
 }
 
 
 /* ============================================
-   Research panel — laid out as a short paper
+   Research panel — laid out as a magazine feature
    ============================================ */
+
+/* A full-bleed grid: prose sits on [text], figures break out to [wide],
+   the cover runs the whole width on [full]. */
 .rp {
-  color: var(--white);
-  max-width: 1080px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--rp-gutter), 1fr)
+    [wide-start] minmax(0, var(--rp-break))
+    [text-start] minmax(0, var(--rp-measure))
+    [text-end] minmax(0, var(--rp-break))
+    [wide-end] minmax(var(--rp-gutter), 1fr)
+    [full-end];
+  align-content: start;
+  row-gap: clamp(1.6rem, 3.4vw, 2.75rem);
+  max-width: none;
+  margin: 0;
+  padding: 0 0 clamp(3rem, 8vw, 5.5rem);
+  color: var(--rp-body);
+  font-size: clamp(0.97rem, 0.92rem + 0.22vw, 1.05rem);
+  line-height: 1.75;
 }
 
-/* ---- Title block ---- */
+.rp > * { grid-column: text; }
+
+.rp-head { grid-column: full; }
+
+.rp-record,
+.rp-sections,
+.rp-compare,
+.rp-plate--wide,
+.rp-quote,
+.rp-tags,
+.rp-crosslink,
+.rp-block--gallery { grid-column: wide; }
+
+/* ---- Cover ---- */
 .rp-head {
-  padding: 0 3.5rem 1.1rem 0;
-  margin-bottom: 1.75rem;
-  border-bottom: 2px solid rgba(184, 230, 245, 0.2);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: end;
+  min-height: clamp(19rem, 52vh, 30rem);
+  margin: 0 0 clamp(0.4rem, 1.5vw, 1rem);
+  padding: clamp(4rem, 12vh, 7rem) var(--rp-gutter) clamp(1.75rem, 4vw, 2.75rem);
+  border: 0;
+  overflow: hidden;
+}
+
+/* The panel's own opening photograph, softened: most of these assets are
+   about 1000px wide and this box is not, so the blur is doing real work */
+.rp-cover {
+  position: absolute;
+  inset: -4%;
+  z-index: -2;
+  /* An absolutely positioned replaced element takes its size from its own
+     intrinsic dimensions, not from the insets, so both are spelled out here
+     and the global img { max-width: 100% } has to stand down */
+  width: 108%;
+  height: 108%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 38%;
+  filter: saturate(0.78) contrast(1.04) blur(1.5px);
+}
+
+.rp-head::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  /* The vertical wash sits on top so its opaque last stop closes the seam
+     where the cover meets the page */
+  background:
+    linear-gradient(180deg,
+      rgba(4, 14, 36, 0.44) 0%,
+      rgba(5, 16, 40, 0.56) 34%,
+      rgba(6, 20, 49, 0.9) 74%,
+      var(--rp-ink) 99%),
+    radial-gradient(120% 95% at 4% 104%, rgba(10, 36, 99, 0.9), transparent 64%);
+}
+
+.rp-head--plain::after { background: var(--gradient-ocean); }
+
+/* A chart makes a good texture but a bad photograph: take it further down */
+.rp-head--data .rp-cover {
+  filter: saturate(0.5) contrast(0.9) brightness(0.42) blur(2.5px);
+}
+
+/* Cover text lines up with the figure band, not with the narrower prose */
+.rp-head > :not(.rp-cover) {
+  width: 100%;
+  max-width: calc(var(--rp-measure) + var(--rp-break) * 2);
+  margin-inline: auto;
 }
 
 .rp-org {
-  margin: 0 0 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 auto 0.9rem;
   font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(184, 230, 245, 0.6);
+  color: var(--rp-foam);
+}
+
+.rp-org::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 2.1rem;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.75;
 }
 
 .rp-title {
-  margin: 0 0 0.5rem;
-  font-size: clamp(1.45rem, 3.4vw, 2.2rem);
-  line-height: 1.15;
+  margin: 0 auto 0.85rem;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(2.05rem, 1.1rem + 4.2vw, 3.9rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: #fff;
   text-wrap: balance;
-  color: var(--ocean-foam);
+  text-shadow: 0 2px 26px rgba(2, 10, 26, 0.55);
 }
 
 .rp-byline {
-  margin: 0 0 0.15rem;
-  font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.86);
+  margin: 0 auto;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: rgba(232, 244, 250, 0.86);
 }
 
 .rp-dateline {
-  margin: 0;
-  font-size: 0.82rem;
+  margin: 0.2rem auto 0;
+  font-family: var(--font-serif);
   font-style: italic;
-  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.98rem;
+  color: rgba(232, 244, 250, 0.62);
 }
 
 /* ---- Field / programme masthead ---- */
 .rp-record {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-  gap: 0.85rem 1.5rem;
-  margin: 0 0 1.75rem;
-  padding: 1.1rem 1.25rem;
-  border-radius: 12px;
-  background: rgba(30, 95, 140, 0.16);
-  border: 1px solid rgba(184, 230, 245, 0.13);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1rem 1.75rem;
+  margin: 0;
+  padding: 1.15rem 1.4rem;
+  border: 1px solid var(--rp-rule);
+  border-left: 3px solid rgba(184, 230, 245, 0.4);
+  background: linear-gradient(180deg, rgba(30, 95, 140, 0.2), rgba(30, 95, 140, 0.08));
 }
 
 .rp-record dt {
-  font-size: 0.65rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(184, 230, 245, 0.6);
-  margin-bottom: 0.2rem;
+  color: var(--rp-foam);
 }
 
 .rp-record dd {
   margin: 0;
-  font-size: 0.88rem;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ---- Section labels ---- */
+.rp-abstract h4,
+.rp-block h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 1rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rp-foam);
+}
+
+.rp-abstract h4::after,
+.rp-block h4::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--rp-rule);
 }
 
 /* ---- Abstract ---- */
 .rp-abstract {
-  margin-bottom: 2rem;
-  padding-left: 1.1rem;
-  border-left: 3px solid rgba(184, 230, 245, 0.35);
-}
-
-.rp-abstract h4 {
-  margin: 0 0 0.5rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(184, 230, 245, 0.7);
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .rp-abstract p {
   margin: 0;
-  max-width: 68ch;
-  font-size: clamp(0.98rem, 1.9vw, 1.1rem);
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.92);
+  max-width: none;
+  font-family: var(--font-serif);
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.38rem);
+  line-height: 1.62;
+  color: rgba(240, 249, 253, 0.94);
+}
+
+.rp-abstract p::first-letter {
+  float: left;
+  margin: 0.05em 0.11em 0 0;
+  font-size: 3.05em;
+  font-weight: 500;
+  line-height: 0.78;
+  color: var(--rp-foam);
 }
 
 /* Field records read as notes, not as an argument */
-.rp--field .rp-abstract {
-  border-left-color: rgba(184, 230, 245, 0.22);
-  font-style: italic;
-}
+.rp--field .rp-abstract p { font-style: italic; }
 
 /* ---- Figures ---- */
 .rp-plate {
+  position: relative;
   margin: 0;
-  border-radius: 12px;
+  border: 1px solid var(--rp-rule);
+  border-radius: 3px;
   overflow: hidden;
-  background: rgb(6, 16, 40);
+  background: #04102a;
 }
 
+/* A figure is the shape it is. The width/height attributes carry the real
+   ratio, so nothing here forces one: a 3.3:1 results strip was being cropped to
+   its middle third by a house 4/3, and the anchor particle filter is a squarish
+   matplotlib panel. Only the lead banner below takes a deliberate crop. */
 .rp-plate img,
 .rp-plate video {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: auto;
+  max-height: 70vh;
   object-fit: cover;
+  background: #04102a;
 }
 
+/* shark-yolo-keypoints carries its letterbox in the file itself: it is a 16:9
+   render written into a 4:3 frame, so covering 16:9 trims exactly the bars */
+.rp-plate video[width="640"][height="480"] { aspect-ratio: 16 / 9; }
+
 .rp-plate figcaption {
-  padding: 0.7rem 0.9rem 0.8rem;
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.66);
-  background: rgba(4, 18, 48, 0.55);
+  padding: 0.8rem 1rem 0.9rem;
+  font-size: 0.79rem;
+  line-height: 1.55;
+  color: var(--rp-body-dim);
+  background: rgba(4, 16, 40, 0.6);
+  border-top: 1px solid var(--rp-rule);
 }
 
 .rp-fignum {
-  display: block;
-  margin-bottom: 0.2rem;
+  display: inline-block;
+  margin-right: 0.55rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 2px;
+  font-size: 0.61rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-size: 0.66rem;
-  color: var(--ocean-foam);
+  color: #04142e;
+  background: var(--rp-foam);
+  vertical-align: 1px;
 }
 
-.rp-plate--wide {
-  margin-bottom: 1.75rem;
-  border: 1px solid rgba(184, 230, 245, 0.15);
+.rp-plate--wide img,
+.rp-plate--wide video { aspect-ratio: 21 / 9; object-position: 50% 40%; }
+
+.rp-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: clamp(1rem, 2.2vw, 1.6rem);
 }
 
-.rp-plate--wide img { aspect-ratio: 16 / 9; object-position: 50% 40%; }
-
-/* ---- Numbered sections ---- */
+/* ---- Numbered sections: figure and prose as facing pages ---- */
 .rp-sections {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
-  gap: 1rem;
-  margin-bottom: 1.75rem;
-  counter-reset: rp-section;
+  gap: clamp(2rem, 4.5vw, 3.4rem);
+  margin: 0;
 }
 
 .rp-section {
-  display: flex;
-  flex-direction: column;
-  border-radius: 14px;
-  overflow: hidden;
-  background: rgba(30, 95, 140, 0.16);
-  border: 1px solid rgba(184, 230, 245, 0.13);
-  transition: border-color 0.25s ease;
+  display: grid;
+  gap: clamp(1rem, 2.2vw, 1.6rem);
+  align-items: start;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  overflow: visible;
 }
 
-.rp-section:hover { border-color: rgba(184, 230, 245, 0.3); }
+@media (min-width: 860px) {
+  .rp-section {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.6rem, 3.4vw, 3rem);
+  }
 
-.rp-section .rp-plate { border-radius: 0; }
+  /* Alternate which side the figure falls on, so the spread reads as a spread */
+  .rp-section:nth-child(even) > .rp-plate { grid-column: 2; grid-row: 1; }
+  .rp-section:nth-child(even) > .rp-fold { grid-column: 1; grid-row: 1; }
 
-/* ---- Disclosure: prose stays folded until asked for ---- */
+  /* Except where the figure carries axis labels and needs the whole band */
+  .rp-section--feature { grid-template-columns: minmax(0, 1fr); }
+  .rp-section--feature > .rp-plate,
+  .rp-section--feature > .rp-fold { grid-column: 1; grid-row: auto; }
+  .rp-section--feature > .rp-plate img,
+  .rp-section--feature > .rp-plate video { margin-inline: auto; width: auto; max-width: 100%; }
+}
+
+/* ---- Disclosure, styled as the section's own heading ---- */
 .rp-fold {
-  margin-top: auto;
-  border-top: 1px solid rgba(184, 230, 245, 0.12);
+  margin: 0;
+  border: 0;
 }
 
 .rp-fold summary {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1.1rem;
+  gap: 0.85rem;
+  padding: 0 0 0.7rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--rp-rule);
   cursor: pointer;
   list-style: none;
   user-select: none;
 }
 
 .rp-fold summary::-webkit-details-marker { display: none; }
-.rp-fold summary:hover { background: rgba(61, 157, 217, 0.14); }
+.rp-fold summary:hover { background: none; }
+.rp-fold summary:hover .rp-fold-title { color: var(--rp-foam); }
 
 .rp-fold summary:focus-visible {
   outline: 2px solid var(--ocean-foam);
-  outline-offset: -2px;
+  outline-offset: 4px;
 }
 
 .rp-fold-num {
   flex: 0 0 auto;
-  width: 20px;
-  height: 20px;
+  width: 1.7rem;
+  height: 1.7rem;
   display: grid;
   place-items: center;
-  border-radius: 4px;
-  font-size: 0.68rem;
+  border-radius: 50%;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--ocean-deep);
-  background: rgba(184, 230, 245, 0.75);
+  color: #04142e;
+  background: var(--rp-foam);
 }
 
 .rp-fold-title {
   flex: 1 1 auto;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ocean-foam);
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: #eaf6fc;
+  transition: color 0.2s ease;
 }
 
 .rp-fold-chevron {
   flex: 0 0 auto;
   width: 9px;
   height: 9px;
-  border-right: 2px solid rgba(184, 230, 245, 0.7);
-  border-bottom: 2px solid rgba(184, 230, 245, 0.7);
+  border-right: 2px solid rgba(184, 230, 245, 0.45);
+  border-bottom: 2px solid rgba(184, 230, 245, 0.45);
   transform: rotate(45deg) translate(-2px, -2px);
   transition: transform 0.3s ease;
 }
@@ -569,14 +920,47 @@
 .rp-fold[open] .rp-fold-chevron { transform: rotate(225deg) translate(-2px, -2px); }
 
 .rp-fold-body {
-  padding: 0 1.1rem 1.1rem;
-  color: rgba(255, 255, 255, 0.85);
+  padding: 0;
+  color: var(--rp-body);
 }
 
-.rp-fold-body p { margin: 0; font-size: 0.9rem; line-height: 1.65; }
-.rp-fold-body ul { margin: 0; padding-left: 1.05rem; }
-.rp-fold-body li { margin-bottom: 0.45rem; font-size: 0.9rem; line-height: 1.55; }
-.rp-fold-body li:last-child { margin-bottom: 0; }
+.rp-fold-body p { margin: 0; font-size: 1rem; line-height: 1.75; }
+
+.rp-fold-body ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rp-fold-body li {
+  position: relative;
+  margin: 0;
+  padding-left: 1.4rem;
+  font-size: 0.96rem;
+  line-height: 1.62;
+}
+
+.rp-fold-body li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: var(--ocean-light);
+  box-shadow: 0 0 0 3px rgba(61, 157, 217, 0.18);
+}
+
+/* em here is almost always a binomial or a status note, so it stays italic */
+.rp-fold-body em,
+.rp-abstract em,
+.rp-pubs em {
+  font-style: italic;
+  color: #eef8fd;
+}
 
 /* Animate the fold where the engine supports it; elsewhere it just opens */
 @supports (interpolate-size: allow-keywords) {
@@ -591,126 +975,132 @@
   .rp-fold[open]::details-content { block-size: auto; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .rp-fold-chevron,
-  .rp-fold::details-content { transition: none; }
+/* ---- Pull quote ---- */
+.rp-quote {
+  position: relative;
+  margin: clamp(0.5rem, 2vw, 1.25rem) 0;
+  padding: clamp(1.5rem, 3vw, 2.2rem) 0 clamp(1.5rem, 3vw, 2.2rem) clamp(2.6rem, 5vw, 3.8rem);
+  border-top: 1px solid var(--rp-rule);
+  border-bottom: 1px solid var(--rp-rule);
+  font-family: var(--font-serif);
+  font-size: clamp(1.18rem, 1.02rem + 0.7vw, 1.65rem);
+  font-style: italic;
+  line-height: 1.48;
+  color: #e9f6fc;
 }
 
-/* ---- Blocks: publications, presentations, pending ---- */
-.rp-block {
-  margin-bottom: 1.75rem;
-  padding: 1.25rem;
-  border-radius: 14px;
-  background: rgba(30, 95, 140, 0.16);
-  border: 1px solid rgba(184, 230, 245, 0.13);
+.rp-quote::before {
+  content: '\201C';
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  font-family: var(--font-serif);
+  font-size: 4.4em;
+  font-style: normal;
+  line-height: 1;
+  color: rgba(184, 230, 245, 0.2);
 }
 
-.rp-block h4 {
-  margin: 0 0 1rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ocean-foam);
-}
+/* ---- Reference blocks ---- */
+.rp-block { margin: 0; }
 
 .rp-pubs {
   margin: 0;
-  padding-left: 1.3rem;
-  color: rgba(255, 255, 255, 0.85);
+  padding-left: 1.2rem;
+  color: var(--rp-body);
 }
 
-.rp-pubs li { margin-bottom: 0.55rem; font-size: 0.9rem; line-height: 1.55; }
+.rp-pubs li { margin-bottom: 0.6rem; font-size: 0.93rem; line-height: 1.6; }
 .rp-pubs li:last-child { margin-bottom: 0; }
 
-.rp-pres {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-  gap: 1rem;
-}
-
 .rp-link {
-  display: inline-block;
-  padding: 0.45rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--ocean-foam);
+  color: var(--white);
   text-decoration: none;
-  background: rgba(61, 157, 217, 0.22);
+  background: rgba(61, 157, 217, 0.28);
   border: 1px solid rgba(184, 230, 245, 0.3);
   transition: background 0.2s ease;
 }
 
-.rp-link:hover { background: rgba(61, 157, 217, 0.4); }
+.rp-link:hover { background: rgba(61, 157, 217, 0.45); }
 
-/* Not yet published: reads as stated intent, never as a dead link */
 .rp-pending {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.6rem;
   margin: 0;
-  padding: 0.45rem 1rem 0.45rem 0.85rem;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px dashed rgba(184, 230, 245, 0.28);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--rp-body-dim);
 }
 
 .rp-pending::before {
   content: '';
-  width: 7px;
-  height: 7px;
+  flex: 0 0 auto;
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
-  background: rgba(184, 230, 245, 0.55);
+  border: 1px solid rgba(184, 230, 245, 0.5);
 }
 
-.rp-pending + .rp-pending { margin-top: 0.6rem; }
+.rp-pending + .rp-pending { margin-top: 0.7rem; }
 
-/* ---- Quote, tags, cross-links ---- */
-.rp-quote {
-  margin: 0 0 1.75rem;
-  padding: 1.25rem 1.5rem;
-  border-left: 3px solid var(--ocean-foam);
-  border-radius: 0 12px 12px 0;
-  background: rgba(30, 95, 140, 0.2);
-  font-style: italic;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.82);
+/* ---- Colophon ---- */
+/* The quote already closes with a rule; two of them reads as a gap */
+.rp-quote + .rp-tags {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .rp-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.25rem;
+  gap: 0.5rem;
+  margin: clamp(0.5rem, 2vw, 1.25rem) 0 0;
+  padding-top: clamp(1.4rem, 3vw, 2rem);
+  border-top: 1px solid var(--rp-rule);
 }
 
 .rp-tags .tag {
-  background: rgba(61, 157, 217, 0.28);
-  color: var(--ocean-foam);
-  border: 1px solid rgba(184, 230, 245, 0.2);
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--rp-foam);
+  background: rgba(61, 157, 217, 0.14);
+  border: 1px solid rgba(184, 230, 245, 0.22);
 }
 
 .rp-crosslink {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin: 0;
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rp-body-dim);
 }
 
 .rp-crosslink-btn {
-  font: inherit;
-  font-weight: 600;
-  color: var(--ocean-foam);
-  background: rgba(61, 157, 217, 0.18);
-  border: 1px solid rgba(184, 230, 245, 0.28);
+  padding: 0.45rem 0.95rem;
   border-radius: 999px;
-  padding: 0.3rem 0.85rem;
+  font: inherit;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-size: 0.78rem;
+  color: var(--white);
+  background: rgba(61, 157, 217, 0.22);
+  border: 1px solid rgba(184, 230, 245, 0.28);
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
@@ -718,7 +1108,7 @@
 .rp-crosslink-btn::after { content: ' \2192'; }
 
 .rp-crosslink-btn:hover {
-  background: rgba(61, 157, 217, 0.38);
+  background: rgba(61, 157, 217, 0.4);
   border-color: rgba(184, 230, 245, 0.55);
 }
 
@@ -727,58 +1117,75 @@
   outline-offset: 2px;
 }
 
-/* ---- Embedded presentation / PDF ---- */
-.pres-embed {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(184,230,245,0.15);
-  background: rgba(4, 18, 48, 0.5);
+/* ---- Presentations: a gallery, one slide large and the rest on a strip ---- */
+.pres-gallery {
+  display: grid;
+  gap: clamp(0.9rem, 2vw, 1.4rem);
 }
 
-.pres-embed h5 {
-  color: var(--ocean-foam);
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0;
-  padding: 0.8rem 1rem;
-  background: rgba(10, 36, 99, 0.6);
-  border-bottom: 1px solid rgba(184,230,245,0.1);
-}
-
-.pres-embed iframe { display: block; border: none; width: 100%; }
+.pres-stage { display: grid; gap: 0.85rem; }
 
 /* Facade standing in for a heavy third-party embed until it is asked for */
 .pres-facade {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
+  position: relative;
+  display: block;
   width: 100%;
-  min-height: 200px;
-  padding: 2rem 1rem;
+  min-height: 0;
+  padding: 0;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--rp-rule);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #04102a;
   cursor: pointer;
-  color: rgba(184, 230, 245, 0.85);
-  background: rgba(10, 36, 99, 0.35);
-  border: 0;
-  border-top: 1px solid rgba(184, 230, 245, 0.1);
-  transition: background 0.2s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.pres-facade:hover { background: rgba(61, 157, 217, 0.22); }
+.pres-shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.pres-facade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(64% 64% at 50% 50%, rgba(2, 10, 28, 0.14), rgba(2, 10, 28, 0.58));
+  opacity: 0.78;
+  transition: opacity 0.25s ease;
+}
+
+.pres-facade:hover {
+  border-color: rgba(184, 230, 245, 0.5);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5);
+}
+
+.pres-facade:hover .pres-shot { transform: scale(1.03); }
+.pres-facade:hover::after { opacity: 0.28; }
 
 .pres-facade:focus-visible {
   outline: 2px solid var(--ocean-foam);
-  outline-offset: -3px;
+  outline-offset: 3px;
 }
 
 .pres-play {
-  width: 46px;
-  height: 46px;
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  width: 74px;
+  height: 74px;
   border-radius: 50%;
-  border: 1px solid rgba(184, 230, 245, 0.4);
+  border: 1px solid rgba(184, 230, 245, 0.55);
   background: rgba(4, 18, 48, 0.6);
-  position: relative;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--ocean-foam);
+  transform: translate(-50%, -50%);
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
@@ -788,27 +1195,146 @@
   top: 50%;
   left: 54%;
   transform: translate(-50%, -50%);
-  border-left: 13px solid currentColor;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+  border-left: 19px solid currentColor;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
 }
 
 .pres-facade:hover .pres-play {
-  transform: scale(1.08);
-  background: rgba(61, 157, 217, 0.35);
+  transform: translate(-50%, -50%) scale(1.08);
+  background: rgba(61, 157, 217, 0.55);
 }
 
 .pres-facade-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  position: absolute;
+  z-index: 2;
+  left: 1.1rem;
+  bottom: 0.9rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  color: rgba(232, 244, 250, 0.82);
+}
+
+.pres-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.7rem;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #e2f0f8;
 }
 
 .pres-date {
-  float: right;
-  font-size: 0.78rem;
-  font-weight: 400;
-  color: rgba(255,255,255,0.5);
+  float: none;
+  font-family: var(--font-serif);
   font-style: italic;
+  font-weight: 400;
+  font-size: 0.88rem;
+  color: var(--rp-body-dim);
+}
+
+/* ---- The strip under the stage ---- */
+.pres-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: clamp(0.5rem, 1.4vw, 0.9rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pres-thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--rp-body-dim);
+}
+
+.pres-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  outline: 1px solid var(--rp-rule);
+  outline-offset: -1px;
+  opacity: 0.55;
+  transition: opacity 0.25s ease, border-color 0.25s ease, transform 0.25s var(--ease-out);
+}
+
+.pres-thumb-label {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: color 0.25s ease;
+}
+
+.pres-thumb:hover img,
+.pres-thumb:focus-visible img {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.pres-thumb:hover .pres-thumb-label { color: #dcecf5; }
+
+.pres-thumb.is-active img {
+  opacity: 1;
+  border-color: var(--rp-foam);
+  outline-color: var(--rp-foam);
+}
+
+.pres-thumb.is-active .pres-thumb-label { color: var(--rp-foam); }
+
+.pres-thumb:focus-visible {
+  outline: 2px solid var(--ocean-foam);
+  outline-offset: 3px;
+}
+
+.pres-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 340px;
+  border: 1px solid var(--rp-rule);
+  border-radius: 4px;
+  background: #04102a;
+}
+
+/* ---- Sections arrive as you reach them, where the engine can do it
+        without a scroll listener ---- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rp-section,
+    .rp-plate--wide,
+    .rp-quote,
+    .rp-record,
+    .rp-block {
+      animation: rp-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 20%;
+    }
+
+    @keyframes rp-rise {
+      from { opacity: 0; transform: translateY(26px); }
+      to { opacity: 1; transform: none; }
+    }
+  }
 }

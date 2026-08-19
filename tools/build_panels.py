@@ -19,6 +19,8 @@ Usage: python3 tools/build_panels.py
 """
 
 import html
+import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -29,13 +31,54 @@ V2 = Path(__file__).resolve().parent.parent
 IND = ' ' * 8
 
 
+def _size(src):
+    """Intrinsic size of a figure, so the layout does not settle twice.
+
+    Without it the browser cannot reserve space, every figure counts as being in
+    the viewport, and lazy loading degrades to loading everything at once.
+    """
+    try:
+        from PIL import Image
+        with Image.open(V2 / src) as im:
+            return f' width="{im.width}" height="{im.height}"'
+    except Exception:
+        return ''
+
+
 def img(src, alt):
-    return (f'<img src="{html.escape(src)}" alt="{html.escape(alt)}" decoding="async">')
+    # Lazy, because a panel is a full-screen document and its figures start well
+    # below the fold. Opening one used to fetch and decode every figure it had —
+    # a megabyte of PNG on the heavier panels — while the morph was still
+    # animating, which is what made some bubbles feel slow to open and others not.
+    return (f'<img src="{html.escape(src)}" alt="{html.escape(alt)}"{_size(src)} '
+            f'loading="lazy" decoding="async">')
+
+
+def _clip_size(stem, fallback=(512, 288)):
+    """Real pixel size of a clip, so the plate reserves the right box.
+
+    The clips are not all one shape: the field footage is 16:9 and the anchor
+    particle filter is a cropped matplotlib panel, so a hard-coded 512x288 would
+    have the browser reserve the wrong space and the figure would jump on load.
+    """
+    src = V2 / 'assets' / f'{stem}.mp4'
+    if not src.exists():
+        return fallback
+    try:
+        out = subprocess.run(
+            ['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+             '-show_entries', 'stream=width,height', '-of', 'csv=p=0', str(src)],
+            capture_output=True, text=True, check=True).stdout.strip()
+        w, h = (int(v) for v in out.split(',')[:2])
+        return w, h
+    except Exception:
+        return fallback
 
 
 def video(stem, label):
+    w, h = _clip_size(stem)
     return (f'<video class="lazy-video" muted loop playsinline preload="none" '
-            f'width="512" height="288" aria-label="{html.escape(label)}">'
+            f'width="{w}" height="{h}" aria-label="{html.escape(label)}">'
             f'<source src="assets/{stem}.webm" type="video/webm">'
             f'<source src="assets/{stem}.mp4" type="video/mp4"></video>')
 
@@ -44,6 +87,7 @@ PANELS = [
     {
         'key': 'shark',
         'kind': 'paper',
+        'cover': 'assets/title background of Summer symposium talk about ml for dorsal mounted cameras on sharks.avif',
         'org': 'Ocean Predator Ecology Lab, CSUMB',
         'title': 'White Shark Ecology &amp; Telemetry',
         'byline': 'Mentor: Dr. Salvador Jorgensen',
@@ -144,6 +188,7 @@ PANELS = [
     {
         'key': 'anchor',
         'kind': 'paper',
+        'cover': 'assets/panels/anchor-track-map.avif',
         'org': 'Jorgensen Lab, CSUMB',
         'title': 'anchor: Biologging Trajectory Reconstruction',
         'byline': 'Lead Developer &middot; co-developed with D. Moran',
@@ -169,12 +214,13 @@ PANELS = [
             },
             {
                 'title': 'Arresting the drift',
+                'wide': True,
                 'body': ['GPS and acoustic fixes threaded through a particle filter and FFBS smoother',
                          'Reported against held-out drift RMSE rather than in-sample fit',
                          'CF-1.8 NetCDF, Movebank, and GeoJSON interchange so tracks leave the project in standard formats'],
-                'figure': (img('assets/panels/anchor-track-map.avif',
-                               'A reconstructed animal track drawn over bathymetry in Elkhorn Slough'),
-                           'A reconstructed track over slough bathymetry, after GPS and acoustic fixes are threaded through the smoother.'),
+                'figure': (video('anchor-track-filter',
+                                 'The particle filter running over Elkhorn Slough: a cloud of candidate positions moving down the channel while the posterior track is drawn behind it'),
+                           'The filter running down Elkhorn Slough. Four thousand candidate positions are resampled against the wet boundary at every step; the cloud is where the animal might be, and the red line behind it is where the posterior says it went. Dead reckoning alone would have walked straight out of the channel hours ago.'),
             },
         ],
         'tags': ['Biologging', 'Dead Reckoning', 'Particle Filtering', 'Behavior Classification'],
@@ -184,6 +230,7 @@ PANELS = [
     {
         'key': 'porpoise',
         'kind': 'paper',
+        'cover_pos': '50% 28%',
         'org': 'Independent, with Jorgensen Lab and partner catalogues',
         'title': 'Individual Re-Identification Across Species',
         'byline': 'Design and evaluation',
@@ -195,9 +242,9 @@ PANELS = [
                 'body': [f'SAM 2 segments the body, protrusion geometry extracts the dorsal fin, and {REID["porpoise_backbone"]} embeds the crop through an ArcFace head with cosine-similarity ranking',
                          f'{REID["porpoise_individuals"]} individuals, {REID["porpoise_sightings"]} sightings, {REID["porpoise_images"]} images',
                          f'{REID["porpoise_backbones_evaluated"]} were benchmarked on this catalogue before one was chosen'],
-                'figure': (img('assets/panels/porpoise-match.avif',
-                               'A query dorsal fin beside its top five ranked matches from the catalogue'),
-                           'A query fin and its ranked matches, drawn from a catalogue of 198 known animals.'),
+                'figure': (img('assets/panels/porpoise-animal.avif',
+                               'A harbor porpoise surfacing, its small triangular dorsal fin clear of the water'),
+                           'About a second of animal, once. The notches and scarring along that fin are the whole signature, which is why the pipeline starts by finding it.'),
             },
             {
                 'title': 'Sevengill shark, by spot constellation',
@@ -222,9 +269,9 @@ PANELS = [
                 'title': 'Where it goes next',
                 'body': [f'The catalogue platform is built to host {REID["platform_scope"]}, because the expensive part is never the model, it is the labelled catalogue and the field relationships behind it.',
                          'Open-set matching is the harder half: telling a known animal from one the catalogue has never seen, with a confidence a biologist can act on.'],
-                'figure': (img('assets/bubbles/porpoise.avif',
-                               'Two photographs of the same dorsal fin taken years apart'),
-                           'The same animal, two encounters, years apart. Everything else is machinery for noticing that.'),
+                'figure': (img('assets/panels/porpoise-resight.avif',
+                               'The same harbor porpoise photographed four years after Figure 1, from the same side, in different water'),
+                           'Pointer again, same flank, four years after Figure&nbsp;1. That is a resighting, and it is the only thing any of this machinery exists to notice.'),
             },
         ],
         'tags': ['Re-Identification', 'Metric Learning', 'Photo-ID', 'Mark-Recapture', 'Open-Set'],
@@ -232,6 +279,7 @@ PANELS = [
     },
     {
         'key': 'aquaculture',
+        'cover_pos': '50% 76%',
         'kind': 'paper',
         'org': 'Aquaculture Lab, Moss Landing Marine Laboratories',
         'title': 'Sustainable Urchin Aquaculture',
@@ -282,26 +330,30 @@ PANELS = [
 
     {
         'key': 'jue',
+        'cover_tone': 'data',
         'kind': 'paper',
         'org': 'Jue Lab, CSUMB',
         'title': 'Microbial Bioremediation',
         'byline': 'Research Assistant &middot; Mentor: Dr. Nathaniel Jue',
         'dateline': 'Spring 2025 – Present &middot; CSUMB',
-        'abstract': 'Ninety-two bacterial strains, four experimental groups, and one question: will any of them eat a pesticide. The real question underneath is which strains metabolize the compound rather than merely tolerating it, and how confident that call can be given how noisy plate reader data is. Growth curves come off the reader by the thousand, so the analysis had to be automated before the biology could be answered at all.',
+        'abstract': f'{JUE["strains"]} bacterial strains across {JUE["groups"]} experimental groups run by {JUE["operators"]} operators, and one question: will any of them eat a pesticide. The real question underneath is which strains metabolize the compound rather than merely tolerating it, and how confident that call can be given how noisy plate reader data is. Growth curves come off the reader by the thousand, so the analysis had to be automated before the biology could be answered at all.',
         'sections': [
             {
-                'title': 'Analysis',
-                'body': ['Modified Gompertz growth modeling with Haldane substrate inhibition kinetics',
-                         'A classifier that screens curve quality automatically instead of by eye',
-                         'Bayesian hierarchical modeling and bootstrap confidence intervals over strain-level estimates'],
-                'figure': (img('assets/tecan-classification-summary.png', 'Growth curve classification summary across bacterial strains'),
-                           'Curve quality screened per strain, so a bad well never reaches the biology.'),
+                'title': 'What the plates said',
+                'body': [f'{JUE["curves"]} averaged growth curves fitted with a modified Gompertz model, then ranked by degradation capacity: growth rate times yield, attenuated by the substrate inhibition constant',
+                         'A Haldane inhibition model fitted alongside Gompertz and compared by AIC, so inhibition is tested rather than assumed',
+                         'Bayesian hierarchical modeling with partial pooling and bootstrap confidence intervals over strain-level estimates'],
+                'figure': (img('assets/panels/tecan-degradation-ranking.avif',
+                               'The twenty strongest pesticide-degrading candidates ranked by degradation capacity, with confidence intervals, coloured by pesticide'),
+                           'The answer, on real plates: the twenty best candidates across five pesticides, ranked by growth rate times yield and attenuated by how strongly the compound inhibits them.'),
             },
             {
-                'title': 'Validation',
-                'body': ['The pipeline was validated against 480 synthetic curves with known ground truth before any real plate was scored, so a wrong answer would show up as a wrong answer.'],
-                'figure': (img('assets/tecan-confusion-matrix.png', 'Confusion matrix for the automated curve quality classifier'),
-                           'Classifier performance against synthetic curves with known ground truth.'),
+                'title': 'Trusting the call',
+                'body': [f'Scoring {JUE["curves"]} curves by eye is slow and subjective, so a two-stage classifier grades each one good, borderline or bad before it reaches the biology',
+                         f'Trained on {JUE["train_synthetic"]} synthetic curves with known ground truth plus {JUE["train_real"]} audited real ones, at a 70/30 held-out split, reaching {JUE["heldout_accuracy"]}',
+                         f'Then checked against an independent {JUE["validation_curves"]}-curve synthetic suite on a separate seed: {JUE["validation_accuracy"]}, with no data leakage'],
+                'figure': (img('assets/tecan-confusion-matrix.png', 'Confusion matrix for the automated curve quality classifier, scored against synthetic curves with known ground truth'),
+                           'Classifier performance against the synthetic suite, where the true grade of every curve is known. Synthetic is how the grader was trained and measured; the ranking above is what it was then pointed at.'),
             },
         ],
         'tags': ['Bioremediation', 'Growth Kinetics', 'Bayesian Modeling'],
@@ -310,6 +362,7 @@ PANELS = [
 
     {
         'key': 'relay',
+        'cover_pos': '50% 45%',
         'kind': 'program',
         'org': 'Galápagos &amp; California',
         'title': 'Low-Cost VHF Relay Stations',
@@ -417,6 +470,7 @@ PANELS = [
 
     {
         'key': 'fieldops',
+        'cover': 'assets/panels/fieldops.avif',
         'kind': 'field',
         'org': 'California &amp; Baja California, Mexico',
         'title': 'Field Operations &amp; Scientific Diving',
@@ -451,6 +505,29 @@ PANELS = [
     },
 ]
 
+def cover_for(p):
+    """The photograph behind the title block.
+
+    Defaults to the panel's own first still, which is nearly always the right
+    one; a panel sets 'cover' when its opening figure is a video or a chart and
+    something better exists in the assets.
+    """
+    if 'cover' in p:
+        return p['cover']
+    pool = []
+    if p.get('lead'):
+        pool.append(p['lead'][0])
+    for s in p.get('sections') or []:
+        pool.append(s['figure'][0])
+    if p.get('closing_figure'):
+        pool.append(p['closing_figure'][0])
+    for media in pool:
+        m = re.search(r'<img src="([^"]+)"', media)
+        if m:
+            return m.group(1)
+    return None
+
+
 FIG_WORD = {'paper': 'Figure', 'program': 'Figure', 'field': 'Plate'}
 ABSTRACT_WORD = {'paper': 'Abstract', 'program': 'The programme', 'field': 'Field notes'}
 
@@ -464,7 +541,16 @@ def render(p):
     a(f'{IND}    <article class="rp rp--{kind}">')
 
     # ---- Title block ----
-    a(f'{IND}        <header class="rp-head">')
+    cover = cover_for(p)
+    tone = ' rp-head--data' if p.get('cover_tone') == 'data' else ''
+    a(f'{IND}        <header class="rp-head{"" + tone if cover else " rp-head--plain"}">')
+    if cover:
+        # Default crop sits high in the frame; a panel overrides it when its
+        # own photograph puts the subject somewhere else
+        pos = p.get('cover_pos')
+        style = f' style="object-position:{pos}"' if pos else ''
+        a(f'{IND}            <img class="rp-cover" src="{html.escape(cover)}" alt="" '
+          f'aria-hidden="true" decoding="async"{style}>')
     a(f'{IND}            <p class="rp-org">{p["org"]}</p>')
     a(f'{IND}            <h3 class="rp-title">{p["title"]}</h3>')
     if p['byline']:
@@ -513,13 +599,17 @@ def render(p):
     for i, s in enumerate(p['sections'], start=1):
         media, caption = s['figure']
         n += 1
-        a(f'{IND}            <section class="rp-section">')
+        # A data figure with axis labels cannot be read at half the band, so a
+        # section can ask for the full width and stack its prose underneath
+        feature = ' rp-section--feature' if s.get('wide') else ''
+        a(f'{IND}            <section class="rp-section{feature}">')
         a(f'{IND}                <figure class="rp-plate">')
         a(f'{IND}                    {media}')
         if caption:
             a(f'{IND}                    <figcaption><span class="rp-fignum">{fig_word} {n}</span>{caption}</figcaption>')
         a(f'{IND}                </figure>')
-        a(f'{IND}                <details class="rp-fold">')
+        # Open: the fold is the section's heading here, not a hiding place
+        a(f'{IND}                <details class="rp-fold" open>')
         a(f'{IND}                    <summary><span class="rp-fold-num">{i}</span>'
           f'<span class="rp-fold-title">{s["title"]}</span>'
           f'<span class="rp-fold-chevron" aria-hidden="true"></span></summary>')
@@ -570,22 +660,60 @@ def render(p):
                 a(f'{IND}            <p class="rp-pending">{item}</p>')
         a(f'{IND}        </section>')
 
-    # ---- Presentations ----
+    # ---- Presentations, as a gallery: one large stage, the rest on a strip ----
     if p.get('presentations'):
-        a(f'{IND}        <section class="rp-block">')
+        # Thumbnails are built by tools/fetch_pres_thumbs.py and named off the
+        # panel and the position, so filenames hold as long as this order does
+        items = [
+            {
+                'title': title or '',
+                'date': date or '',
+                'src': src,
+                'label': ifr_title,
+                'shot': f'assets/pres/{p["key"]}-{i}.avif',
+            }
+            for i, (title, date, src, ifr_title) in enumerate(p['presentations'], start=1)
+        ]
+        lead = items[0]
+
+        a(f'{IND}        <section class="rp-block rp-block--gallery">')
         a(f'{IND}            <h4>{p.get("refs_title", "Presentations")}</h4>')
-        a(f'{IND}            <div class="rp-pres">')
-        for title, date, src, ifr_title in p['presentations']:
-            a(f'{IND}                <div class="pres-embed">')
-            if title:
-                a(f'{IND}                    <h5>{title} <span class="pres-date">{date}</span></h5>')
-            # Facade, not the embed itself: four Google frames opening at once
-            # throttle the whole page to 15fps, so each one loads on request
-            a(f'{IND}                    <button type="button" class="pres-facade" '
-              f'data-embed="{src}" data-embed-title="{html.escape(ifr_title)}">'
-              f'<span class="pres-play" aria-hidden="true"></span>'
-              f'<span class="pres-facade-label">Load presentation</span></button>')
-            a(f'{IND}                </div>')
+        a(f'{IND}            <div class="pres-gallery">')
+        a(f'{IND}                <div class="pres-stage">')
+        # Facade, not the embed itself: four Google frames opening at once
+        # throttle the whole page to 15fps, so each one loads on request
+        a(f'{IND}                    <button type="button" class="pres-facade" '
+          f'data-embed="{lead["src"]}" data-embed-title="{html.escape(lead["label"])}" '
+          f'aria-label="Open {html.escape(lead["label"])}">'
+          f'<img class="pres-shot" src="{lead["shot"]}" alt="" width="1280" height="720" '
+          f'loading="lazy" decoding="async">'
+          f'<span class="pres-play" aria-hidden="true"></span>'
+          f'<span class="pres-facade-label">Open</span></button>')
+        if lead['title']:
+            a(f'{IND}                    <p class="pres-caption">'
+              f'<span class="pres-caption-title">{lead["title"]}</span>'
+              f'<span class="pres-date">{lead["date"]}</span></p>')
+        a(f'{IND}                </div>')
+
+        if len(items) > 1:
+            a(f'{IND}                <ul class="pres-strip">')
+            for n, it in enumerate(items):
+                a(f'{IND}                    <li>')
+                a(f'{IND}                        <button type="button" '
+                  f'class="pres-thumb{" is-active" if n == 0 else ""}" '
+                  f'aria-pressed="{"true" if n == 0 else "false"}" '
+                  f'data-embed="{it["src"]}" '
+                  f'data-embed-title="{html.escape(it["label"])}" '
+                  f'data-shot="{it["shot"]}" '
+                  f'data-title="{html.escape(it["title"])}" '
+                  f'data-date="{html.escape(it["date"])}">'
+                  f'<img src="{it["shot"]}" alt="" width="1280" height="720" '
+                  f'loading="lazy" decoding="async">'
+                  f'<span class="pres-thumb-label">{it["title"] or it["label"]}</span>'
+                  f'</button>')
+                a(f'{IND}                    </li>')
+            a(f'{IND}                </ul>')
+
         a(f'{IND}            </div>')
         a(f'{IND}        </section>')
 

@@ -487,15 +487,17 @@ body:has(.forest-map-sticky[data-camera="exploring"]) .leaf {
    with its first lines behind the map, which is the half-swallowed state this
    is meant to remove. */
 html:has(body[data-active-path="forest"]) {
-  /* proximity rather than mandatory — but do not expect much of it in Chrome.
-     Blink initialises its proximity range to numeric_limits<float>::max(), so
-     for end-of-gesture snapping the two strictnesses are the same code path:
-     measured here, one wheel notch from a stop moves the page zero pixels under
-     either. It is a real improvement in Gecko and WebKit, where the range is
-     finite, and it is honest about the intent, so it stays. The thing that
-     actually bounds a gesture is scroll-snap-stop on the steps below. */
+  /* proximity rather than mandatory. An earlier note here claimed Blink gives
+     proximity an unbounded range, making the two strictnesses identical in
+     Chrome. That is wrong, and it mattered: measured against this page, the
+     range is roughly 145px. Positions further than that from a stop are left
+     alone, which is what makes the spacing of the stops the thing that governs
+     how the path feels — a gap much wider than the others is dead scroll with
+     no assist at either end, not merely a longer pull. What one wheel notch
+     does from a stop (nothing, under either keyword) says only that a notch is
+     inside 145px; it never showed the two were the same. */
   scroll-snap-type: y proximity;
-  /* Held as one number because the footer rule below has to cancel it exactly. */
+  /* Read by the footer rule below as well, so the two cannot drift apart. */
   --forest-snap-pad: 0px;
   scroll-padding-top: var(--forest-snap-pad);
 
@@ -556,14 +558,26 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
    performance problem — the scroll was fighting the reader, and being fought
    reads as lag.
 
-   It carries a negative scroll-margin that cancels the container's
-   scroll-padding. That padding exists to hold space for the map band, and the
-   map has scrolled away by the time the footer is the thing being snapped to.
-   Being far taller than the snapport the footer then snaps loosely, so it reads
-   as ordinary scrolling once you are inside it. */
+   It keeps the container's scroll-padding. A previous version cancelled it with
+   a negative scroll-margin, on the premise that the band had already scrolled
+   away by the time the footer was the thing being snapped to. It has not. The
+   band is sticky inside .forest-steps, so it un-pins at (steps bottom - band
+   height) — which IS the footer's padded snap position: measured here, both are
+   3308. At that stop the band is sitting on its very last pinned pixel, still
+   filling the top of the window, and the padding holding space for it is still
+   doing its job.
+
+   Cancelling it pushed the stop a full band further on and made the final hop
+   812px where every other hop on the path is 448. Five cards teach a reader
+   exactly how far one swipe travels; the sixth then asked for nearly two. That
+   is what "super laggy scrolling off the last one" was — not frames, but a hop
+   that no longer matched the gesture the page had spent five cards training.
+
+   Being far taller than the snapport, the footer's snap area covers the
+   snapport from that stop to the end of the document, so everything past it is
+   unsnapped and reads as ordinary scrolling. */
 #shared-footer {
   scroll-snap-align: start;
-  scroll-margin-top: calc(-1 * var(--forest-snap-pad, 0px));
 }
 
 /* Overview step */

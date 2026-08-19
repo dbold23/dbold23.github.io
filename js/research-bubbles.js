@@ -16,6 +16,8 @@ let stage = null;
 let shell = null;
 let bodyEl = null;
 let closeBtn = null;
+// True while the open panel owns the top history entry.
+let panelEntry = false;
 
 let openBubble = null;
 let closingBubble = null;
@@ -223,11 +225,36 @@ function openPanel(bubble) {
   attachLazyVideos(bodyEl);
   wireReader();
   closeBtn.focus();
+
+  // A history entry of its own, so Back — the button on Android, the edge
+  // swipe on iOS — closes the panel instead of leaving the Research path
+  // entirely. The URL is deliberately left alone: routing here is driven by
+  // the hash, so an entry that does not touch it is invisible to the router
+  // and syncToHash finds nothing to do when this is popped.
+  if (!panelEntry) {
+    history.pushState({ ...(history.state || {}), bubbleStage: true }, '');
+    panelEntry = true;
+  }
 }
 
 // ---- Close ----
-export function closeResearchStage() {
+//
+// Three ways out on a desktop: the button, the scrim behind the panel, and
+// Escape. On a phone the panel is full-bleed, so the scrim is completely
+// buried — measured, zero of 2108 tap points across the viewport could reach
+// it — and there is no Escape key. That left one 40px button in the far corner
+// as the only exit on the one device where reaching a far corner is hardest.
+// So the phone gets the two a phone actually has: Back, and a swipe down.
+
+export function closeResearchStage(fromHistory = false) {
   if (!isOpen()) return;
+
+  // Give the entry back unless the pop is what brought us here, in which case
+  // the browser has already taken it.
+  if (panelEntry) {
+    panelEntry = false;
+    if (!fromHistory) history.back();
+  }
 
   const bubble = openBubble;
   openBubble = null;
@@ -487,8 +514,33 @@ export function initResearchBubbles() {
   initDriftToggle();
 
   // Escape hatches: the close button, the scrim, and Escape
-  closeBtn.addEventListener('click', closeResearchStage);
-  stage.querySelector('[data-stage-dismiss]')?.addEventListener('click', closeResearchStage);
+  // Wrapped, not passed directly: these hand their click Event to the first
+  // parameter, and that parameter now means "the history entry is already gone".
+  closeBtn.addEventListener('click', () => closeResearchStage());
+  stage.querySelector('[data-stage-dismiss]')
+    ?.addEventListener('click', () => closeResearchStage());
+
+  // Back closes the panel rather than leaving the path.
+  window.addEventListener('popstate', () => {
+    if (isOpen()) closeResearchStage(true);
+  });
+
+  // Swipe down to dismiss, the gesture a full-screen sheet is expected to have.
+  // Only from the top of the article, so it cannot be triggered while reading,
+  // and only for a clearly vertical drag, so it does not fight the scroll.
+  let sx = 0, sy = 0;
+  stage.addEventListener('touchstart', (event) => {
+    sx = event.changedTouches[0].clientX;
+    sy = event.changedTouches[0].clientY;
+  }, { passive: true });
+  stage.addEventListener('touchend', (event) => {
+    if (!isOpen()) return;
+    const scroller = stage.querySelector('.bubble-stage-scroll');
+    if (scroller && scroller.scrollTop > 4) return;
+    const dx = event.changedTouches[0].clientX - sx;
+    const dy = event.changedTouches[0].clientY - sy;
+    if (dy > 90 && Math.abs(dy) > Math.abs(dx) * 1.5) closeResearchStage();
+  }, { passive: true });
 
   document.addEventListener('keydown', (event) => {
     if (!isOpen()) return;

@@ -487,8 +487,24 @@ body:has(.forest-map-sticky[data-camera="exploring"]) .leaf {
    with its first lines behind the map, which is the half-swallowed state this
    is meant to remove. */
 html:has(body[data-active-path="forest"]) {
-  scroll-snap-type: y mandatory;
+  /* proximity, not mandatory. Under mandatory there is no such thing as a small
+     scroll: every gesture either springs back to where it started or commits a
+     whole card, because the scroll is not permitted to rest anywhere else. That
+     all-or-nothing response is what reads as over-sensitive — nudge the page and
+     it either ignores you or jumps. proximity keeps the locking-on where it
+     matters, since a step is exactly one snapport tall and any gesture that
+     travels a meaningful distance still ends up inside a stop's pull, while
+     letting a small movement stay small. */
+  scroll-snap-type: y proximity;
   scroll-padding-top: 0;
+
+  /* html carries scroll-behavior: smooth globally (css/base.css), which makes
+     the browser's snap correction an animated scroll rather than an instant
+     one. Combined with a snap on every gesture that meant two animations
+     overlapping and a correction still running when the next gesture arrived.
+     Programmatic scrolls that want smoothing ask for it explicitly, so nothing
+     here loses it. */
+  scroll-behavior: auto;
 }
 
 /* Holding the map is not reading the cards, and the band changes height when
@@ -511,18 +527,17 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
   padding: 3rem 2rem;
 }
 
-/* The top of the section has to be a stop of its own. Snapping is mandatory,
-   so a region with no snap point in it is a region the scroll cannot rest in —
-   without this the hero would be scrolled away and unreachable.
+/* A stop at the top of the section, so returning to the hero lands cleanly.
 
-   The footer needs one for the same reason and is easier to miss: it is a
-   sibling of the whole main element, a thousand pixels of it, and with the last
-   card as the final stop there was no way to reach any of it. Being taller than
-   the snapport it snaps loosely — the spec lets the scroll rest anywhere that
-   keeps the area covering the window — so it reads as ordinary scrolling once
-   you are inside it, which is what a footer should do. */
+   The footer deliberately has none. It needed one while snapping was mandatory,
+   because a region containing no snap point was a region the scroll could not
+   rest in, and a thousand pixels of footer were unreachable without it. Under
+   proximity nothing is unreachable, so the only thing a snap point would still
+   do there is drag the footer's top to the snapport start — which on a phone is
+   364px down the window, since scroll-padding-top holds that space for the map.
+   A footer that parks itself a third of the way down the screen is worse than
+   one that simply scrolls, so it scrolls. */
 .forest-hero { scroll-snap-align: start; }
-#shared-footer { scroll-snap-align: start; }
 
 /* Overview step */
 .forest-step[data-step="overview"] {

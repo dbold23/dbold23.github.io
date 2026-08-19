@@ -205,7 +205,19 @@
   .rp-record { grid-template-columns: 1fr; }
   .rp-topbar { padding-right: 3.6rem; }
   .rp-topbar-org { display: none; }
-  .bubble-stage-close { width: 40px; height: 40px; font-size: 1.6rem; }
+  /* 40px was under the 44px minimum, and it was the ONLY way out of a
+     full-bleed panel: the scrim that dismisses it on a desktop is completely
+     covered here, and there is no Escape key. Bigger, and clear of the notch. */
+  .bubble-stage-close {
+    width: 48px;
+    height: 48px;
+    font-size: 1.75rem;
+    top: calc(0.6rem + env(safe-area-inset-top, 0px));
+    right: calc(0.6rem + env(safe-area-inset-right, 0px));
+  }
+
+  /* Says Esc, which a phone has not got. The swipe and Back are the exits
+     here, and neither one wants a label. */
   .bubble-stage-hint { display: none; }
 
   /* File tree — mobile */

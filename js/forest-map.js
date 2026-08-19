@@ -805,6 +805,43 @@ function cameraFor(step) {
 
 let flightToken = 0;
 
+// ---- Committing a step ----
+//
+// flyToStep is a 3200ms flight of tens of kilometres with a large bearing
+// swing, and it used to run synchronously from the observer callback the
+// instant the nearest-to-centre step changed. That was survivable while the
+// page scrolled freely, because a gentle scroll usually did not change which
+// step was nearest. Snapping removed that: the smallest input a reader can
+// commit now always changes the step, so the smallest input always launched the
+// largest camera move the section has — and because MapLibre's flyTo begins by
+// hard-stopping whatever is in flight and planning a fresh arc from wherever
+// the camera had got to, a second nudge inside those 3.2 seconds threw the
+// camera somewhere it had never been heading.
+//
+// The observer still decides WHICH step is current, immediately. This only
+// holds the expensive part until the scroll has actually stopped moving, so one
+// flight is planned per resting place rather than one per boundary crossed.
+const SETTLE_MS = 160;
+let settleTimer = 0;
+let pendingStep = null;
+
+function commitStepWhenSettled(step) {
+  pendingStep = step;
+  clearTimeout(settleTimer);
+  settleTimer = setTimeout(() => {
+    settleTimer = 0;
+    if (!pendingStep || pendingStep === activeStep) return;
+    activeStep = pendingStep;
+    flyToStep(activeStep);
+    document.querySelectorAll('.forest-card').forEach((card) => {
+      card.classList.toggle(
+        'visible',
+        card.closest('.forest-step')?.dataset.step === activeStep
+      );
+    });
+  }, SETTLE_MS);
+}
+
 function flyToStep(step) {
   if (!map || exploring) return;
   stopDrift();
@@ -1025,13 +1062,7 @@ function watchSteps() {
 
       const step = best?.dataset.step;
       if (!step || step === activeStep) return;
-      activeStep = step;
-
-      flyToStep(step);
-
-      document.querySelectorAll('.forest-card').forEach((card) => {
-        card.classList.toggle('visible', card.closest('.forest-step')?.dataset.step === step);
-      });
+      commitStepWhenSettled(step);
     },
     // A band across the middle of the viewport, so a step becomes active when
     // it reaches the reader's eyeline rather than when it first peeks in.
@@ -1363,6 +1394,11 @@ export function destroy() {
   stopDrift();
   clearTimeout(hintTimer);
   hintTimer = 0;
+  // A step waiting on the scroll to settle must not fly a map that is being
+  // torn down, or that the reader has already scrolled away from.
+  clearTimeout(settleTimer);
+  settleTimer = 0;
+  pendingStep = null;
 
   if (idleHandle) {
     if (window.cancelIdleCallback) window.cancelIdleCallback(idleHandle);

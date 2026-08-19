@@ -1016,10 +1016,21 @@ function warmStep(step) {
   const site = byStep(step);
   if (!site || !map) return;
 
+  /* The camera this asks for has to be the camera the flight will actually
+     use, and those were two different cameras. cameraFor prefers a zoom derived
+     from the site's own boundary once the outlines have landed, falling back to
+     the hand-picked stop until then — while this warmed site.zoom regardless.
+     A zoom that differs by even half a level resolves to a different tile
+     level, so the reader watched the real tiles load in front of a set that had
+     been fetched for nothing. Boundaries landing re-runs this pass, so the
+     first site gets warmed again at its true framing. */
+  const cam = cameraFor(step);
+  const [lon, lat] = cam.center;
+
   const { width, height } = map.getCanvas();
   const spec = BASE;
 
-  tilesForView(site.lat, site.lon, site.zoom, width, height).forEach(([z, y, x]) => {
+  tilesForView(lat, lon, cam.zoom, width, height).forEach(([z, y, x]) => {
     if (prefetchBudget <= 0) return;
     const key = `${z}/${y}/${x}`;
     if (prefetched.has(key)) return;

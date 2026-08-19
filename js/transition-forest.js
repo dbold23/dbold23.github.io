@@ -8,7 +8,7 @@ import { randomRange, prefersReducedMotion, sleep } from './utils.js';
    shape completely (traced SVG -> Leaflet), and the CSS that used to style the
    SVG is gone, so a visitor holding a cached copy of the old module would get
    new CSS driving old markup and see an empty panel. */
-import { init as initForestMap, destroy as destroyForestMap } from './forest-map.js?v=20260819n';
+import { init as initForestMap, destroy as destroyForestMap } from './forest-map.js?v=20260819p';
 
 const LEAF_COUNT = 20;
 let leaves = [];
@@ -91,13 +91,30 @@ export function stopLeaves() {
   leaves = [];
 }
 
-// Parallax scroll handler
+// Parallax scroll handler.
+//
+// Two things this used to do on every scroll frame: re-run querySelectorAll,
+// and transform three viewport-sized repeating-background layers. On a desktop
+// that is free. On a phone the same frame is already carrying a full-width
+// WebGL map, a sticky band and a snap animation, and the trees are the one
+// piece of it that is pure decoration — so on a coarse pointer they simply hold
+// still. They are still drawn; they just stop being re-composited to produce an
+// effect that is mostly hidden behind the map band anyway.
+const PARALLAX_SPEEDS = [0.3, 0.15, 0.05];
+let treeLayers = null;
+let parallaxOff = null;
+
 export function updateParallax(scrollY) {
-  const layers = document.querySelectorAll('.tree-layer');
-  const speeds = [0.3, 0.15, 0.05];
-  layers.forEach((layer, i) => {
-    layer.style.transform = `translateY(${scrollY * speeds[i]}px)`;
-  });
+  if (parallaxOff === null) {
+    parallaxOff = window.matchMedia('(pointer: coarse)').matches;
+  }
+  if (parallaxOff) return;
+  if (!treeLayers || !treeLayers.length || !treeLayers[0].isConnected) {
+    treeLayers = Array.from(document.querySelectorAll('.tree-layer'));
+  }
+  for (let i = 0; i < treeLayers.length; i++) {
+    treeLayers[i].style.transform = `translateY(${scrollY * PARALLAX_SPEEDS[i]}px)`;
+  }
 }
 
 // Start/Stop

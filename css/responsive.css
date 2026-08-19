@@ -305,6 +305,13 @@
     background: radial-gradient(ellipse 130% 100% at 50% 45%, transparent 40%, rgba(15, 42, 30, 0.55) 100%);
   }
 
+  /* Twenty leaf divs, each with its own animation, on a fixed full-viewport
+     container that therefore composites continuously — sharing a frame with a
+     full-width WebGL map, a sticky band and a snap animation. They were only
+     ever turned off for reduced motion. On a phone they are also almost
+     entirely behind the map band. The drift goes; the forest does not. */
+  .leaf-container { display: none !important; }
+
   .fmap-ui { font-size: 0.72rem; }
 
   /* Clear of the fixed .v2-nav, which spans x 44-344 at the top on a phone */
@@ -321,8 +328,17 @@
   .fmap-hint { bottom: 3.2rem; }
 }
 
-/* Very small screens — collapse nav labels to dots only */
-@media (max-width: 420px) {
+/* Collapse the nav to dots.
+   This was capped at 420px, which was wrong by exactly the width of the phones
+   people actually hold: an iPhone Pro Max reports 430, a 16 Pro Max 440, a
+   Pixel 412. Measured at 446 with the labels on, the pill wants 466px and runs
+   from x=-10 to x=456 — off BOTH edges of the screen at once, with the body's
+   overflow-x hidden quietly swallowing the evidence.
+
+   Even with the compact type this block already uses, the four spelled-out
+   labels need about 466px, so the threshold has to sit above every phone and
+   below the width where the words genuinely fit. */
+@media (max-width: 540px) {
   .nav-btn-label { display: none; }
   /* 0.35rem of padding around a 10px dot is a 23.2px target — 27% of the
      minimum area, for the only control that moves between the four sections. */

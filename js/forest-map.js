@@ -102,6 +102,10 @@ let ui = null;
 let ro = null;
 let stepObserver = null;
 let sectionObserver = null;
+let panelObserver = null;
+let panelVisible = true;
+let scrollIdleTimer = 0;
+let onPageScroll = null;
 
 let activeStep = 'overview';
 let exploring = false; // TAKEOVER: reader owns the camera
@@ -892,8 +896,11 @@ function flyToStep(step) {
        token because moveend fires for every move, including the ones this
        very drift causes and any flight that has since superseded it. */
     map.once('moveend', () => {
-      if (token !== flightToken || exploring) return;
-      startDrift();
+      if (token !== flightToken) return;
+      // Through resumeDrift, not startDrift: a flight can perfectly well land
+      // while the panel has scrolled off or the reader is still moving, and
+      // neither is a moment to start redrawing terrain every frame.
+      resumeDrift();
     });
   }
 
@@ -1114,16 +1121,68 @@ function watchSteps() {
         if (exploring) setExploring(false);
         return;
       }
-      /* Back on screen: pick the orbit up again. flyToStep restarts it when
-         the STEP changes, which misses the common case of leaving and coming
-         back to the same one — that reader would return to a still frame.
-         Not during a flight: that one starts its own orbit on arrival, and
-         two of them would fight over the bearing. */
-      if (!exploring && !document.hidden && !map?.isEasing()) startDrift();
+      /* Resuming the orbit is the panel observer's job below, not this one's.
+         Scrolling back up out of the footer brings the section's bottom edge
+         on screen well before the sticky panel returns, so starting here would
+         put the map back to a full-rate redraw while it is still off screen —
+         the exact frame this pair is meant to protect. */
     },
     { threshold: 0 }
   );
   sectionObserver.observe(section);
+
+  /* The orbit is a rAF loop calling map.setBearing() every frame, which makes
+     MapLibre redraw the whole terrain scene every frame. It is by a wide margin
+     the most expensive thing on this path, and the section observer above is
+     the wrong thing to gate it on: #path-forest is around 3600px tall, so it
+     goes on intersecting long after the map itself has scrolled away. Leaving
+     the last card was therefore the worst frame on the page — a full-rate
+     WebGL redraw of a panel nobody can see, while that same large layer is
+     being scrolled and the footer underneath it is painting for the first time.
+     Gate it on the panel instead, which stops exactly when it leaves the
+     screen. */
+  const panel = host?.closest('.forest-map-sticky') || host;
+  if (panel) {
+    panelObserver = new IntersectionObserver(
+      ([entry]) => {
+        panelVisible = entry.isIntersecting;
+        if (!panelVisible) {
+          stopDrift();
+          return;
+        }
+        resumeDrift();
+      },
+      { threshold: 0 }
+    );
+    panelObserver.observe(panel);
+  }
+
+  /* And the orbit gives way to the scroll.
+
+     On a phone the panel stays pinned across the whole card column, so it is
+     still on screen — still redrawing the terrain scene on every frame — for
+     the entire length of the reader's journey out of the last location and
+     into the footer. That redraw is competing with the compositor for exactly
+     the frames the scroll needs, and it is decorative: nobody is admiring a
+     six-degrees-per-second bearing creep while the page is moving under their
+     thumb. So it stands down while the page scrolls and picks up again once
+     the scroll settles, on the same settle window the camera commit uses. */
+  onPageScroll = () => {
+    stopDrift();
+    clearTimeout(scrollIdleTimer);
+    scrollIdleTimer = setTimeout(() => {
+      scrollIdleTimer = 0;
+      resumeDrift();
+    }, SETTLE_MS);
+  };
+  window.addEventListener('scroll', onPageScroll, { passive: true });
+}
+
+function resumeDrift() {
+  if (!panelVisible || exploring || document.hidden) return;
+  if (scrollIdleTimer) return;         // still mid-scroll
+  if (map?.isEasing()) return;         // a flight starts its own on arrival
+  startDrift();
 }
 
 /* app.js calls start() while #path-forest is still display:none (app.js:105
@@ -1267,7 +1326,7 @@ function wireInteraction() {
      render. */
   on(document, 'visibilitychange', () => {
     if (document.hidden) stopDrift();
-    else if (!exploring && !map?.isEasing()) startDrift();
+    else resumeDrift();
   });
 
   map.on('move', updateReadout);
@@ -1439,6 +1498,18 @@ export function destroy() {
   if (stepObserver) {
     stepObserver.disconnect();
     stepObserver = null;
+  }
+  if (onPageScroll) {
+    window.removeEventListener('scroll', onPageScroll);
+    onPageScroll = null;
+  }
+  clearTimeout(scrollIdleTimer);
+  scrollIdleTimer = 0;
+  panelVisible = true;
+
+  if (panelObserver) {
+    panelObserver.disconnect();
+    panelObserver = null;
   }
   if (sectionObserver) {
     sectionObserver.disconnect();

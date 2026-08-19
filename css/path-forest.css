@@ -495,7 +495,9 @@ html:has(body[data-active-path="forest"]) {
      finite, and it is honest about the intent, so it stays. The thing that
      actually bounds a gesture is scroll-snap-stop on the steps below. */
   scroll-snap-type: y proximity;
-  scroll-padding-top: 0;
+  /* Held as one number because the footer rule below has to cancel it exactly. */
+  --forest-snap-pad: 0px;
+  scroll-padding-top: var(--forest-snap-pad);
 
   /* Belt and braces for Gecko/WebKit only. html carries scroll-behavior: smooth
      globally (css/base.css) and an animated snap correction can still be
@@ -533,7 +535,7 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
   padding: 3rem 2rem;
 }
 
-/* Neither the hero nor the footer is a stop.
+/* The hero is not a stop. The footer is.
 
    The hero had one, and it was a trap. It is a whole screen tall with nothing
    to snap to inside it, and its snap position is scroll offset zero — so any
@@ -544,14 +546,25 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
    card below carries scroll-snap-stop so a gesture leaving the hero still
    cannot overshoot past it.
 
-   The footer deliberately has none either. It needed one while snapping was mandatory,
-   because a region containing no snap point was a region the scroll could not
-   rest in, and a thousand pixels of footer were unreachable without it. Under
-   proximity nothing is unreachable, so the only thing a snap point would still
-   do there is drag the footer's top to the snapport start — which on a phone is
-   364px down the window, since scroll-padding-top holds that space for the map.
-   A footer that parks itself a third of the way down the screen is worse than
-   one that simply scrolls, so it scrolls. */
+   The footer gets one back, and the mandatory version obscured why it needs it.
+   A snap point does not only stop you, it PULLS you. At every card that pull
+   runs forward onto the next card, which is the entire effect. After the last
+   card there was nothing to be pulled to, so the only thing the pull could do
+   was drag the reader back onto the card they were trying to leave: measured, a
+   240px band around the final stop that could not be rested in at all. Four
+   rounds of performance work went straight past this, because it was never a
+   performance problem — the scroll was fighting the reader, and being fought
+   reads as lag.
+
+   It carries a negative scroll-margin that cancels the container's
+   scroll-padding. That padding exists to hold space for the map band, and the
+   map has scrolled away by the time the footer is the thing being snapped to.
+   Being far taller than the snapport the footer then snaps loosely, so it reads
+   as ordinary scrolling once you are inside it. */
+#shared-footer {
+  scroll-snap-align: start;
+  scroll-margin-top: calc(-1 * var(--forest-snap-pad, 0px));
+}
 
 /* Overview step */
 .forest-step[data-step="overview"] {

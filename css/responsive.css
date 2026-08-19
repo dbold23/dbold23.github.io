@@ -279,7 +279,11 @@
      made a card drift up behind the map on the way past — and what made getting
      back to the top take as long as it did. */
   html:has(body[data-active-path="forest"]) {
-    scroll-padding-top: calc(5.5rem + env(safe-area-inset-top, 0px) + 34svh);
+    /* Set the variable, not the property: path-forest.css reads it for
+       scroll-padding-top AND for the negative scroll-margin that lets the
+       footer snap to the top of the window rather than to the bottom of a map
+       band that has already scrolled away. */
+    --forest-snap-pad: calc(5.5rem + env(safe-area-inset-top, 0px) + 34svh);
   }
   .forest-step {
     /* start, not center: a card taller than the window then overflows downward,

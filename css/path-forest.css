@@ -487,23 +487,21 @@ body:has(.forest-map-sticky[data-camera="exploring"]) .leaf {
    with its first lines behind the map, which is the half-swallowed state this
    is meant to remove. */
 html:has(body[data-active-path="forest"]) {
-  /* proximity, not mandatory. Under mandatory there is no such thing as a small
-     scroll: every gesture either springs back to where it started or commits a
-     whole card, because the scroll is not permitted to rest anywhere else. That
-     all-or-nothing response is what reads as over-sensitive — nudge the page and
-     it either ignores you or jumps. proximity keeps the locking-on where it
-     matters, since a step is exactly one snapport tall and any gesture that
-     travels a meaningful distance still ends up inside a stop's pull, while
-     letting a small movement stay small. */
+  /* proximity rather than mandatory — but do not expect much of it in Chrome.
+     Blink initialises its proximity range to numeric_limits<float>::max(), so
+     for end-of-gesture snapping the two strictnesses are the same code path:
+     measured here, one wheel notch from a stop moves the page zero pixels under
+     either. It is a real improvement in Gecko and WebKit, where the range is
+     finite, and it is honest about the intent, so it stays. The thing that
+     actually bounds a gesture is scroll-snap-stop on the steps below. */
   scroll-snap-type: y proximity;
   scroll-padding-top: 0;
 
-  /* html carries scroll-behavior: smooth globally (css/base.css), which makes
-     the browser's snap correction an animated scroll rather than an instant
-     one. Combined with a snap on every gesture that meant two animations
-     overlapping and a correction still running when the next gesture arrived.
-     Programmatic scrolls that want smoothing ask for it explicitly, so nothing
-     here loses it. */
+  /* Belt and braces for Gecko/WebKit only. html carries scroll-behavior: smooth
+     globally (css/base.css) and an animated snap correction can still be
+     running when the next gesture arrives. It does nothing in Blink, which
+     hardcodes a smooth behaviour for snap-reason scrolls whatever the author
+     asks for. Programmatic scrolls that want smoothing pass it explicitly. */
   scroll-behavior: auto;
 }
 
@@ -519,6 +517,14 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
 
 .forest-step {
   scroll-snap-align: center;
+  /* A gesture may not pass over this stop. Snap STRICTNESS only decides whether
+     the scroll ends on a card; nothing about it bounds how many cards a single
+     flick crosses, and a thumb flick's momentum projects far further than the
+     448px (phone) or 740px (desktop) between stops — so one swipe was landing
+     three locations away, and each landing is a 3.2s camera flight. This is the
+     "one swipe per location" the layout was asked for, and it is the only
+     declaration in the stack that actually delivers it. */
+  scroll-snap-stop: always;
   min-height: 85vh;
   margin-left: 55%;
   display: flex;

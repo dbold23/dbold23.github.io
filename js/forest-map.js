@@ -853,19 +853,38 @@ function flyToStep(step) {
   if (REDUCED) {
     map.jumpTo(cam);
   } else {
+    const bearing = shortestBearing(map.getBearing(), cam.bearing);
+
+    /* Every leg used to be given the same 3200ms whatever it was. The legs are
+       not the same: the overview frame is four zoom levels and tens of
+       kilometres from the nearest site, while two neighbouring preserves are a
+       short hop. Handing both the same budget makes the short one crawl and the
+       long one tear — and the long one is the very first move a reader
+       triggers, because the section opens on the overview frame and the first
+       card leaves it. Scaling by how far the camera actually has to travel is
+       what makes them read at the same speed. */
+    const legs =
+      Math.abs(map.getZoom() - cam.zoom) / 4 +
+      Math.abs(bearing - map.getBearing()) / 180 +
+      Math.abs((cam.pitch ?? 0) - map.getPitch()) / 60;
+    const duration = 1500 + 1500 * Math.min(1, legs);
+
     map.flyTo({
       ...cam,
       // Continue turning the way the drift was already going rather than
       // unwinding — this is what makes leaving one site and arriving at the
       // next read as a single move instead of two.
-      bearing: shortestBearing(map.getBearing(), cam.bearing),
-      duration: 3200,
+      bearing,
+      duration,
       // A flatter arc than the default. flyTo climbs to clear the distance,
       // and over terrain a high climb reads as being yanked upward.
       curve: 1.1,
-      // Ease out much more than in, so the camera settles onto the site
-      // instead of stopping dead on it.
-      easing: (t) => 1 - Math.pow(1 - t, 3),
+      /* Ease in as well as out. The pure ease-out had a derivative of 3 at t=0,
+         so better than a quarter of the whole move happened in the first tenth
+         of a second — the lurch. This still settles onto the site rather than
+         stopping dead on it, it just no longer starts at three times its own
+         average speed. */
+      easing: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
       essential: true,
     });
 

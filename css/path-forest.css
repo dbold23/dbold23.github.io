@@ -533,9 +533,18 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
   padding: 3rem 2rem;
 }
 
-/* A stop at the top of the section, so returning to the hero lands cleanly.
+/* Neither the hero nor the footer is a stop.
 
-   The footer deliberately has none. It needed one while snapping was mandatory,
+   The hero had one, and it was a trap. It is a whole screen tall with nothing
+   to snap to inside it, and its snap position is scroll offset zero — so any
+   light gesture anywhere near the top resolved back to zero. You could not
+   leave the hero without a deliberate hard flick, and you could not come back
+   to it without being caught. Removing it does not make the top unreachable:
+   zero is the scroll origin, always reachable by definition, and the first
+   card below carries scroll-snap-stop so a gesture leaving the hero still
+   cannot overshoot past it.
+
+   The footer deliberately has none either. It needed one while snapping was mandatory,
    because a region containing no snap point was a region the scroll could not
    rest in, and a thousand pixels of footer were unreachable without it. Under
    proximity nothing is unreachable, so the only thing a snap point would still
@@ -543,7 +552,6 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
    364px down the window, since scroll-padding-top holds that space for the map.
    A footer that parks itself a third of the way down the screen is worse than
    one that simply scrolls, so it scrolls. */
-.forest-hero { scroll-snap-align: start; }
 
 /* Overview step */
 .forest-step[data-step="overview"] {

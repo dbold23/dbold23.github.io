@@ -654,3 +654,36 @@
 
   .os-toast { bottom: 84px; }
 }
+
+/* ---------- touch targets ---------- */
+
+@media (max-width: 968px) {
+  /* responsive.css turns .terminal-dots inert at this width, on the reasoning
+     that the terminal window has no chrome to operate on a phone. That was
+     right when the dots only drove that window. These sheets borrow the same
+     markup and their red dot is the only way to close them, so it takes taps
+     again — scoped to the sheets, leaving the terminal's own dots inert. */
+  .os-mail-bar .terminal-dots,
+  .os-dialog-bar .terminal-dots,
+  .os-app-bar .terminal-dots { pointer-events: auto; }
+
+  /* A traffic light is a 12px circle: fine for a cursor, well under half the
+     ~44px a fingertip needs. The dot keeps its size; an invisible pad around
+     it catches the tap, so closing a sheet does not become a game of darts. */
+  .terminal-dots .dot::before,
+  .os-app-bar .dot::before,
+  .os-dialog-bar .dot::before,
+  .os-mail-bar .dot::before {
+    content: '';
+    position: absolute;
+    inset: -15px;
+  }
+  /* Roomier gaps so the enlarged areas cannot overlap each other. */
+  .os-dialog-bar .terminal-dots,
+  .os-mail-bar .terminal-dots,
+  .os-app-bar .terminal-dots { gap: 18px; }
+
+  /* Sheets get a real bar to grab and a bigger title, since they are now the
+     full width of the screen rather than a small floating window. */
+  .os-dialog-bar, .os-mail-bar { padding: 13px 16px; }
+}

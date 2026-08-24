@@ -571,8 +571,11 @@ function openAppWindow(key) {
   if (!spec || !surface) return;
 
   // On a phone there is no room to put a desktop application inside a window
-  // inside a page. Hand it the whole tab instead.
-  if (!isDesktop()) { window.open(spec.src, '_blank', 'noopener'); return; }
+  // inside a page, so it gets the whole tab. Navigating this one rather than
+  // opening a new one is the difference between Back returning to the
+  // portfolio and Back having nowhere to go: a _blank tab starts with no
+  // history, which left the reader stranded in the demo.
+  if (!isDesktop()) { window.location.href = spec.src; return; }
 
   const existing = surface.querySelector(`.os-app[data-app="${key}"]`);
   if (existing) {                       // already open: raise it, do not reload

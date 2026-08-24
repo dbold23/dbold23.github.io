@@ -475,10 +475,10 @@ function runAction(action, ctx) {
       openMail();
       break;
     case 'open-relay':
-      window.open('demos/relaystation.html', '_blank', 'noopener');
+      openAppWindow('relay');
       break;
     case 'open-scar':
-      window.open('demos/sharkscar.html', '_blank', 'noopener');
+      openAppWindow('scar');
       break;
     case 'path-forest':
     case 'path-ocean':
@@ -550,12 +550,138 @@ function makeDraggable(el, handle) {
   });
 }
 
+// ---------------------------------------------------------- App windows
+
+// The demos run in a window on this desktop rather than taking over a tab.
+// An iframe keeps each app's CSS and its mock API sealed off from the
+// portfolio's, which matters — both ship their own global stylesheet.
+const APP_WINDOWS = {
+  relay: { title: 'RelayStation Central', src: 'demos/relaystation.html', w: 1100, h: 680 },
+  scar:  { title: 'Shark Scar Annotator', src: 'demos/sharkscar.html',    w: 1180, h: 720 },
+};
+
+let appZ = 70;
+
+function openAppWindow(key) {
+  const spec = APP_WINDOWS[key];
+  const surface = document.querySelector('.desktop-surface');
+  if (!spec || !surface) return;
+
+  const existing = surface.querySelector(`.os-app[data-app="${key}"]`);
+  if (existing) {                       // already open: raise it, do not reload
+    existing.classList.remove('minimized');
+    existing.style.zIndex = ++appZ;
+    return;
+  }
+
+  // Fit the window to the desktop rather than trusting the nominal size, so a
+  // 1180px app does not hang off the edge of a 1024px laptop.
+  const r = surface.getBoundingClientRect();
+  const w = Math.min(spec.w, Math.max(320, r.width - 60));
+  const h = Math.min(spec.h, Math.max(260, r.height - 110));
+
+  const win = document.createElement('div');
+  win.className = 'os-app';
+  win.dataset.app = key;
+  win.style.width = `${w}px`;
+  win.style.height = `${h}px`;
+  win.style.zIndex = ++appZ;
+  win.setAttribute('role', 'dialog');
+  win.setAttribute('aria-label', spec.title);
+  win.innerHTML = `
+    <div class="os-app-bar">
+      <div class="terminal-dots">
+        <span class="dot red"    role="button" tabindex="0" aria-label="Close" data-act="close"></span>
+        <span class="dot yellow" role="button" tabindex="0" aria-label="Minimize" data-act="min"></span>
+        <span class="dot green"  role="button" tabindex="0" aria-label="Zoom" data-act="zoom"></span>
+      </div>
+      <span class="os-dialog-title">${spec.title}</span>
+      <a class="os-app-pop" href="${spec.src}" target="_blank" rel="noopener" title="Open in a new tab">↗</a>
+    </div>
+    <div class="os-app-body">
+      <iframe src="${spec.src}" title="${spec.title}" loading="lazy"
+              referrerpolicy="no-referrer"></iframe>
+    </div>
+    <div class="win-grips">
+      ${['n','s','e','w','ne','nw','se','sw'].map((d) => `<span class="win-grip win-grip-${d}" data-dir="${d}"></span>`).join('')}
+    </div>`;
+  surface.appendChild(win);
+
+  const bar = win.querySelector('.os-app-bar');
+  makeDraggable(win, bar);
+  makeResizable(win);
+  on(win, 'pointerdown', () => { win.style.zIndex = ++appZ; });
+
+  bar.addEventListener('click', (e) => {
+    const act = e.target.closest('[data-act]')?.dataset.act;
+    if (act === 'close') win.remove();
+    else if (act === 'min') win.classList.toggle('minimized');
+    else if (act === 'zoom') { win.classList.remove('minimized'); win.classList.toggle('maximized'); }
+  });
+  bar.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.dot') || e.target.closest('.os-app-pop')) return;
+    win.classList.toggle('maximized');
+  });
+}
+
+// Plain left/top/width/height resizing, for windows that are not centred by a
+// transform the way the terminal is — so no half-delta compensation here.
+function makeResizable(win) {
+  const grips = win.querySelector('.win-grips');
+  if (!grips) return;
+  const MIN_W = 340, MIN_H = 220;
+
+  grips.addEventListener('pointerdown', (e) => {
+    const grip = e.target.closest('.win-grip');
+    if (!grip || !window.matchMedia(DESKTOP_MIN).matches) return;
+    if (win.classList.contains('maximized') || win.classList.contains('minimized')) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const dir = grip.dataset.dir;
+    const parent = win.offsetParent?.getBoundingClientRect() || { left: 0, top: 0 };
+    const r = win.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const sw = r.width, sh = r.height;
+    const sl = r.left - parent.left, st = r.top - parent.top;
+
+    win.classList.add('resizing');
+    grip.setPointerCapture(e.pointerId);
+
+    const move = (ev) => {
+      const dx = ev.clientX - sx, dy = ev.clientY - sy;
+      if (dir.includes('e')) win.style.width = `${Math.max(MIN_W, sw + dx)}px`;
+      if (dir.includes('s')) win.style.height = `${Math.max(MIN_H, sh + dy)}px`;
+      if (dir.includes('w')) {
+        const w = Math.max(MIN_W, sw - dx);
+        win.style.width = `${w}px`;
+        win.style.left = `${sl + (sw - w)}px`;
+      }
+      if (dir.includes('n')) {
+        const h = Math.max(MIN_H, sh - dy);
+        win.style.height = `${h}px`;
+        win.style.top = `${st + (sh - h)}px`;
+      }
+      win.style.transform = 'none';
+    };
+    const up = () => {
+      win.classList.remove('resizing');
+      grip.removeEventListener('pointermove', move);
+      grip.removeEventListener('pointerup', up);
+    };
+    grips.addEventListener('pointermove', move);
+    grips.addEventListener('pointerup', up);
+    grip.addEventListener('pointermove', move);
+    grip.addEventListener('pointerup', up);
+  });
+}
+
 // ----------------------------------------------------------------- Dock
 
 const DOCK_APPS = [
   { id: 'finder',    label: 'Finder',           icon: 'assets/icon-finder.svg',        action: 'focus-terminal' },
-  { id: 'relay',     label: 'RelayStation',     icon: 'assets/icon-relaystation.svg',  href: 'demos/relaystation.html' },
-  { id: 'scar',      label: 'Scar Annotator',   icon: 'assets/icon-sharkscar.svg',     href: 'demos/sharkscar.html' },
+  { id: 'relay',     label: 'RelayStation',     icon: 'assets/icon-relaystation.svg',  app: 'relay' },
+  { id: 'scar',      label: 'Scar Annotator',   icon: 'assets/icon-sharkscar.svg',     app: 'scar' },
   { sep: true },
   { id: 'jorgensen', label: 'Jorgensen Lab',    icon: 'assets/jorgensen-lab-logo.avif', target: '#folder-jorgensen' },
   { id: 'jue',       label: 'Jue Lab',          icon: 'assets/jue-lab-logo.avif',       target: '#folder-jue' },
@@ -589,6 +715,7 @@ function initDock(ctx) {
     btn.classList.add('bouncing');
     setTimeout(() => btn.classList.remove('bouncing'), 700);
 
+    if (app.app) { openAppWindow(app.app); btn.classList.add('running'); return; }
     if (app.href) { window.open(app.href, '_blank', 'noopener'); btn.classList.add('running'); return; }
     if (app.target) { jumpToFolder(app.target); return; }
     if (app.action === 'mail') { openMail(); btn.classList.add('running'); return; }
@@ -756,12 +883,15 @@ export function init() {
   initWindowResize(win);
   initMenubar();
   initDock();
+  // The desktop icons are wired in transition-tech.js, which has no reach into
+  // this module's window manager; an event is the seam between the two.
+  on(window, 'os-open-app', (e) => openAppWindow(e.detail));
 }
 
 export function destroy() {
   while (cleanups.length) cleanups.pop()();
   closeDialog();
-  document.querySelectorAll('.os-mail, .os-dock, .os-toast').forEach((el) => el.remove());
+  document.querySelectorAll('.os-mail, .os-dock, .os-toast, .os-app').forEach((el) => el.remove());
   const bar = document.querySelector('.macos-menubar');
   if (bar) delete bar.dataset.menubarInit;
   const surface = document.querySelector('.desktop-surface');

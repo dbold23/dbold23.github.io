@@ -1,0 +1,314 @@
+/* Stream C — Gamification (Phase C0) personal-stats panel.
+   Private, non-competitive. Reuses the theme variables defined in styles.css. */
+
+#gamification-panel.gami-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 0 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gami-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-label);
+}
+
+.gami-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gami-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gami-meter-head,
+.gami-stat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.gami-meter-val {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.gami-track {
+  height: 6px;
+  background: var(--bg-base);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.gami-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.gami-level {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.gami-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.gami-muted {
+  color: var(--text-label);
+}
+
+/* C1 — calibration feedback is always framed positively (agreements earned),
+   so it reads as encouragement, never a red "fail". */
+.gami-positive {
+  color: var(--success, var(--accent));
+}
+
+/* C2 — achievement badges (earned chips) + "next up" progress rows. */
+.gami-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.gami-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Earned vs not-yet-earned needs no border trick: the two are already different
+   COMPONENTS. Earned badges render as pill chips (.gami-chip); "next up" renders
+   as a labelled progress meter (.gami-meter) showing 2 / 5. A previous attempt set
+   `border-style: dashed` here — but this class lands on the meter, which has no
+   border, so specifying only the style turned on a default `medium` (~3px) border
+   in the current text colour and boxed every row in heavy dashes. */
+.gami-nextup {
+  opacity: 0.85;
+}
+
+/* Experience level name — its own line because the panel is ~158px and
+   "Experience | Level 2 · Surf Line" wrapped mid-phrase. */
+.gami-level-name {
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin-top: 1px;
+}
+
+/* Inline "i" affordance inside a panel section label. */
+.gami-info {
+  cursor: help;
+}
+
+/* C4 — "your standing" coaching note (public profile only). Neutral amber, never
+   danger-red: a not-yet-trusted contributor is coached forward, not scolded. */
+.gami-warn {
+  color: var(--warning, #b8860b);
+}
+
+/* C3 — cooperative goal opt-in toggle (opt-in by design). */
+.gami-optin {
+  margin-top: 2px;
+  align-self: flex-start;
+  font-size: 11px;
+  padding: 3px 10px;
+  color: var(--text-primary);
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gami-optin:hover {
+  border-color: var(--accent);
+}
+
+/* ── hover explanations ───────────────────────────────────────────────────
+   A box we position ourselves, because `title=` waits about a second, lands
+   wherever the cursor is, and never fires on a touchscreen. An explanation
+   nobody sees is the same as no explanation. Appended to <body> and fixed, so
+   the 158px rail cannot clip it and no ancestor's overflow can hide it. */
+.gami-tip {
+  position: fixed;
+  z-index: 9999;
+  max-width: 260px;
+  padding: 7px 9px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg-card, #1b1f24);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  pointer-events: none;          /* never steals the hover that opened it */
+}
+
+.gami-has-tip { cursor: help; }
+.gami-has-tip:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+
+/* A badge not yet earned is still a goal, so it is shown, just quieter: dashed
+   rather than solid, and dimmed rather than hidden. */
+.gami-chip-locked {
+  border-style: dashed;
+  opacity: 0.62;
+}
+.gami-chip-locked:hover { opacity: 0.95; }
+
+/* ── mission goal + suggestions ───────────────────────────────────────────
+   The goal is about a mission now, so it carries the mission's own words. */
+.gami-purpose {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;              /* two lines, then stop: this is context */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.gami-state-chip { font-size: 10px; margin: 2px 0 4px; }
+
+.gami-suggest { margin-top: 8px; }
+
+.gami-suggest-link {
+  padding: 0;
+  font-size: 11px;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.gami-suggest-link:hover { text-decoration: underline; }
+
+.gami-suggest-form { display: flex; flex-direction: column; gap: 3px; margin: 6px 0; }
+.gami-sugg-label { font-size: 10px; color: var(--text-muted); }
+.gami-suggest-form input,
+.gami-suggest-form textarea,
+.gami-suggest-form select {
+  width: 100%;
+  padding: 4px 5px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.gami-sugg-err:empty { display: none; }
+.gami-sugg-err { color: var(--danger, #ff7675); }
+
+.gami-sugg-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.gami-sugg-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.gami-sugg-chip { font-size: 9px; }
+
+/* The lab lead's reply lives behind this rather than inline: a paragraph that
+   stays put for days should not push the rest of the rail down. */
+.gami-sugg-note {
+  flex: 0 0 auto;
+  width: 15px; height: 15px;
+  padding: 0;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--text);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: help;
+}
+
+.gami-sugg-withdraw {
+  flex: 0 0 auto;
+  padding: 0;
+  font-size: 10px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.gami-sugg-withdraw:hover { color: var(--danger, #ff7675); text-decoration: underline; }
+
+/* What the goal is FOR does not change while somebody works, so it does not hold
+   space above the work all day. The bar is the message; this is the footnote. */
+.gami-more { margin-top: 2px; }
+.gami-more-btn {
+  margin-top: 4px;
+  padding: 0;
+  font-size: 10px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+}
+.gami-more-btn::before { content: "\25B8 "; }             /* right-pointing triangle */
+.gami-more-btn[aria-expanded="true"]::before { content: "\25BE "; }
+.gami-more-btn:hover { color: var(--text); }
+
+/* A heading INSIDE a section, so deliberately not a .section-label: panel_ui turns
+   those into sections of their own and hoists everything after them out. */
+.gami-sub-head { margin-top: 6px; cursor: default; }
+
+/* These headings are collapsible now, so they need the affordance the rest of the
+   rail has. panel_ui owns the chevron; this only keeps the spacing honest. */
+.gami-section-label { cursor: pointer; }
+
+/* Per-block folding inside MY STATS.
+   The panel's own MY STATS heading is a PanelUI section and folds EVERYTHING —
+   that is the master switch. These headings are deliberately not PanelUI sections
+   (that flat model wrapped each one up to the next, so MY STATS folded only the
+   experience block and hiding the panel meant collapsing seven headers). They get
+   a local fold instead, so both work. */
+.gami-section-label.gami-foldable {
+  cursor: pointer;
+  user-select: none;
+}
+.gami-section-label.gami-foldable::after {
+  content: "▾";
+  float: right;
+  opacity: .45;
+  font-size: 9px;
+  transition: transform .12s ease;
+}
+.gami-block.gami-folded .gami-section-label.gami-foldable::after {
+  transform: rotate(-90deg);
+}
+/* Hide everything in a folded block EXCEPT its heading. */
+.gami-block.gami-folded > *:not(.gami-section-label) {
+  display: none;
+}

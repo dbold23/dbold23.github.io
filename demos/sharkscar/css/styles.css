@@ -50,10 +50,40 @@ body {
   flex-shrink: 0;
   z-index: 100;
 }
+.header-left { display: flex; align-items: center; gap: 8px; }
 .logo { font-weight: 700; font-size: 15px; letter-spacing: 0.3px; }
 .header-video-name { color: var(--text-muted); font-size: 12px; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .header-right { display: flex; align-items: center; gap: 8px; }
 .header-user { color: var(--text-muted); font-size: 12px; }
+
+/* Polish 7 Tier 2 — mobile drawer toggle buttons in header.
+ * Hidden on desktop (≥768px), visible on smaller screens. */
+.header-drawer-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #ddd;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+.header-drawer-btn:hover { background: var(--bg-hover); }
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 90;
+  display: none;
+  cursor: pointer;
+}
+body.left-drawer-open .drawer-backdrop,
+body.right-drawer-open .drawer-backdrop { display: block; }
 
 /* ─── WORKSPACE ─── */
 .workspace {
@@ -211,11 +241,27 @@ body {
 .mt-8 { margin-top: 8px; }
 
 /* ─── TOOL GRID ─── */
+/* .tool-grid was the left-rail 2-column layout. The tools now sit on the canvas
+   bar instead, so they lay out in a row beside the enhance controls. The rule is
+   kept because .tool-btn styling is shared and other surfaces may still grid. */
 .tool-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
 }
+
+/* Drawing tools, on the canvas next to what they act on. */
+.canvas-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.canvas-tools .tool-btn { padding: 4px 10px; }
 .tool-btn {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -288,6 +334,14 @@ select.input { cursor: pointer; }
 .divider { border-top: 1px solid var(--border); margin: 4px 0; }
 
 /* ─── NO-SCARS BANNER & INFO NOTE ─── */
+/* "No scars visible" means the rail has nothing left to ask about scars. The
+   scar board, the sighting's per-clip review and follow-a-scar all go; ROI stays,
+   because "worth another look" is a live answer on an animal with no marks.
+   Set by scar_form.js as a class so each panel's own feature gate still decides
+   whether it exists at all. */
+body.no-scars-declared #objects-panel,
+body.no-scars-declared #tracks-panel { display: none !important; }
+
 .no-scars-banner { padding: 16px 8px; text-align: center; color: var(--text-label); }
 .no-scars-banner p { margin-bottom: 12px; font-size: 13px; }
 .enc-info-note { font-size: 11px; color: var(--text-muted); font-style: italic; margin: 4px 0 0; }
@@ -346,6 +400,156 @@ select.input { cursor: pointer; }
 #zone-svg.flipped { transform: scaleX(-1); }
 #zone-svg.flipped .zone-seg text { transform: scaleX(-1); transform-box: fill-box; transform-origin: center; }
 
+/* ─── Phase 2 — track verify modal zone SVG ─── */
+/* Mirrors .zone-seg rules; scoped class avoids cross-firing the scar form's
+   global .zone-seg click handler at static/js/scar_form.js:106. */
+.track-zone-seg polygon {
+  fill: var(--zone-default);
+  stroke: var(--border);
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.15s;
+}
+.track-zone-seg:hover polygon { fill: var(--zone-hover); }
+.track-zone-seg.suggested polygon {
+  /* Model's pose-derived suggestion — distinct from active. Dashed light-blue
+     outline, no full fill. Reads as 'a hint' visually. */
+  stroke: #9bf;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+.track-zone-seg.active polygon { fill: var(--zone-active); stroke: var(--accent); stroke-width: 2; }
+.track-zone-seg text { fill: var(--text-primary); font-size: 11px; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+#track-zone-svg.flipped { transform: scaleX(-1); }
+#track-zone-svg.flipped .track-zone-seg text { transform: scaleX(-1); transform-box: fill-box; transform-origin: center; }
+
+/* ─── Phase 2 UX #3 — in-sidebar track editor zone SVG ───
+   ScarFormFields uses prefix "track-edit" → class "track-edit-zone-seg", which
+   the modal's ".track-zone-seg" rules above do NOT match. Without these the
+   polygons fall back to the SVG default (solid black). Mirrors .track-zone-seg. */
+.track-edit-zone-seg polygon {
+  fill: var(--zone-default);
+  stroke: var(--border);
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.15s;
+}
+.track-edit-zone-seg:hover polygon { fill: var(--zone-hover); }
+.track-edit-zone-seg.suggested polygon {
+  stroke: #9bf;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+.track-edit-zone-seg.active polygon { fill: var(--zone-active); stroke: var(--accent); stroke-width: 2; }
+.track-edit-zone-seg text { fill: var(--text-primary); font-size: 11px; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+#track-edit-zone-svg.flipped { transform: scaleX(-1); }
+#track-edit-zone-svg.flipped .track-edit-zone-seg text { transform: scaleX(-1); transform-box: fill-box; transform-origin: center; }
+
+/* ─── Track trim buttons (verify modal) ─── */
+.track-trim-btn {
+  background: #222;
+  color: #aaa;
+  border: 1px solid #444;
+  border-radius: 3px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 10px;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+.track-trim-btn:hover { background: #333; color: #ddd; border-color: #4a90d9; }
+.track-trim-btn:active { background: #4a90d9; color: #fff; }
+
+/* ─── Tier 2E — track triage card grid ─── */
+#tracks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; }
+.track-card {
+  background: var(--bg-card, #242736);
+  border: 1px solid var(--border, #333);
+  border-left: 3px solid #fc3;  /* yellow = proposed */
+  border-radius: 4px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 10px;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.track-card.fading { opacity: 0; transform: scale(0.95); }
+.track-card.focused { outline: 2px solid #4a90d9; outline-offset: 1px; }
+.track-card-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #000;
+  border-radius: 3px;
+  display: block;
+  cursor: pointer;
+}
+.track-card-meta { color: #888; font-size: 10px; line-height: 1.2; }
+.track-card-meta strong { color: #ccc; }
+.track-card-hints { display: flex; flex-wrap: wrap; gap: 2px; min-height: 14px; }
+.track-card-hints .hint {
+  font-size: 9px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: #1a1a22;
+  color: #789;
+  white-space: nowrap;
+}
+.track-card-hints .hint.high { color: #9bf; border: 1px solid #466; }
+.track-card-hints .hint.med  { color: #aaa; }
+.track-card-hints .hint.low  { color: #666; }
+.track-card-hints .hint.warn { color: #f59e0b; border: 1px solid #5a4015; }
+.track-card-hints .hint.color-pink  { background: #6a3a4a; color: #ffd0d8; }
+.track-card-hints .hint.color-white { background: #555; color: #fff; }
+.track-card-hints .hint.color-black { background: #111; color: #999; }
+.track-card-hints .hint.color-grey  { background: #444; color: #ccc; }
+.track-card-type-row select {
+  width: 100%;
+  background: #1a1a22;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 2px;
+  padding: 2px 4px;
+  font-size: 10px;
+  font-family: inherit;
+}
+.track-card-actions { display: flex; gap: 3px; }
+.track-card-btn {
+  flex: 1;
+  background: #1a1a22;
+  color: #ccc;
+  border: 1px solid #444;
+  border-radius: 2px;
+  padding: 4px 0;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.1s, border-color 0.1s;
+}
+.track-card-btn:hover { background: #2a2a32; }
+.track-card-btn.accept:hover  { background: rgba(80,200,120,0.18); border-color: #3a8; color: #6c9; }
+.track-card-btn.reject:hover  { background: rgba(220,80,80,0.18);  border-color: #a33; color: #c66; }
+.track-card-btn.edit:hover    { background: rgba(74,144,217,0.18);  border-color: #4a90d9; color: #6af; }
+.track-card-btn:disabled, .track-card-btn[aria-disabled="true"] {
+  opacity: 0.4; cursor: not-allowed; background: #1a1a22;
+}
+
+/* Mode toggle (tracks-panel header) */
+.tracks-mode-btn { transition: background 0.1s, color 0.1s; }
+.tracks-mode-btn.active { background: #2a2a32 !important; color: #ccc !important; }
+
+/* ─── KEYPOINT REFERENCE DIAGRAM ─── */
+.kp-diagram { background: var(--bg-card); border: 1px solid var(--border); border-radius: 5px; padding: 4px; margin: 4px 0; }
+.kp-diagram svg { width: 100%; }
+.kp-dot { transition: all 0.2s; cursor: pointer; }
+.kp-dot.pending  { fill: var(--text-muted); opacity: 0.2; }
+.kp-dot.current  { fill: #f59e0b; opacity: 1; stroke: #f59e0b; stroke-width: 2; }
+.kp-dot.done     { fill: #10b981; opacity: 1; }
+.kp-dot.occluded { fill: #c084fc; opacity: 0.8; }
+.kp-dot.skipped  { fill: var(--text-muted); opacity: 0.3; }
+#kp-ref-svg.flipped { transform: scaleX(-1); }
+
 /* ─── COLOR BUTTONS ─── */
 .color-group { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0; }
 .color-btn {
@@ -358,7 +562,12 @@ select.input { cursor: pointer; }
   color: #fff;
   transition: border-color 0.15s;
 }
-.color-btn.active { border-color: #fff; }
+/* Selection ring is the accent blue, NEVER #fff: the WHITE swatch is #f0f0f0,
+   so a white border on it is invisible and the one colour a labeler cannot
+   confirm they picked is the one they picked. scar_form_helpers.js already drew
+   its generated swatches with #4a90d9 (= --accent); only this static copy of the
+   picker was left on white. Same words, same widget, now the same feedback. */
+.color-btn.active { border-color: var(--accent); }
 
 /* ─── SCARS LIST ─── */
 .scars-list { display: flex; flex-direction: column; gap: 3px; }
@@ -462,6 +671,64 @@ select.input { cursor: pointer; }
 .shortcuts-table td { padding: 5px 8px; border-bottom: 1px solid var(--border); font-size: 12px; }
 .shortcuts-table td:first-child { font-family: monospace; color: var(--accent); width: 90px; }
 
+/* ─── CONFIDENCE RUBRIC ───
+   Wider than .modal-box's default because the value is in reading two levels
+   side by side — "am I a 4 or a 3?" is the only question anyone opens this to
+   answer, and a narrow box that wraps every cell to four lines hides exactly
+   the comparison being made. */
+.confidence-modal-box { max-width: 720px; }
+.rubric-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+
+/* ─── EFFORT CLOCK ───
+   Deliberately quiet. It has to be visible — a labeler must be able to see the
+   number being recorded about them — but it is not a target, and styling it
+   like a score would turn "how long did this take" into "how fast can I be",
+   which is the one thing this metric must never become. */
+.effort-line { margin-top: 4px; text-align: right; min-height: 13px; }
+#effort-readout {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  cursor: help;
+}
+#effort-readout.paused { opacity: 0.45; }
+.rubric-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.rubric-table tr:last-child td { border-bottom: none; }
+.rubric-table tr:hover td { background: var(--bg-card); }
+
+/* The level cell: the stars ARE the label, so a labeler matches what they see
+   in the form rather than translating a digit. */
+.rubric-level { width: 108px; white-space: nowrap; }
+.rubric-stars { color: var(--warning); font-size: 13px; letter-spacing: 1px; }
+.rubric-stars .off { color: var(--border); }
+.rubric-name {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.rubric-means   { font-size: 12px; color: var(--text-primary); line-height: 1.5; }
+.rubric-example {
+  width: 34%;
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* The row for the star currently selected in the form — opening the rubric
+   should answer "where am I?" before it answers "what are the options?". */
+.rubric-table tr.current td { background: rgba(74, 144, 217, 0.10); }
+.rubric-table tr.current .rubric-level { box-shadow: inset 2px 0 0 var(--accent); }
+
+@media (max-width: 640px) {
+  .rubric-example { display: none; }   /* the definition survives; the aside goes */
+}
+
 /* ─── SCROLLBARS ─── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
@@ -493,3 +760,688 @@ select.input { cursor: pointer; }
   text-decoration: none;
 }
 .dropdown-item:hover { background: var(--bg-hover); }
+
+/* Keypoint visibility toggles */
+.kp-vis-toggles { display: inline-flex; gap: 2px; margin-left: auto; margin-right: 4px; position: relative; z-index: 1; }
+.kp-vis-btn {
+  width: 22px; height: 22px; font-size: 11px; padding: 0;
+  border: 1px solid var(--border); border-radius: 3px;
+  background: transparent; color: var(--text-muted); cursor: pointer;
+  line-height: 20px; text-align: center;
+}
+.kp-vis-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+.kp-vis-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.kp-item { display: flex; align-items: center; gap: 4px; }
+
+/* ─── Tutorial Feature Tour ─────────────────────────────────── */
+.tutorial-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+}
+.tutorial-spotlight {
+  position: fixed;
+  border-radius: 8px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.72);
+  z-index: 2001;
+  transition: left 0.3s ease, top 0.3s ease, width 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+.tutorial-tooltip {
+  position: fixed;
+  z-index: 2002;
+  background: var(--bg-panel);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px 24px;
+  max-width: 360px;
+  min-width: 280px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+.tutorial-tooltip h4 {
+  color: var(--accent);
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+.tutorial-tooltip p {
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+.tutorial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tutorial-steps {
+  color: var(--text-label);
+  font-size: 12px;
+}
+.tutorial-btn-skip {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 10px;
+  padding: 6px 8px;
+}
+.tutorial-btn-skip:hover { color: var(--text-primary); }
+.tutorial-btn-next {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+.tutorial-btn-next:hover { filter: brightness(1.1); }
+
+/* Info icons — per-section tutorial help */
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  font-size: 10px;
+  font-style: italic;
+  font-weight: 700;
+  font-family: Georgia, serif;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--text-muted);
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-left: 6px;
+  vertical-align: middle;
+  line-height: 1;
+  padding: 0;
+}
+.info-icon:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Save flash animation */
+.save-flash {
+  animation: saveFlash 0.6s ease;
+}
+@keyframes saveFlash {
+  0%, 100% { background: var(--bg-card); }
+  30% { background: rgba(16, 185, 129, 0.3); }
+}
+
+/* ─── PROGRESS STRIP ─── */
+.progress-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  height: 24px;
+}
+.progress-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-base);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--success);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.progress-fill-pose {
+  background: #2cb5a0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * Polish 7 — Triage Card mode (gamified, mobile-first, fullscreen)
+ * Mobile breakpoint: < 768px = full bleed; ≥ 768px = card centered with max-width
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.triage-overlay {
+  position: fixed; inset: 0; z-index: 10010;
+  background: #0e1118;
+  display: none;             /* hidden until _enterTriageMode() flips inline style → flex */
+  flex-direction: column;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #e0e0e0;
+  overflow: hidden;
+  /* iOS safe-area awareness — adds padding on notched phones */
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+.triage-topbar {
+  flex: 0 0 auto;
+  height: 48px;
+  background: #15181f;
+  border-bottom: 1px solid #2a2e38;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+}
+
+.triage-icon-btn {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: 18px;
+  width: 40px; height: 40px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background 80ms;
+}
+.triage-icon-btn:hover { background: #2a2e38; }
+.triage-icon-btn:active { background: #3a3e48; }
+
+.triage-progress {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #aaa;
+}
+#triage-progress-text { font-weight: 600; color: #ccc; }
+
+.triage-stage {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #0e1118;
+  /* Padding scales with viewport — tight on mobile, generous on desktop */
+  padding: 12px;
+}
+
+.triage-empty {
+  margin: auto;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.triage-card {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Slide-in/slide-out animation for action transitions */
+  transition: transform 200ms ease-out, opacity 200ms ease-out;
+}
+.triage-card.slide-out-left  { transform: translateX(-120%); opacity: 0; }
+.triage-card.slide-out-right { transform: translateX(120%);  opacity: 0; }
+.triage-card.slide-out-up    { transform: translateY(-120%); opacity: 0; }
+.triage-card.slide-out-down  { transform: translateY(120%);  opacity: 0; }
+
+.triage-image-wrap {
+  width: 100%;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Mobile: 50vh; tablet: 55vh; desktop: 60vh */
+  min-height: 220px;
+  max-height: 50vh;
+}
+@media (min-width: 768px) {
+  .triage-image-wrap { max-height: 55vh; }
+}
+@media (min-width: 1024px) {
+  .triage-image-wrap { max-height: 60vh; }
+}
+
+.triage-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.triage-frame-label {
+  position: absolute;
+  bottom: 6px; left: 6px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.triage-scrub {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: #888;
+  padding: 4px 6px;
+}
+.triage-scrub input[type="range"] {
+  flex: 1;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #4a90d9;
+}
+
+.triage-hint {
+  font-size: 13px;
+  padding: 8px 12px;
+  background: #15181f;
+  border-radius: 6px;
+  border-left: 3px solid #4a90d9;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.4;
+}
+.triage-hint .hint-pill {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #1f2530;
+  color: #ccc;
+}
+.triage-hint .hint-pill.warn { background: rgba(245,158,11,0.18); color: #f59e0b; }
+
+.triage-fields {
+  background: #15181f;
+  border-radius: 8px;
+  padding: 14px;
+  border: 1px solid #2a2e38;
+}
+
+.triage-fields select,
+.triage-fields button {
+  font-family: inherit;
+}
+.triage-fields select { font-size: 16px; /* prevents iOS auto-zoom on focus */ }
+
+/* Bigger zone SVG on mobile for finger-friendly hit targets */
+.triage-fields .zone-diagram { background: #0e1118; padding: 6px; border-radius: 6px; }
+.triage-fields .zone-diagram svg { width: 100%; height: auto; max-height: 180px; }
+@media (min-width: 768px) {
+  .triage-fields .zone-diagram svg { max-height: 220px; }
+}
+.triage-fields [class$="-zone-seg"] polygon {
+  fill: var(--zone-default, #2a2e38);
+  cursor: pointer;
+  transition: fill 80ms;
+}
+.triage-fields [class$="-zone-seg"]:hover polygon { fill: var(--zone-hover, #3a4050); }
+.triage-fields [class$="-zone-seg"].suggested polygon {
+  fill: rgba(155,197,255,0.20);
+  stroke: #9bf;
+  stroke-dasharray: 3 2;
+  stroke-width: 1.5;
+}
+.triage-fields [class$="-zone-seg"].active polygon {
+  fill: var(--zone-active, #4a90d9);
+  stroke: var(--accent, #6af);
+  stroke-width: 2;
+}
+.triage-fields [class$="-zone-seg"] text {
+  fill: var(--text-primary, #fff);
+  font-size: 11px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+.triage-fields [id$="-zone-svg"].flipped { transform: scaleX(-1); }
+.triage-fields [id$="-zone-svg"].flipped [class$="-zone-seg"] text {
+  transform: scaleX(-1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.triage-fields .star {
+  cursor: pointer;
+  color: #555;
+  transition: color 80ms;
+}
+.triage-fields .star.active { color: #f59e0b; }
+.triage-fields .star:hover { color: #fbbf24; }
+
+.triage-actionbar {
+  flex: 0 0 auto;
+  background: #15181f;
+  border-top: 1px solid #2a2e38;
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  /* iOS safe area for home indicator */
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+}
+
+.triage-act {
+  flex: 1;
+  min-height: 56px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: background 80ms, transform 80ms;
+}
+.triage-act:active { transform: scale(0.96); }
+.triage-act:disabled { opacity: 0.4; cursor: not-allowed; }
+.triage-act-icon { font-size: 22px; line-height: 1; }
+.triage-act-label { font-size: 11px; color: #fff; opacity: 0.85; }
+
+.triage-act-reject { background: #7a2a2a; color: #fff; }
+.triage-act-reject:hover { background: #9a3a3a; }
+.triage-act-edit   { background: #2a4a7a; color: #fff; flex: 0 0 70px; }
+.triage-act-edit:hover { background: #3a5a8a; }
+.triage-act-skip   { background: #444a55; color: #fff; flex: 0 0 70px; }
+.triage-act-skip:hover { background: #555b66; }
+.triage-act-accept { background: #2a7a4a; color: #fff; }
+.triage-act-accept:hover { background: #3a8a5a; }
+.triage-act-accept:disabled { background: #2a3a32; color: #888; }
+
+/* Larger primary action targets on mobile */
+@media (max-width: 767px) {
+  .triage-act { min-height: 60px; font-size: 12px; }
+  .triage-act-edit, .triage-act-skip { flex: 0 0 60px; }
+  .triage-act-icon { font-size: 24px; }
+  /* Compact field padding on mobile to leave more room for the image */
+  .triage-fields { padding: 12px; }
+  .triage-stage { padding: 8px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * Polish 7 Tier 2 — App-shell mobile responsive (< 768px)
+ * Below 768px wide:
+ *   - both side panels become off-canvas drawers (slide in from edges)
+ *   - center panel takes full width
+ *   - header drawer toggle buttons appear
+ *   - secondary header elements (video name, export menu, user email)
+ *     are hidden to leave room for primary actions
+ * ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  /* Show drawer toggles */
+  .header-drawer-btn { display: inline-flex; }
+
+  /* Save space in the header */
+  .logo { font-size: 13px; }
+  .header-video-name { display: none; }
+  .header-user { display: none; }
+  #btn-admin { display: none; }
+  #btn-shortcuts-help { display: none; }
+  /* Compact the export menu trigger */
+  #btn-export-menu { padding: 4px 6px; font-size: 11px; }
+
+  /* Both side panels become off-canvas drawers */
+  .panel-left,
+  .panel-right {
+    position: fixed;
+    top: 44px;          /* below the header */
+    bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 95;
+    transform: translateX(-100%);
+    transition: transform 200ms ease-out;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
+  }
+  .panel-right {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+    border-left: 1px solid var(--border);
+  }
+
+  body.left-drawer-open .panel-left   { transform: translateX(0); }
+  body.right-drawer-open .panel-right { transform: translateX(0); }
+
+  /* Center panel takes full width when drawers are closed */
+  .panel-center { width: 100%; }
+
+  /* Headers within panels get more vertical breathing room on mobile */
+  .section-label { font-size: 11px; padding: 6px 0; }
+
+  /* Bigger touch targets for video controls (these have small buttons by default) */
+  .video-controls {
+    padding: 6px 6px;
+    gap: 4px;
+  }
+  .ctrl-btn {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 4px 8px;
+    font-size: 13px;
+    /* Skip-10 buttons are wider; let them shrink */
+  }
+  #ctrl-prev10, #ctrl-next10 { padding: 4px 6px; font-size: 11px; }
+  /* Hide the textual time display on mobile (frame number is more useful, keep that) */
+  .time-display { display: none; }
+  .frame-display { font-size: 11px; }
+  /* Speed selector compresses */
+  .speed-select { font-size: 13px; padding: 4px 6px; min-height: 40px; }
+  /* Seek bar — make the thumb bigger via accent-color (browser native) */
+  .seek-bar { height: 8px; cursor: pointer; }
+  .seek-bar-wrap { flex-basis: 100%; order: 99; }  /* full-width row of its own */
+
+  /* Enhance bar — wrap onto multiple rows so sliders are reachable */
+  .enhance-bar { flex-wrap: wrap; row-gap: 6px; padding: 8px; }
+  .enhance-bar label { flex: 1 1 calc(50% - 6px); min-width: 140px; }
+  .enhance-bar input[type="range"] { width: 100%; }
+}
+
+/* iPad portrait sweet-spot (768-900px): keep the 3-panel layout but compress */
+@media (min-width: 768px) and (max-width: 900px) {
+  .panel-left  { width: 180px; }
+  .panel-right { width: 220px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * Polish 7+ — Triage seed mode (draw bbox on a video frame to seed a track)
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.seed-card {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.seed-stage {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  /* Mobile: ~55vh; desktop: 65vh */
+  min-height: 240px;
+  max-height: 55vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (min-width: 768px) { .seed-stage { max-height: 60vh; } }
+@media (min-width: 1024px) { .seed-stage { max-height: 65vh; } }
+
+#seed-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: inherit;
+  object-fit: contain;
+  background: #000;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.seed-canvas {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  /* Critical: pointer events captured here so draw works even over the video */
+  touch-action: none;
+  cursor: crosshair;
+  background: transparent;
+}
+
+.seed-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 13px;
+  pointer-events: none;
+  background: rgba(0,0,0,0.4);
+}
+
+.seed-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  background: #15181f;
+  border: 1px solid #2a2e38;
+  border-radius: 6px;
+}
+
+.seed-scrub {
+  flex: 1 1 auto;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #2a2e38;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 0;
+}
+.seed-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #4a90d9;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+.seed-scrub::-moz-range-thumb {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #4a90d9;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.seed-time {
+  font-size: 11px;
+  color: #888;
+  min-width: 80px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.seed-tip {
+  font-size: 12px;
+  color: #aaa;
+  text-align: center;
+  padding: 4px 8px;
+  background: rgba(74, 144, 217, 0.08);
+  border-left: 3px solid #4a90d9;
+  border-radius: 3px;
+}
+
+/* Disabled propagate button styling */
+.triage-act:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Mobile: bigger touch targets on the scrub thumb + tighter controls */
+@media (max-width: 767px) {
+  .seed-scrub::-webkit-slider-thumb { width: 24px; height: 24px; }
+  .seed-scrub::-moz-range-thumb     { width: 24px; height: 24px; }
+  .seed-tip { font-size: 13px; }
+  .seed-time { min-width: 70px; font-size: 12px; }
+}
+
+/* ── Stream D (plan 10 §5): machine-suggested form values ──────────────
+   A pre-filled field must not look like one the human chose. Dashed warning
+   outline = "the model suggested this, confirm or change it". Cleared when the
+   scar is committed. Only ever applied above the confidence threshold — below
+   it the field is left empty, because "unsure" must look different from a
+   confident wrong answer. */
+.radio-btn.auto-filled,
+.color-btn.auto-filled {
+  outline: 2px dashed var(--warning);
+  outline-offset: 1px;
+}
+.zone-seg.auto-filled polygon {
+  stroke: var(--warning);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+
+
+/* The clip table is one click away, and its summary line is the control. */
+.obj-toggle {
+  display: block;
+  width: 100%;
+  padding: 2px 0;
+  font: inherit;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.obj-toggle::before { content: "\25B8 "; }
+.obj-toggle[aria-expanded="true"]::before { content: "\25BE "; }
+.obj-toggle:hover { color: var(--text); }
+
+/* Filling the form arms the box, so this is a hint, not a button. */
+.scar-arm-hint {
+  padding: 6px 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: 3px;
+}

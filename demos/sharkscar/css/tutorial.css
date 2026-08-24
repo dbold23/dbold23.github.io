@@ -1,0 +1,50 @@
+/* ════════════════════════════════════════════════
+   tutorial.css — additions for the reworked tours.
+
+   The overlay, spotlight and tooltip base styles live in styles.css and are unchanged.
+   Only the new controls are here, in their own file so the rework does not collide with
+   anyone else editing the shared stylesheet.
+   ════════════════════════════════════════════════ */
+
+/* ─── Back button (tours are now steppable in both directions) ─── */
+
+.tutorial-btn-back {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 7px 12px;
+  margin-right: 6px;
+}
+.tutorial-btn-back:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+/* ─── Replay controls in the shortcuts modal ───
+
+   A tour you can only ever see once is a tour people skip and then need. These sit above
+   the modal's Close button, where someone already went looking for "how does this work". */
+
+.tutorial-replay {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.tutorial-replay-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-right: 2px;
+}
+
+.tutorial-replay .btn {
+  padding: 4px 10px;
+  font-size: 12px;
+}

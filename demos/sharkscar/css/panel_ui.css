@@ -1,0 +1,169 @@
+/* ════════════════════════════════════════════════
+   Panel UI — compact right rail, collapsible sections, hideable left panel.
+
+   The brief: same components, less screen. So nothing here removes a control — it
+   tightens spacing and typography, turns every `.section-label` into a collapsible
+   header, and lets the whole left rail slide away. A labeler who wants the old density
+   just leaves every section open.
+
+   Density is applied via a `.compact-panels` class on <body> rather than by rewriting
+   the panel rules, so the whole thing is one class away from off — which matters because
+   these panels are Stream-D-owned and this is an additive layer over them.
+   ════════════════════════════════════════════════ */
+
+/* ─── Right rail: tighter, but every control still there ─── */
+
+.compact-panels .panel-right {
+  width: 248px;
+  padding: 6px 8px;
+  gap: 0;
+  font-size: 12px;
+}
+
+.compact-panels .panel-right .input,
+.compact-panels .panel-right select,
+.compact-panels .panel-right textarea {
+  padding: 4px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+.compact-panels .panel-right textarea { min-height: 46px; }
+
+.compact-panels .panel-right .btn,
+.compact-panels .panel-right button.btn {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+/* The two big commit buttons stay prominent — shrinking those is false economy.
+   The id is `btn-save-and-next`, not `btn-save-next`. */
+.compact-panels .panel-right #btn-save-and-next,
+.compact-panels .panel-right #btn-finish-video { padding: 9px 10px; font-size: 13px; }
+
+.compact-panels .panel-right .radio-group,
+.compact-panels .panel-right .chip-row { gap: 3px; }
+
+.compact-panels .panel-right .kp-diagram { margin: 2px 0; }
+
+/* ─── Collapsible sections ─── */
+
+.panel-section {
+  border-top: 1px solid var(--border);
+  padding: 2px 0;
+}
+.panel-section:first-of-type { border-top: none; }
+
+.panel-section > .section-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+  margin: 0;
+  padding: 6px 2px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  border-radius: 3px;
+}
+.panel-section > .section-label:hover { background: var(--bg-card); }
+
+/* Chevron rotates rather than swapping glyphs, so the header never reflows. */
+.panel-section > .section-label::before {
+  content: "▾";
+  font-size: 9px;
+  color: var(--text-muted);
+  transition: transform 0.12s ease;
+  flex-shrink: 0;
+}
+.panel-section.collapsed > .section-label::before { transform: rotate(-90deg); }
+
+.panel-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 0 6px 0;
+}
+.panel-section.collapsed > .panel-section-body { display: none; }
+
+/* A collapsed section still has to report what is inside it, or collapsing becomes a way
+   to lose track of your own work. Badges stay visible in the header. */
+.panel-section > .section-label .badge { margin-left: auto; }
+.panel-section > .section-label .info-icon { flex-shrink: 0; }
+
+/* ─── Task header (replaces the tab bar when only one task applies) ─── */
+
+.panel-task {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 7px;
+  margin-bottom: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.panel-task .panel-task-kind {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.panel-task.hidden { display: none; }
+
+/* When the context resolves to a single task the tab bar is pure noise. */
+.panel-tabs.single-task { display: none; }
+.panel-tabs .tab-btn.not-applicable { display: none; }
+
+/* ─── Hideable left rail ─── */
+
+.panel-left {
+  transition: width 0.15s ease, padding 0.15s ease, opacity 0.12s ease;
+}
+
+/* Same floor applies to the right rail when it is compacted. */
+.compact-panels .panel-right { min-width: 0; }
+body.left-hidden .panel-left {
+  width: 0;
+  /* min-width AND flex-basis are both required. A flex item defaults to
+     `min-width: auto`, which resolves to its content-based minimum — so the panel
+     refuses to go below ~220px no matter what width you set, even inline. */
+  min-width: 0;
+  flex-basis: 0;
+  padding-left: 0;
+  padding-right: 0;
+  opacity: 0;
+  overflow: hidden;
+  border-right: none;
+  pointer-events: none;
+}
+
+#btn-hide-left {
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 7px;
+}
+#btn-hide-left.active { color: var(--accent); }
+
+/* ─── Star rating inside the signals tab ─── */
+
+.signal-stars { display: flex; align-items: center; gap: 3px; }
+.signal-stars .star { font-size: 17px; cursor: pointer; color: var(--text-muted); line-height: 1; }
+.signal-stars .star.active,
+.signal-stars .star.hover { color: var(--warning); }
+.signal-stars .conf-hint {
+  margin-left: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* On a narrow viewport the right rail is already a drawer; do not shrink it further. */
+@media (max-width: 900px) {
+  .compact-panels .panel-right { width: 260px; font-size: 13px; }
+}

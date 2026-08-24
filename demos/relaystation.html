@@ -1012,613 +1012,22 @@
             <div class="section-title">Station Map</div>
             <div id="stations-map" class="map-container" style="margin-bottom: 24px;"></div>
 
-            <!-- Stations -->
+            <!-- Stations (dynamically updated) -->
             <div class="section-title">
                 Stations
-                <span class="count">6</span>
+                <span class="count" id="overview-station-count">6</span>
             </div>
-            
-            <div class="grid" style="margin-bottom: 32px;">
-                
-                <div class="station-card">
-                    <div class="station-header">
-                        <span class="station-name">RS-DEMO-01</span>
-                        <span class="status-dot online"></span>
-                    </div>
-                    <div class="station-location">
-                        North Channel Platform &bull; 
-                        <span class="status-badge online">online</span>
-                        &bull; 12s
-                    </div>
-                    <div class="station-metrics">
-                        <div class="station-metric">
-                            <div class="station-metric-label">CPU</div>
-                            <div class="station-metric-value">23.4%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Memory</div>
-                            <div class="station-metric-value">41.2%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Temp</div>
-                            <div class="station-metric-value">44.1&deg;C</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Tags</div>
-                            <div class="station-metric-value">5</div>
-                        </div>
-                    </div>
-                    <div class="station-actions">
-                        <button class="btn btn-primary btn-sm" onclick="sendCommand('RS-DEMO-01', 'calibrate')"
-                                >Calibrate</button>
-                        <button class="btn btn-secondary btn-sm" onclick="sendCommand('RS-DEMO-01', 'restart')"
-                                >Restart</button>
-                        <button class="btn btn-sm" style="background: var(--accent-purple); color: white;" onclick="sendCommand('RS-DEMO-01', 'update')"
-                                >Update</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteStation('RS-DEMO-01')">Delete</button>
-                    </div>
-                </div>
-                
-                <div class="station-card">
-                    <div class="station-header">
-                        <span class="station-name">RS-DEMO-02</span>
-                        <span class="status-dot online"></span>
-                    </div>
-                    <div class="station-location">
-                        Tidal Flat East &bull; 
-                        <span class="status-badge online">online</span>
-                        &bull; 8s
-                    </div>
-                    <div class="station-metrics">
-                        <div class="station-metric">
-                            <div class="station-metric-label">CPU</div>
-                            <div class="station-metric-value">18.9%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Memory</div>
-                            <div class="station-metric-value">37.8%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Temp</div>
-                            <div class="station-metric-value">41.6&deg;C</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Tags</div>
-                            <div class="station-metric-value">3</div>
-                        </div>
-                    </div>
-                    <div class="station-actions">
-                        <button class="btn btn-primary btn-sm" onclick="sendCommand('RS-DEMO-02', 'calibrate')"
-                                >Calibrate</button>
-                        <button class="btn btn-secondary btn-sm" onclick="sendCommand('RS-DEMO-02', 'restart')"
-                                >Restart</button>
-                        <button class="btn btn-sm" style="background: var(--accent-purple); color: white;" onclick="sendCommand('RS-DEMO-02', 'update')"
-                                >Update</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteStation('RS-DEMO-02')">Delete</button>
-                    </div>
-                </div>
-                
-                <div class="station-card">
-                    <div class="station-header">
-                        <span class="station-name">RS-DEMO-03</span>
-                        <span class="status-dot online"></span>
-                    </div>
-                    <div class="station-location">
-                        Upper Slough Bend &bull; 
-                        <span class="status-badge online">online</span>
-                        &bull; 31s
-                    </div>
-                    <div class="station-metrics">
-                        <div class="station-metric">
-                            <div class="station-metric-label">CPU</div>
-                            <div class="station-metric-value">31.7%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Memory</div>
-                            <div class="station-metric-value">52.3%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Temp</div>
-                            <div class="station-metric-value">47.9&deg;C</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Tags</div>
-                            <div class="station-metric-value">4</div>
-                        </div>
-                    </div>
-                    <div class="station-actions">
-                        <button class="btn btn-primary btn-sm" onclick="sendCommand('RS-DEMO-03', 'calibrate')"
-                                >Calibrate</button>
-                        <button class="btn btn-secondary btn-sm" onclick="sendCommand('RS-DEMO-03', 'restart')"
-                                >Restart</button>
-                        <button class="btn btn-sm" style="background: var(--accent-purple); color: white;" onclick="sendCommand('RS-DEMO-03', 'update')"
-                                >Update</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteStation('RS-DEMO-03')">Delete</button>
-                    </div>
-                </div>
-                
-                <div class="station-card">
-                    <div class="station-header">
-                        <span class="station-name">RS-DEMO-04</span>
-                        <span class="status-dot degraded"></span>
-                    </div>
-                    <div class="station-location">
-                        Harbour Mouth Mast &bull; 
-                        <span class="status-badge degraded">degraded</span>
-                        &bull; 4m 12s
-                    </div>
-                    <div class="station-metrics">
-                        <div class="station-metric">
-                            <div class="station-metric-label">CPU</div>
-                            <div class="station-metric-value">67.2%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Memory</div>
-                            <div class="station-metric-value">78.4%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Temp</div>
-                            <div class="station-metric-value">61.3&deg;C</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Tags</div>
-                            <div class="station-metric-value">2</div>
-                        </div>
-                    </div>
-                    <div class="station-actions">
-                        <button class="btn btn-primary btn-sm" onclick="sendCommand('RS-DEMO-04', 'calibrate')"
-                                disabled>Calibrate</button>
-                        <button class="btn btn-secondary btn-sm" onclick="sendCommand('RS-DEMO-04', 'restart')"
-                                disabled>Restart</button>
-                        <button class="btn btn-sm" style="background: var(--accent-purple); color: white;" onclick="sendCommand('RS-DEMO-04', 'update')"
-                                disabled>Update</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteStation('RS-DEMO-04')">Delete</button>
-                    </div>
-                </div>
-                
-                <div class="station-card">
-                    <div class="station-header">
-                        <span class="station-name">RS-DEMO-05</span>
-                        <span class="status-dot offline"></span>
-                    </div>
-                    <div class="station-location">
-                        Ridge Repeater &bull; 
-                        <span class="status-badge offline">offline</span>
-                        &bull; 2h 47m
-                    </div>
-                    <div class="station-metrics">
-                        <div class="station-metric">
-                            <div class="station-metric-label">CPU</div>
-                            <div class="station-metric-value">-%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Memory</div>
-                            <div class="station-metric-value">-%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Temp</div>
-                            <div class="station-metric-value">-&deg;C</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Tags</div>
-                            <div class="station-metric-value">0</div>
-                        </div>
-                    </div>
-                    <div class="station-actions">
-                        <button class="btn btn-primary btn-sm" onclick="sendCommand('RS-DEMO-05', 'calibrate')"
-                                disabled>Calibrate</button>
-                        <button class="btn btn-secondary btn-sm" onclick="sendCommand('RS-DEMO-05', 'restart')"
-                                disabled>Restart</button>
-                        <button class="btn btn-sm" style="background: var(--accent-purple); color: white;" onclick="sendCommand('RS-DEMO-05', 'update')"
-                                disabled>Update</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteStation('RS-DEMO-05')">Delete</button>
-                    </div>
-                </div>
-                
-                <div class="station-card">
-                    <div class="station-header">
-                        <span class="station-name">RS-DEMO-06</span>
-                        <span class="status-dot online"></span>
-                    </div>
-                    <div class="station-location">
-                        South Marsh Post &bull; 
-                        <span class="status-badge online">online</span>
-                        &bull; 19s
-                    </div>
-                    <div class="station-metrics">
-                        <div class="station-metric">
-                            <div class="station-metric-label">CPU</div>
-                            <div class="station-metric-value">27.5%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Memory</div>
-                            <div class="station-metric-value">44.9%</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Temp</div>
-                            <div class="station-metric-value">45.2&deg;C</div>
-                        </div>
-                        <div class="station-metric">
-                            <div class="station-metric-label">Tags</div>
-                            <div class="station-metric-value">6</div>
-                        </div>
-                    </div>
-                    <div class="station-actions">
-                        <button class="btn btn-primary btn-sm" onclick="sendCommand('RS-DEMO-06', 'calibrate')"
-                                >Calibrate</button>
-                        <button class="btn btn-secondary btn-sm" onclick="sendCommand('RS-DEMO-06', 'restart')"
-                                >Restart</button>
-                        <button class="btn btn-sm" style="background: var(--accent-purple); color: white;" onclick="sendCommand('RS-DEMO-06', 'update')"
-                                >Update</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteStation('RS-DEMO-06')">Delete</button>
-                    </div>
-                </div>
-                
+            <div id="overview-stations-container" style="margin-bottom: 32px;">
+                <div class="card empty"><p>Loading stations...</p></div>
             </div>
-            
 
-            <!-- Active Tags Table -->
+            <!-- Active Tags Table (dynamically updated) -->
             <div class="section-title">
                 Active Tags <span style="font-weight: 400; color: var(--text-dim); font-size: 13px;">(Confirmed — 3+ detections)</span>
             </div>
-            
-            
-            <div class="card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Frequency</th>
-                            <th>Station</th>
-                            <th>Signal</th>
-                            <th>Confidence</th>
-                            <th>Detections</th>
-                            <th>Last Seen</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                        <tr>
-                            <td class="freq">150.142 MHz</td>
-                            <td>RS-DEMO-01</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:85%;background:var(--accent-green)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">34.2 dB</span>
-                                </div>
-                            </td>
-                            <td>0.97%</td>
-                            <td style="font-variant-numeric: tabular-nums;">47</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">12s</td>
-                            <td>
-                                
-                                <span class="locked">LOCKED</span>
-                                
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(150142, 'RS-DEMO-01')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">150.318 MHz</td>
-                            <td>RS-DEMO-01</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:74%;background:var(--accent-green)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">29.8 dB</span>
-                                </div>
-                            </td>
-                            <td>0.94%</td>
-                            <td style="font-variant-numeric: tabular-nums;">39</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">44s</td>
-                            <td>
-                                
-                                <span class="locked">LOCKED</span>
-                                
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(150318, 'RS-DEMO-01')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">150.461 MHz</td>
-                            <td>RS-DEMO-02</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:55%;background:var(--accent-amber)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">22.1 dB</span>
-                                </div>
-                            </td>
-                            <td>0.81%</td>
-                            <td style="font-variant-numeric: tabular-nums;">8</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">3m 8s</td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(150461, 'RS-DEMO-02')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">150.607 MHz</td>
-                            <td>RS-DEMO-03</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:94%;background:var(--accent-green)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">37.6 dB</span>
-                                </div>
-                            </td>
-                            <td>0.99%</td>
-                            <td style="font-variant-numeric: tabular-nums;">62</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">6s</td>
-                            <td>
-                                
-                                <span class="locked">LOCKED</span>
-                                
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(150607, 'RS-DEMO-03')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">150.753 MHz</td>
-                            <td>RS-DEMO-06</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:46%;background:var(--accent-amber)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">18.4 dB</span>
-                                </div>
-                            </td>
-                            <td>0.88%</td>
-                            <td style="font-variant-numeric: tabular-nums;">21</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">1m 51s</td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(150753, 'RS-DEMO-06')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">150.884 MHz</td>
-                            <td>RS-DEMO-02</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:31%;background:var(--accent-red)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">12.7 dB</span>
-                                </div>
-                            </td>
-                            <td>0.62%</td>
-                            <td style="font-variant-numeric: tabular-nums;">4</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">22m 3s</td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(150884, 'RS-DEMO-02')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">151.026 MHz</td>
-                            <td>RS-DEMO-03</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:79%;background:var(--accent-green)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">31.9 dB</span>
-                                </div>
-                            </td>
-                            <td>0.96%</td>
-                            <td style="font-variant-numeric: tabular-nums;">55</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">18s</td>
-                            <td>
-                                
-                                <span class="locked">LOCKED</span>
-                                
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(151026, 'RS-DEMO-03')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">151.172 MHz</td>
-                            <td>RS-DEMO-06</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:65%;background:var(--accent-green)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">26.3 dB</span>
-                                </div>
-                            </td>
-                            <td>0.91%</td>
-                            <td style="font-variant-numeric: tabular-nums;">33</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">2m 14s</td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(151172, 'RS-DEMO-06')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">151.455 MHz</td>
-                            <td>RS-DEMO-01</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:62%;background:var(--accent-amber)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">24.8 dB</span>
-                                </div>
-                            </td>
-                            <td>0.9%</td>
-                            <td style="font-variant-numeric: tabular-nums;">28</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">1m 6s</td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(151455, 'RS-DEMO-01')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">151.591 MHz</td>
-                            <td>RS-DEMO-03</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:97%;background:var(--accent-green)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">38.9 dB</span>
-                                </div>
-                            </td>
-                            <td>0.99%</td>
-                            <td style="font-variant-numeric: tabular-nums;">71</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">3d 2h</td>
-                            <td>
-                                
-                                <span class="locked">LOCKED</span>
-                                
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(151591, 'RS-DEMO-03')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">151.744 MHz</td>
-                            <td>RS-DEMO-06</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:51%;background:var(--accent-amber)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">20.6 dB</span>
-                                </div>
-                            </td>
-                            <td>0.85%</td>
-                            <td style="font-variant-numeric: tabular-nums;">16</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">5m 37s</td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(151744, 'RS-DEMO-06')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">151.890 MHz</td>
-                            <td>RS-DEMO-06</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:75%;background:var(--accent-green)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">30.1 dB</span>
-                                </div>
-                            </td>
-                            <td>0.95%</td>
-                            <td style="font-variant-numeric: tabular-nums;">44</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">27s</td>
-                            <td>
-                                
-                                <span class="locked">LOCKED</span>
-                                
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(151890, 'RS-DEMO-06')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="freq">152.037 MHz</td>
-                            <td>RS-DEMO-04</td>
-                            <td>
-                                <div class="signal-bar-container">
-                                    
-                                    
-                                    
-                                    
-                                    <div class="signal-bar"><div class="signal-bar-fill" style="width:38%;background:var(--accent-amber)"></div></div>
-                                    <span style="font-size:12px;font-variant-numeric:tabular-nums;">15.2 dB</span>
-                                </div>
-                            </td>
-                            <td>0.71%</td>
-                            <td style="font-variant-numeric: tabular-nums;">6</td>
-                            <td style="color: var(--text-dim); font-size: 12px;">5d 8h</td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm"
-                                        onclick="retrieveTag(152037, 'RS-DEMO-04')">Retrieved</button>
-                            </td>
-                        </tr>
-                        
-                    </tbody>
-                </table>
+            <div id="overview-tags-container">
+                <div class="card empty"><p>Loading tags...</p></div>
             </div>
-            
         </div>
 
         <!-- ======================== STATIONS TAB ======================== -->
@@ -2611,7 +2020,6 @@
                 <button class="tool-subtab active" onclick="showToolsPane('actions')">Quick Actions</button>
                 <button class="tool-subtab" onclick="showToolsPane('stations')">Stations</button>
                 <button class="tool-subtab" onclick="showToolsPane('frequencies')">Frequencies</button>
-                <button class="tool-subtab" onclick="showToolsPane('deployment')">Tag Deployment</button>
                 <button class="tool-subtab" onclick="showToolsPane('analysis')">Analysis</button>
                 <button class="tool-subtab" onclick="showToolsPane('history')">History</button>
                 <button class="tool-subtab" onclick="showToolsPane('logs')">Logs</button>
@@ -2806,10 +2214,6 @@
                             <input type="number" id="add-freq-mhz" placeholder="151.192" step="0.001" style="width:160px;">
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
-                            <label>Pulse width (ms)</label>
-                            <input type="number" id="add-freq-pulse-ms" placeholder="15" step="1" min="1" max="100" style="width:120px;">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
                             <label>Label (optional)</label>
                             <input type="text" id="add-freq-label" placeholder="e.g., Shark #12" style="width:180px;">
                         </div>
@@ -2817,12 +2221,11 @@
                     </div>
                     <div id="freq-add-error" style="display:none;color:var(--accent-red);font-size:13px;margin-bottom:12px;"></div>
                     <table id="whitelist-table">
-                        <thead><tr><th>Frequency (MHz)</th><th>Pulse (ms)</th><th>Label</th><th>Added</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Frequency (MHz)</th><th>Label</th><th>Added</th><th>Action</th></tr></thead>
                         <tbody>
                             
                             <tr id="freq-row-150142">
                                 <td class="freq">150.142 MHz</td>
-                                <td>18</td>
                                 <td>Demo animal A</td>
                                 <td style="color:var(--text-dim);font-size:12px;">2026-03-04</td>
                                 <td><button class="btn btn-danger btn-sm" onclick="removeKnownFrequency(150142)">Remove</button></td>
@@ -2830,7 +2233,6 @@
                             
                             <tr id="freq-row-150318">
                                 <td class="freq">150.318 MHz</td>
-                                <td>20</td>
                                 <td>Demo animal B</td>
                                 <td style="color:var(--text-dim);font-size:12px;">2026-03-04</td>
                                 <td><button class="btn btn-danger btn-sm" onclick="removeKnownFrequency(150318)">Remove</button></td>
@@ -2838,7 +2240,6 @@
                             
                             <tr id="freq-row-150607">
                                 <td class="freq">150.607 MHz</td>
-                                <td>18</td>
                                 <td>Demo animal C</td>
                                 <td style="color:var(--text-dim);font-size:12px;">2026-03-19</td>
                                 <td><button class="btn btn-danger btn-sm" onclick="removeKnownFrequency(150607)">Remove</button></td>
@@ -2846,7 +2247,6 @@
                             
                             <tr id="freq-row-151026">
                                 <td class="freq">151.026 MHz</td>
-                                <td>22</td>
                                 <td>Demo animal D</td>
                                 <td style="color:var(--text-dim);font-size:12px;">2026-04-02</td>
                                 <td><button class="btn btn-danger btn-sm" onclick="removeKnownFrequency(151026)">Remove</button></td>
@@ -2854,7 +2254,6 @@
                             
                             <tr id="freq-row-151591">
                                 <td class="freq">151.591 MHz</td>
-                                <td>18</td>
                                 <td>Demo animal E</td>
                                 <td style="color:var(--text-dim);font-size:12px;">2026-04-02</td>
                                 <td><button class="btn btn-danger btn-sm" onclick="removeKnownFrequency(151591)">Remove</button></td>
@@ -2862,7 +2261,6 @@
                             
                             <tr id="freq-row-151890">
                                 <td class="freq">151.890 MHz</td>
-                                <td>20</td>
                                 <td>Demo animal F</td>
                                 <td style="color:var(--text-dim);font-size:12px;">2026-05-11</td>
                                 <td><button class="btn btn-danger btn-sm" onclick="removeKnownFrequency(151890)">Remove</button></td>
@@ -2870,7 +2268,6 @@
                             
                             <tr id="freq-row-152240">
                                 <td class="freq">152.240 MHz</td>
-                                <td><span style="color:var(--text-dim);">default 14</span></td>
                                 <td>-</td>
                                 <td style="color:var(--text-dim);font-size:12px;">2026-06-01</td>
                                 <td><button class="btn btn-danger btn-sm" onclick="removeKnownFrequency(152240)">Remove</button></td>
@@ -2878,137 +2275,6 @@
                             
                         </tbody>
                     </table>
-                </div>
-            </div>
-
-            <!-- ===== TAG DEPLOYMENT PANE ===== -->
-            <div id="tools-pane-deployment" class="tools-pane">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-                    <div class="section-title" style="margin-bottom:0;">Per-Station Tag Deployment</div>
-                    <select id="deployment-station-picker" onchange="loadStationDeployment()" style="padding:8px;background:var(--bg-elevated);color:var(--text);border:1px solid var(--border);border-radius:6px;">
-                        <option value="">— pick a station —</option>
-                        
-                        <option value="RS-DEMO-01">RS-DEMO-01 · North Channel Platform</option>
-                        
-                        <option value="RS-DEMO-02">RS-DEMO-02 · Tidal Flat East</option>
-                        
-                        <option value="RS-DEMO-03">RS-DEMO-03 · Upper Slough Bend</option>
-                        
-                        <option value="RS-DEMO-04">RS-DEMO-04 · Harbour Mouth Mast</option>
-                        
-                        <option value="RS-DEMO-05">RS-DEMO-05 · Ridge Repeater</option>
-                        
-                        <option value="RS-DEMO-06">RS-DEMO-06 · South Marsh Post</option>
-                        
-                    </select>
-                </div>
-                <div class="card" style="margin-bottom:16px;">
-                    <p style="font-size:13px;color:var(--text-dim);margin-bottom:0;">
-                        Toggle which tags each station should listen for. Selection drives the station's SDR tuning and matched-filter templates.
-                        <span style="color:var(--accent-amber);">Changes are staged locally — click <b>Deploy</b> to queue a <code>set_tag_config</code> command to the Pi.</span>
-                    </p>
-                </div>
-
-                <!-- Registry (ATS + custom) -->
-                <div class="card" style="margin-bottom:16px;">
-                    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
-                        <span>Tag Registry</span>
-                        <span style="font-size:12px;color:var(--text-dim);" id="deployment-counter">0 deployed</span>
-                    </div>
-                    <div style="max-height:420px;overflow-y:auto;">
-                        <table id="deployment-tag-table">
-                            <thead>
-                                <tr>
-                                    <th>Deployed</th>
-                                    <th>Freq (MHz)</th>
-                                    <th>Model</th>
-                                    <th>Type</th>
-                                    <th>Pulse (ms)</th>
-                                    <th>PPM</th>
-                                    <th>Job #</th>
-                                    <th>SN</th>
-                                    <th>Source</th>
-                                </tr>
-                            </thead>
-                            <tbody id="deployment-tag-tbody">
-                                <tr><td colspan="9" class="empty">Pick a station to begin.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Add custom tag -->
-                <div class="card" style="margin-bottom:16px;">
-                    <div class="card-title">Add Custom Tag</div>
-                    <p style="font-size:12px;color:var(--text-dim);">
-                        For tags not in the ATS inventory. Saved with <code>is_custom=1</code>; shows up in the registry above.
-                    </p>
-                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label>Freq (MHz)</label>
-                            <input type="number" id="custom-freq-mhz" step="0.001" style="width:140px;" placeholder="151.500">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label>Pulse (ms)</label>
-                            <input type="number" id="custom-pulse-ms" step="1" min="1" max="100" style="width:100px;" value="15">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label>Model</label>
-                            <select id="custom-model" style="width:120px;padding:8px;background:var(--bg-elevated);color:var(--text);border:1px solid var(--border);border-radius:6px;">
-                                <option>A1020</option><option selected>A1040</option>
-                                <option>F1820</option><option>Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label>Type</label>
-                            <input type="text" id="custom-type" style="width:140px;" placeholder="Backpack/Implant/...">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label>PPM</label>
-                            <input type="number" id="custom-ppm" step="1" style="width:80px;" value="30">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label>Job #</label>
-                            <input type="text" id="custom-job" style="width:120px;" value="CUSTOM">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label>SN</label>
-                            <input type="text" id="custom-sn" style="width:100px;" placeholder="A1">
-                        </div>
-                        <button class="btn btn-primary" onclick="addCustomTag()">Add</button>
-                    </div>
-                    <div id="custom-tag-error" style="display:none;color:var(--accent-red);font-size:13px;margin-top:8px;"></div>
-                </div>
-
-                <!-- Band plan + deploy -->
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-title">Band Plan</div>
-                        <div id="deployment-band-plan" style="font-size:14px;color:var(--text);min-height:60px;">Select a station and tag(s).</div>
-                        <table style="margin-top:12px;">
-                            <tbody>
-                                <tr><td style="color:var(--text-dim);">SDR center</td><td id="dp-sdr-center">—</td></tr>
-                                <tr><td style="color:var(--text-dim);">Band min / max</td><td id="dp-band-range">—</td></tr>
-                                <tr><td style="color:var(--text-dim);">Known freqs</td><td id="dp-known-count">—</td></tr>
-                                <tr><td style="color:var(--text-dim);">Templates</td><td id="dp-templates-count">—</td></tr>
-                                <tr><td style="color:var(--text-dim);">Fit</td><td id="dp-fit">—</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Deploy to Pi</div>
-                        <p style="font-size:12px;color:var(--text-dim);">
-                            Type <code>DEPLOY</code> to unlock. Queues a <code>set_tag_config</code> command that the Pi applies atomically on its next command poll (or immediately on LAN).
-                        </p>
-                        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-                            <div class="form-group" style="margin-bottom:0;flex:1;">
-                                <label>Confirmation</label>
-                                <input type="text" id="deploy-gate" placeholder="DEPLOY" oninput="updateDeployGate()" style="width:100%;">
-                            </div>
-                            <button id="deploy-button" class="btn btn-success" onclick="commitDeployment()" disabled>🚀 Deploy</button>
-                        </div>
-                        <div id="deploy-result" style="margin-top:12px;font-size:13px;"></div>
-                    </div>
                 </div>
             </div>
 
@@ -3505,7 +2771,11 @@
         }
 
         async function sendCommandAll(commandType) {
-            if (!confirm(`Send "${commandType}" command to ALL active stations?`)) return;
+            let msg = `Send "${commandType}" command to ALL active stations?`;
+            if (commandType === 'update') {
+                msg += '\n\nWARNING: OTA updates require an active internet connection on each station (WiFi or NB-IoT). Ensure all stations have connectivity before proceeding.';
+            }
+            if (!confirm(msg)) return;
             try {
                 const stationsRes = await fetch('/api/v1/admin/stations');
                 const stationsResult = await stationsRes.json();
@@ -3546,6 +2816,80 @@
             if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; }
         }
 
+        function renderSignalBar(sig) {
+            const pct = Math.min(100, Math.max(0, (sig / 40) * 100));
+            const color = sig > 25 ? 'var(--accent-green)' : sig > 15 ? 'var(--accent-amber)' : 'var(--accent-red)';
+            return `<div class="signal-bar-container"><div class="signal-bar"><div class="signal-bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:12px;font-variant-numeric:tabular-nums;">${sig || '-'} dB</span></div>`;
+        }
+
+        function formatTimeAgo(isoStr) {
+            if (!isoStr) return 'Unknown';
+            const delta = (Date.now() - new Date(isoStr + 'Z').getTime()) / 1000;
+            if (delta < 60) return Math.floor(delta) + 's ago';
+            if (delta < 3600) return Math.floor(delta / 60) + 'm ago';
+            if (delta < 86400) return Math.floor(delta / 3600) + 'h ago';
+            return Math.floor(delta / 86400) + 'd ago';
+        }
+
+        function renderOverviewTags(tags) {
+            const container = document.getElementById('overview-tags-container');
+            if (!container) return;
+            if (tags.length === 0) {
+                container.innerHTML = '<div class="card empty"><p>No active tags detected in the last 24 hours.</p></div>';
+                return;
+            }
+            let html = '<div class="card"><table><thead><tr><th>Frequency</th><th>Station</th><th>Signal</th><th>Confidence</th><th>Detections</th><th>Last Seen</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+            for (const tag of tags) {
+                const freqMhz = (tag.frequency_khz / 1000).toFixed(3);
+                const sig = tag.max_signal_db || 0;
+                html += `<tr>
+                    <td class="freq">${freqMhz} MHz</td>
+                    <td>${tag.station_id}</td>
+                    <td>${renderSignalBar(sig)}</td>
+                    <td>${tag.max_confidence || '-'}%</td>
+                    <td style="font-variant-numeric:tabular-nums;">${tag.detection_count}</td>
+                    <td style="color:var(--text-dim);font-size:12px;">${formatTimeAgo(tag.last_seen)}</td>
+                    <td>${tag.is_locked ? '<span class="locked">LOCKED</span>' : '-'}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="retrieveTag(${tag.frequency_khz}, '${tag.station_id}')">Retrieved</button></td>
+                </tr>`;
+            }
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        function renderOverviewStations(stations) {
+            const container = document.getElementById('overview-stations-container');
+            if (!container) return;
+            if (stations.length === 0) {
+                container.innerHTML = '<div class="card empty"><p>No stations registered yet.</p></div>';
+                return;
+            }
+            let html = '<div class="grid">';
+            for (const s of stations) {
+                const delta = s.last_seen ? (Date.now() - new Date(s.last_seen + 'Z').getTime()) / 1000 : Infinity;
+                const status = delta < 300 ? 'online' : 'offline';
+                const lastAgo = s.last_seen ? formatTimeAgo(s.last_seen) : 'Never';
+                html += `<div class="station-card">
+                    <div class="station-header"><span class="station-name">${s.station_id}</span><span class="status-dot ${status}"></span></div>
+                    <div class="station-location">${s.location ? s.location + ' &bull; ' : ''}<span class="status-badge ${status}">${status}</span> &bull; ${lastAgo}</div>
+                    <div class="station-metrics">
+                        <div class="station-metric"><div class="station-metric-label">CPU</div><div class="station-metric-value">${s.cpu_percent || '-'}%</div></div>
+                        <div class="station-metric"><div class="station-metric-label">Memory</div><div class="station-metric-value">${s.memory_percent || '-'}%</div></div>
+                        <div class="station-metric"><div class="station-metric-label">Temp</div><div class="station-metric-value">${s.temperature_c || '-'}&deg;C</div></div>
+                        <div class="station-metric"><div class="station-metric-label">Tags</div><div class="station-metric-value">${s.active_tags || 0}</div></div>
+                    </div>
+                    <div class="station-actions">
+                        <button class="btn btn-primary btn-sm" onclick="sendCommand('${s.station_id}', 'calibrate')" ${status !== 'online' ? 'disabled' : ''}>Calibrate</button>
+                        <button class="btn btn-secondary btn-sm" onclick="sendCommand('${s.station_id}', 'restart')" ${status !== 'online' ? 'disabled' : ''}>Restart</button>
+                        <button class="btn btn-sm" style="background:var(--accent-purple);color:white;" onclick="sendCommand('${s.station_id}', 'update')" ${status !== 'online' ? 'disabled' : ''}>Update</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteStation('${s.station_id}')">Delete</button>
+                    </div>
+                </div>`;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
         async function ajaxRefresh() {
             try {
                 const [stationsRes, tagsRes, statsRes] = await Promise.all([
@@ -3568,6 +2912,13 @@
                 document.getElementById('stat-locked').textContent = confirmedLocked;
                 document.getElementById('stat-events').textContent = statsResult.total_events || 0;
 
+                // Update Overview tag table dynamically
+                renderOverviewTags(confirmedTags);
+
+                // Update Overview station cards dynamically
+                const stations = stationsResult.stations || [];
+                renderOverviewStations(stations);
+
                 // Update last update time
                 document.getElementById('last-update').textContent = 'Updated: ' + new Date().toLocaleTimeString();
             } catch (err) {
@@ -3576,7 +2927,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (currentTab === 'overview') startAutoRefresh();
+            if (currentTab === 'overview') { ajaxRefresh(); startAutoRefresh(); }
         });
 
         // ==================== MAPS ====================
@@ -3764,7 +3115,11 @@
         }
 
         async function sendCommand(stationId, commandType) {
-            if (!confirm(`Send ${commandType} command to ${stationId}?`)) return;
+            let msg = `Send ${commandType} command to ${stationId}?`;
+            if (commandType === 'update') {
+                msg += '\n\nWARNING: OTA updates require an active internet connection on the station (WiFi or NB-IoT). Ensure the station has connectivity before proceeding.';
+            }
+            if (!confirm(msg)) return;
             try {
                 const response = await fetch(`/api/v1/admin/stations/${stationId}/commands`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ command_type: commandType, payload: {} }) });
                 const result = await response.json();
@@ -3828,7 +3183,6 @@
 
         async function addKnownFrequency() {
             const mhzInput = document.getElementById('add-freq-mhz');
-            const pulseInput = document.getElementById('add-freq-pulse-ms');
             const labelInput = document.getElementById('add-freq-label');
             const errorEl = document.getElementById('freq-add-error');
             errorEl.style.display = 'none';
@@ -3839,23 +3193,12 @@
                 errorEl.style.display = 'block';
                 return;
             }
-            const pulseRaw = pulseInput.value.trim();
-            const pulseMs = pulseRaw === '' ? null : parseFloat(pulseRaw);
-            if (pulseMs !== null && (isNaN(pulseMs) || pulseMs < 1 || pulseMs > 100)) {
-                errorEl.textContent = 'Pulse width must be between 1 and 100 ms (or leave blank for 14 ms default)';
-                errorEl.style.display = 'block';
-                return;
-            }
 
             try {
                 const r = await fetch('/api/v1/admin/frequencies', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        frequency_mhz: freqMhz,
-                        pulse_width_ms: pulseMs,
-                        label: labelInput.value.trim() || null,
-                    })
+                    body: JSON.stringify({ frequency_mhz: freqMhz, label: labelInput.value.trim() || null })
                 });
                 const result = await r.json();
                 if (result.success) {
@@ -3940,8 +3283,7 @@
             try {
                 const r = await fetch(`/api/v1/admin/stations/${stationId}`, { method: 'DELETE' });
                 if (r.ok) {
-                    refreshLeaderboard();
-                    updateDashboard();
+                    location.reload();
                 } else {
                     alert('Failed to delete station: ' + (await r.json()).detail);
                 }
@@ -4059,13 +3401,14 @@
                     return;
                 }
 
-                let html = '<table><thead><tr><th>Station</th><th>Session</th><th style="text-align:right;">Waypoints</th><th style="text-align:right;">Status</th></tr></thead><tbody>';
+                let html = '<table><thead><tr><th>Station</th><th>Session</th><th style="text-align:right;">Waypoints</th><th style="text-align:right;">Status</th><th style="text-align:right;">Actions</th></tr></thead><tbody>';
                 for (const session of sessions.slice(0, 8)) {
                     html += `<tr>
                         <td><span class="activity-group" style="background:var(--accent-blue-dim);color:var(--accent-blue);">${session.station_id || '-'}</span></td>
                         <td>${session.name || 'Unnamed'}</td>
                         <td style="text-align:right;">${session.waypoint_count || '-'}</td>
                         <td style="text-align:right;"><span class="status-badge ${session.is_active ? 'online' : ''}" style="${!session.is_active ? 'background:#64748b33;color:var(--text-dim);' : ''}">${session.is_active ? 'ACTIVE' : 'ENDED'}</span></td>
+                        <td style="text-align:right;"><button onclick="deleteTestSession('${session.session_id}')" class="btn btn-danger btn-sm">Delete</button></td>
                     </tr>`;
                 }
                 html += '</tbody></table>';
@@ -4620,205 +3963,22 @@
                 document.getElementById('test-active-sessions').textContent = sessions.filter(s => s.is_active).length;
                 const tbody = document.getElementById('session-history-body');
                 if (sessions.length > 0) {
-                    tbody.innerHTML = sessions.map(s => `<tr><td><div style="font-weight:500;">${s.name || 'Unnamed'}</div><div style="color:var(--text-dim);font-size:11px;">${s.session_id}</div></td><td>${s.station_id}</td><td style="color:var(--text-dim);font-size:12px;">${s.started_at ? new Date(s.started_at).toLocaleString() : '-'}</td><td><span class="status-badge ${s.is_active ? 'online' : ''}" style="${!s.is_active ? 'background:#64748b33;color:var(--text-dim);' : ''}">${s.is_active ? 'ACTIVE' : 'ENDED'}</span></td><td style="text-align:right;"><button onclick="window.open('/api/v1/test/sessions/${s.session_id}/export','_blank')" class="btn btn-primary btn-sm">Export</button></td></tr>`).join('');
+                    tbody.innerHTML = sessions.map(s => `<tr><td><div style="font-weight:500;">${s.name || 'Unnamed'}</div><div style="color:var(--text-dim);font-size:11px;">${s.session_id}</div></td><td>${s.station_id}</td><td style="color:var(--text-dim);font-size:12px;">${s.started_at ? new Date(s.started_at).toLocaleString() : '-'}</td><td><span class="status-badge ${s.is_active ? 'online' : ''}" style="${!s.is_active ? 'background:#64748b33;color:var(--text-dim);' : ''}">${s.is_active ? 'ACTIVE' : 'ENDED'}</span></td><td style="text-align:right;"><div style="display:flex;gap:4px;justify-content:flex-end;"><button onclick="window.open('/api/v1/test/sessions/${s.session_id}/export','_blank')" class="btn btn-primary btn-sm">Export</button><button onclick="deleteTestSession('${s.session_id}')" class="btn btn-danger btn-sm">Delete</button></div></td></tr>`).join('');
                 } else tbody.innerHTML = '<tr><td colspan="5" class="empty">No test sessions yet</td></tr>';
             } catch (err) { console.error('Failed:', err); }
         }
 
-        // ==================== TAG DEPLOYMENT ====================
-        let __deployRegistry = [];       // all tags from /api/v1/admin/tags/registry
-        let __deployState = new Set();   // unique_keys currently toggled as deployed
-        let __deployStation = null;
-
-        async function loadStationDeployment() {
-            const select = document.getElementById('deployment-station-picker');
-            __deployStation = select.value || null;
-            document.getElementById('deploy-result').innerHTML = '';
-            document.getElementById('deploy-gate').value = '';
-            updateDeployGate();
-            if (!__deployStation) {
-                document.getElementById('deployment-tag-tbody').innerHTML =
-                    '<tr><td colspan="9" class="empty">Pick a station to begin.</td></tr>';
-                resetBandPlan();
-                return;
-            }
+        async function deleteTestSession(sessionId) {
+            if (!confirm('Delete this range test session and all its data? This cannot be undone.')) return;
             try {
-                const regResp = await fetch('/api/v1/admin/tags/registry');
-                const regJson = await regResp.json();
-                __deployRegistry = regJson.tags || [];
-
-                const depResp = await fetch(`/api/v1/admin/stations/${__deployStation}/deployment`);
-                const depJson = await depResp.json();
-                __deployState = new Set((depJson.tags || []).map(t => t.unique_key));
-
-                renderDeploymentTable();
-                await refreshBandPlan();
-            } catch (err) {
-                document.getElementById('deployment-tag-tbody').innerHTML =
-                    `<tr><td colspan="9" style="color:var(--accent-red);">Error: ${err.message}</td></tr>`;
-            }
-        }
-
-        function renderDeploymentTable() {
-            const tbody = document.getElementById('deployment-tag-tbody');
-            if (!__deployRegistry.length) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty">No tags in registry. Import the ATS CSV or add a custom tag.</td></tr>';
-                document.getElementById('deployment-counter').textContent = '0 deployed';
-                return;
-            }
-            const rows = __deployRegistry.map(t => {
-                const deployed = __deployState.has(t.unique_key);
-                const sourceBadge = t.is_custom
-                    ? '<span class="status-badge" style="background:var(--accent-amber-dim);color:var(--accent-amber);">custom</span>'
-                    : '<span class="status-badge" style="background:var(--accent-blue-dim);color:var(--accent-blue);">ATS</span>';
-                const freq = (t.frequency_khz / 1000).toFixed(3);
-                const pulse = t.pulse_width_ms ? (+t.pulse_width_ms).toFixed(0) : '—';
-                const ppm = t.pulse_rate_ppm ? (+t.pulse_rate_ppm).toFixed(0) : '—';
-                const deleteBtn = t.is_custom
-                    ? `<button class="btn btn-danger btn-sm" style="margin-left:6px;" onclick="deleteRegistryTag('${t.unique_key.replace(/'/g,"\\'")}')">✕</button>`
-                    : '';
-                return `<tr>
-                    <td><input type="checkbox" ${deployed ? 'checked' : ''}
-                          onchange="toggleDeployment('${t.unique_key.replace(/'/g,"\\'")}', this.checked)"></td>
-                    <td class="freq">${freq} MHz</td>
-                    <td>${t.model || '—'}</td>
-                    <td>${t.tag_type || '—'}</td>
-                    <td>${pulse}</td>
-                    <td>${ppm}</td>
-                    <td>${t.job_number || '—'}</td>
-                    <td>${t.serial_number || '—'}</td>
-                    <td>${sourceBadge}${deleteBtn}</td>
-                </tr>`;
-            }).join('');
-            tbody.innerHTML = rows;
-            document.getElementById('deployment-counter').textContent =
-                `${__deployState.size} of ${__deployRegistry.length} deployed`;
-        }
-
-        async function toggleDeployment(uniqueKey, on) {
-            if (!__deployStation) return;
-            if (on) __deployState.add(uniqueKey);
-            else __deployState.delete(uniqueKey);
-            try {
-                await fetch(`/api/v1/admin/stations/${__deployStation}/deployment`, {
-                    method: 'PUT',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        deployed_keys: Array.from(__deployState),
-                        updated_by: 'dashboard'
-                    })
-                });
-                renderDeploymentTable();
-                await refreshBandPlan();
-            } catch (err) {
-                alert('Failed to update deployment: ' + err.message);
-            }
-        }
-
-        async function refreshBandPlan() {
-            if (!__deployStation) { resetBandPlan(); return; }
-            try {
-                const r = await fetch(`/api/v1/admin/stations/${__deployStation}/deployment/preview`,
-                                      {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'});
-                const result = await r.json();
-                const plan = result.plan || {};
-                document.getElementById('deployment-band-plan').textContent = plan.band_plan || '—';
-                document.getElementById('dp-sdr-center').textContent = plan.frequency
-                    ? (plan.frequency / 1e6).toFixed(3) + ' MHz' : '—';
-                if (plan.freq_min && plan.freq_max) {
-                    document.getElementById('dp-band-range').textContent =
-                        (plan.freq_min / 1e6).toFixed(3) + ' – ' + (plan.freq_max / 1e6).toFixed(3) + ' MHz';
+                const r = await fetch(`/api/v1/test/sessions/${sessionId}`, { method: 'DELETE' });
+                if (r.ok) {
+                    loadTestSessions();
+                    updateRangeComparison();
                 } else {
-                    document.getElementById('dp-band-range').textContent = '—';
+                    alert('Failed to delete session: ' + (await r.json()).detail);
                 }
-                document.getElementById('dp-known-count').textContent =
-                    (plan.known_frequencies_mhz || []).length;
-                document.getElementById('dp-templates-count').textContent =
-                    Object.keys(plan.tag_templates || {}).length;
-                const fit = plan.fit || '—';
-                const fitEl = document.getElementById('dp-fit');
-                fitEl.textContent = fit;
-                fitEl.style.color = fit === 'overflow' ? 'var(--accent-red)'
-                                  : fit === 'single' ? 'var(--accent-green)' : 'var(--text-dim)';
-            } catch (err) { console.error('band plan:', err); }
-        }
-
-        function resetBandPlan() {
-            document.getElementById('deployment-band-plan').textContent = 'Select a station and tag(s).';
-            ['dp-sdr-center','dp-band-range','dp-known-count','dp-templates-count','dp-fit']
-                .forEach(id => document.getElementById(id).textContent = '—');
-        }
-
-        async function addCustomTag() {
-            const errorEl = document.getElementById('custom-tag-error');
-            errorEl.style.display = 'none';
-            const freq = parseFloat(document.getElementById('custom-freq-mhz').value);
-            const pulse = parseFloat(document.getElementById('custom-pulse-ms').value);
-            const model = document.getElementById('custom-model').value;
-            const type = document.getElementById('custom-type').value.trim();
-            const ppm = parseFloat(document.getElementById('custom-ppm').value);
-            const job = document.getElementById('custom-job').value.trim() || 'CUSTOM';
-            const sn = document.getElementById('custom-sn').value.trim();
-            if (isNaN(freq) || freq < 100 || freq > 200) {
-                errorEl.textContent = 'Invalid frequency'; errorEl.style.display = 'block'; return;
-            }
-            if (!sn) { errorEl.textContent = 'Serial number required'; errorEl.style.display = 'block'; return; }
-            const uniqueKey = `custom:${job}/${sn}/${freq.toFixed(3)}`;
-            try {
-                const r = await fetch('/api/v1/admin/tags/registry', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        unique_key: uniqueKey, frequency_mhz: freq,
-                        model: model, tag_type: type, job_number: job, serial_number: sn,
-                        pulse_rate_ppm: ppm, pulse_width_ms: pulse,
-                        status: 'custom', is_custom: true
-                    })
-                });
-                const result = await r.json();
-                if (!result.success) throw new Error(result.detail || 'Failed');
-                ['custom-freq-mhz','custom-sn'].forEach(id => document.getElementById(id).value = '');
-                await loadStationDeployment();
-            } catch (err) {
-                errorEl.textContent = 'Error: ' + err.message; errorEl.style.display = 'block';
-            }
-        }
-
-        async function deleteRegistryTag(uniqueKey) {
-            if (!confirm(`Delete ${uniqueKey}? Removes from registry and clears deployment state everywhere.`)) return;
-            try {
-                const r = await fetch('/api/v1/admin/tags/registry/' + encodeURIComponent(uniqueKey),
-                                      {method: 'DELETE'});
-                if (r.status === 404) { alert('Tag not found'); return; }
-                await loadStationDeployment();
-            } catch (err) { alert('Error: ' + err.message); }
-        }
-
-        function updateDeployGate() {
-            const val = (document.getElementById('deploy-gate').value || '').trim();
-            document.getElementById('deploy-button').disabled = (val !== 'DEPLOY') || !__deployStation;
-        }
-
-        async function commitDeployment() {
-            if (!__deployStation) return;
-            const resEl = document.getElementById('deploy-result');
-            resEl.innerHTML = '<span style="color:var(--text-dim);">Queueing command…</span>';
-            try {
-                const r = await fetch(`/api/v1/admin/stations/${__deployStation}/deployment/commit`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({confirm: 'DEPLOY', updated_by: 'dashboard'})
-                });
-                const result = await r.json();
-                if (!result.success) throw new Error(result.detail || 'Failed');
-                resEl.innerHTML = `<span style="color:var(--accent-green);">✓ Command queued (id=${result.command_id}).</span>
-                    <div style="color:var(--text-dim);font-size:12px;margin-top:4px;">${result.band_plan || ''}</div>
-                    <div style="color:var(--text-dim);font-size:12px;">Pi will apply on next command poll.</div>`;
-                document.getElementById('deploy-gate').value = '';
-                updateDeployGate();
-            } catch (err) {
-                resEl.innerHTML = `<span style="color:var(--accent-red);">Error: ${err.message}</span>`;
-            }
+            } catch (err) { alert('Error: ' + err); }
         }
     </script>
 </body>

@@ -1,0 +1,453 @@
+/* work_queue.css — mission briefing, practice standing, and the review lock.
+ *
+ * Loaded only when the fed queue is enabled; every rule is scoped under a wq- class
+ * so nothing here can touch the free-choice assignment list.
+ *
+ * Tone note: the practice chip and the lock are deliberately NOT styled as errors.
+ * A labeler in practice has done nothing wrong — they are being calibrated — and
+ * red framing at exactly the moment somebody is being judged reads as a reprimand.
+ */
+
+.wq-mission {
+  padding: 8px 8px 6px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.wq-mission-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.wq-mission-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+.wq-mission-purpose {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.wq-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* ── chips ─────────────────────────────────────────────────────────────── */
+
+.wq-chip {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+
+/* Amber, not red: practice is a normal stage, not a fault. */
+.wq-chip-practice {
+  background: var(--kp-color, #fdcb6e);
+  color: #0f1117;
+}
+
+.wq-chip-locked {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+}
+
+/* ── the next card ─────────────────────────────────────────────────────── */
+/* One card, so it can afford to say what it is. The kind chip answers "what am I
+   about to open" (a frame, a clip, a sonogram); the task badge beside it answers
+   "what do I do to it". Two different questions, and with no list underneath there
+   is nothing else on screen to infer the medium from. */
+
+.wq-next {
+  cursor: pointer;
+}
+
+.wq-next-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Outlined, not filled: the filled chips in this panel are all task colours, and a
+   second solid block would read as a second task. */
+.wq-kind {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0 5px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.wq-next-tag {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* The frame, in place of the gap-reason paragraph. 16:9 is reserved up front so the
+   card does not jump when the image arrives — or fail to arrive. The placeholder sits
+   UNDER the image rather than replacing it, so a 409 (clip not on this box) needs no
+   DOM surgery: the image hides and the label beneath shows through. */
+.wq-thumb-wrap {
+  position: relative;
+  margin-top: 5px;
+  aspect-ratio: 16 / 9;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.wq-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.wq-thumb-missing { display: none; }
+
+.wq-thumb-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.wq-next-name {
+  font-size: 12px;
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+.wq-next-actions { margin-top: 5px; }
+
+.wq-skip {
+  font-size: 11px;
+  padding: 1px 6px;
+}
+
+/* Neutral, like the practice chip: a scheduled check is routine, and colouring it
+   as a warning would make being measured feel like being accused. */
+.wq-chip-check {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--accent);
+}
+
+/* ── authoring the answer key (gold_author.js) ─────────────────────────── */
+
+.ga-form {
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+}
+
+.ga-label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+
+.ga-note {
+  width: 100%;
+  font-size: 11px;
+  padding: 4px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.ga-actions { display: flex; gap: 6px; margin-top: 6px; }
+.ga-status { font-size: 11px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
+
+/* ── how you did (gold_result.js) ──────────────────────────────────────── */
+/* Nothing in here is styled as an error. Somebody being calibrated has done
+   nothing wrong, and red framing at the moment of judgement reads as a telling-off. */
+
+.gr-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.gr-panel {
+  width: min(460px, 100%);
+  max-height: 86vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 18px 14px;
+}
+
+.gr-head { margin-bottom: 10px; }
+
+.gr-kind {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gr-panel h3 { margin: 2px 0 0; font-size: 16px; }
+
+.gr-score { display: flex; align-items: center; gap: 10px; margin: 10px 0 2px; }
+
+.gr-bar {
+  flex: 1 1 auto;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg);
+  overflow: hidden;
+}
+.gr-bar span { display: block; height: 100%; background: var(--accent); }
+
+.gr-pct { font-size: 22px; font-weight: 700; }
+.gr-pct span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
+
+.gr-sub { margin: 0; font-size: 11px; color: var(--text-muted); }
+.gr-detail-head { margin-top: 12px; }
+
+.gr-allgood { margin: 10px 0 0; font-size: 12px; }
+
+.gr-unscored {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.gr-list { list-style: none; margin: 6px 0 0; padding: 0; }
+
+.gr-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.gr-name { font-weight: 600; }
+.gr-what { color: var(--text-muted); text-align: right; white-space: nowrap; }
+
+.gr-note {
+  margin: 12px 0 0;
+  padding: 8px 9px;
+  border-left: 2px solid var(--kp-color, #fdcb6e);
+  background: var(--bg);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.gr-run {
+  margin: 12px 0 0;
+  padding: 8px 9px;
+  border-radius: 4px;
+  background: var(--bg);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.gr-run-open { border-left: 2px solid var(--accent); }
+.gr-run-again { border-left: 2px solid var(--kp-color, #fdcb6e); }
+
+.gr-actions { margin-top: 14px; display: flex; justify-content: flex-end; }
+
+/* ── reviewer feedback ─────────────────────────────────────────────────── */
+/* Behind an icon, not inline: the text is a few sentences that stay identical for
+   days, and rendering it open made the header taller than the queue beneath it. */
+
+.wq-fb-btn {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  background: var(--kp-color, #fdcb6e);
+  color: #0f1117;
+}
+
+.wq-fb-pop {
+  display: none;
+  margin-top: 5px;
+  padding: 6px 7px;
+  border-left: 2px solid var(--kp-color, #fdcb6e);
+  background: var(--bg);
+  border-radius: 0 3px 3px 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text);
+  flex-basis: 100%;
+}
+
+/* Hover to peek, click to pin. Touch devices have no hover, hence the pinned
+   .open state rather than hover alone. */
+.wq-mission-head:hover .wq-fb-pop,
+.wq-fb-pop.open {
+  display: block;
+}
+
+/* ── the lock ──────────────────────────────────────────────────────────── */
+
+.wq-locked {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.wq-locked-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+/* ── admin review surface (admin_dashboard.html) ───────────────────────── */
+
+.wq-review-row {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: var(--bg-card);
+}
+
+.wq-review-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.wq-review-who { font-weight: 700; font-size: 13px; }
+.wq-review-spec { font-size: 11px; color: var(--text-muted); }
+
+.wq-review-items {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 4px 0 6px;
+}
+
+.wq-review-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.wq-review-actions textarea {
+  flex: 1 1 100%;
+  min-height: 46px;
+  font-size: 12px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  resize: vertical;
+}
+
+.wq-review-actions label {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Drive resolver (admin_dashboard.html) ─────────────────────────────── */
+/* Candidates are shown with length and size because that, not the filename, is
+   what distinguishes AN13120907_59108_1.mov from _3. */
+
+.dr-cands { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+
+.dr-cand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+}
+
+.dr-thumb {
+  width: 84px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex: 0 0 84px;
+  background: var(--bg-card);
+}
+.dr-thumb-none { border: 1px dashed var(--border); }
+
+.dr-meta { flex: 1 1 auto; min-width: 0; }
+.dr-name {
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dr-facts { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+.dr-exact {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--kp-color, #fdcb6e);
+  margin-left: 4px;
+}
+
+.dr-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+
+/* "Keep all" is the primary action: every candidate is the same shark in the same
+   sighting, so picking one discards real footage. */
+.dr-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.dr-all-note { font-size: 11px; color: var(--text-muted); }

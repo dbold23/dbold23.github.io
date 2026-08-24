@@ -1,0 +1,1042 @@
+/* ═══════════════════════════════════════════════════
+   Admin Dashboard — extends styles.css variables
+   ═══════════════════════════════════════════════════ */
+
+.admin-body {
+  overflow-y: auto;
+  background: var(--bg-base);
+}
+
+.header-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 24px;
+}
+
+/* ─── Summary Cards ────────────────────────────── */
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.summary-card .card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.summary-card .card-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.summary-card .card-sub {
+  font-size: 11px;
+  color: var(--text-label);
+  margin-top: 4px;
+}
+
+/* ─── Actions ──────────────────────────────────── */
+
+.admin-actions {
+  padding: 10px 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-actions-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Pushed right so it reads as a disclosure for the row, not a fourth action. */
+.admin-more-btn { margin-left: auto; }
+
+.admin-actions-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* A class selector outranks the UA stylesheet's [hidden] rule, so `display:flex`
+   above silently defeats the attribute and the drawer renders open. Restore it. */
+.admin-actions-more[hidden] { display: none; }
+
+/* Each group is a labelled cluster, not a submenu. One level, nothing hidden
+   behind a hover, so everything is visible the moment the drawer is open. */
+.admin-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.admin-group-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: 2px;
+}
+
+/* ─── Encounters ───────────────────────────────── */
+
+.encounter-section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px 4px;
+  margin-bottom: 16px;
+}
+
+.encounter-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.encounter-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+/* `.input` is width:100% globally, which is right for the modals it was written for
+   and wrong here: each filter took a full row, turning four controls into a stack
+   taller than the table they filter. Size them to their content instead. */
+.filter-group .input {
+  width: auto;
+  min-width: 0;
+}
+.filter-group #filter-search { width: 200px; }
+.filter-group #filter-sort { max-width: 220px; }
+.filter-group #filter-site { max-width: 150px; }
+
+.filter-checkbox {
+  font-size: 12px;
+  color: var(--text-label);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.input-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+  height: 30px;
+}
+
+/* ─── Annotator Stats ──────────────────────────── */
+
+.annotator-stats-section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.annotator-stats-section.collapsed .stats-body {
+  display: none;
+}
+
+.stats-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.stats-body {
+  margin-top: 8px;
+}
+
+.stat-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 0;
+  font-size: 12px;
+}
+
+.stat-name {
+  width: 110px;
+  text-align: right;
+  color: var(--text-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-track {
+  flex: 1;
+  background: var(--bg-base);
+  border-radius: 3px;
+  overflow: hidden;
+  height: 14px;
+}
+
+.stat-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.stat-pct {
+  color: var(--text-muted);
+  min-width: 160px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* ─── Workload Tabs ──────────────────────────── */
+
+.workload-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.workload-tab {
+  padding: 4px 12px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.workload-tab:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.workload-tab.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ─── Proficiency Table ──────────────────────── */
+
+.proficiency-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.proficiency-table th {
+  padding: 6px 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.proficiency-table th.col-right {
+  text-align: right;
+}
+
+.proficiency-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.proficiency-table tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rank-num {
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 11px;
+  width: 28px;
+  text-align: center;
+}
+
+.rank-num.top-3 {
+  color: var(--success);
+}
+
+.prof-bar-cell {
+  min-width: 120px;
+}
+
+.prof-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prof-bar-track {
+  flex: 1;
+  height: 10px;
+  background: var(--bg-base);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.prof-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.prof-bar-fill.bar-high { background: var(--success); }
+.prof-bar-fill.bar-mid { background: var(--accent); }
+.prof-bar-fill.bar-low { background: var(--warning); }
+
+.prof-value {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 36px;
+  text-align: right;
+}
+
+.prof-value.val-high { color: var(--success); }
+.prof-value.val-mid { color: var(--accent); }
+.prof-value.val-low { color: var(--warning); }
+
+.tier-label {
+  font-size: 11px;
+  color: var(--text-label);
+  font-weight: 600;
+}
+
+.expert-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.annot-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* ─── Encounter Table ──────────────────────────── */
+
+.encounter-table-wrap {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.encounter-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.encounter-table th {
+  background: var(--bg-card);
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.encounter-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.encounter-table tr:hover {
+  background: var(--bg-hover);
+}
+
+.center { text-align: center; }
+
+/* Progress bar */
+.progress-bar {
+  width: 100px;
+  height: 8px;
+  background: var(--bg-base);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.progress-low  { background: var(--danger); }
+.progress-mid  { background: var(--warning); }
+.progress-high { background: var(--success); }
+
+/* Disabled assign button for high-consensus encounters */
+.btn-assign-enc:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+
+/* Status badges */
+.badge-nif {
+  color: var(--warning);
+  font-weight: bold;
+  margin-left: 4px;
+  cursor: help;
+}
+
+/* ─── Pagination ───────────────────────────────── */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+/* ─── Modals ───────────────────────────────────── */
+
+.modal-wide {
+  min-width: 600px;
+  max-width: 90vw;
+}
+
+/* Encounter detail modal: scrollable body */
+#encounter-modal .modal-box {
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#encounter-modal #modal-body {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  flex-shrink: 0;
+}
+
+.assign-enc-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+/* Detail grid */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.detail-cell {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.detail-cell .cell-name {
+  color: var(--text-label);
+  font-size: 10px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.detail-cell .cell-status {
+  font-weight: 600;
+}
+
+.detail-cell.status-completed {
+  border-color: var(--success);
+}
+.detail-cell.status-completed .cell-status {
+  color: var(--success);
+}
+
+.detail-cell.status-pending {
+  opacity: 0.5;
+}
+.detail-cell.status-pending .cell-status {
+  color: var(--text-muted);
+}
+
+.detail-cell.status-not_in_folder {
+  border-color: var(--warning);
+}
+.detail-cell.status-not_in_folder .cell-status {
+  color: var(--warning);
+}
+
+.detail-cell.status-other {
+  border-color: var(--text-muted);
+}
+.detail-cell.status-other .cell-status {
+  color: var(--text-label);
+}
+
+/* Name mapping table */
+.map-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.map-table th, .map-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.map-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.map-table input {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.map-table .map-saved {
+  color: var(--success);
+  font-size: 11px;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.map-table .map-saved.show {
+  opacity: 1;
+}
+
+/* ─── Consensus Badges ────────────────────────── */
+
+.consensus-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.consensus-high {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.consensus-moderate {
+  background: rgba(241, 196, 15, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(241, 196, 15, 0.3);
+}
+
+.consensus-low {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+/* ─── Consensus Detail (in modal) ─────────────── */
+
+.consensus-detail {
+  margin-top: 8px;
+}
+
+.consensus-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.consensus-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.consensus-table th {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.consensus-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.consensus-table tr.reliable td {
+  color: var(--success);
+}
+
+.consensus-table tr.unreliable td {
+  color: var(--text-muted);
+}
+
+.consensus-table tr.disputed td {
+  color: var(--danger);
+  text-decoration: line-through;
+}
+
+/* ─── Needs Analysis Badge ────────────────────────── */
+
+.consensus-needs-analysis {
+  background: rgba(155, 89, 182, 0.15);
+  color: #9b59b6;
+  border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+/* ─── Smart Assign ─────────────────────────────────── */
+
+.smart-preview-list {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 12px;
+  background: var(--bg-base);
+}
+
+.workload-indicator {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 6px 0;
+  line-height: 1.5;
+}
+
+/* ─── Editable Quotas ──────────────────────────── */
+
+.quota-editable,
+.quota-editable-sm {
+  cursor: pointer;
+  border-bottom: 1px dashed var(--text-muted);
+  padding: 0 2px;
+  transition: color 0.15s;
+}
+.quota-editable:hover,
+.quota-editable-sm:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.quota-input,
+.quota-input-sm {
+  width: 48px;
+  font-size: inherit;
+  padding: 1px 4px;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* ─── Assignment Badges ────────────────────────── */
+
+.badge-assigned {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* ─── Voter Grid ──────────────────────────────── */
+
+.voter-grid-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.voter-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.voter-grid th {
+  padding: 4px 6px;
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.voter-grid th.voter-name {
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  max-width: 30px;
+  padding: 8px 4px 4px;
+  text-align: left;
+}
+
+.voter-grid td {
+  padding: 4px 6px;
+  text-align: center;
+  border: 1px solid var(--border);
+  min-width: 28px;
+}
+
+.voter-grid .scar-label {
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--text-label);
+  font-size: 11px;
+  padding-right: 12px;
+}
+
+.vote-yes {
+  background: rgba(46, 204, 113, 0.12);
+  color: var(--success);
+  font-weight: 600;
+}
+
+.vote-yes-high {
+  background: rgba(46, 204, 113, 0.22);
+  color: var(--success);
+  font-weight: 700;
+}
+
+.vote-no {
+  background: rgba(231, 76, 60, 0.08);
+  color: var(--danger);
+}
+
+/* ─── Admin Notes ─────────────────────────────── */
+
+.admin-notes-section {
+  margin: 12px 0;
+}
+
+.admin-notes-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.admin-notes-textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 120px;
+  resize: vertical;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 8px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.admin-notes-textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.admin-flag-select {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.admin-notes-save {
+  padding: 6px 14px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.admin-notes-saved {
+  color: var(--success);
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.admin-notes-saved.show {
+  opacity: 1;
+}
+
+/* ─── CSV Annotator Comments ──────────────────── */
+
+.csv-comments {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: rgba(241, 196, 15, 0.08);
+  border-left: 3px solid var(--warning);
+  border-radius: 0 4px 4px 0;
+}
+
+.csv-comment {
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.csv-comment-name {
+  font-weight: 600;
+  color: var(--text-label);
+}
+
+.csv-comment-text {
+  color: var(--warning);
+  font-style: italic;
+}
+
+/* ─── Flag Dot (in encounter table) ───────────── */
+
+.flag-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: middle;
+  cursor: help;
+}
+
+.flag-skip { background: var(--danger); }
+.flag-review { background: var(--warning); }
+.flag-mirrored { background: #e67e22; }
+.flag-mislabeled { background: #3498db; }
+
+/* ─── Detail Panel Section Labels ─────────────── */
+
+.detail-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin: 16px 0 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-section-label:first-child {
+  margin-top: 0;
+}
+
+/* ─── Scar Status in Voter Grid ───────────────── */
+
+.scar-status-confirmed {
+  color: var(--success);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.scar-status-probable {
+  color: var(--warning);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.scar-status-unconfirmed {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+/* `disputed` is not a weaker `unconfirmed`. Unconfirmed = too few people spoke.
+   Disputed = people looked and said it is NOT there. It reads as a stronger
+   negative than muted grey, so it takes the danger colour and a strikethrough —
+   the cohort actively struck this scar out. */
+.scar-status-disputed {
+  color: var(--danger);
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: line-through;
+}
+
+/* ─── Agreement Bars ──────────────────────────── */
+
+.agreement-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 12px;
+}
+
+.agreement-scar-label {
+  min-width: 140px;
+  font-weight: 600;
+  color: var(--text-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agreement-bar-track {
+  flex: 1;
+  max-width: 200px;
+  height: 14px;
+  background: rgba(231, 76, 60, 0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.agreement-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.agreement-bar-fill.bar-high { background: var(--success); }
+.agreement-bar-fill.bar-moderate { background: var(--warning); }
+.agreement-bar-fill.bar-low { background: var(--danger); }
+.agreement-bar-fill.bar-disputed {
+  background: repeating-linear-gradient(45deg, var(--danger), var(--danger) 4px,
+                                        transparent 4px, transparent 8px);
+}
+
+.agreement-ratio {
+  min-width: 70px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.agreement-status {
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 80px;
+}
+
+.agreement-status.status-confirmed { color: var(--success); }
+.agreement-status.status-probable { color: var(--warning); }
+.agreement-status.status-unconfirmed { color: var(--danger); }
+.agreement-status.status-disputed { color: var(--danger); font-weight: 700; text-decoration: line-through; }
+
+/* ─── Collapsible Voter Detail ────────────────── */
+
+.voter-detail-toggle {
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 11px;
+  margin-top: 8px;
+  user-select: none;
+  display: inline-block;
+}
+
+.voter-detail-toggle:hover {
+  text-decoration: underline;
+}
+
+.voter-detail-body {
+  display: none;
+  margin-top: 8px;
+}
+
+.voter-detail-body.expanded {
+  display: block;
+}
+
+/* Row-level tinting in voter grid */
+.voter-grid tr.row-confirmed { background: rgba(46, 204, 113, 0.05); }
+.voter-grid tr.row-probable { background: rgba(241, 196, 15, 0.05); }
+.voter-grid tr.row-unconfirmed { background: rgba(231, 76, 60, 0.05); }
+.voter-grid tr.row-disputed { background: rgba(231, 76, 60, 0.14); }
+
+
+/* Triage tier — READ-ONLY. admin_flag is machine-owned (set by the triage import)
+   and read by goal-weighted assignment. It was previously an editable <select>
+   whose options matched none of the stored values, so saving a note blanked the
+   tier on 1,362 encounters. Displayed, never written. */
+.admin-flag-badge {
+  padding: 4px 10px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px dashed var(--border, #444);
+  color: var(--text-muted, #9ca3af);
+  background: var(--bg-base, transparent);
+  white-space: nowrap;
+  cursor: default;
+}

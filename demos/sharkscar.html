@@ -4,7 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shark Scar Annotator</title>
-  <link rel="stylesheet" href="sharkscar/css/styles.css" />
+  <link rel="stylesheet" href="sharkscar/css/styles.css?v=31" />
+  <link rel="stylesheet" href="sharkscar/css/gamification.css?v=12" />
+  <link rel="stylesheet" href="sharkscar/css/signals.css?v=2" />
+  <link rel="stylesheet" href="sharkscar/css/panel_ui.css?v=4" />
+  <link rel="stylesheet" href="sharkscar/css/objects.css?v=2" />
+  <link rel="stylesheet" href="sharkscar/css/work_queue.css?v=7" />
+  <link rel="stylesheet" href="sharkscar/css/frame_context.css?v=6" />
+  <link rel="stylesheet" href="sharkscar/css/tutorial.css?v=1" />
+  <link rel="stylesheet" href="sharkscar/css/signals_review.css?v=6" />
   <style>
     .demo-banner {
       background: linear-gradient(90deg, #0a2463, #1e5f8c);
@@ -17,107 +25,145 @@
   </style>
   <script>
   /* ------------------------------------------------------------------
-     Mock API for the public demo.
+     Mock API for the public demo of the Shark Scar Annotator.
 
-     No backend, no database, no Google Drive, no sign-in. Every /api/ and
-     /auth/ call is answered here from canned data, so the annotation tools
-     -- frame capture, segmentation, keypoints, the scar form, export --
-     all run through their real code paths against a sample clip.
+     The real platform is a Flask app over a catalog database, Google Drive
+     and SAM2. None of that is here. Every /api/ and /auth/ call is answered
+     from canned data so the annotation tools run their real code paths --
+     frame capture, segmentation, keypoints, the scar form, the work queue --
+     against one sample clip and a handful of invented encounters.
 
-     SAM2 obviously is not running in the browser, so a click that would
-     normally go to the model comes back with a generated ellipse instead:
-     the right shape of response, honestly fake.
+     The app is written defensively (a failed fetch falls back to defaults
+     rather than throwing), so the long tail of admin, ingest and MLOps
+     routes gets a benign empty payload rather than a bespoke fixture.
   ------------------------------------------------------------------ */
   (function () {
     'use strict';
 
     var DEMO_VIDEO = '../assets/shark-yolo-keypoints.mp4';
 
-    var USER = {email: 'demo@example.org', name: 'Demo Annotator', role: 'annotator', is_admin: false};
+    var USER = { email: 'demo@example.org', name: 'Demo Annotator', role: 'annotator', is_admin: false };
+
+    function vid(id, name, code, site, status, extra) {
+      var v = { id: id, video_name: name, encounter_code: code, site: site, status: status,
+                video_path: DEMO_VIDEO, media_type: 'video', completed_at: null };
+      for (var k in (extra || {})) v[k] = extra[k];
+      return v;
+    }
 
     var VIDEOS = [
-      {id: 'v-demo-01', video_name: 'APT26031401.mp4', encounter_code: 'APT26031401', site: 'Site A', status: 'assigned',    video_path: DEMO_VIDEO},
-      {id: 'v-demo-02', video_name: 'APT26031802.mp4', encounter_code: 'APT26031802', site: 'Site A', status: 'in_progress', video_path: DEMO_VIDEO},
-      {id: 'v-demo-03', video_name: 'BRW26040903.mp4', encounter_code: 'BRW26040903', site: 'Site B', status: 'complete',    video_path: DEMO_VIDEO},
-      {id: 'v-demo-04', video_name: 'BRW26041104.mp4', encounter_code: 'BRW26041104', site: 'Site B', status: 'assigned',    video_path: DEMO_VIDEO},
-      {id: 'v-demo-05', video_name: 'TMB26052205.mp4', encounter_code: 'TMB26052205', site: 'Site C', status: 'in_progress', video_path: DEMO_VIDEO},
-      {id: 'v-demo-06', video_name: 'TMB26052806.mp4', encounter_code: 'TMB26052806', site: 'Site C', status: 'assigned',    video_path: DEMO_VIDEO}
+      vid('v-demo-01', 'APT26031401.mp4', 'APT26031401', 'Site A', 'assigned'),
+      vid('v-demo-02', 'APT26031802.mp4', 'APT26031802', 'Site A', 'in_progress'),
+      vid('v-demo-03', 'BRW26040903.mp4', 'BRW26040903', 'Site B', 'complete', { completed_at: '2026-08-14' }),
+      vid('v-demo-04', 'BRW26041104.mp4', 'BRW26041104', 'Site B', 'assigned'),
+      vid('v-demo-05', 'TMB26052205.mp4', 'TMB26052205', 'Site C', 'in_progress'),
+      vid('v-demo-06', 'TMB26052806.mp4', 'TMB26052806', 'Site C', 'assigned'),
+      vid('v-demo-07', 'TMB26060107.mp4', 'TMB26060107', 'Site C', 'complete', { completed_at: '2026-08-19' })
     ];
 
-    /* A stand-in for a SAM2 mask: a soft ellipse around the clicked point,
-       returned as a base64 PNG exactly as the real endpoint would. */
+    /* Stand-in for a SAM2 mask: a soft ellipse around the clicked point,
+       returned as the base64 PNG the real endpoint would send back. */
     function fakeMask(points, isBody) {
       var W = 1280, H = 720;
       var cx = (points && points[0] ? points[0][0] : W / 2);
       var cy = (points && points[0] ? points[0][1] : H / 2);
       var rx = isBody ? 380 : 78, ry = isBody ? 140 : 52;
-
       var cv = document.createElement('canvas');
       cv.width = W; cv.height = H;
       var g = cv.getContext('2d');
-      g.clearRect(0, 0, W, H);
       g.fillStyle = '#ffffff';
       g.beginPath();
       g.ellipse(cx, cy, rx, ry, isBody ? -0.06 : 0.2, 0, Math.PI * 2);
       g.fill();
-
       return {
         mask_b64: cv.toDataURL('image/png').split(',')[1],
         bbox: [Math.max(0, cx - rx), Math.max(0, cy - ry), Math.min(W, cx + rx), Math.min(H, cy + ry)]
       };
     }
 
+    var DEMO_NOTE = 'Demo mode — not persisted.';
+
     function route(path, search, method, body) {
       var q = new URLSearchParams(search || '');
 
-      if (path === '/auth/me')    return USER;
-      if (path === '/auth/login') return {url: null, message: 'Sign-in is disabled in the demo.'};
+      // ---- identity -------------------------------------------------
+      if (path === '/auth/me') return USER;
+      if (path === '/auth/login' || path === '/api/auth/access-token') {
+        return { url: null, message: 'Sign-in is disabled in the demo.' };
+      }
 
-      if (path === '/api/videos' && method === 'GET') return {videos: VIDEOS};
+      // ---- feature flags --------------------------------------------
+      if (path === '/api/config/features') {
+        return { effort_record: false, gamification: true, ingest: false, mlops: false, drive: false };
+      }
+
+      // ---- annotator stats (gamification panel) ---------------------
+      if (path === '/api/me/stats') {
+        return {
+          gamification: { enabled: true },
+          annotations_total: 128, annotations_week: 17, streak_days: 4,
+          videos_completed: 9, quality_score: 0.93,
+          goal: { current: 128, target: 150 },
+          team_goal: { enabled: false }
+        };
+      }
+      if (path === '/api/me/team-goal/opt-in') return { success: true, opted_in: false, message: DEMO_NOTE };
+
+      // ---- videos ----------------------------------------------------
+      if (path === '/api/videos' && method === 'GET') return { videos: VIDEOS };
       if (path === '/api/videos' && method === 'POST') {
-        return {id: 'v-demo-new', video_name: (body && body.video_name) || 'new.mp4', status: 'assigned'};
+        return { id: 'v-demo-new', video_name: (body && body.video_name) || 'new.mp4', status: 'assigned' };
       }
-
-      if (path === '/api/frames/enhance') {
-        // Brightness/contrast are applied on the canvas anyway; hand the
-        // frame straight back rather than pretending to process it.
-        return {frame_b64: body && body.frame_b64};
+      if (/^\/api\/videos\/[^/]+\/complete$/.test(path)) {
+        return { success: true, next_video: null, message: 'Demo mode — completion not recorded.' };
       }
+      if (/^\/api\/videos\/[^/]+\/(status|assign)$/.test(path)) return { success: true, message: DEMO_NOTE };
 
-      if (path === '/api/frames/segment') {
-        return fakeMask(body && body.points, !!(body && body.is_body));
+      // ---- frames & segmentation ------------------------------------
+      if (path === '/api/frames/enhance') return { frame_b64: body && body.frame_b64 };
+      if (path === '/api/frames/segment') return fakeMask(body && body.points, !!(body && body.is_body));
+      if (path === '/api/frames/context') return { frames: [], message: DEMO_NOTE };
+      if (path === '/api/frames') return { frames: [] };
+
+      // ---- annotations ----------------------------------------------
+      if (path === '/api/annotations' && method === 'POST') {
+        return { success: true, id: 'ann-demo-' + Math.floor(Math.random() * 1e6), message: DEMO_NOTE };
       }
+      if (/^\/api\/annotations\/video\/[^/]+$/.test(path)) return { annotations: [] };
+      if (path === '/api/annotations') return { annotations: [] };
 
-      if (path === '/api/annotations') {
-        return {success: true, id: 'ann-demo-' + Math.floor(Math.random() * 1e6),
-                message: 'Demo mode — annotation not persisted.'};
-      }
-
+      // ---- export ----------------------------------------------------
       if (/^\/api\/export\//.test(path)) {
-        return {success: true, rows: 0,
-                message: 'Demo mode — export is disabled. In the real platform this writes COCO JSON, Google Forms CSV or a 3-tab Sheet.'};
+        return { success: true, rows: 0,
+                 message: 'Export is disabled in the demo. The real platform writes COCO JSON, Google Forms CSV, keypoint CSV and a 3-tab Google Sheet.' };
       }
 
-      if (/^\/api\/drive\//.test(path)) {
-        return {files: [], folders: [], message: 'Google Drive is not connected in the demo.'};
-      }
+      // ---- everything else -------------------------------------------
+      // Admin, ingest, MLOps, Drive and catalog routes. The app treats a
+      // failed or empty read as "feature unavailable" and falls back, so a
+      // single shaped-empty payload keeps the whole UI coherent.
+      var disabled =
+        /^\/api\/admin\//.test(path) ? 'Admin tools are disabled in the demo.' :
+        /^\/api\/ingest\//.test(path) ? 'Ingest is disabled in the demo.' :
+        /^\/api\/drive\//.test(path) ? 'Google Drive is not connected in the demo.' : DEMO_NOTE;
 
-      if (/^\/api\/admin\//.test(path)) {
-        return {success: true, encounters: [], annotators: [], workload: [], summary: {},
-                message: 'Admin tools are disabled in the demo.'};
-      }
-
-      return {success: true, message: 'Demo mode — this action is not persisted.'};
+      return {
+        success: true, message: disabled,
+        items: [], videos: [], encounters: [], candidates: [], batches: [], trips: [],
+        annotators: [], workload: [], rows: [], files: [], folders: [], proposals: [],
+        anomalies: [], scorecards: [], gold: [], practice: [], frames: [],
+        summary: {}, stats: {}, status: {}, config: {}, data: {}, total: 0
+      };
     }
 
     function json(body) {
       var text = JSON.stringify(body);
       if (typeof Response === 'function') {
-        return Promise.resolve(new Response(text, {status: 200, headers: {'Content-Type': 'application/json'}}));
+        return Promise.resolve(new Response(text, { status: 200, headers: { 'Content-Type': 'application/json' } }));
       }
-      return Promise.resolve({ok: true, status: 200,
+      return Promise.resolve({ ok: true, status: 200,
         json: function () { return Promise.resolve(JSON.parse(text)); },
-        text: function () { return Promise.resolve(text); }});
+        text: function () { return Promise.resolve(text); } });
     }
 
     var nativeFetch = window.fetch ? window.fetch.bind(window) : null;
@@ -142,20 +188,19 @@
 
     window.addEventListener('load', function () {
       // The player takes /api/videos/<id>/stream as a <video src>, which never
-      // goes through fetch. Point it at the bundled sample clip instead.
+      // passes through fetch. Point it at the bundled sample clip instead.
       if (window.videoPlayer && typeof window.videoPlayer.load === 'function') {
         var origLoad = window.videoPlayer.load.bind(window.videoPlayer);
         window.videoPlayer.load = function (p) {
           return origLoad(/^\/api\/videos\/.*\/stream$/.test(p || '') ? DEMO_VIDEO : p);
         };
       }
-      // Nothing to sign into.
       if (window.AppState) {
         window.AppState._showLogin = function () {};
         var hu = document.getElementById('header-user');
         if (hu) hu.textContent = 'Demo Annotator';
       }
-      // The admin dashboard is not part of the demo.
+      // The admin dashboard is a separate page and is not part of the demo.
       document.querySelectorAll('a[href="/admin/dashboard"]').forEach(function (a) { a.remove(); });
     });
   })();
@@ -169,16 +214,21 @@
 <!-- ═══════════════════════════ HEADER ════════════════════════════ -->
 <header class="header">
   <div class="header-left">
+    <button class="header-drawer-btn" id="btn-toggle-left" title="Videos panel" aria-label="Open videos panel">☰</button>
+    <!-- Sits on the LEFT because it acts on the left rail: a control that hides a
+         panel should live next to the panel it hides, not across the header from it. -->
+    <button class="btn btn-sm btn-ghost" id="btn-hide-left" title="Hide the videos panel">◂ Panel</button>
     <span class="logo">Shark Scar Annotator</span>
+    <a href="/admin/dashboard" class="btn btn-sm btn-ghost" id="btn-admin" style="font-size:11px;">Admin</a>
   </div>
   <div class="header-center">
     <span id="header-video-name" class="header-video-name">No video loaded</span>
   </div>
   <div class="header-right">
     <span id="header-user" class="header-user">Not signed in</span>
-    <button class="btn btn-sm btn-ghost" id="btn-save-ann" title="Ctrl+S">💾 Save</button>
+    <button class="btn btn-sm btn-ghost" id="btn-save-ann" title="Ctrl+S">Save</button>
     <div class="dropdown">
-      <button class="btn btn-sm btn-ghost" id="btn-export-menu">⬇ Export ▾</button>
+      <button class="btn btn-sm btn-ghost" id="btn-export-menu">Export ▾</button>
       <div class="dropdown-menu" id="export-menu">
         <a class="dropdown-item" id="btn-export-coco">COCO JSON</a>
         <a class="dropdown-item" id="btn-export-forms">Google Forms CSV</a>
@@ -186,8 +236,24 @@
       </div>
     </div>
     <button class="btn btn-sm btn-ghost" id="btn-shortcuts-help" title="Keyboard shortcuts">?</button>
+    <button class="header-drawer-btn" id="btn-toggle-right" title="Form panel" aria-label="Open form panel">⚙</button>
   </div>
 </header>
+
+<!-- Mobile drawer backdrop — covers main area when a drawer is open -->
+<div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+<!-- ═══════════════════ PROGRESS BARS ══════════════════════════ -->
+<div class="progress-strip" id="progress-strip" style="display:none;">
+  <span id="progress-text-scars" class="progress-label">0 / 150 scars</span>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill-scars" style="width:0%"></div>
+  </div>
+  <span id="progress-text-poses" class="progress-label">0 / 50 poses</span>
+  <div class="progress-track">
+    <div class="progress-fill progress-fill-pose" id="progress-fill-poses" style="width:0%"></div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════ MAIN LAYOUT ═══════════════════════ -->
 <div class="workspace">
@@ -195,88 +261,49 @@
   <!-- ─────────────────── LEFT PANEL ─────────────────────────── -->
   <aside class="panel-left">
     <div class="panel-tabs">
-      <button class="tab-btn active" data-tab="videos">My Videos</button>
-      <button class="tab-btn" data-tab="admin">Admin</button>
+      <button class="tab-btn active" data-tab="videos">Assignments</button>
+      <button class="tab-btn" data-tab="completed">Completed</button>
     </div>
 
     <!-- Videos tab -->
     <div class="tab-content active" id="tab-videos">
-      <div class="search-bar">
-        <input type="text" id="video-search" placeholder="Search videos…" />
+      <div class="search-bar" style="display:flex;gap:4px;">
+        <input type="text" id="video-search" placeholder="Search…" style="flex:1;" />
+        <select id="media-type-filter" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);">
+          <option value="all" selected>All</option>
+          <option value="image">Frames</option>
+          <option value="video">Videos</option>
+        </select>
       </div>
       <div id="video-list" class="video-list">
         <p class="muted">Loading videos…</p>
       </div>
     </div>
 
-    <!-- Admin tab -->
-    <div class="tab-content" id="tab-admin">
-      <a href="/admin/dashboard" class="btn btn-primary btn-block" style="margin-bottom:12px">Open Admin Dashboard</a>
-      <div class="divider"></div>
-      <div class="section-label">Add Video Manually</div>
-      <input type="text" class="input" id="admin-enc-code" placeholder="Encounter Code (LOCYYMMDDnn)" />
-      <input type="text" class="input" id="admin-video-name" placeholder="Video filename" />
-      <input type="text" class="input" id="admin-drive-id" placeholder="Google Drive file ID" />
-      <input type="text" class="input" id="admin-site" placeholder="Site (AN, FAR…)" />
-      <input type="number" class="input" id="admin-year" placeholder="Year" />
-      <textarea class="input" id="admin-notes" placeholder="Notes" rows="2"></textarea>
-      <button class="btn btn-primary btn-block" id="btn-admin-add">Add Video</button>
-
-      <div class="divider"></div>
-      <div class="section-label">Import CSV</div>
-      <input type="file" id="csv-file-input" accept=".csv" />
-      <button class="btn btn-secondary btn-block" id="btn-import-csv">Import CSV</button>
-
-      <div class="divider"></div>
-      <div class="section-label">Assign Video</div>
-      <input type="text" class="input" id="assign-video-id" placeholder="Video ID" />
-      <input type="text" class="input" id="assign-email" placeholder="Annotator email" />
-      <select class="input" id="assign-priority">
-        <option value="low">Low</option>
-        <option value="medium" selected>Medium</option>
-        <option value="high">High</option>
-        <option value="urgent">Urgent</option>
-      </select>
-      <input type="date" class="input" id="assign-due" />
-      <textarea class="input" id="assign-notes" placeholder="Notes" rows="2"></textarea>
-      <button class="btn btn-primary btn-block" id="btn-assign">Assign Video</button>
-      <div id="admin-status" class="status-msg"></div>
-
-      <div class="divider"></div>
-      <div class="section-label">Browse Google Drive</div>
-      <button class="btn btn-secondary btn-block" id="btn-drive-browse">Browse Drive</button>
-      <div id="drive-list" class="drive-list"></div>
+    <!-- Completed tab -->
+    <div class="tab-content" id="tab-completed">
+      <div class="search-bar" style="display:flex;gap:4px;">
+        <input type="text" id="completed-search" placeholder="Search completed…" style="flex:1;" />
+        <select id="completed-sort" style="width:auto;padding:4px 6px;font-size:12px;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);">
+          <option value="recent" selected>Most Recent</option>
+          <option value="oldest">Oldest First</option>
+          <option value="name">Name (A-Z)</option>
+          <option value="encounter">Encounter Code</option>
+          <option value="site">Site</option>
+        </select>
+      </div>
+      <div id="completed-list" class="video-list">
+        <p class="muted">No completed annotations</p>
+      </div>
     </div>
 
-    <div class="divider"></div>
+    <!-- TOOLS and SHORTCUTS were here. Both are gone from the left rail: the rail is
+         the work list, and neither was about the work.
 
-    <!-- TOOLS -->
-    <div class="section-label">TOOLS</div>
-    <div class="tool-grid">
-      <button class="tool-btn" id="tool-body"      title="[F] Full body SAM segmentation">Body [F]</button>
-      <button class="tool-btn" id="tool-scar"      title="[S] Click to add scar">Scar [S]</button>
-      <button class="tool-btn" id="tool-keypoint"  title="[K] Place keypoints">Keypoint [K]</button>
-      <button class="tool-btn" id="tool-bbox"      title="[B] Draw labeled box">⬛ Box [B]</button>
-      <button class="tool-btn" id="tool-undo"      title="[Z] Undo">↩ Undo [Z]</button>
-      <button class="tool-btn danger" id="tool-reset" title="[R] Reset frame">🔄 Reset [R]</button>
-    </div>
-
-    <div class="divider"></div>
-    <div class="section-label">SHORTCUTS</div>
-    <div class="shortcuts-grid">
-      <span>Space</span><span>Play / Pause</span>
-      <span>← →</span><span>Step frame</span>
-      <span>⇧+← →</span><span>Jump 10</span>
-      <span>F</span><span>Body SAM</span>
-      <span>S</span><span>Add scar</span>
-      <span>K</span><span>Keypoints</span>
-      <span>B</span><span>Draw box</span>
-      <span>+ −</span><span>Zoom</span>
-      <span>Z</span><span>Undo</span>
-      <span>1–5</span><span>Confidence</span>
-      <span>Ctrl+S</span><span>Save</span>
-      <span>Esc</span><span>Cancel</span>
-    </div>
+         The tool buttons live on in the canvas bar (#canvas-tools) beside the
+         controls they act on, and are still bound by the same ids, so every handler
+         in app.js and roi.js is unchanged. SHORTCUTS was pure duplication of the
+         "?" shortcuts modal, which is the one place people already look. -->
   </aside>
 
   <!-- ─────────────────── CENTER ────────────────────────────── -->
@@ -287,6 +314,7 @@
       <video id="video-element" controls preload="metadata">
         <source src="" type="video/mp4" />
       </video>
+      <img id="image-element" src="" style="width:100%;height:auto;display:none;object-fit:contain;" />
 
       <div class="video-controls">
         <button class="ctrl-btn" id="ctrl-play"  title="Space">▶</button>
@@ -312,6 +340,14 @@
       </div>
     </div>
 
+    <!-- What this annotation IS. Sits on the image, not in the right rail, because
+         the question "what am I being asked to do here" is about the thing you are
+         looking at. Filled by panel_ui.js, which already resolves the task. -->
+    <div id="mission-banner" class="mission-banner" style="display:none">
+      <span class="mission-banner-task" id="mission-banner-task"></span>
+      <span class="mission-banner-what" id="mission-banner-what"></span>
+    </div>
+
     <!-- Annotation canvas -->
     <div class="canvas-wrap" id="canvas-wrap">
       <canvas id="annotation-canvas"></canvas>
@@ -319,6 +355,24 @@
       <div id="bbox-label-popup" class="bbox-label-popup hidden">
         <input type="text" id="bbox-label-input" placeholder="Label (Enter to save)" />
       </div>
+    </div>
+
+    <!-- Drawing tools. Moved off the left rail and onto the canvas, next to the
+         thing they act on. Same ids, so every handler in app.js and roi.js binds
+         exactly as before; only the parent changed.
+
+         Scar keeps its inline display:none: it is superseded by "+ ADD SCAR" in
+         the form. Keypoint and Body are revealed by app.js only on the pose task,
+         so on scar work the one box you draw by hand is an ROI and B reaches it.
+         ROI is revealed by roi.js when the server reports roi.enabled; app.js
+         rewrites its label to whichever key is live here. -->
+    <div class="canvas-tools" id="canvas-tools">
+      <button class="tool-btn" id="tool-scar" title="[S] Click to add scar" style="display:none">Scar [S]</button>
+      <button class="tool-btn" id="tool-keypoint" title="[K] Place keypoints" style="display:none">Keypoint [K]</button>
+      <button class="tool-btn" id="tool-bbox" title="[B] Draw the body bounding box" style="display:none">⬛ Body [B]</button>
+      <button class="tool-btn" id="tool-roi" title="[G] Mark region of interest (no scar form)" style="display:none">▢ ROI [G]</button>
+      <button class="tool-btn" id="tool-undo" title="[Z] Undo">↩ Undo [Z]</button>
+      <button class="tool-btn danger" id="tool-reset" title="[R] Reset frame">Reset [R]</button>
     </div>
 
     <!-- Image enhancement -->
@@ -334,225 +388,526 @@
       <button class="btn btn-sm btn-ghost" id="btn-reset-enhance">Reset Image</button>
       <span id="enhance-status" class="muted"></span>
     </div>
+
+    <!-- ═══════ SIGNAL DOCK (Stream F) ═══════
+         Hidden entirely unless /api/signals/health reports the feature on, and
+         collapsed to a 28px strip until a labeler opens it (\ toggles). Shares the
+         video's time axis; all times are seconds on the deployment clock. -->
+    <section id="signal-dock" aria-label="Signal timeline">
+      <div class="signal-dock-grip" title="Drag to resize"></div>
+
+      <div class="signal-dock-head">
+        <button class="signal-dock-toggle" id="signal-dock-toggle" title="Toggle signal dock [\]">▲ Signals</button>
+        <select id="signal-deployment" title="Deployment"></select>
+        <button class="signal-btn" id="signal-mode-box" title="Box a sound on the waterfall [W]">▭ Box [W]</button>
+        <button class="signal-btn" id="signal-fit" title="Fit whole deployment">⇔ Fit</button>
+        <button class="signal-btn active" id="signal-follow" title="Keep the playhead in view">⏵ Follow</button>
+        <button class="signal-btn" id="signal-lanes-btn" title="Choose visible lanes">☰ Lanes</button>
+        <button class="signal-btn" id="signal-layout" title="Dock below the video or beside it">▤ Below</button>
+        <span class="spacer"></span>
+        <span class="signal-dock-hint" id="signal-hint"></span>
+      </div>
+
+      <div class="signal-dock-body">
+        <canvas id="signal-canvas"></canvas>
+        <div class="signal-empty" id="signal-empty"></div>
+      </div>
+    </section>
   </main>
 
   <!-- ─────────────────── RIGHT PANEL ──────────────────────── -->
   <aside class="panel-right">
 
-    <!-- Encounter info -->
+    <!-- Encounter info (always visible) -->
     <div class="section-label">ENCOUNTER</div>
     <input type="text" class="input" id="enc-code" placeholder="Encounter Code (LOCYYMMDDnn)" />
-    <div class="enc-info-note">Every video here has a good scar image or dorsal fin frame — please annotate, don't skip.</div>
-    <div class="radio-group">
-      <label>Sides visible:</label>
-      <button class="radio-btn" data-group="sides" data-val="Left">L</button>
-      <button class="radio-btn" data-group="sides" data-val="Right">R</button>
-      <button class="radio-btn active" data-group="sides" data-val="Both">Both</button>
-    </div>
-    <div class="radio-group">
-      <label>Scars visible:</label>
-      <button class="radio-btn" data-group="scars-visible" data-val="YES">Yes</button>
-      <button class="radio-btn" data-group="scars-visible" data-val="NO">No</button>
+
+    <!-- Tab bar -->
+    <div class="panel-tabs">
+      <button class="tab-btn" data-tab="pose">Pose</button>
+      <button class="tab-btn active" data-tab="scars">Scars</button>
+      <!-- Stream F. Hidden until /api/signals/health says the feature is on, so the
+           tab bar is unchanged when it is off. -->
+      <button class="tab-btn" data-tab="signals" id="signal-tab-btn" style="display:none;">Signals</button>
+      <!-- Stream H. Hidden until /api/pose3d/health says the feature is on. -->
+      <button class="tab-btn" data-tab="pose3d" id="pose3d-tab-btn" style="display:none;" title="Silhouette, scale and body chords for 3D reconstruction">3D</button>
     </div>
 
-    <div id="no-scars-msg" class="no-scars-banner hidden">
-      <p><strong>No scars visible</strong> — annotation will be saved as "no scars."</p>
-      <button class="btn btn-primary btn-block btn-lg" id="btn-save-no-scars">💾 SAVE &amp; NEXT</button>
+    <!-- ═══════ SIGNALS TAB (Stream F) ═══════ -->
+    <div class="tab-content" id="tab-signals">
+      <!-- The tutorial spotlights these headings rather than the lists below them: an
+           empty list has zero height, and "your labels appear here" is precisely what a
+           labeler with no labels yet needs to be told. -->
+      <div class="section-label" id="signal-terms-head">LABEL TYPE <span class="info-icon" data-tutorial-step="sig-term" title="Show help for this section">i</span></div>
+      <select class="input" id="signal-vocab" title="Vocabulary"></select>
+      <div class="signal-term-list" id="signal-terms"></div>
+
+      <div class="section-label" style="margin-top:8px;">CONFIDENCE</div>
+      <!-- Rendered as stars by panel_ui.js, matching the scar form. The select is kept
+           (hidden) as the value holder so existing readers keep working. -->
+      <select class="input" id="signal-confidence">
+        <option value="1">1 — guess</option>
+        <option value="2">2</option>
+        <option value="3" selected>3 — moderate</option>
+        <option value="4">4</option>
+        <option value="5">5 — certain</option>
+      </select>
+
+      <div class="section-label" id="signal-labels-head" style="margin-top:8px;">
+        MY LABELS <span class="badge" id="signal-label-count">0</span>
+      </div>
+      <div class="signal-label-list" id="signal-labels"></div>
+
+      <!-- ═══ F3 review surface ═══
+           Hidden until a consensus run exists AND the server allows this user to read it
+           (/consensus 403s when you are not assigned). signals_review.js fills it. -->
+      <div class="section-label" id="signal-review-head" style="margin-top:8px;display:none;">
+        REVIEW <span class="info-icon" data-tutorial-step="rev-intro" title="Show help for this section">i</span>
+      </div>
+      <div id="signal-review-panel" style="display:none;"></div>
+
+      <div class="muted" style="font-size:11px;margin-top:8px;line-height:1.5;">
+        <strong>W</strong> box a sound · <strong>[</strong> <strong>]</strong> mark an interval ·
+        <strong>\</strong> toggle dock · wheel zoom · shift+wheel pan.
+        Times are stored on the deployment clock.
+      </div>
     </div>
 
-    <div id="scar-form-section">
+    <!-- ═══════ 3D TAB (Stream H — lift & volumetrics) ═══════ -->
+    <!-- Declared here rather than built by JS so the tutorial can spotlight real
+         selectors: tests/test_tutorial.py asserts every `target:` resolves in this file,
+         and a runtime-built panel is invisible to that check. -->
+    <div class="tab-content" id="tab-pose3d">
+      <div class="section-label" id="pose3d-view-head">VIEW</div>
+      <select class="input" id="pose3d-view" title="Which side of the animal faces the camera"></select>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;">
+        <input type="checkbox" id="pose3d-fins"> pectoral fins inside the outline
+      </label>
+
+      <div class="section-label" id="pose3d-part-head" style="margin-top:8px;">OUTLINING</div>
+      <select class="input" id="pose3d-part" title="Which piece of the animal this outline is"></select>
+      <div class="muted" id="pose3d-parthint" style="font-size:10px;margin-top:4px;"></div>
+      <div class="muted" id="pose3d-chordhint" style="font-size:10px;margin-top:4px;"></div>
+
+      <div class="section-label" id="pose3d-mask-head" style="margin-top:8px;">SILHOUETTE</div>
+      <button class="btn" id="pose3d-sam" style="width:100%;">SAM2 click-to-segment</button>
+      <div style="display:flex;gap:4px;margin-top:4px;">
+        <button class="btn" id="pose3d-paint" style="flex:1;">Paint</button>
+        <button class="btn" id="pose3d-erase" style="flex:1;">Erase</button>
+      </div>
+      <label style="font-size:10px;color:#889;">brush
+        <input type="range" id="pose3d-brush" min="4" max="80" value="24" style="width:100%;">
+      </label>
+      <div style="display:flex;gap:4px;margin-top:4px;">
+        <button class="btn" id="pose3d-accept" style="flex:1;">Accept</button>
+        <button class="btn" id="pose3d-correct" style="flex:1;">Corrected</button>
+        <button class="btn" id="pose3d-reject" style="flex:1;">Reject</button>
+      </div>
+
+      <div class="section-label" id="pose3d-measure-head" style="margin-top:8px;">MEASUREMENTS</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;">
+        <button class="btn" id="pose3d-scale" style="flex:1;">Scale ref</button>
+        <button class="btn" id="pose3d-axis" style="flex:1;">Body axis</button>
+        <button class="btn" id="pose3d-width" style="flex:1;">Width</button>
+        <button class="btn" id="pose3d-height" style="flex:1;">Height</button>
+      </div>
+      <div class="section-label" style="margin-top:8px;">VIEW STUDY</div>
+      <button class="btn" id="pose3d-save-view" style="width:100%;">Save view &amp; next &nbsp;<span class="muted">[Enter]</span></button>
+      <div class="muted" style="font-size:10px;margin-top:4px;line-height:1.5;">
+        Keys <strong>1-7</strong> pick the view, <strong>Enter</strong> saves and advances.
+        Records the view only — no outline needed.
+      </div>
+
+      <div id="pose3d-list" style="font-size:11px;margin-top:6px;"></div>
+      <div id="pose3d-status" style="font-size:11px;color:#8ab;margin-top:6px;min-height:14px;"></div>
+
+      <div class="muted" id="pose3d-recorded" style="font-size:11px;margin-top:6px;"></div>
+
+      <div class="muted" style="font-size:11px;margin-top:8px;line-height:1.5;">
+        A lateral view measures <strong>height</strong>; only a dorsal or head-on view
+        shows <strong>width</strong>. Volume needs both, so the buttons a view cannot
+        support are greyed out.
+      </div>
+    </div>
+
+    <!-- ═══════ POSE TAB ═══════ -->
+    <div class="tab-content" id="tab-pose">
+
+      <!-- Body bbox status -->
+      <div class="section-label">BODY BBOX <span id="bbox-status" class="badge" style="background:var(--text-muted);">not drawn</span> <span class="info-icon" data-tutorial-step="p-body" title="Show help for this section">i</span></div>
+      <div class="kp-help">B = bbox · K = keypoints · Option/Alt+click = occluded · Right-click = cycle visibility</div>
+
+      <div class="divider"></div>
+
+      <!-- Keypoints -->
+      <div id="kp-section-header">
+        <div class="section-label">KEYPOINTS <span id="kp-progress" class="badge">0/16</span> <span class="info-icon" data-tutorial-step="p-states" title="Show help for this section">i</span></div>
+        <div class="kp-help">Click to place · <b>O</b> occluded · <b>X</b> outside frame · <b>Space</b> no shark</div>
+      </div>
+      <div class="kp-diagram" id="kp-diagram">
+        <svg viewBox="0 0 500 155" xmlns="http://www.w3.org/2000/svg" id="kp-ref-svg">
+          <!-- Shark outline -->
+          <path d="M 19,87 L 50,69 L 81,58 L 102,53 L 139,46 L 160,44 L 183,42 L 214,39 L 238,5 L 250,-1 L 255,10 L 258,21 L 265,37 L 274,49 L 309,58 L 337,65 L 353,63 L 360,71 L 411,81 L 430,65 L 448,52 L 473,36 L 492,25 L 484,47 L 478,56 L 470,68 L 462,83 L 458,93 L 457,116 L 463,146 L 445,131 L 429,111 L 411,95 L 385,92 L 382,101 L 372,95 L 345,103 L 336,120 L 313,114 L 273,122 L 232,129 L 246,154 L 233,153 L 210,145 L 191,132 L 175,131 L 139,128 L 110,124 L 81,119 Z" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linejoin="round" opacity="0.4"/>
+          <!-- Skeleton edges -->
+          <g id="kp-ref-skeleton" opacity="0.15" stroke="var(--text-muted)" stroke-width="0.8">
+            <line x1="19" y1="87" x2="58" y2="80"/>
+            <line x1="58" y1="80" x2="151" y2="72"/>
+            <line x1="151" y1="72" x2="193" y2="75"/>
+            <line x1="193" y1="75" x2="191" y2="132"/>
+            <line x1="191" y1="132" x2="244" y2="154"/>
+            <line x1="244" y1="154" x2="232" y2="129"/>
+            <line x1="193" y1="75" x2="214" y2="39"/>
+            <line x1="214" y1="39" x2="249" y2="0"/>
+            <line x1="214" y1="39" x2="274" y2="50"/>
+            <line x1="274" y1="50" x2="352" y2="63"/>
+            <line x1="274" y1="50" x2="336" y2="120"/>
+            <line x1="336" y1="120" x2="382" y2="101"/>
+            <line x1="382" y1="101" x2="414" y2="86"/>
+            <line x1="414" y1="86" x2="492" y2="25"/>
+            <line x1="414" y1="86" x2="463" y2="146"/>
+          </g>
+          <!-- Keypoint dots -->
+          <circle id="kpd-snout_tip" cx="19" cy="87" r="4" class="kp-dot pending"><title>Snout tip</title></circle>
+          <circle id="kpd-eye_center" cx="58" cy="80" r="4" class="kp-dot pending"><title>Eye center</title></circle>
+          <circle id="kpd-gill_slit_front" cx="151" cy="72" r="4" class="kp-dot pending"><title>Gill slit (front)</title></circle>
+          <circle id="kpd-gill_slit_back" cx="193" cy="75" r="4" class="kp-dot pending"><title>Gill slit (back)</title></circle>
+          <circle id="kpd-pectoral_base_front" cx="191" cy="132" r="4" class="kp-dot pending"><title>Pectoral base (front)</title></circle>
+          <circle id="kpd-pectoral_fin_tip" cx="244" cy="154" r="4" class="kp-dot pending"><title>Pectoral fin tip</title></circle>
+          <circle id="kpd-pectoral_base_back" cx="232" cy="129" r="4" class="kp-dot pending"><title>Pectoral base (back)</title></circle>
+          <circle id="kpd-dorsal_fin_tip" cx="249" cy="0" r="4" class="kp-dot pending"><title>Dorsal fin tip</title></circle>
+          <circle id="kpd-dorsal_base_front" cx="214" cy="39" r="4" class="kp-dot pending"><title>Dorsal base (front)</title></circle>
+          <circle id="kpd-dorsal_base_back" cx="274" cy="50" r="4" class="kp-dot pending"><title>Dorsal base (back)</title></circle>
+          <circle id="kpd-second_dorsal_tip" cx="352" cy="63" r="4" class="kp-dot pending"><title>2nd dorsal tip</title></circle>
+          <circle id="kpd-pelvic_fin_tip" cx="336" cy="120" r="4" class="kp-dot pending"><title>Pelvic fin tip</title></circle>
+          <circle id="kpd-anal_fin_tip" cx="382" cy="101" r="4" class="kp-dot pending"><title>Anal fin tip</title></circle>
+          <circle id="kpd-caudal_notch" cx="414" cy="86" r="4" class="kp-dot pending"><title>Caudal notch</title></circle>
+          <circle id="kpd-caudal_upper_tip" cx="492" cy="25" r="4" class="kp-dot pending"><title>Caudal upper tip</title></circle>
+          <circle id="kpd-caudal_lower_tip" cx="463" cy="146" r="4" class="kp-dot pending"><title>Caudal lower tip</title></circle>
+        </svg>
+      </div>
+      <div id="kp-list" class="kp-list">
+        <p class="muted">Press K to start placing keypoints</p>
+      </div>
+      <div id="kp-summary" class="kp-help" style="margin-top:2px;"></div>
+      <button class="btn btn-sm btn-ghost btn-block" id="btn-skip-kp">Skip current (Tab)</button>
+      <button class="btn btn-sm btn-ghost btn-block" id="btn-mark-occluded">Mark remaining occluded</button>
+      <button class="btn btn-sm btn-ghost btn-block" id="btn-reset-kp">Reset keypoints</button>
+
+      <div class="divider"></div>
+
+      <!-- Shortcut reference (collapsible) -->
+      <details class="shortcut-ref">
+        <summary class="section-label" style="cursor:pointer;">SHORTCUTS</summary>
+        <div class="kp-help" style="line-height:1.6;">
+          <b>B</b> body bbox · <b>K</b> keypoints<br>
+          <b>O</b> occluded · <b>X</b> outside frame · <b>Tab</b> skip (= X)<br>
+          <b>Alt+click</b> occluded at position<br>
+          <b>Shift+drag</b> move skeleton · <b>Z</b> undo · <b>R</b> reset<br>
+          <b>Space</b> play-pause · no shark (images) · <b>Ctrl+S</b> save
+        </div>
+      </details>
+    </div>
+
+    <!-- ═══════ SCARS TAB ═══════ -->
+    <div class="tab-content active" id="tab-scars">
+
+      <div class="radio-group">
+        <label id="scars-visible-label">Scars visible:</label>
+        <button class="radio-btn" data-group="scars-visible" data-val="YES">Yes</button>
+        <button class="radio-btn" data-group="scars-visible" data-val="NO">No</button>
+      </div>
+
+      <!-- No copepods question. It is DERIVED from the annotation instead — box a
+           copepod cluster as a scar of type COPEPODS and both old questions answer
+           themselves, with a location and an extent they never had as a Y/N:
+           on_body = such a scar exists; on_wound = its box sits on another scar's box.
+           See annotation/scar_matching.derive_copepods. -->
+
+      <div id="no-scars-msg" class="no-scars-banner hidden">
+        <p><strong>No scars visible</strong> — annotation will be saved as "no scars."</p>
+        <button class="btn btn-primary btn-block btn-lg" id="btn-save-no-scars">SAVE &amp; NEXT</button>
+      </div>
+
+      <div id="scar-form-section">
+      <div class="divider"></div>
+
+      <div class="section-label">SCAR FORM <span class="info-icon" data-tutorial-step="sf-intro" title="Show help for this section">i</span></div>
+
+      <label class="field-label">Scar type</label>
+      <select class="input" id="scar-type">
+        <option value="">— select —</option>
+        <option value="GRAB">GRAB — multiple shallow bites</option>
+        <option value="BITE">BITE — deep crescent bite</option>
+        <option value="SCRATCH">SCRATCH — claw rake marks</option>
+        <option value="SCRAPE">SCRAPE — hard surface</option>
+        <option value="CANINE">CANINE — pinniped punctures</option>
+        <option value="COOKIE">COOKIE — cookie-cutter circular plug</option>
+        <option value="GEAR">GEAR — fishing gear/rope</option>
+        <option value="PROP">PROP — propeller lacerations</option>
+        <option value="TAGS">TAGS — previous tagging</option>
+        <option value="SQUID">SQUID — suction cup marks</option>
+        <option value="COPEPODS">COPEPODS — parasites attached to skin</option>
+        <option value="OTHER">OTHER — see notes</option>
+      </select>
+
+      <label class="field-label">Confidence
+        <span class="info-icon" id="confidence-info" role="button" tabindex="0"
+              title="What each star means">i</span></label>
+      <div class="star-rating" id="confidence-stars">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+      <input type="hidden" id="confidence-value" value="3" />
+
+      <label class="field-label">Side</label>
+      <div class="radio-group" id="scar-side-group">
+        <button class="radio-btn" data-group="scar-side" data-val="Right">Right</button>
+        <button class="radio-btn active" data-group="scar-side" data-val="Left">Left</button>
+      </div>
+
+      <label class="field-label">Body Zone (click to select)</label>
+      <div class="zone-diagram" id="zone-diagram">
+        <svg viewBox="0 0 500 155" xmlns="http://www.w3.org/2000/svg" id="zone-svg">
+          <circle cx="55" cy="80" r="2.5" fill="var(--text-muted)" opacity="0.5" pointer-events="none"/>
+          <g opacity="0.25" pointer-events="none" stroke="var(--text-muted)" stroke-width="0.8">
+            <line x1="142" y1="60" x2="142" y2="120"/><line x1="148" y1="58" x2="148" y2="122"/>
+            <line x1="154" y1="56" x2="154" y2="124"/><line x1="160" y1="55" x2="160" y2="126"/>
+          </g>
+          <g id="zone-1" class="zone-seg" data-zone="1"><polygon points="19,87 50,69 81,58 81,118 42,102"/><text x="55" y="87">1</text></g>
+          <g id="zone-2" class="zone-seg" data-zone="2"><polygon points="82,58 102,53 139,46 139,128 110,124 81,119"/><text x="110" y="88">2</text></g>
+          <g id="zone-3" class="zone-seg" data-zone="3"><polygon points="140,46 160,44 183,42 182,54 139,58 140,54"/><text x="157" y="50">3</text></g>
+          <g id="zone-4" class="zone-seg" data-zone="4"><polygon points="139,58 159,56 182,53 179,94 178,106 175,131 140,128 140,120"/><text x="162" y="93">4</text></g>
+          <g id="zone-5" class="zone-seg" data-zone="5"><polygon points="183,42 214,39 244,42 274,49 273,53 272,59 182,54"/><text x="228" y="48">5</text></g>
+          <g id="zone-6" class="zone-seg" data-zone="6"><polygon points="182,54 274,60 273,99 273,122 232,129 227,118 206,112 179,106"/><text x="228" y="97">6</text></g>
+          <g id="zone-7" class="zone-seg" data-zone="7"><polygon points="274,50 309,58 337,65 360,71 359,81 360,85 320,74 273,59"/><text x="317" y="68">7</text></g>
+          <g id="zone-8" class="zone-seg" data-zone="8"><polygon points="273,60 359,85 358,107 274,121"/><text x="316" y="93">8</text></g>
+          <g id="zone-9" class="zone-seg" data-zone="9"><polygon points="360,71 411,81 411,95 358,107"/><text x="385" y="89">9</text></g>
+          <g id="zone-D" class="zone-seg" data-zone="D"><polygon points="215,37 238,5 250,-1 255,1 258,21 265,37 274,49 250,43 214,38"/><text x="247" y="26">D</text></g>
+          <g id="zone-P" class="zone-seg" data-zone="P"><polygon points="179,106 228,118 231,130 246,154 233,153 210,145 191,132 176,131"/><text x="212" y="134">P</text></g>
+          <g id="zone-T" class="zone-seg" data-zone="T"><polygon points="411,81 430,65 448,52 473,36 492,25 484,47 478,56 470,68 462,83 458,93 457,116 463,146 445,131 429,111 421,97 411,95"/><text x="460" y="85">T</text></g>
+        </svg>
+      </div>
+      <div id="selected-zone-label" class="selected-zone-label">Zone: — not selected —</div>
+      <input type="hidden" id="zone-value" value="" />
+
+      <div id="scar-color-block">
+      <label class="field-label">Color</label>
+      <div class="color-group" id="color-group">
+        <!-- Swatch hexes are ScarVocab.COLOR_HEX; tests/test_scar_vocab.py pins them.
+             They had drifted, and GREY #888 vs OTHER #777 was the expensive one:
+             two adjacent swatches 17/255 apart, i.e. the same grey to a labeler
+             choosing between them. -->
+        <button class="color-btn" data-color="PINK"  style="background:#ff9bb0;color:#222;">PINK</button>
+        <button class="color-btn" data-color="WHITE" style="background:#f0f0f0;color:#222;">WHITE</button>
+        <button class="color-btn" data-color="BLACK" style="background:#222;">BLACK</button>
+        <button class="color-btn" data-color="GREY"  style="background:#888;">GREY</button>
+        <button class="color-btn" data-color="OTHER" style="background:#c9a26d;">OTHER</button>
+      </div>
+      <input type="hidden" id="color-value" value="" />
+      <input type="text" class="input hidden" id="color-other-input" placeholder="Describe color…" />
+      </div>
+
+      <label class="field-label">Notes</label>
+      <textarea class="input" id="scar-notes" placeholder="Anything worth noting…" rows="2"></textarea>
+
+      <!-- Scratch rakes and copepod clusters are many units in one zone. Measured:
+           12 boxes of one type in one zone give ONE scar in consensus but TWELVE
+           training examples in the COCO export, so the boxes are worth drawing and
+           only the typing is waste. Off by default — a form that silently reuses its
+           last answer is how a BITE gets filed as a SCRATCH. -->
+      <button type="button" class="radio-btn" id="scar-repeat"
+              title="Keep this description for the next box — for a rake or a cluster. Changing the type or zone turns it off.">
+        ⟳ Repeat for next box
+      </button>
+
+      <!-- The two "copepods?" questions used to live here. They asked a whole-animal
+           question on a single frame, and the corpus shows what that produces: the
+           same annotator answering YES on frame 196 and NO on frames 176 and 179 of
+           one clip. A parasite does not attach and detach between frames. The answer
+           now comes from the people who watched the whole encounter — 8,374 Forms
+           submissions across 1,706 encounters — and is shown, not asked, beside the
+           encounter code. See database.encounter_copepods. -->
+      <div class="optional-label">OPTIONAL</div>
+      <div class="radio-group small">
+        <label>Multiple scars (same zone):</label>
+        <button class="radio-btn sm" data-group="multiple-scars" data-val="YES">Y</button>
+        <button class="radio-btn sm" data-group="multiple-scars" data-val="NO">N</button>
+      </div>
+
+      <!-- No "+ ADD SCAR" button. Completing the form arms the box itself: pressing
+           a control to confirm the description you just typed is a step that exists
+           because the code wanted a trigger, not because the labeler wanted one.
+           See app.js _bindScarActions. Kept as a hint line, which doubles as the
+           place scar_hints.js parks a held box. -->
+      <div class="scar-arm-hint mt-8" id="scar-arm-hint">Fill the fields above and the box tool arms itself</div>
+
+      <div class="divider"></div>
+
+      <div class="section-label">SCARS <span id="scars-count" class="badge">0</span></div>
+      <div id="scars-list" class="scars-list">
+        <p class="muted">No scars added</p>
+      </div>
+      </div><!-- /scar-form-section -->
+    </div>
+
+    <!-- Stream D — ROI marks panel (hidden unless /api/roi/health reports roi.enabled). -->
+    <!-- Scar objects: the sighting card + the scar board. Hidden unless
+         /api/objects/health reports the feature enabled (objects.enabled). -->
+    <div id="objects-panel" style="display:none;">
+      <div class="divider"></div>
+      <div class="section-label">◈ THIS SIGHTING</div>
+      <div class="obj-row" style="margin-top:6px;">
+        <label for="obj-scars-visible">Scars visible:</label>
+        <select id="obj-scars-visible">
+          <option value="">—</option>
+          <option value="YES">Yes</option>
+          <option value="NO">No</option>
+          <!-- UNSURE is a real answer, not a missing one. Without it "I looked
+               and could not tell" is indistinguishable from never being asked,
+               which is why the live corpus has 321 blanks and ZERO explicit No. -->
+          <option value="UNSURE">Couldn't tell</option>
+        </select>
+      </div>
+      <div id="obj-pass"></div>
+      <button id="btn-close-pass" class="btn btn-sm" style="margin-top:8px;width:100%;">
+        Finish this sighting
+      </button>
+
+      <div class="divider"></div>
+      <div class="section-label" style="display:flex;align-items:center;gap:6px;">
+        <span style="flex:1;">◈ SCARS ON THIS ANIMAL</span>
+        <!-- No "+ new scar" here either. Two buttons that both mean "add a scar" is
+             one more than there is a decision for; the draw-once-and-follow path
+             keeps its own control in FOLLOW A SCAR below. -->
+      </div>
+      <div id="obj-board" style="margin-top:8px;font-size:11px;"></div>
+    </div>
+
+    <div id="roi-panel" style="display:none;">
+      <div class="divider"></div>
+      <div class="section-label" style="display:flex;align-items:center;gap:6px;">
+        <span style="flex:1;">▢ ROI MARKS</span>
+        <button id="btn-roi-mark" class="btn btn-sm" style="font-size:11px;padding:3px 8px;background:#f5c842;color:#222;border:none;border-radius:3px;cursor:pointer;" title="[G] Draw a region-of-interest box on this frame (no scar form)">▢ mark</button>
+      </div>
+      <div id="roi-list" style="margin-top:8px;font-size:11px;">
+        <p class="muted" style="font-size:11px;">No video loaded</p>
+      </div>
+    </div>
+
+    <!-- Follow a scar: draw one box, the app follows it across the clip (hidden unless /api/tracks/health reports ready) -->
+    <div id="tracks-panel" style="display:none;">
+      <div class="divider"></div>
+      <div class="section-label" style="display:flex;align-items:center;gap:6px;">
+        <span style="flex:1;">FOLLOW A SCAR</span>
+        <button id="btn-triage-mode" class="btn btn-sm" style="font-size:11px;padding:3px 8px;background:#4a90d9;color:#fff;border:none;border-radius:3px;cursor:pointer;" title="Open fullscreen review mode">Review</button>
+        <button id="btn-tracks-refresh" class="btn btn-sm btn-ghost" style="font-size:11px;padding:2px 6px;" title="Refresh list">↻</button>
+      </div>
+      <button class="btn btn-block" id="btn-track-scar" style="font-size:12px;" title="Draw one box around a scar; the app follows it across the clip so you verify instead of redraw it frame by frame">
+        Follow this scar across the clip
+      </button>
+      <div id="tracks-list" style="margin-top:8px;">
+        <p class="muted" style="font-size:11px;">No video loaded</p>
+      </div>
+      <div style="margin-top:4px;font-size:10px;color:#aaa;">
+        <label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;" title="Show existing tracks as ghost rectangles on the canvas at the current frame">
+          <input type="checkbox" id="track-overlay-toggle" checked style="margin:0;cursor:pointer;">
+          show on canvas
+        </label>
+      </div>
+    </div>
+
+    <!-- Phase 2 UX #3 — in-sidebar track editor (replaces the cramped popup).
+         Scrub/trim happen on the big zoomable main canvas. Hidden until a track is opened. -->
+    <div id="track-edit-panel" style="display:none;margin-top:10px;border-top:1px solid #333;padding-top:10px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <strong id="track-edit-title" style="font-size:13px;color:#9bf;flex:1;min-width:0;">Track</strong>
+        <button id="track-edit-close" title="Close editor (Esc)" style="background:#3a2030;color:#f2b8c6;border:1px solid #7a3a4a;border-radius:4px;font-size:15px;line-height:1;padding:3px 10px;cursor:pointer;font-weight:700;">✕</button>
+      </div>
+      <div id="track-edit-suggest" style="font-size:11px;color:#888;margin-bottom:8px;min-height:13px;"></div>
+
+      <!-- Scrub the REAL clip on the big canvas; mark the valid (on-target) range. -->
+      <div style="background:#1a1a22;border-radius:4px;padding:8px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+          <button id="track-edit-prev" class="btn btn-sm btn-ghost" style="padding:2px 8px;" title="Previous detection frame">◀</button>
+          <input id="track-edit-scrub" type="range" min="0" max="0" value="0" style="flex:1;cursor:pointer;" />
+          <button id="track-edit-next" class="btn btn-sm btn-ghost" style="padding:2px 8px;" title="Next detection frame">▶</button>
+        </div>
+        <div id="track-edit-trim-marker" style="height:3px;margin:-1px 0 5px;background:#222;border-radius:2px;position:relative;overflow:hidden;"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#888;">
+          <span id="track-edit-frame-label">frame —</span>
+          <span id="track-edit-trim-status">(full range)</span>
+        </div>
+        <div style="display:flex;gap:4px;margin-top:6px;">
+          <button id="track-edit-trim-start" class="btn btn-sm btn-ghost" style="flex:1;padding:3px 6px;font-size:11px;" title="Mark valid-range START at the current frame">⟦ start</button>
+          <button id="track-edit-trim-end" class="btn btn-sm btn-ghost" style="flex:1;padding:3px 6px;font-size:11px;" title="Mark valid-range END at the current frame">end ⟧</button>
+          <button id="track-edit-trim-clear" class="btn btn-sm btn-ghost" style="padding:3px 8px;font-size:11px;" title="Clear trim (use full range)">clear</button>
+        </div>
+        <div style="font-size:10px;color:#667;margin-top:5px;">Scrub on the big canvas → mark the frames where the box stays on-target.</div>
+      </div>
+
+      <!-- Stream B (#9) — model scar-TYPE suggestion (hint only; inert when mlops.recommendations OFF). -->
+      <div id="track-edit-type-suggest" style="display:none;font-size:11px;margin:0 0 8px;min-height:13px;"></div>
+
+      <!-- Reusable scar fields (type / confidence / zone / side / color) -->
+      <div id="track-edit-fields"></div>
+
+      <div style="display:flex;gap:6px;margin-top:12px;">
+        <button id="track-edit-verify" class="btn btn-sm" style="flex:1;background:#2a8a55;color:#fff;border:none;border-radius:4px;padding:7px;cursor:pointer;font-weight:600;">✓ Verify</button>
+        <button id="track-edit-reject" class="btn btn-sm" style="background:#7a2222;color:#fff;border:none;border-radius:4px;padding:7px 12px;cursor:pointer;">Reject</button>
+        <button id="track-edit-merge" class="btn btn-sm btn-ghost" style="padding:7px 10px;" title="Merge into another track from this video">Merge…</button>
+      </div>
+      <div id="track-edit-msg" style="font-size:11px;color:#888;margin-top:6px;min-height:14px;"></div>
+    </div>
+
+    <!-- Save controls (always visible) -->
     <div class="divider"></div>
-
-    <!-- Scar form -->
-    <div class="section-label">SCAR FORM</div>
-
-    <label class="field-label">Scar type</label>
-    <select class="input" id="scar-type">
-      <option value="">— select —</option>
-      <option value="GRAB">GRAB — multiple shallow bites</option>
-      <option value="BITE">BITE — deep crescent bite</option>
-      <option value="SCRATCH">SCRATCH — claw rake marks</option>
-      <option value="SCRAPE">SCRAPE — hard surface</option>
-      <option value="CANINE">CANINE — pinniped punctures</option>
-      <option value="COOKIE">COOKIE — cookie-cutter circular plug</option>
-      <option value="GEAR">GEAR — fishing gear/rope</option>
-      <option value="PROP">PROP — propeller lacerations</option>
-      <option value="TAGS">TAGS — previous tagging</option>
-      <option value="SQUID">SQUID — suction cup marks</option>
-      <option value="OTHER">OTHER — see notes</option>
-    </select>
-
-    <label class="field-label">Confidence (1=Unsure → 5=Certain)</label>
-    <div class="star-rating" id="confidence-stars">
-      <span class="star" data-val="1">★</span>
-      <span class="star" data-val="2">★</span>
-      <span class="star" data-val="3">★</span>
-      <span class="star" data-val="4">★</span>
-      <span class="star" data-val="5">★</span>
-    </div>
-    <input type="hidden" id="confidence-value" value="3" />
-
-    <label class="field-label">Side</label>
-    <div class="radio-group">
-      <button class="radio-btn" data-group="scar-side" data-val="Right">Right</button>
-      <button class="radio-btn active" data-group="scar-side" data-val="Left">Left</button>
-    </div>
-
-    <label class="field-label">Body Zone (click to select)</label>
-    <div class="zone-diagram" id="zone-diagram">
-      <!-- SVG shark body with clickable zones -->
-      <svg viewBox="0 0 500 155" xmlns="http://www.w3.org/2000/svg" id="zone-svg">
-        <!-- White shark silhouette with 12 clickable zones -->
-        <!-- Eye (centered in zone 1) -->
-        <circle cx="55" cy="80" r="2.5" fill="var(--text-muted)" opacity="0.5" pointer-events="none"/>
-        <!-- Gill slits (centered in zone 3/4 boundary) -->
-        <g opacity="0.25" pointer-events="none" stroke="var(--text-muted)" stroke-width="0.8">
-          <line x1="142" y1="60" x2="142" y2="120"/><line x1="148" y1="58" x2="148" y2="122"/>
-          <line x1="154" y1="56" x2="154" y2="124"/><line x1="160" y1="55" x2="160" y2="126"/>
-        </g>
-        <!-- Zone 1: HEAD -->
-        <g id="zone-1" class="zone-seg" data-zone="1">
-          <polygon points="19,87 50,69 81,58 81,118 42,102"/>
-          <text x="55" y="87">1</text>
-        </g>
-        <!-- Zone 2: NAPE -->
-        <g id="zone-2" class="zone-seg" data-zone="2">
-          <polygon points="82,58 102,53 139,46 139,128 110,124 81,119"/>
-          <text x="110" y="88">2</text>
-        </g>
-        <!-- Zone 3: SUPRAGILL -->
-        <g id="zone-3" class="zone-seg" data-zone="3">
-          <polygon points="140,46 160,44 183,42 182,54 139,58 140,54"/>
-          <text x="157" y="50">3</text>
-        </g>
-        <!-- Zone 4: GILLS -->
-        <g id="zone-4" class="zone-seg" data-zone="4">
-          <polygon points="139,58 159,56 182,53 179,94 178,106 175,131 140,128 140,120"/>
-          <text x="162" y="93">4</text>
-        </g>
-        <!-- Zone 5: PREDORSAL -->
-        <g id="zone-5" class="zone-seg" data-zone="5">
-          <polygon points="183,42 214,39 244,42 274,49 273,53 272,59 182,54"/>
-          <text x="228" y="48">5</text>
-        </g>
-        <!-- Zone 6: MID BODY -->
-        <g id="zone-6" class="zone-seg" data-zone="6">
-          <polygon points="182,54 274,60 273,99 273,122 232,129 227,118 206,112 179,106"/>
-          <text x="228" y="97">6</text>
-        </g>
-        <!-- Zone 7: INTERDORSAL -->
-        <g id="zone-7" class="zone-seg" data-zone="7">
-          <polygon points="274,50 309,58 337,65 360,71 359,81 360,85 320,74 273,59"/>
-          <text x="317" y="68">7</text>
-        </g>
-        <!-- Zone 8: PELVIC -->
-        <g id="zone-8" class="zone-seg" data-zone="8">
-          <polygon points="273,60 359,85 358,107 274,121"/>
-          <text x="316" y="93">8</text>
-        </g>
-        <!-- Zone 9: PEDUNCLE -->
-        <g id="zone-9" class="zone-seg" data-zone="9">
-          <polygon points="360,71 411,81 411,95 358,107"/>
-          <text x="385" y="89">9</text>
-        </g>
-        <!-- Zone D: DORSAL FIN -->
-        <g id="zone-D" class="zone-seg" data-zone="D">
-          <polygon points="215,37 238,5 250,-1 255,1 258,21 265,37 274,49 250,43 214,38"/>
-          <text x="247" y="26">D</text>
-        </g>
-        <!-- Zone P: PECTORAL -->
-        <g id="zone-P" class="zone-seg" data-zone="P">
-          <polygon points="179,106 228,118 231,130 246,154 233,153 210,145 191,132 176,131"/>
-          <text x="212" y="134">P</text>
-        </g>
-        <!-- Zone T: TAIL -->
-        <g id="zone-T" class="zone-seg" data-zone="T">
-          <polygon points="411,81 430,65 448,52 473,36 492,25 484,47 478,56 470,68 462,83 458,93 457,116 463,146 445,131 429,111 421,97 411,95"/>
-          <text x="460" y="85">T</text>
-        </g>
-      </svg>
-    </div>
-    <div id="selected-zone-label" class="selected-zone-label">Zone: — not selected —</div>
-    <input type="hidden" id="zone-value" value="" />
-
-    <label class="field-label">Color</label>
-    <div class="color-group" id="color-group">
-      <button class="color-btn" data-color="PINK"  style="background:#ff9999;">PINK</button>
-      <button class="color-btn" data-color="WHITE" style="background:#f0f0f0;color:#333;">WHITE</button>
-      <button class="color-btn" data-color="BLACK" style="background:#333;">BLACK</button>
-      <button class="color-btn" data-color="GREY"  style="background:#888;">GREY</button>
-      <button class="color-btn" data-color="OTHER" style="background:#777;">OTHER</button>
-    </div>
-    <input type="hidden" id="color-value" value="" />
-    <input type="text" class="input hidden" id="color-other-input" placeholder="Describe color…" />
-
-    <label class="field-label">Notes</label>
-    <textarea class="input" id="scar-notes" placeholder="Anything worth noting…" rows="2"></textarea>
-
-    <div class="optional-label">OPTIONAL</div>
-    <div class="radio-group small">
-      <label>Copepods body:</label>
-      <button class="radio-btn sm" data-group="copepods-body" data-val="YES">Y</button>
-      <button class="radio-btn sm" data-group="copepods-body" data-val="NO">N</button>
-    </div>
-    <div class="radio-group small">
-      <label>Copepods wound:</label>
-      <button class="radio-btn sm" data-group="copepods-wound" data-val="YES">Y</button>
-      <button class="radio-btn sm" data-group="copepods-wound" data-val="NO">N</button>
-    </div>
-    <div class="radio-group small">
-      <label>Multiple scars (same zone):</label>
-      <button class="radio-btn sm" data-group="multiple-scars" data-val="YES">Y</button>
-      <button class="radio-btn sm" data-group="multiple-scars" data-val="NO">N</button>
-    </div>
-
-    <button class="btn btn-primary btn-block mt-8" id="btn-add-scar">+ ADD SCAR</button>
-
-    <div class="divider"></div>
-
-    <!-- Scars list -->
-    <div class="section-label">SCARS <span id="scars-count" class="badge">0</span></div>
-    <div id="scars-list" class="scars-list">
-      <p class="muted">No scars added</p>
-    </div>
-    </div><!-- /scar-form-section -->
-
-    <div class="divider"></div>
-
-    <!-- Keypoints progress -->
-    <div class="section-label">KEYPOINTS <span id="kp-progress" class="badge">0/16</span></div>
-    <div class="kp-help">Click name to select · Alt+click = occluded</div>
-    <div id="kp-list" class="kp-list">
-      <p class="muted">Press K to start placing keypoints</p>
-    </div>
-    <button class="btn btn-sm btn-ghost btn-block" id="btn-skip-kp">Skip current (Tab)</button>
-    <button class="btn btn-sm btn-ghost btn-block" id="btn-reset-kp">Reset keypoints</button>
-
-    <div class="divider"></div>
-
-    <button class="btn btn-primary btn-block btn-lg" id="btn-save-and-next">💾 SAVE &amp; NEXT</button>
-    <button class="btn btn-success btn-block" id="btn-finish-video">✓ FINISH VIDEO</button>
+    <button class="btn btn-primary btn-block btn-lg" id="btn-save-and-next">SAVE &amp; NEXT</button>
+    <button class="btn btn-success btn-block" id="btn-finish-video">FINISH VIDEO</button>
+    <!-- Admin-only, and revealed by gold_author.js only when the server confirms
+         BOTH admin and mlops.datasets.gold. Hidden by default so a labeler never
+         sees a control that would let them author their own answer key. -->
+    <button class="btn btn-ghost btn-block" id="btn-save-gold" style="display:none;font-size:11px;"
+            title="Keep this annotation as the answer key for this frame">SAVE AS ANSWER KEY</button>
     <div id="save-status" class="status-msg"></div>
+    <!-- Visible whenever the clock is running, and blank when it is not. The
+         labeler being able to see the number is the point: this app labels its
+         skill checks rather than slipping them into ordinary work, and timing
+         somebody covertly would be the same thing done worse. -->
+    <div class="effort-line"><span id="effort-readout"></span></div>
   </aside>
 
 </div>
 
 <!-- ═══════════════════ SHORTCUTS MODAL ══════════════════════════ -->
+<!-- Stream F (F3) — per-labeler agreement and gold performance. A table this wide is
+     unreadable in a 248px rail, so it gets a modal. -->
+<div id="signal-scorecard-modal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Labeler agreement</h3>
+    <div id="signal-scorecard-body"></div>
+    <button class="btn btn-primary" id="signal-scorecard-close">Close</button>
+  </div>
+</div>
+
 <div id="shortcuts-modal" class="modal hidden">
   <div class="modal-box">
     <h3>Keyboard Shortcuts</h3>
     <table class="shortcuts-table">
-      <tr><td>Space</td><td>Play / Pause video</td></tr>
+      <tr><td>Space</td><td>Play / pause the clip · No shark (images)</td></tr>
       <tr><td>← / →</td><td>Step one frame</td></tr>
       <tr><td>⇧+← / →</td><td>Jump 10 frames</td></tr>
-      <tr><td>F</td><td>Full body SAM segmentation</td></tr>
-      <tr><td>S</td><td>Add scar mode</td></tr>
+      <tr><td>B</td><td>Body box (Pose) &middot; ROI mark (Scars)</td></tr>
       <tr><td>K</td><td>Keypoint placement mode</td></tr>
-      <tr><td>B</td><td>Draw bounding box (drag)</td></tr>
+      <tr><td>O</td><td>Mark keypoint occluded (no position)</td></tr>
+      <tr><td>X / Tab</td><td>Mark keypoint outside frame</td></tr>
+      <tr><td>Alt+click</td><td>Place keypoint as occluded (with position)</td></tr>
       <tr><td>Z</td><td>Undo last annotation</td></tr>
       <tr><td>R</td><td>Reset frame annotations</td></tr>
       <tr><td>+ / −</td><td>Zoom in / out canvas</td></tr>
-      <tr><td>Ctrl+S</td><td>Save annotation</td></tr>
+      <tr><td>S</td><td>Save + advance to next frame</td></tr>
       <tr><td>1 – 5</td><td>Set scar confidence</td></tr>
       <tr><td>Esc</td><td>Cancel / close</td></tr>
     </table>
@@ -560,10 +915,109 @@
   </div>
 </div>
 
+<!-- The confidence rubric. Rows are rendered from ScarVocab.CONFIDENCE_RUBRIC by
+     scar_form.js rather than written here: the swatch drift (GREY #888 beside
+     OTHER #777, one grey with two labels) came from exactly this kind of second
+     hand-written copy, and a rubric that disagrees with itself is worse than a
+     colour that does — it is the scale the consensus engine averages. -->
+<div id="confidence-modal" class="modal hidden">
+  <div class="modal-box confidence-modal-box">
+    <h3>What each confidence star means</h3>
+    <table class="rubric-table"><tbody id="rubric-rows"></tbody></table>
+    <button class="btn btn-primary" id="close-confidence-modal">Close</button>
+  </div>
+</div>
+
 <!-- Scripts -->
-<script src="sharkscar/js/video_player.js"></script>
-<script src="sharkscar/js/canvas.js"></script>
-<script src="sharkscar/js/scar_form.js"></script>
-<script src="sharkscar/js/app.js"></script>
+<script src="sharkscar/js/utils.js"></script>
+<!-- Polish 7 — Triage Card mode (fullscreen, hidden until activated) -->
+<div id="triage-mode" class="triage-overlay" style="display:none;" data-mode="review">
+  <header class="triage-topbar">
+    <button id="triage-back" class="triage-icon-btn" title="Exit triage (Esc)">←</button>
+    <div class="triage-progress">
+      <span id="triage-progress-text">Track — of —</span>
+      <button id="triage-prev" class="triage-icon-btn" title="Previous (j)">◀</button>
+      <button id="triage-next" class="triage-icon-btn" title="Next (k)">▶</button>
+    </div>
+    <button id="triage-seed-btn" class="triage-icon-btn" title="Seed a new scar (n)" style="font-size:22px;">＋</button>
+    <button id="triage-close" class="triage-icon-btn" title="Exit triage (Esc)">✕</button>
+  </header>
+
+  <main class="triage-stage" id="triage-stage">
+    <!-- Card content rendered here by Tracks._renderTriageCard() or _renderSeedMode() -->
+    <div class="triage-empty" id="triage-empty" style="display:none;">
+      <p style="font-size:18px;color:#888;margin:0 0 8px;">Nothing to triage</p>
+      <p style="font-size:13px;color:#666;margin:0 0 16px;">Tap the ＋ above to seed a new scar.</p>
+      <button id="triage-empty-seed" class="triage-act triage-act-accept" style="max-width:240px;margin:0 auto;">＋ Seed a scar</button>
+    </div>
+  </main>
+
+  <footer class="triage-actionbar" id="triage-actionbar-review">
+    <button id="triage-act-reject" class="triage-act triage-act-reject" title="Reject (r / ←)">
+      <span class="triage-act-icon">✗</span><span class="triage-act-label">Reject</span>
+    </button>
+    <button id="triage-act-edit" class="triage-act triage-act-edit" title="Open full editor (e / ↑)">
+      <span class="triage-act-icon">✏</span><span class="triage-act-label">Edit</span>
+    </button>
+    <button id="triage-act-skip" class="triage-act triage-act-skip" title="Skip without saving (s / space)">
+      <span class="triage-act-icon">⇆</span><span class="triage-act-label">Skip</span>
+    </button>
+    <button id="triage-act-accept" class="triage-act triage-act-accept" title="Accept (a / →)">
+      <span class="triage-act-icon">✓</span><span class="triage-act-label">Accept</span>
+    </button>
+  </footer>
+
+  <footer class="triage-actionbar" id="triage-actionbar-seed" style="display:none;">
+    <button id="triage-seed-cancel" class="triage-act triage-act-reject" title="Back to review (Esc)">
+      <span class="triage-act-icon">←</span><span class="triage-act-label">Back</span>
+    </button>
+    <button id="triage-seed-clear" class="triage-act triage-act-skip" title="Clear box and start over">
+      <span class="triage-act-icon">↺</span><span class="triage-act-label">Clear</span>
+    </button>
+    <button id="triage-seed-go" class="triage-act triage-act-accept" disabled title="Propagate this seed to a track">
+      <span class="triage-act-icon">→</span><span class="triage-act-label">Propagate</span>
+    </button>
+  </footer>
+</div>
+
+<script src="sharkscar/js/video_player.js?v=15"></script>
+<script src="sharkscar/js/canvas.js?v=28"></script>
+<script src="sharkscar/js/keypoint_validator.js?v=15"></script>
+<script src="sharkscar/js/effort.js?v=1"></script>
+<script src="sharkscar/js/scar_vocab.js?v=2"></script>
+<script src="sharkscar/js/scar_form.js?v=21"></script>
+<script src="sharkscar/js/scar_form_helpers.js?v=4"></script>
+<script src="sharkscar/js/tutorial.js?v=31"></script>
+<!-- Both sides edit app.js, so the merged file matches neither published version.
+     Always take the HIGHER bump across a merge: a cache-bust that goes backwards
+     serves a stale file to everyone who already loaded the higher one. And when a
+     merge CHANGES the file, go past both sides rather than to the higher of two
+     numbers that no longer describe what is being served. -->
+<script src="sharkscar/js/app.js?v=41"></script>
+<script src="sharkscar/js/mlops_recs.js?v=1"></script>
+<script src="sharkscar/js/tracks.js?v=39"></script>
+<script src="sharkscar/js/objects.js?v=6"></script>
+<script src="sharkscar/js/gamification.js?v=16"></script>
+<script src="sharkscar/js/roi.js?v=2"></script>
+<!-- Stream D (plan 10): fed work queue + scar-form hint pre-fill. Both are inert
+     unless the server enables them (mlops.datasets / pose.frame_hints), so the
+     free-choice list and the full scar form remain the default. Loaded after
+     app.js — AppState.init() calls into them. -->
+<script src="sharkscar/js/frame_context.js?v=9"></script>
+<script src="sharkscar/js/gold_result.js?v=1"></script>
+<script src="sharkscar/js/gold_author.js?v=1"></script>
+<script src="sharkscar/js/work_queue.js?v=14"></script>
+<script src="sharkscar/js/scar_hints.js?v=3"></script>
+
+<script src="sharkscar/js/signals.js?v=5"></script>
+<script src="sharkscar/js/signals_review.js?v=8"></script>
+<!-- Stream H — 3D lift & volumetrics. Self-gates on /api/pose3d/health; inert when the
+     feature is off, so loading it changes nothing while pose3d.enabled is false. -->
+<script src="sharkscar/js/pose3d.js?v=6"></script>
+<script src="sharkscar/js/panel_ui.js?v=15"></script>
+
+<!-- Lane-visibility popover. Lives at body level so it can escape the dock's
+     overflow:hidden; kept out of the permanent layout to avoid crowding. -->
+<div class="signal-popover hidden" id="signal-lanes-pop"></div>
 </body>
 </html>

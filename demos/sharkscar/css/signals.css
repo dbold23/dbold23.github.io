@@ -1,0 +1,210 @@
+/* ════════════════════════════════════════════════
+   Stream F — signal dock (waterfall + biologging timeline)
+
+   Design constraint from the brief: "make sure not to crowd the screen."
+   So the dock adds NO permanent chrome. When the feature is off it is
+   display:none. When on but collapsed it is a 28px strip. Only when a labeler
+   opens it does it take space, and then it is drag-resizable.
+
+   The three-panel skeleton (.panel-left / .panel-center / .panel-right) is
+   untouched — the dock lives inside .panel-center, below the existing children.
+   ════════════════════════════════════════════════ */
+
+#signal-dock {
+  display: none;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 28px;
+  overflow: hidden;
+}
+#signal-dock.available { display: flex; }
+#signal-dock.expanded { height: 300px; }
+
+/* ─── Drag handle ─── */
+.signal-dock-grip {
+  height: 4px;
+  cursor: ns-resize;
+  background: transparent;
+  flex-shrink: 0;
+}
+.signal-dock-grip:hover { background: var(--accent); }
+#signal-dock:not(.expanded) .signal-dock-grip { display: none; }
+
+/* ─── Header strip (the whole thing when collapsed) ─── */
+.signal-dock-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  flex-shrink: 0;
+  font-size: 12px;
+  user-select: none;
+}
+.signal-dock-toggle {
+  background: none;
+  border: none;
+  color: var(--text-label);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+.signal-dock-toggle:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+.signal-dock-head select,
+.signal-dock-head .signal-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.signal-dock-head .signal-btn:hover { background: var(--bg-hover); }
+.signal-dock-head .signal-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.signal-dock-head .spacer { flex: 1; }
+.signal-dock-hint {
+  color: var(--text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Canvas body ─── */
+.signal-dock-body {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #0b0d13;
+}
+#signal-dock:not(.expanded) .signal-dock-body { display: none; }
+#signal-canvas { position: absolute; top: 0; left: 0; touch-action: none; }
+
+.signal-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: center;
+  padding: 0 24px;
+  pointer-events: none;
+}
+
+/* ─── Lane-visibility popover (kept OUT of the permanent layout on purpose) ─── */
+.signal-popover {
+  position: absolute;
+  z-index: 60;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  min-width: 190px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+}
+.signal-popover.hidden { display: none; }
+.signal-popover label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 2px;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+.signal-popover label:hover { color: var(--accent); }
+
+/* ─── Right-panel Signals tab ─── */
+.signal-term-list { display: flex; flex-wrap: wrap; gap: 4px; }
+.signal-term {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 4px 7px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.signal-term:hover { background: var(--bg-hover); }
+.signal-term.active { border-color: var(--accent); background: var(--bg-hover); }
+.signal-term .dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent); flex-shrink: 0;
+}
+.signal-term .hk { color: var(--text-muted); font-size: 10px; }
+
+.signal-label-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.signal-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.signal-label-row:hover { border-color: var(--accent); }
+.signal-label-row.selected { border-color: var(--accent); background: var(--bg-hover); }
+.signal-label-row .meta { color: var(--text-muted); font-size: 10px; }
+.signal-label-row .grow { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.signal-label-row .del {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 13px; line-height: 1; padding: 0 2px;
+}
+.signal-label-row .del:hover { color: var(--danger); }
+
+/* ════════════════════════════════════════════════
+   "Beside" layout — the literal side-by-side reading of the brief.
+   Only offered where there is genuinely room for it (≥1600px); below that the
+   shared horizontal time axis needs the full width and the dock stays under
+   the video. Grid rather than flex so the default column layout above is
+   completely undisturbed.
+   ════════════════════════════════════════════════ */
+@media (min-width: 1600px) {
+  .panel-center.signals-beside {
+    display: grid;
+    grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "video   dock"
+      "canvas  dock"
+      "enhance dock";
+  }
+  .panel-center.signals-beside > .video-section { grid-area: video; }
+  .panel-center.signals-beside > .canvas-wrap { grid-area: canvas; }
+  .panel-center.signals-beside > .enhance-bar { grid-area: enhance; }
+  .panel-center.signals-beside > #signal-dock {
+    grid-area: dock;
+    height: auto;
+    border-top: none;
+    border-left: 1px solid var(--border);
+  }
+  .panel-center.signals-beside > #signal-dock .signal-dock-grip { display: none; }
+}
+
+/* Narrow screens: the dock is the first thing to give up space. */
+@media (max-width: 900px) {
+  #signal-dock.expanded { height: 210px; }
+}

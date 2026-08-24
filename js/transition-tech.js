@@ -98,6 +98,11 @@ function initStickerNav() {
   stickers.forEach((sticker) => {
     function onClick(e) {
       e.preventDefault();
+      // Desktop apps open in a window on this desktop, not a new tab.
+      if (sticker.dataset.app) {
+        window.dispatchEvent(new CustomEvent('os-open-app', { detail: sticker.dataset.app }));
+        return;
+      }
       const href = sticker.dataset.href;
       if (sticker.dataset.external === 'true') {
         window.open(href, '_blank', 'noopener');

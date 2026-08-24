@@ -1,0 +1,115 @@
+/* frame_context.css — the movement strip under the canvas.
+ *
+ * Sits directly beneath the canvas because it is about the image above it, not
+ * about the task in the right rail. Quiet at rest: a single button until somebody
+ * actually asks for motion, since most pose frames read fine on their own. */
+
+/* ONE ROW, FIXED HEIGHT, ALWAYS. This bar is a sibling of the canvas wrap in a
+   flex column, so any change to its height re-lays-out the canvas above it — a
+   wrapping bar meant the picture resized itself the moment the label grew or the
+   "Back to my frame" button appeared. Controls that come and go are rendered
+   once and hidden, and nothing here is allowed to wrap. */
+.fc-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  min-height: 34px;
+  padding: 5px 8px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+  font-size: 12px;
+}
+
+.fc-bar > button { flex: 0 0 auto; }
+
+.fc-scrub {
+  flex: 1 1 120px;
+  min-width: 40px;
+  accent-color: var(--accent);
+}
+
+/* The transport is the keyboard; this says so without shouting. */
+.fc-keys {
+  flex: 0 0 auto;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.fc-speed {
+  flex: 0 0 auto;
+  padding: 2px 4px;
+  font-size: 11px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+/* Shrinks before the transport does: losing the end of a caption costs less than
+   losing the pause button. */
+.fc-label {
+  flex: 0 0 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+}
+
+/* Off the pinned frame: state it plainly. The labeler is looking at one frame and
+   annotating another, and that must never be something they have to infer. */
+.fc-off { color: var(--kp-color, #fdcb6e); }
+.fc-off b { color: var(--text); }
+
+/* A quiet border while looking, so "I cannot draw right now" has a visible cause
+   rather than feeling like the tool broke. */
+.fc-looking {
+  border-top-color: var(--kp-color, #fdcb6e);
+  box-shadow: inset 0 2px 0 -1px var(--kp-color, #fdcb6e);
+}
+
+/* ── what this annotation is for (panel_ui.js) ─────────────────────────── */
+/* On the image, not in the right rail: "what am I being asked to do" is a
+   question about the thing you are looking at. */
+
+.mission-banner {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 10px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+}
+
+.mission-banner-task {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.mission-banner[data-task="pose"] .mission-banner-task { color: var(--kp-color, #fdcb6e); }
+.mission-banner[data-task="scars"] .mission-banner-task { color: var(--scar-color, #ff7675); }
+
+.mission-banner-what { font-size: 11px; color: var(--text-muted); }
+
+/* The strip shows a 640x360 scrub proxy; settling loads the real 1920x1080 frame.
+   That 3x jump reads as "a filter got applied" unless something names it. */
+.fc-preview {
+  opacity: .55;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 0 3px;
+  margin-left: 5px;
+  cursor: help;
+}

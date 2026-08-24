@@ -1,0 +1,116 @@
+/* objects.css — the sighting card + the scar board.
+   Loaded unconditionally; every rule is scoped under #objects-panel, which is
+   display:none until /api/objects/health says the feature is on. */
+
+#objects-panel .obj-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  margin: 4px 0;
+}
+#objects-panel .obj-row label { flex: 1; }
+#objects-panel select,
+#objects-panel input[type="number"] {
+  background: #2a2a2a;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 3px;
+  font-size: 11px;
+  padding: 2px 4px;
+}
+
+#objects-panel .obj-progress {
+  font-size: 11px;
+  color: #9a9a9a;
+  margin: 6px 0 4px;
+}
+
+/* One row per clip. The encounter is the unit of work, so every clip of the
+   animal is listed here even though only one is playing. */
+#objects-panel .obj-clip {
+  display: grid;
+  /* minmax(0,…) so the name column can actually shrink; without it the two
+     selects get squeezed instead and the name never ellipsizes at all. */
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 3px;
+}
+#objects-panel .obj-clip-name {
+  font-size: 10px;
+  color: #ccc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#objects-panel .obj-sides,
+#objects-panel .obj-usable { max-width: 84px; }
+
+#objects-panel .obj-hint {
+  font-size: 10px;
+  line-height: 1.35;
+  margin-top: 6px;
+}
+#objects-panel .obj-done {
+  font-size: 11px;
+  color: #6bbf59;
+  margin-top: 6px;
+}
+#objects-panel #btn-close-pass:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* A card is a SCAR, not a box and not a frame. */
+#objects-panel .obj-card {
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  padding: 6px 7px;
+  margin-bottom: 5px;
+  background: #262626;
+}
+#objects-panel .obj-card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 11px;
+}
+#objects-panel .obj-card-head .muted { font-size: 10px; }
+#objects-panel .obj-card-meta {
+  font-size: 10px;
+  color: #9a9a9a;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The chip that makes cross-clip identity visible: this is the whole reason the
+   object exists above tracks, which cannot span clips at all. */
+#objects-panel .obj-clip-chip {
+  margin-left: auto;
+  background: #333;
+  border-radius: 8px;
+  padding: 1px 6px;
+  font-size: 9px;
+  color: #ccc;
+}
+
+#objects-panel .obj-seen {
+  font-size: 10px;
+  color: #6bbf59;
+  margin-top: 4px;
+}
+#objects-panel .obj-attach {
+  margin-top: 5px;
+  width: 100%;
+  font-size: 10px;
+  padding: 3px 6px;
+  background: #333;
+  color: #ddd;
+  border: 1px solid #484848;
+  border-radius: 3px;
+  cursor: pointer;
+}
+#objects-panel .obj-attach:hover { background: #3c3c3c; }

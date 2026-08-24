@@ -22,6 +22,8 @@ const CONTACT_EMAIL = 'daniel.sambold@gmail.com';
 const RATE_LIMIT = { perHour: 3, perDay: 8, storageKey: 'ds-mail-sends' };
 
 const DESKTOP_MIN = '(min-width: 969px)';
+const desktopQuery = window.matchMedia(DESKTOP_MIN);
+const isDesktop = () => desktopQuery.matches;
 const cleanups = [];
 const on = (el, ev, fn, opts) => {
   if (!el) return;
@@ -568,6 +570,10 @@ function openAppWindow(key) {
   const surface = document.querySelector('.desktop-surface');
   if (!spec || !surface) return;
 
+  // On a phone there is no room to put a desktop application inside a window
+  // inside a page. Hand it the whole tab instead.
+  if (!isDesktop()) { window.open(spec.src, '_blank', 'noopener'); return; }
+
   const existing = surface.querySelector(`.os-app[data-app="${key}"]`);
   if (existing) {                       // already open: raise it, do not reload
     existing.classList.remove('minimized');
@@ -688,6 +694,10 @@ function makeResizable(win) {
 function openWordDoc() {
   const surface = document.querySelector('.desktop-surface');
   if (!surface) return;
+
+  // The document window is desktop furniture. On a phone the slide-out panel
+  // is the better reader and is already designed for that width.
+  if (!isDesktop()) { document.getElementById('cv-toggle')?.click(); return; }
 
   const existing = surface.querySelector('.os-word');
   if (existing) { existing.classList.remove('minimized'); existing.style.zIndex = ++appZ; return; }
@@ -977,6 +987,7 @@ function openMail() {
 let navReturn = null;
 
 function adoptNav() {
+  if (!isDesktop()) return;      // the menubar is hidden below this width
   const nav = document.getElementById('path-nav');
   const bar = document.querySelector('.macos-menubar');
   const right = bar?.querySelector('.menubar-right');
@@ -1006,6 +1017,12 @@ export function init() {
   // this module's window manager; an event is the seam between the two.
   on(window, 'os-open-app', (e) => openAppWindow(e.detail));
   on(window, 'os-open-cv', () => openWordDoc());
+
+  // Crossing the breakpoint after load would otherwise leave the nav parked in
+  // a menubar that has just been hidden, taking the site's navigation with it.
+  const onBreakpoint = () => { if (isDesktop()) adoptNav(); else releaseNav(); };
+  desktopQuery.addEventListener('change', onBreakpoint);
+  cleanups.push(() => desktopQuery.removeEventListener('change', onBreakpoint));
 }
 
 export function destroy() {

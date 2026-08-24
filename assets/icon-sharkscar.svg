@@ -1,29 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Shark Scar Annotator">
+  <!-- One shark, one mark. The earlier version carried a full keypoint
+       skeleton and a scar ring, which turned to mush at dock size; at 50px
+       only the silhouette survives, so that is all this draws. -->
   <defs>
-    <linearGradient id="ssBg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#12608f"/>
-      <stop offset="1" stop-color="#06253f"/>
+    <linearGradient id="ssBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e5f8c"/>
+      <stop offset="1" stop-color="#0a2463"/>
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="28" ry="28" fill="url(#ssBg)"/>
-  <rect x="0.75" y="0.75" width="126.5" height="126.5" rx="27.5" ry="27.5" fill="none" stroke="#ffffff" stroke-opacity="0.16"/>
+  <rect width="128" height="128" rx="32" ry="32" fill="url(#ssBg)"/>
 
-  <!-- shark, nose to the right -->
-  <path d="M20 76 C34 62 52 55 72 56 L86 44 L86 58 C96 61 104 66 110 72
-           C102 78 92 83 82 85 L84 98 L70 86 C50 87 32 84 20 76 Z"
-        fill="#dceefc" fill-opacity="0.94"/>
-  <path d="M60 60 L54 48 L68 57" fill="#dceefc" fill-opacity="0.94"/>
+  <!-- side profile, nose right -->
+  <path d="M26 70 C40 58 58 52 78 54 L90 40 L91 56 C99 59 106 64 112 70
+           C104 76 95 80 86 82 L88 96 L74 84 C54 85 38 79 26 70 Z"
+        fill="#ffffff"/>
+  <path d="M62 58 L56 44 L70 55 Z" fill="#ffffff"/>
 
-  <!-- annotation keypoints along the body axis -->
-  <g fill="#ffd166" stroke="#06253f" stroke-width="1.5">
-    <circle cx="104" cy="72" r="4.2"/>
-    <circle cx="84"  cy="68" r="4.2"/>
-    <circle cx="62"  cy="70" r="4.2"/>
-    <circle cx="38"  cy="73" r="4.2"/>
-  </g>
-  <path d="M104 72 L84 68 L62 70 L38 73" fill="none" stroke="#ffd166"
-        stroke-width="2" stroke-opacity="0.75" stroke-linecap="round"/>
-
-  <!-- scar marker -->
-  <circle cx="74" cy="80" r="8.5" fill="none" stroke="#ff6b8a" stroke-width="3"/>
+  <!-- the single annotation point -->
+  <circle cx="72" cy="70" r="6" fill="#ffc14d"/>
 </svg>

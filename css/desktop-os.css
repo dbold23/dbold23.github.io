@@ -201,15 +201,20 @@
 }
 .os-dock-sep { width: 1px; align-self: stretch; margin: 6px 3px; background: rgba(255,255,255,0.18); }
 
+/* Hover lifts the one icon under the cursor. The macOS-style distance
+   magnification was doing too much: neighbours swelling on either side made
+   the whole dock breathe every time the pointer crossed it. */
 .os-dock-app {
-  --mag: 1;
   position: relative;
   width: 50px; height: 50px;
   padding: 0; border: 0; background: none; cursor: pointer;
-  transform: scale(var(--mag));
+  transform: translateY(0);
   transform-origin: bottom center;
-  transition: transform 0.16s ease;
+  transition: transform 0.18s cubic-bezier(0.32, 0.9, 0.36, 1);
 }
+.os-dock-app:hover,
+.os-dock-app:focus-visible { transform: translateY(-7px); }
+.os-dock-app:active { transform: translateY(-3px); }
 .os-dock-app img { width: 100%; height: 100%; object-fit: contain; border-radius: 11px; pointer-events: none; }
 .os-dock-app:focus-visible { outline: 2px solid var(--tech-cyan, #00d9ff); outline-offset: 3px; border-radius: 12px; }
 
@@ -224,7 +229,7 @@
 
 .os-dock-tip {
   position: absolute; left: 50%; bottom: calc(100% + 12px);
-  transform: translateX(-50%) scale(calc(1 / var(--mag)));
+  transform: translateX(-50%);
   padding: 4px 10px; border-radius: 6px;
   background: rgba(20, 22, 32, 0.95);
   border: 1px solid rgba(255,255,255,0.14);
@@ -234,16 +239,17 @@
 .os-dock-app:hover .os-dock-tip, .os-dock-app:focus-visible .os-dock-tip { opacity: 1; }
 
 @keyframes os-dock-bounce {
-  0%, 100% { transform: scale(var(--mag)) translateY(0); }
-  40%      { transform: scale(var(--mag)) translateY(-17px); }
-  70%      { transform: scale(var(--mag)) translateY(-5px); }
+  0%, 100% { transform: translateY(0); }
+  40%      { transform: translateY(-18px); }
+  70%      { transform: translateY(-6px); }
 }
 .os-dock-app.bouncing { animation: os-dock-bounce 0.68s ease; }
 
 @media (max-width: 968px) {
   .os-dock { position: static; transform: none; margin: 18px auto 4px; max-width: 100%; }
   .os-dock-inner { flex-wrap: wrap; justify-content: center; }
-  .os-dock-app { width: 44px; height: 44px; --mag: 1 !important; }
+  .os-dock-app { width: 44px; height: 44px; }
+  .os-dock-app:hover { transform: none; }
   .os-dock-tip { display: none; }
 }
 

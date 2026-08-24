@@ -726,20 +726,6 @@ function initDock(ctx) {
     }
   });
 
-  // Magnification: neighbours swell a little, as the real dock does.
-  on(dock, 'pointermove', (e) => {
-    if (!window.matchMedia(DESKTOP_MIN).matches) return;
-    const apps = [...dock.querySelectorAll('.os-dock-app')];
-    apps.forEach((a) => {
-      const r = a.getBoundingClientRect();
-      const d = Math.abs(e.clientX - (r.left + r.width / 2));
-      const s = Math.max(0, 1 - d / 140);
-      a.style.setProperty('--mag', (1 + s * 0.45).toFixed(3));
-    });
-  });
-  on(dock, 'pointerleave', () => {
-    dock.querySelectorAll('.os-dock-app').forEach((a) => a.style.setProperty('--mag', '1'));
-  });
 }
 
 function jumpToFolder(selector) {

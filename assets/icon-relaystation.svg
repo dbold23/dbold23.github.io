@@ -1,23 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="RelayStation">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="RelayStation Central">
+  <!-- The mark is lifted straight from the RelayStation Central dashboard:
+       the signal-burst glyph in .brand-icon, white on the same
+       linear-gradient(135deg, #10b981, #3b82f6) tile. Proportions match too —
+       a 24px glyph in a 40px tile, and a 10/40 corner radius. -->
   <defs>
-    <linearGradient id="rsBg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#123a72"/>
-      <stop offset="1" stop-color="#071b3f"/>
+    <linearGradient id="rsBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10b981"/>
+      <stop offset="1" stop-color="#3b82f6"/>
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="28" ry="28" fill="url(#rsBg)"/>
-  <rect x="0.75" y="0.75" width="126.5" height="126.5" rx="27.5" ry="27.5" fill="none" stroke="#ffffff" stroke-opacity="0.16"/>
+  <rect width="128" height="128" rx="32" ry="32" fill="url(#rsBg)"/>
 
-  <!-- mast -->
-  <path d="M64 52 L64 98" stroke="#dceefc" stroke-width="5" stroke-linecap="round"/>
-  <path d="M47 100 L64 62 L81 100" fill="none" stroke="#dceefc" stroke-width="5"
-        stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M53 86 L75 86" stroke="#dceefc" stroke-width="4" stroke-linecap="round"/>
-
-  <!-- broadcast arcs -->
-  <g fill="none" stroke="#00d9ff" stroke-linecap="round">
-    <path d="M46 44 a24 24 0 0 1 36 0" stroke-width="5"/>
-    <path d="M35 32 a40 40 0 0 1 58 0" stroke-width="5" stroke-opacity="0.62"/>
+  <g transform="translate(64 64) scale(3.2) translate(-12 -12)">
+    <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"
+          stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="12" cy="12" r="3" fill="#ffffff"/>
   </g>
-  <circle cx="64" cy="50" r="6" fill="#00d9ff"/>
 </svg>

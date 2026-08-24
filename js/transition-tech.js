@@ -92,12 +92,18 @@ let stickerClickCleanup = null;
 function initStickerNav() {
   const dock = document.querySelector('.desktop-icons');
   if (!dock) return;
-  const stickers = dock.querySelectorAll('.desktop-icon[data-href]');
+  const stickers = dock.querySelectorAll('.desktop-icon[data-href], .desktop-icon[data-app], .desktop-icon[data-cv]');
   const cleanups = [];
 
   stickers.forEach((sticker) => {
     function onClick(e) {
       e.preventDefault();
+      // The CV opens the resume panel the nav's CV button already drives,
+      // rather than a second copy of it living out here.
+      if (sticker.dataset.cv) {
+        document.getElementById('cv-toggle')?.click();
+        return;
+      }
       // Desktop apps open in a window on this desktop, not a new tab.
       if (sticker.dataset.app) {
         window.dispatchEvent(new CustomEvent('os-open-app', { detail: sticker.dataset.app }));

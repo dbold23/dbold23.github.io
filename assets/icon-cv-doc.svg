@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Word document">
+  <!-- A document icon in the usual word-processor idiom: white page, folded
+       corner, ruled lines and a W badge. Drawn rather than lifted from Word,
+       whose mark is Microsoft's. -->
+  <defs>
+    <linearGradient id="cvPage" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef2f7"/>
+    </linearGradient>
+    <linearGradient id="cvFold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c9d6e4"/>
+      <stop offset="1" stop-color="#9fb3c8"/>
+    </linearGradient>
+    <linearGradient id="cvBadge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b7cd3"/>
+      <stop offset="1" stop-color="#185abd"/>
+    </linearGradient>
+  </defs>
+
+  <!-- page with a folded top-right corner -->
+  <path d="M24 8 h56 l24 24 v88 a6 6 0 0 1-6 6 H24 a6 6 0 0 1-6-6 V14 a6 6 0 0 1 6-6 Z"
+        fill="url(#cvPage)"/>
+  <path d="M80 8 l24 24 H86 a6 6 0 0 1-6-6 Z" fill="url(#cvFold)"/>
+
+  <!-- ruled text -->
+  <g fill="#b9c6d4">
+    <rect x="32" y="46" width="42" height="4.5" rx="2.25"/>
+    <rect x="32" y="58" width="58" height="4.5" rx="2.25"/>
+    <rect x="32" y="70" width="52" height="4.5" rx="2.25"/>
+  </g>
+
+  <!-- badge -->
+  <rect x="30" y="84" width="68" height="34" rx="7" fill="url(#cvBadge)"/>
+  <text x="64" y="102" fill="#ffffff" font-family="Inter, Helvetica, Arial, sans-serif"
+        font-size="21" font-weight="800" text-anchor="middle" dominant-baseline="central">W</text>
+</svg>

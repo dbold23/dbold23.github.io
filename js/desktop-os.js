@@ -556,7 +556,7 @@ function makeDraggable(el, handle) {
 // An iframe keeps each app's CSS and its mock API sealed off from the
 // portfolio's, which matters — both ship their own global stylesheet.
 const APP_WINDOWS = {
-  relay: { title: 'RelayStation Central', src: 'demos/relaystation.html', w: 1100, h: 680 },
+  relay: { title: 'RelayStation Central', src: 'demos/relaystation/index.html', w: 1160, h: 720 },
   scar:  { title: 'Shark Scar Annotator', src: 'demos/sharkscar.html',    w: 1180, h: 720 },
 };
 

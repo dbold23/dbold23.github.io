@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review — RelayStation Central</title>
+    <link rel="icon" href="static/img/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="static/img/favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="static/img/apple-touch-icon.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="static/css/relay.css">
+    <script>
+      // Apply theme before first paint (no flash). Saved choice wins, else system.
+      (function () {
+        try {
+          var t = localStorage.getItem('rs-theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {
+          // storage can throw (private browsing) — still honor the OS theme
+          var d = false;
+          try { d = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e2) {}
+          document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+        }
+      })();
+      function rsToggleTheme() {
+        var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        var next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('rs-theme', next); } catch (e) {}
+      }
+    </script>
+    <script>window.SERVER_AUTHED = true;</script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="static/js/relay-core.js"></script>
+    <script src="static/js/rs-ui.js"></script>
+  <style>
+    .demo-banner {
+      background: linear-gradient(90deg, #14566b, #1b7f9e);
+      color: #eaf8ff; font-size: 12.5px; line-height: 1.5;
+      padding: 9px 20px; text-align: center; letter-spacing: .01em;
+    }
+    .demo-banner strong { color: #b9f0ff; font-weight: 700; }
+    [data-demo-disabled] { opacity: .55; cursor: not-allowed; }
+    @media (max-width: 640px) { .demo-banner { font-size: 11.5px; padding: 8px 14px; } }
+  </style>
+  <script>
+  /* ------------------------------------------------------------------
+     Mock API for the public demo of RelayStation Central.
+
+     The real site is a FastAPI app over a station database. This copy is
+     static: every /api/ call is answered here from canned data, so the
+     pages run their own code — the fleet map, tag table, whitelist,
+     range sessions, alerts — with no server and no sign-in.
+  ------------------------------------------------------------------ */
+  (function () {
+    'use strict';
+
+    var S = window.__DEMO__ = {};
+
+    S.stations = [
+      {id:1, station_id:'RS-DEMO-01', location:'North Channel Platform', status:'online',  latitude:36.812, longitude:-121.784, last_seen_ago:'12s',    active_tags:5, cpu_percent:23.4, memory_percent:41.2, temperature_c:44.1, detection_count:118, fw_version:'1.4.2', last_transport:'wifi',  nbiot_mode:'idle',   battery_pct:88, solar_w:6.4},
+      {id:2, station_id:'RS-DEMO-02', location:'Tidal Flat East',        status:'online',  latitude:36.828, longitude:-121.762, last_seen_ago:'8s',     active_tags:3, cpu_percent:18.9, memory_percent:37.8, temperature_c:41.6, detection_count:64,  fw_version:'1.4.2', last_transport:'nbiot', nbiot_mode:'active', battery_pct:91, solar_w:7.1},
+      {id:3, station_id:'RS-DEMO-03', location:'Upper Slough Bend',      status:'online',  latitude:36.841, longitude:-121.749, last_seen_ago:'31s',    active_tags:4, cpu_percent:31.7, memory_percent:52.3, temperature_c:47.9, detection_count:151, fw_version:'1.4.1', last_transport:'wifi',  nbiot_mode:'idle',   battery_pct:76, solar_w:4.9},
+      {id:4, station_id:'RS-DEMO-04', location:'Harbour Mouth Mast',     status:'degraded',latitude:36.803, longitude:-121.795, last_seen_ago:'4m 12s', active_tags:2, cpu_percent:67.2, memory_percent:78.4, temperature_c:61.3, detection_count:39,  fw_version:'1.3.9', last_transport:'nbiot', nbiot_mode:'retry',  battery_pct:42, solar_w:1.2},
+      {id:5, station_id:'RS-DEMO-05', location:'Ridge Repeater',         status:'offline', latitude:36.857, longitude:-121.731, last_seen_ago:'2h 47m', active_tags:0, cpu_percent:0,    memory_percent:0,    temperature_c:null, detection_count:0,   fw_version:'1.3.9', last_transport:'nbiot', nbiot_mode:'down',   battery_pct:11, solar_w:0.0},
+      {id:6, station_id:'RS-DEMO-06', location:'South Marsh Post',       status:'online',  latitude:36.795, longitude:-121.771, last_seen_ago:'19s',    active_tags:6, cpu_percent:27.5, memory_percent:44.9, temperature_c:45.2, detection_count:133, fw_version:'1.4.2', last_transport:'wifi',  nbiot_mode:'idle',   battery_pct:94, solar_w:8.0}
+    ];
+
+    var T = [
+      [150142,47,34.2,.97,1,0,'RS-DEMO-01','6d 4h','12s','Demo animal A'],
+      [150318,39,29.8,.94,1,0,'RS-DEMO-01','6d 1h','44s','Demo animal B'],
+      [150461, 8,22.1,.81,0,0,'RS-DEMO-02','2d 7h','3m 8s',null],
+      [150607,62,37.6,.99,1,0,'RS-DEMO-03','9d 22h','6s','Demo animal C'],
+      [150753,21,18.4,.88,0,0,'RS-DEMO-06','4d 3h','1m 51s',null],
+      [150884, 4,12.7,.62,0,0,'RS-DEMO-02','9h 14m','22m 3s',null],
+      [151026,55,31.9,.96,1,0,'RS-DEMO-03','8d 11h','18s','Demo animal D'],
+      [151172,33,26.3,.91,0,0,'RS-DEMO-06','5d 18h','2m 14s',null],
+      [151308, 2, 9.4,.48,0,0,'RS-DEMO-04','3h 41m','48m 9s',null],
+      [151455,28,24.8,.90,0,0,'RS-DEMO-01','4d 20h','1m 6s',null],
+      [151591,71,38.9,.99,1,1,'RS-DEMO-03','14d 6h','3d 2h','Demo animal E'],
+      [151744,16,20.6,.85,0,0,'RS-DEMO-06','3d 9h','5m 37s',null],
+      [151890,44,30.1,.95,1,0,'RS-DEMO-06','7d 15h','27s','Demo animal F'],
+      [152037, 6,15.2,.71,0,1,'RS-DEMO-04','1d 12h','5d 8h',null]
+    ];
+    function loc(id){ for (var i=0;i<S.stations.length;i++) if (S.stations[i].station_id===id) return S.stations[i].location; return '-'; }
+    S.tags = T.map(function(r){ return {
+      frequency_khz:r[0], frequency_mhz:r[0]/1000, detection_count:r[1], max_signal_db:r[2],
+      max_confidence:r[3], is_locked:!!r[4], is_retrieved:!!r[5], station_id:r[6],
+      location:loc(r[6]), first_seen_ago:r[7], last_seen_ago:r[8], label:r[9],
+      species:r[9] ? 'leopard-shark' : null };
+    });
+
+    S.registry = [];
+    for (var i=0;i<22;i++) S.registry.push({
+      unique_key:'DEMO-'+(150100+i*96)+'-'+(4100+i), frequency_khz:150100+i*96,
+      pulse_width_ms:[18,20,22][i%3], pulse_rate_ppm:[30,40,50][i%3],
+      model:['A2412','A2414','F1835B','A2422'][i%4],
+      tag_type:i%4===0?'Mortality':'Standard', job_number:'J-'+(2600+i%5),
+      serial_number:String(41000+i*7), is_custom:i%7===0, species:'leopard-shark'});
+
+    S.alerts = [
+      {id:1, level:'warning',  station_id:'RS-DEMO-04', message:'Battery below 50%',   created_at:'2026-08-24 09:12', acknowledged:false},
+      {id:2, level:'critical', station_id:'RS-DEMO-05', message:'No heartbeat for 2h', created_at:'2026-08-24 11:48', acknowledged:false},
+      {id:3, level:'info',     station_id:'RS-DEMO-02', message:'Switched to NB-IoT',  created_at:'2026-08-23 22:03', acknowledged:true}
+    ];
+
+    S.sessions = [
+      {session_id:'ts-demo-004', name:'South Marsh walk-out',   station_id:'RS-DEMO-06', is_active:false, started_at:'2026-08-21T09:14:00', ended_at:'2026-08-21T10:02:00', measurement_count:184, max_range_m:1820, notes:'Clear line of sight along the levee.'},
+      {session_id:'ts-demo-003', name:'Harbour mouth baseline', station_id:'RS-DEMO-04', is_active:false, started_at:'2026-08-19T13:40:00', ended_at:'2026-08-19T14:26:00', measurement_count:141, max_range_m:960,  notes:'Masted antenna, moderate swell.'},
+      {session_id:'ts-demo-002', name:'Upper bend sweep',       station_id:'RS-DEMO-03', is_active:false, started_at:'2026-08-15T08:05:00', ended_at:'2026-08-15T09:11:00', measurement_count:222, max_range_m:2140, notes:'Best range of the season so far.'}
+    ];
+
+    // A deterministic range trace: signal falling off with distance.
+    S.measurements = (function(){ var o=[],n=184;
+      for (var i=0;i<n;i++){ var d=40+i*10, base=42-19*Math.log10(d/40),
+        w=2.4*Math.sin(i/5.5)+1.3*Math.sin(i/2.1);
+        o.push({id:i+1, distance_m:d, signal_db:Math.round((base+w)*10)/10,
+                snr_db:Math.round((base+w+8.5)*10)/10,
+                latitude:36.795+(i/n)*0.021, longitude:-121.771+(i/n)*0.017,
+                detected: base+w>6, timestamp:'2026-08-21T09:'+String(14+Math.floor(i/4)).padStart(2,'0')+':00'}); }
+      return o; })();
+
+    S.logs = []; S.events = [];
+    for (var j=0;j<24;j++) S.logs.push({id:j, ts:'2026-08-24 1'+(j%10)+':0'+(j%6),
+      level:['INFO','INFO','WARN','INFO','ERROR'][j%5], station_id:S.stations[j%6].station_id,
+      message:['Heartbeat received','Detection batch uploaded','Retrying NB-IoT attach','Whitelist synced','Upload failed, will retry'][j%5]});
+    for (var k=0;k<18;k++) S.events.push({id:k, ts:'2026-08-24 1'+(k%10)+':'+(20+k%40),
+      station_id:S.stations[k%6].station_id, event_type:['detection','heartbeat','command','alert'][k%4],
+      detail:'frequency '+(150142+k*137)+' kHz'});
+
+    S.stats = {active_stations:4, total_stations:6, total_events:436, detection_count:436,
+               locked_tags:6, active_tags:12, current_signal:31.4, noise_floor:-98.2, snr:17.6};
+
+    var NOTE = 'Demo mode — not persisted.';
+
+    function route(path, q, method) {
+      if (path === '/api/v1/auth/verify') return {ok:true, authenticated:true};
+
+      if (path === '/api/v1/admin/stations') return {success:true, stations:S.stations};
+      var st = path.match(/^\/api\/v1\/admin\/stations\/([^/]+)$/);
+      if (st) {
+        var id = decodeURIComponent(st[1]);
+        return {success:true, station:S.stations.filter(function(x){return x.station_id===id;})[0] || null};
+      }
+      if (/^\/api\/v1\/admin\/stations\/[^/]+\/commands$/.test(path))
+        return {success:true, message:'Demo mode — command acknowledged but not transmitted.'};
+      if (/^\/api\/v1\/admin\/commands\//.test(path)) return {success:true, command:{status:'done'}};
+
+      if (path === '/api/v1/admin/tags') {
+        var inc = q.get('include_retrieved') === 'true';
+        return {success:true, tags:S.tags.filter(function(t){ return inc || !t.is_retrieved; })};
+      }
+      if (/^\/api\/v1\/admin\/tags\/registry/.test(path)) return {success:true, tags:S.registry};
+      if (path === '/api/v1/admin/frequencies')
+        return {success:true, frequencies:S.tags.filter(function(t){return t.label;})};
+
+      if (path === '/api/v1/admin/alerts') return {success:true, alerts:S.alerts};
+      if (path === '/api/v1/admin/alerts/settings')
+        return {success:true, settings:{sms:false, email:false, phone:'', quiet_hours:'22:00-06:00'}};
+
+      if (path === '/api/v1/admin/logs')      return {success:true, logs:S.logs};
+      if (path === '/api/v1/admin/candidates') return {success:true, candidates:[]};
+
+      if (path === '/api/v1/range/sessions')  return {success:true, sessions:S.sessions};
+      var rs = path.match(/^\/api\/v1\/range\/sessions\/([^/]+)(\/.*)?$/);
+      if (rs) return {success:true, session:S.sessions[0], measurements:S.measurements,
+                      stats:{count:184, max_range_m:1820, best_signal_db:42.1, mean_snr_db:19.4}};
+      if (/^\/api\/v1\/test\/sessions/.test(path)) return {success:true, sessions:S.sessions, measurements:S.measurements};
+      if (path === '/api/v1/test/live-signal')
+        return {success:true, signal_db:31.4, snr_db:17.6, noise_floor:-98.2, detected:true};
+
+      // Mutations and anything unlisted: acknowledged, nothing persisted.
+      return {success:true, message:NOTE, stations:S.stations, tags:S.tags, alerts:S.alerts,
+              sessions:S.sessions, logs:S.logs, events:S.events, candidates:[], items:[],
+              registry:S.registry, stats:S.stats};
+    }
+
+    function json(b) {
+      var t = JSON.stringify(b);
+      if (typeof Response === 'function')
+        return Promise.resolve(new Response(t, {status:200, headers:{'Content-Type':'application/json'}}));
+      return Promise.resolve({ok:true, status:200,
+        json:function(){return Promise.resolve(JSON.parse(t));},
+        text:function(){return Promise.resolve(t);}});
+    }
+
+    var native = window.fetch ? window.fetch.bind(window) : null;
+    window.fetch = function (input, init) {
+      var url = (typeof input === 'string') ? input : (input && input.url) || '';
+      var method = ((init && init.method) || 'GET').toUpperCase();
+      var path = url, search = '';
+      var h = path.indexOf('#'); if (h !== -1) path = path.slice(0, h);
+      var qi = path.indexOf('?');
+      if (qi !== -1) { search = path.slice(qi+1); path = path.slice(0, qi); }
+      if (/^https?:\/\//i.test(path)) { try { var u=new URL(path); path=u.pathname; search=u.search.slice(1); } catch(e){} }
+      if (path.indexOf('/api/') === 0) return json(route(path, new URLSearchParams(search), method));
+      if (native) return native(input, init);
+      return Promise.reject(new Error('fetch unavailable'));
+    };
+
+    // Nothing is gated; keep any auth check on its happy path.
+    try { sessionStorage.setItem('adminKey', 'demo'); localStorage.setItem('adminKey', 'demo'); } catch (e) {}
+
+    window.addEventListener('click', function (e) {
+      var d = e.target.closest && e.target.closest('[data-demo-disabled]');
+      if (d) e.preventDefault();
+    });
+  })();
+  </script>
+
+</head>
+<body class="rs-page">
+<div class="demo-banner"><strong>Interactive demo</strong> &middot; a static copy of RelayStation Central. Every station, tag and detection is synthetic sample data &mdash; no backend, no live network, and no real tag frequencies or deployment coordinates.</div>
+
+<!-- LOGIN OVERLAY (shared by every page; shown by relay-core.js when unauthenticated) -->
+<div id="login-overlay" style="display:none;">
+    <div class="login-box">
+        <h2>RelayStation Central</h2>
+        <p>Enter admin key to access the dashboard</p>
+        <input type="password" id="login-key-input" placeholder="Admin Key" autocomplete="off"
+               onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="login-btn" onclick="doLogin()">Sign In</button>
+        <div class="login-error" id="login-error">Invalid admin key</div>
+    </div>
+</div>
+
+
+<header class="rs-header">
+    <div class="rs-header-inner">
+        <a class="rs-wordmark" href="index.html">
+            <img src="static/img/relay-logo.png" alt="RelayStation Central" class="rs-logo">
+        </a>
+        <nav class="rs-nav">
+            <a href="index.html" >Home</a>
+            <a href="stations.html" >Stations</a>
+            <a href="tags.html" >Tags</a>
+            <a href="range.html" >Range</a>
+            <a href="review.html" class="active">Review</a>
+            <a href="more.html" >More</a>
+        </nav>
+        <button class="rs-theme-toggle" type="button" title="Toggle theme" aria-label="Toggle light/dark theme" onclick="rsToggleTheme()">
+            <svg class="rs-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg class="rs-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <button id="rs-bell" class="rs-bell" type="button" title="Alerts" aria-label="Alerts">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span id="rs-bell-badge" class="rs-bell-badge" style="display:none;">0</span>
+        </button>
+    </div>
+</header>
+
+<!-- Alert drawer -->
+<div id="rs-drawer-backdrop" class="rs-drawer-backdrop" onclick="rsCloseDrawer()"></div>
+<aside id="rs-drawer" class="rs-drawer" aria-label="Alerts">
+    <div class="rs-drawer-head">
+        <h3>Alerts</h3>
+        <div style="display:flex;gap:12px;align-items:center;">
+            <button class="rs-link-btn" type="button" onclick="rsAckAllAlerts()">Acknowledge all</button>
+            <button class="rs-btn rs-btn-sm" type="button" onclick="rsCloseDrawer()">Close</button>
+        </div>
+    </div>
+    <div id="rs-drawer-body" class="rs-drawer-body">
+        <div class="rs-empty">Loading&hellip;</div>
+    </div>
+</aside>
+
+
+
+
+<main class="rv-shell">
+
+    <!-- top bar -->
+    <div class="rv-top">
+        <div class="rv-top-l">
+            <h1 class="rv-title">Review catches</h1>
+            <span class="rv-sub2">Is this a real tag pulse, or noise? Your call trains the false-positive filter.</span>
+        </div>
+        <div class="rv-top-r">
+            <span class="rv-count rv-count-tag">tag <b id="rv-tag">98</b></span>
+            <span class="rv-count rv-count-noise">noise <b id="rv-noise">45</b></span>
+            <select class="rs-select rs-btn-sm" id="rv-station" title="Station filter">
+                <option value="">All stations</option>
+                <option value="{'id': 1, 'station_id': 'RS-DEMO-01', 'location': 'North Channel Platform', 'status': 'online', 'latitude': 36.812, 'longitude': -121.784, 'last_seen_ago': '12s', 'active_tags': 5, 'cpu_percent': 23.4, 'memory_percent': 41.2, 'temperature_c': 44.1, 'detection_count': 118, 'power_w': 6.4, 'fw_version': '1.4.2', 'last_transport': 'wifi', 'nbiot_mode': 'idle', 'battery_pct': 88, 'solar_w': 6.4}">{'id': 1, 'station_id': 'RS-DEMO-01', 'location': 'North Channel Platform', 'status': 'online', 'latitude': 36.812, 'longitude': -121.784, 'last_seen_ago': '12s', 'active_tags': 5, 'cpu_percent': 23.4, 'memory_percent': 41.2, 'temperature_c': 44.1, 'detection_count': 118, 'power_w': 6.4, 'fw_version': '1.4.2', 'last_transport': 'wifi', 'nbiot_mode': 'idle', 'battery_pct': 88, 'solar_w': 6.4}</option><option value="{'id': 2, 'station_id': 'RS-DEMO-02', 'location': 'Tidal Flat East', 'status': 'online', 'latitude': 36.828, 'longitude': -121.762, 'last_seen_ago': '8s', 'active_tags': 3, 'cpu_percent': 18.9, 'memory_percent': 37.8, 'temperature_c': 41.6, 'detection_count': 64, 'power_w': 7.1, 'fw_version': '1.4.2', 'last_transport': 'nbiot', 'nbiot_mode': 'active', 'battery_pct': 91, 'solar_w': 7.1}">{'id': 2, 'station_id': 'RS-DEMO-02', 'location': 'Tidal Flat East', 'status': 'online', 'latitude': 36.828, 'longitude': -121.762, 'last_seen_ago': '8s', 'active_tags': 3, 'cpu_percent': 18.9, 'memory_percent': 37.8, 'temperature_c': 41.6, 'detection_count': 64, 'power_w': 7.1, 'fw_version': '1.4.2', 'last_transport': 'nbiot', 'nbiot_mode': 'active', 'battery_pct': 91, 'solar_w': 7.1}</option><option value="{'id': 3, 'station_id': 'RS-DEMO-03', 'location': 'Upper Slough Bend', 'status': 'online', 'latitude': 36.841, 'longitude': -121.749, 'last_seen_ago': '31s', 'active_tags': 4, 'cpu_percent': 31.7, 'memory_percent': 52.3, 'temperature_c': 47.9, 'detection_count': 151, 'power_w': 4.9, 'fw_version': '1.4.1', 'last_transport': 'wifi', 'nbiot_mode': 'idle', 'battery_pct': 76, 'solar_w': 4.9}">{'id': 3, 'station_id': 'RS-DEMO-03', 'location': 'Upper Slough Bend', 'status': 'online', 'latitude': 36.841, 'longitude': -121.749, 'last_seen_ago': '31s', 'active_tags': 4, 'cpu_percent': 31.7, 'memory_percent': 52.3, 'temperature_c': 47.9, 'detection_count': 151, 'power_w': 4.9, 'fw_version': '1.4.1', 'last_transport': 'wifi', 'nbiot_mode': 'idle', 'battery_pct': 76, 'solar_w': 4.9}</option><option value="{'id': 4, 'station_id': 'RS-DEMO-04', 'location': 'Harbour Mouth Mast', 'status': 'degraded', 'latitude': 36.803, 'longitude': -121.795, 'last_seen_ago': '4m 12s', 'active_tags': 2, 'cpu_percent': 67.2, 'memory_percent': 78.4, 'temperature_c': 61.3, 'detection_count': 39, 'power_w': 1.2, 'fw_version': '1.3.9', 'last_transport': 'nbiot', 'nbiot_mode': 'retry', 'battery_pct': 42, 'solar_w': 1.2}">{'id': 4, 'station_id': 'RS-DEMO-04', 'location': 'Harbour Mouth Mast', 'status': 'degraded', 'latitude': 36.803, 'longitude': -121.795, 'last_seen_ago': '4m 12s', 'active_tags': 2, 'cpu_percent': 67.2, 'memory_percent': 78.4, 'temperature_c': 61.3, 'detection_count': 39, 'power_w': 1.2, 'fw_version': '1.3.9', 'last_transport': 'nbiot', 'nbiot_mode': 'retry', 'battery_pct': 42, 'solar_w': 1.2}</option><option value="{'id': 5, 'station_id': 'RS-DEMO-05', 'location': 'Ridge Repeater', 'status': 'offline', 'latitude': 36.857, 'longitude': -121.731, 'last_seen_ago': '2h 47m', 'active_tags': 0, 'cpu_percent': 0, 'memory_percent': 0, 'temperature_c': None, 'detection_count': 0, 'power_w': 0.0, 'fw_version': '1.3.9', 'last_transport': 'nbiot', 'nbiot_mode': 'down', 'battery_pct': 11, 'solar_w': 0.0}">{'id': 5, 'station_id': 'RS-DEMO-05', 'location': 'Ridge Repeater', 'status': 'offline', 'latitude': 36.857, 'longitude': -121.731, 'last_seen_ago': '2h 47m', 'active_tags': 0, 'cpu_percent': 0, 'memory_percent': 0, 'temperature_c': None, 'detection_count': 0, 'power_w': 0.0, 'fw_version': '1.3.9', 'last_transport': 'nbiot', 'nbiot_mode': 'down', 'battery_pct': 11, 'solar_w': 0.0}</option><option value="{'id': 6, 'station_id': 'RS-DEMO-06', 'location': 'South Marsh Post', 'status': 'online', 'latitude': 36.795, 'longitude': -121.771, 'last_seen_ago': '19s', 'active_tags': 6, 'cpu_percent': 27.5, 'memory_percent': 44.9, 'temperature_c': 45.2, 'detection_count': 133, 'power_w': 8.0, 'fw_version': '1.4.2', 'last_transport': 'wifi', 'nbiot_mode': 'idle', 'battery_pct': 94, 'solar_w': 8.0}">{'id': 6, 'station_id': 'RS-DEMO-06', 'location': 'South Marsh Post', 'status': 'online', 'latitude': 36.795, 'longitude': -121.771, 'last_seen_ago': '19s', 'active_tags': 6, 'cpu_percent': 27.5, 'memory_percent': 44.9, 'temperature_c': 45.2, 'detection_count': 133, 'power_w': 8.0, 'fw_version': '1.4.2', 'last_transport': 'wifi', 'nbiot_mode': 'idle', 'battery_pct': 94, 'solar_w': 8.0}</option>
+            </select>
+            <label class="rv-toggle" title="Only detections a station flagged (lock / unlisted)"><input type="checkbox" id="rv-conf-only"> confirmations</label>
+            <button class="rs-btn rs-btn-sm" id="rv-crisp" title="Toggle pixel-crisp vs smoothed">◍ smooth</button>
+            <a class="rs-btn rs-btn-sm" id="rv-export" href="/api/v1/admin/candidates/export">Export &darr;</a>
+        </div>
+    </div>
+
+    <!-- progress -->
+    <div class="rv-progress"><div class="rv-progress-bar" id="rv-progbar"></div></div>
+    <div class="rv-progress-meta"><span id="rv-pos">0 / 0</span><span id="rv-remain"></span></div>
+
+    <!-- focus reviewer -->
+    <section class="rv-stage" id="rv-stage">
+        <!-- spectrogram + axes -->
+        <div class="rv-scope">
+            <div class="rv-ylab">TIME&nbsp;&darr;<span id="rv-tspan">0&ndash;256 ms</span></div>
+            <div class="rv-scope-inner">
+                <canvas id="rv-canvas" class="rv-canvas"></canvas>
+                <div class="rv-centerline"></div>
+            </div>
+            <div class="rv-xlab"><span class="rv-xl">&minus;10 kHz</span><span class="rv-xc">FREQUENCY</span><span class="rv-xr">+10 kHz</span></div>
+        </div>
+
+        <!-- readout + verdict -->
+        <div class="rv-panel">
+            <div id="rv-badges" class="rv-badges"></div>
+            <div class="rv-freq" id="rv-freq">&mdash;</div>
+            <div class="rv-readout">
+                <div class="rv-kv"><span>SNR</span><b id="rv-snr">&mdash;</b></div>
+                <div class="rv-kv"><span>Station</span><b id="rv-stn">&mdash;</b></div>
+                <div class="rv-kv"><span>Captured</span><b id="rv-when">&mdash;</b></div>
+                <div class="rv-kv"><span>Peak</span><b id="rv-peak">&mdash;</b></div>
+            </div>
+            <div class="rv-hint" id="rv-hint"></div>
+
+            <div class="rv-verdict">
+                <button class="rv-v rv-v-tag" id="rv-btn-tag"><span class="rv-v-key">Y</span>TAG<small>real pulse</small></button>
+                <button class="rv-v rv-v-noise" id="rv-btn-noise"><span class="rv-v-key">N</span>NOISE<small>RFI / false</small></button>
+            </div>
+            <div class="rv-verdict2">
+                <button class="rv-v2" id="rv-btn-unsure"><span class="rv-v-key">S</span>unsure</button>
+                <button class="rv-v2" id="rv-btn-prev">&larr; back</button>
+                <button class="rv-v2" id="rv-btn-next">skip &rarr;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- filmstrip -->
+    <div class="rv-strip" id="rv-strip"></div>
+
+    <div id="rv-empty" class="rv-done" style="display:none;">
+        <div class="rv-done-mark">&#10003;</div>
+        <div>All caught up — nothing left to review.</div>
+        <div class="rv-sub2">New detections appear here automatically as stations upload them.</div>
+    </div>
+
+</main>
+
+<style>
+    body.rs-page { overflow-x:hidden; }
+    .rv-shell { max-width:1180px; margin:0 auto; padding:20px 22px 28px; }
+    .rv-top { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .rv-title { font-size:20px; font-weight:600; margin:0; letter-spacing:-.01em; }
+    .rv-sub2 { font-size:12.5px; color:var(--rs-muted); }
+    .rv-top-r { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .rv-count { font-family:var(--rs-mono); font-size:12px; color:var(--rs-muted); }
+    .rv-count b { font-size:14px; }
+    .rv-count-tag b { color:var(--rs-green); } .rv-count-noise b { color:var(--rs-red); }
+    .rv-toggle { font-size:12px; color:var(--rs-muted); display:inline-flex; align-items:center; gap:5px; cursor:pointer; }
+
+    .rv-progress { height:5px; background:var(--rs-surface-2); border-radius:99px; margin:16px 0 5px; overflow:hidden; }
+    .rv-progress-bar { height:100%; width:0; background:linear-gradient(90deg,var(--rs-accent),color-mix(in srgb,var(--rs-accent) 55%,transparent)); transition:width .35s cubic-bezier(.2,.8,.2,1); }
+    .rv-progress-meta { display:flex; justify-content:space-between; font-family:var(--rs-mono); font-size:11px; color:var(--rs-faint); margin-bottom:14px; }
+
+    .rv-stage { display:grid; grid-template-columns:minmax(320px, 460px) 1fr; gap:30px; align-items:center;
+        background:var(--rs-surface); border:1px solid var(--rs-border); border-radius:16px; padding:26px 30px;
+        box-shadow:var(--rs-shadow); min-height:560px; }
+    .rv-stage.flash-tag { animation:rvTag .4s; } .rv-stage.flash-noise { animation:rvNoise .4s; }
+    @keyframes rvTag { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rs-green) 60%,transparent);} 100%{box-shadow:var(--rs-shadow);} }
+    @keyframes rvNoise { 0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rs-red) 60%,transparent);} 100%{box-shadow:var(--rs-shadow);} }
+
+    /* spectrogram + axes */
+    .rv-scope { display:grid; grid-template-columns:auto 1fr; grid-template-rows:1fr auto; gap:8px 10px; }
+    .rv-ylab { grid-row:1; grid-column:1; writing-mode:vertical-rl; transform:rotate(180deg); text-align:center;
+        font-family:var(--rs-mono); font-size:10px; letter-spacing:.14em; color:var(--rs-faint); display:flex; align-items:center; gap:8px; }
+    .rv-ylab span { color:var(--rs-muted); }
+    .rv-scope-inner { grid-row:1; grid-column:2; position:relative; border-radius:10px; overflow:hidden;
+        border:1px solid var(--rs-border-strong); background:#05080c; box-shadow:inset 0 0 30px rgba(0,0,0,.5); }
+    .rv-canvas { display:block; width:100%; height:520px; }
+    .rv-centerline { position:absolute; top:0; bottom:0; left:50%; width:1px; transform:translateX(-.5px);
+        background:color-mix(in srgb,#fff 22%,transparent); pointer-events:none; }
+    .rv-xlab { grid-row:2; grid-column:2; display:flex; justify-content:space-between; align-items:center;
+        font-family:var(--rs-mono); font-size:10px; letter-spacing:.1em; color:var(--rs-faint); }
+    .rv-xlab .rv-xc { color:var(--rs-muted); }
+
+    /* readout + verdict */
+    .rv-panel { display:flex; flex-direction:column; gap:14px; }
+    .rv-badges { display:flex; gap:6px; min-height:18px; }
+    .rv-badge { font-family:var(--rs-mono); font-size:10px; font-weight:600; letter-spacing:.05em; padding:2px 9px;
+        border-radius:999px; text-transform:uppercase; }
+    .rv-badge-lock { color:var(--rs-green); background:color-mix(in srgb,var(--rs-green) 15%,transparent); border:1px solid color-mix(in srgb,var(--rs-green) 35%,transparent); }
+    .rv-badge-unl { color:var(--rs-amber); background:color-mix(in srgb,var(--rs-amber) 15%,transparent); border:1px solid color-mix(in srgb,var(--rs-amber) 35%,transparent); }
+    .rv-freq { font-family:var(--rs-mono); font-size:38px; font-weight:600; letter-spacing:-.02em; line-height:1;
+        font-variant-numeric:tabular-nums; }
+    .rv-freq small { font-size:17px; color:var(--rs-muted); font-weight:500; }
+    .rv-readout { display:grid; grid-template-columns:1fr 1fr; gap:12px 20px; margin-top:2px; }
+    .rv-kv span { display:block; font-family:var(--rs-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--rs-faint); }
+    .rv-kv b { font-family:var(--rs-mono); font-size:16px; font-weight:600; font-variant-numeric:tabular-nums; }
+    .rv-hint { font-size:12.5px; color:var(--rs-muted); line-height:1.5; min-height:36px;
+        border-left:2px solid var(--rs-border-strong); padding-left:11px; }
+    .rv-hint.rv-auto-good { border-left-color:var(--rs-green); color:var(--rs-text); }
+    .rv-hint.rv-auto-bad { border-left-color:var(--rs-red); color:var(--rs-text); }
+    .rv-badge.rv-auto-good { color:var(--rs-green); background:color-mix(in srgb,var(--rs-green) 15%,transparent); border:1px solid color-mix(in srgb,var(--rs-green) 35%,transparent); }
+    .rv-badge.rv-auto-bad { color:var(--rs-red); background:color-mix(in srgb,var(--rs-red) 15%,transparent); border:1px solid color-mix(in srgb,var(--rs-red) 35%,transparent); }
+
+    .rv-verdict { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px; }
+    .rv-v { position:relative; border:1px solid var(--rs-border); border-radius:12px; background:var(--rs-surface-2);
+        color:var(--rs-text); font-family:inherit; font-size:19px; font-weight:700; letter-spacing:.03em;
+        padding:18px 0 14px; cursor:pointer; transition:transform .1s, background .15s, border-color .15s, color .15s;
+        display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .rv-v small { font-family:var(--rs-mono); font-size:10px; font-weight:500; letter-spacing:.04em; color:var(--rs-faint); text-transform:uppercase; }
+    .rv-v:active { transform:scale(.97); }
+    .rv-v-key { position:absolute; top:8px; right:10px; font-family:var(--rs-mono); font-size:11px; font-weight:600;
+        color:var(--rs-faint); border:1px solid var(--rs-border); border-radius:5px; padding:0 5px; }
+    .rv-v-tag:hover { background:color-mix(in srgb,var(--rs-green) 16%,transparent); border-color:var(--rs-green); color:var(--rs-green); }
+    .rv-v-tag:hover small, .rv-v-tag:hover .rv-v-key { color:color-mix(in srgb,var(--rs-green) 70%,var(--rs-faint)); }
+    .rv-v-noise:hover { background:color-mix(in srgb,var(--rs-red) 16%,transparent); border-color:var(--rs-red); color:var(--rs-red); }
+    .rv-v-noise:hover small, .rv-v-noise:hover .rv-v-key { color:color-mix(in srgb,var(--rs-red) 70%,var(--rs-faint)); }
+    .rv-verdict2 { display:flex; gap:10px; }
+    .rv-v2 { flex:1; border:1px solid var(--rs-border); border-radius:9px; background:transparent; color:var(--rs-muted);
+        font-family:inherit; font-size:13px; padding:9px 0; cursor:pointer; transition:background .12s, color .12s; position:relative; }
+    .rv-v2:hover { background:var(--rs-surface-2); color:var(--rs-text); }
+    .rv-v2 .rv-v-key { top:6px; right:7px; }
+
+    /* filmstrip */
+    .rv-strip { display:flex; gap:8px; margin-top:16px; overflow-x:auto; padding:4px 2px 8px; }
+    .rv-thumb { flex:0 0 auto; width:66px; height:66px; border-radius:8px; overflow:hidden; cursor:pointer;
+        border:1px solid var(--rs-border); opacity:.55; transition:opacity .15s, border-color .15s, transform .12s; background:#05080c; }
+    .rv-thumb.cur { opacity:1; border-color:var(--rs-accent); box-shadow:0 0 0 1px var(--rs-accent); transform:translateY(-2px); }
+    .rv-thumb:hover { opacity:1; } .rv-thumb canvas { width:100%; height:100%; display:block; }
+
+    .rv-done { text-align:center; padding:90px 20px; color:var(--rs-muted); }
+    .rv-done-mark { font-size:44px; color:var(--rs-green); margin-bottom:10px; }
+
+    @media (max-width:820px) {
+        .rv-stage { grid-template-columns:1fr; gap:20px; padding:18px; }
+        .rv-canvas { height:360px; }
+        .rv-freq { font-size:30px; }
+    }
+</style>
+
+<script>window.RV_COUNTS = {"by_label": {"noise": 45, "tag": 98, "unsure": 12}, "labelled": 143, "pending": 12, "total": 155};</script>
+<script src="static/js/rs-review.js"></script>
+
+
+</body>
+</html>

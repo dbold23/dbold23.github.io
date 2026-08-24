@@ -680,7 +680,7 @@ function makeResizable(win) {
 
 const DOCK_APPS = [
   { id: 'finder',    label: 'Finder',           icon: 'assets/icon-finder.svg',        action: 'focus-terminal' },
-  { id: 'relay',     label: 'RelayStation',     icon: 'assets/icon-relaystation.svg',  app: 'relay' },
+  { id: 'relay',     label: 'RelayStation',     icon: 'assets/icon-relaystation.png',  app: 'relay' },
   { id: 'scar',      label: 'Scar Annotator',   icon: 'assets/icon-sharkscar.svg',     app: 'scar' },
   { sep: true },
   { id: 'jorgensen', label: 'Jorgensen Lab',    icon: 'assets/jorgensen-lab-logo.avif', target: '#folder-jorgensen' },

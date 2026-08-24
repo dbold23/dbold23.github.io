@@ -101,7 +101,7 @@ function initStickerNav() {
       // The CV opens the resume panel the nav's CV button already drives,
       // rather than a second copy of it living out here.
       if (sticker.dataset.cv) {
-        document.getElementById('cv-toggle')?.click();
+        window.dispatchEvent(new CustomEvent('os-open-cv'));
         return;
       }
       // Desktop apps open in a window on this desktop, not a new tab.

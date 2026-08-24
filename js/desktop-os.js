@@ -679,6 +679,84 @@ function makeResizable(win) {
   });
 }
 
+// ------------------------------------------------------------ CV document
+
+// The CV opens as a document on this desktop rather than in the slide-out
+// panel, which is the right shape for the rest of the site but reads as a
+// stray drawer over a Mac. The content is cloned from the panel, so
+// build_cv.py stays the single source and there is no second copy to drift.
+function openWordDoc() {
+  const surface = document.querySelector('.desktop-surface');
+  if (!surface) return;
+
+  const existing = surface.querySelector('.os-word');
+  if (existing) { existing.classList.remove('minimized'); existing.style.zIndex = ++appZ; return; }
+
+  const source = document.querySelector('#resume-panel .resume-panel-content');
+  if (!source) return;
+
+  const r = surface.getBoundingClientRect();
+  const w = Math.min(820, Math.max(320, r.width - 60));
+  const h = Math.min(720, Math.max(260, r.height - 110));
+
+  const win = document.createElement('div');
+  win.className = 'os-app os-word';
+  win.dataset.app = 'cv';
+  win.style.width = `${w}px`;
+  win.style.height = `${h}px`;
+  win.style.zIndex = ++appZ;
+  win.setAttribute('role', 'dialog');
+  win.setAttribute('aria-label', 'Sambold_CV.docx');
+  win.innerHTML = `
+    <div class="os-app-bar">
+      <div class="terminal-dots">
+        <span class="dot red"    role="button" tabindex="0" aria-label="Close" data-act="close"></span>
+        <span class="dot yellow" role="button" tabindex="0" aria-label="Minimize" data-act="min"></span>
+        <span class="dot green"  role="button" tabindex="0" aria-label="Zoom" data-act="zoom"></span>
+      </div>
+      <span class="os-dialog-title">Sambold_CV.docx</span>
+    </div>
+    <div class="os-word-ribbon">
+      <span class="os-word-mark">W</span>
+      <span class="os-word-name">Sambold_CV.docx</span>
+      <span class="os-word-chip">Read-Only</span>
+      <span class="os-word-spacer"></span>
+      <a class="os-word-dl" href="assets/Sambold_Daniel_CV.pdf" download>PDF</a>
+      <a class="os-word-dl" href="assets/Sambold_Daniel_CV.docx" download>.docx</a>
+    </div>
+    <div class="os-word-body"><div class="os-word-page"></div></div>
+    <div class="win-grips">
+      ${['n','s','e','w','ne','nw','se','sw'].map((d) => `<span class="win-grip win-grip-${d}" data-dir="${d}"></span>`).join('')}
+    </div>`;
+
+  // The panel's own download buttons would sit right under the ribbon's, so
+  // drop them from the copy rather than showing the same two links twice.
+  const page = win.querySelector('.os-word-page');
+  const copy = source.cloneNode(true);
+  copy.querySelectorAll('.cv-downloads').forEach((el) => el.remove());
+  while (copy.firstChild) page.appendChild(copy.firstChild);
+
+  surface.appendChild(win);
+
+  const bar = win.querySelector('.os-app-bar');
+  makeDraggable(win, bar);
+  makeResizable(win);
+  on(win, 'pointerdown', () => { win.style.zIndex = ++appZ; });
+
+  bar.addEventListener('click', (e) => {
+    const act = e.target.closest('[data-act]')?.dataset.act;
+    if (act === 'close') { win.remove(); syncDock(); }
+    else if (act === 'min') win.classList.toggle('minimized');
+    else if (act === 'zoom') { win.classList.remove('minimized'); win.classList.toggle('maximized'); }
+  });
+  bar.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.dot')) return;
+    win.classList.toggle('maximized');
+  });
+
+  syncDock();
+}
+
 // ----------------------------------------------------------------- Dock
 
 const DOCK_APPS = [
@@ -927,13 +1005,14 @@ export function init() {
   // The desktop icons are wired in transition-tech.js, which has no reach into
   // this module's window manager; an event is the seam between the two.
   on(window, 'os-open-app', (e) => openAppWindow(e.detail));
+  on(window, 'os-open-cv', () => openWordDoc());
 }
 
 export function destroy() {
   releaseNav();
   while (cleanups.length) cleanups.pop()();
   closeDialog();
-  document.querySelectorAll('.os-mail, .os-dock, .os-toast, .os-app').forEach((el) => el.remove());
+  document.querySelectorAll('.os-mail, .os-dock, .os-toast, .os-app, .os-word').forEach((el) => el.remove());
   const bar = document.querySelector('.macos-menubar');
   if (bar) delete bar.dataset.menubarInit;
   const surface = document.querySelector('.desktop-surface');

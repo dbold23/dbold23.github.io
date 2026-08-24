@@ -517,3 +517,81 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ---------- CV as a document window ---------- */
+
+/* The CV button leaves the menubar on this path: the document is on the
+   desktop, and a pill marked CV beside the Apple menu was a second door to
+   the same room. Other paths keep theirs — it is their only way in. */
+[data-active-path="tech"] .v2-nav.in-menubar .nav-cv { display: none; }
+
+.os-word .os-word-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  background: #185abd;
+  color: #fff;
+  font-size: 0.75rem;
+}
+.os-word-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 3px;
+  background: rgba(255,255,255,0.22);
+  font-weight: 800; font-size: 0.68rem;
+}
+.os-word-name { font-weight: 600; letter-spacing: 0.01em; }
+.os-word-chip {
+  padding: 1px 7px; border-radius: 3px;
+  background: rgba(0,0,0,0.22);
+  font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.os-word-spacer { flex: 1 1 auto; }
+.os-word-dl {
+  padding: 2px 9px; border-radius: 4px;
+  background: rgba(255,255,255,0.16);
+  color: #fff; text-decoration: none; font-size: 0.7rem; font-weight: 600;
+}
+.os-word-dl:hover { background: rgba(255,255,255,0.3); }
+
+/* The grey desk the page sits on, and the page itself. */
+.os-word .os-word-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  background: #4a4a4f;
+  padding: 22px 0 30px;
+}
+.os-word-page {
+  width: min(660px, calc(100% - 44px));
+  margin: 0 auto;
+  padding: 46px 54px 56px;
+  background: #fff;
+  color: #1c1c1e;
+  box-shadow: 0 3px 16px rgba(0,0,0,0.45);
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  font-size: 0.88rem;
+  line-height: 1.62;
+}
+.os-word-page h2 {
+  margin: 0 0 4px;
+  font-size: 1.32rem;
+  color: #10121a;
+}
+.os-word-page h3 {
+  margin: 1.5em 0 0.4em;
+  font-size: 0.94rem;
+  color: #185abd;
+  border-bottom: 1px solid #d8dde5;
+  padding-bottom: 3px;
+}
+.os-word-page p { margin: 0 0 0.7em; }
+.os-word-page ul { margin: 0 0 0.9em; padding-left: 1.15rem; }
+.os-word-page li { margin-bottom: 0.32em; }
+.os-word-page a { color: #185abd; }
+.os-word-page .cv-contact { font-size: 0.8rem; color: #4a5260; margin-bottom: 1.2em; }
+
+@media (max-width: 968px) {
+  .os-word-page { width: calc(100% - 24px); padding: 26px 22px 32px; }
+}

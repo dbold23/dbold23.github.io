@@ -614,7 +614,7 @@ function openAppWindow(key) {
 
   bar.addEventListener('click', (e) => {
     const act = e.target.closest('[data-act]')?.dataset.act;
-    if (act === 'close') win.remove();
+    if (act === 'close') { win.remove(); syncDock(); }
     else if (act === 'min') win.classList.toggle('minimized');
     else if (act === 'zoom') { win.classList.remove('minimized'); win.classList.toggle('maximized'); }
   });
@@ -622,6 +622,8 @@ function openAppWindow(key) {
     if (e.target.closest('.dot') || e.target.closest('.os-app-pop')) return;
     win.classList.toggle('maximized');
   });
+
+  syncDock();
 }
 
 // Plain left/top/width/height resizing, for windows that are not centred by a
@@ -691,6 +693,28 @@ const DOCK_APPS = [
   { id: 'mail',      label: 'Mail',             icon: 'assets/icon-mail.svg',           action: 'mail' },
 ];
 
+// The dock light is derived, never toggled by hand: it asks what is actually
+// on the desktop. Setting it at launch and hoping to catch every close is how
+// it ended up staying lit after a window went away.
+//
+// Only things that run *here* can be lit. GitHub opens a browser tab, whose
+// lifetime this page cannot observe, so it never gets a light rather than
+// getting one that would be a guess.
+function syncDock() {
+  const dock = document.querySelector('.os-dock');
+  if (!dock) return;
+  const openApps = new Set([...document.querySelectorAll('.os-app')].map((w) => w.dataset.app));
+  const mailOpen = !!document.querySelector('.os-mail');
+
+  dock.querySelectorAll('.os-dock-app').forEach((btn) => {
+    const app = DOCK_APPS.find((a) => a.id === btn.dataset.id);
+    const lit = app?.app ? openApps.has(app.app)
+              : app?.action === 'mail' ? mailOpen
+              : false;
+    btn.classList.toggle('running', lit);
+  });
+}
+
 function initDock(ctx) {
   const surface = document.querySelector('.desktop-surface');
   if (!surface || surface.querySelector('.os-dock')) return;
@@ -705,6 +729,7 @@ function initDock(ctx) {
          <span class="os-dock-dot" aria-hidden="true"></span>
        </button>`).join('')}</div>`;
   surface.appendChild(dock);
+  syncDock();
 
   on(dock, 'click', (e) => {
     const btn = e.target.closest('.os-dock-app');
@@ -715,10 +740,10 @@ function initDock(ctx) {
     btn.classList.add('bouncing');
     setTimeout(() => btn.classList.remove('bouncing'), 700);
 
-    if (app.app) { openAppWindow(app.app); btn.classList.add('running'); return; }
-    if (app.href) { window.open(app.href, '_blank', 'noopener'); btn.classList.add('running'); return; }
+    if (app.app) { openAppWindow(app.app); return; }
+    if (app.href) { window.open(app.href, '_blank', 'noopener'); return; }
     if (app.target) { jumpToFolder(app.target); return; }
-    if (app.action === 'mail') { openMail(); btn.classList.add('running'); return; }
+    if (app.action === 'mail') { openMail(); return; }
     if (app.action === 'focus-terminal') {
       const win = document.getElementById('tech-file-tree');
       win?.classList.remove('minimized');
@@ -794,8 +819,9 @@ function openMail() {
     </form>`;
   surface.appendChild(win);
   makeDraggable(win, win.querySelector('.os-mail-bar'));
-  win.querySelector('.os-mail-close').addEventListener('click', () => win.remove());
+  win.querySelector('.os-mail-close').addEventListener('click', () => { win.remove(); syncDock(); });
   win.querySelector('input[name="email"]')?.focus();
+  syncDock();
 
   const form = win.querySelector('form');
   const status = win.querySelector('.os-mail-status');

@@ -68,7 +68,7 @@
         .brand { display: flex; align-items: center; gap: 14px; }
         .brand-icon {
             width: 40px; height: 40px;
-            background: linear-gradient(135deg, #10b981, #3b82f6);
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
         }
@@ -537,6 +537,20 @@
         }
         .login-box .login-btn:hover { opacity: 0.9; }
         .login-error { color: var(--accent-red); font-size: 13px; margin-top: 12px; display: none; }
+    
+        /* The wordmark, sized as the product sizes it in relay.css. The tile
+           and heading it replaces are gone, so nothing here needs the old
+           .brand-icon rules. */
+        .brand { display: flex; align-items: center; }
+        /* The wordmark is a flat teal drawn for a light page. On this header
+           its ink averages rgb(49,95,107), which lands at 2.98:1 against the
+           background -- under the 3:1 floor for a graphic. The product's own
+           dark rule (brightness 1.12) is tuned for a lighter dark theme and
+           does not carry here, so this lifts further: same hue, ~7:1. */
+        .rs-logo {
+          height: 46px; width: auto; display: block;
+          filter: brightness(1.7) saturate(1.08);
+        }
     </style>
     <style>
         .demo-banner {
@@ -894,14 +908,8 @@
     <header class="site-header">
         <div class="header-inner">
             <div class="brand">
-                <div class="brand-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="none" stroke="white" stroke-width="0"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="12" cy="12" r="3" fill="white"/></svg>
+                    <img src="../assets/relay-logo.png" alt="RelayStation Central" class="rs-logo">
                 </div>
-                <div class="brand-text">
-                    <h1>RelayStation Central</h1>
-                    <p>Wildlife VHF Tag Detection Network</p>
-                </div>
-            </div>
             <div class="header-right">
                 <div class="live-badge">
                     <span class="live-dot"></span>

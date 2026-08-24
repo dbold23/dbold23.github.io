@@ -314,12 +314,17 @@
 
 /* ---------- screen effects ---------- */
 
+/* A slept screen is just a mirror, so the copy says so. Set in `content`
+   rather than in the DOM because the whole sleep state is one class on the
+   surface and nothing should have to be built or torn down to show it. */
 .desktop-surface.os-asleep::after {
-  content: 'Click to wake';
+  content: 'Oh — hello.\A That’s you, in the reflection.\A A black screen is the most honest mirror in the house.\A\A Click anywhere to wake';
   position: absolute; inset: 0; z-index: 80;
   display: flex; align-items: center; justify-content: center;
-  background: #000; color: rgba(255,255,255,0.28);
-  font-size: 0.8rem; letter-spacing: 0.22em; text-transform: uppercase;
+  background: #000; color: rgba(255,255,255,0.3);
+  white-space: pre-line; text-align: center;
+  padding: 0 28px;
+  font-size: 0.86rem; line-height: 2.15; letter-spacing: 0.02em;
 }
 .desktop-surface.os-scanlines::before {
   content: ''; position: absolute; inset: 0; z-index: 45; pointer-events: none;

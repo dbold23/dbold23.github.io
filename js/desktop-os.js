@@ -396,8 +396,9 @@ function runAction(action, ctx) {
       openDialog('App Store', '<p>2 updates available.</p><p class="about-note">Both are for apps you did not install and cannot remove.</p>');
       break;
     case 'sleep':
+      // No toast here: it renders at z-index 70, under the sleep overlay at
+      // 80, so it fired invisibly. The overlay says everything it needs to.
       surface?.classList.add('os-asleep');
-      toast('Click anywhere to wake');
       { const wake = () => { surface?.classList.remove('os-asleep'); document.removeEventListener('click', wake); };
         setTimeout(() => document.addEventListener('click', wake), 60); }
       break;

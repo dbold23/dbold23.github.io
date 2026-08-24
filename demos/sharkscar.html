@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shark Scar Annotator</title>
+  <link rel="stylesheet" href="sharkscar/css/styles.css" />
+  <style>
+    .demo-banner {
+      background: linear-gradient(90deg, #0a2463, #1e5f8c);
+      color: #e8f6ff; font-size: 12.5px; line-height: 1.5;
+      padding: 9px 20px; text-align: center;
+      border-bottom: 1px solid #2a7fb8; letter-spacing: 0.01em;
+    }
+    .demo-banner strong { color: #7fdcff; font-weight: 700; }
+    @media (max-width: 640px) { .demo-banner { font-size: 11.5px; padding: 8px 14px; } }
+  </style>
+  <script>
+  /* ------------------------------------------------------------------
+     Mock API for the public demo.
+
+     No backend, no database, no Google Drive, no sign-in. Every /api/ and
+     /auth/ call is answered here from canned data, so the annotation tools
+     -- frame capture, segmentation, keypoints, the scar form, export --
+     all run through their real code paths against a sample clip.
+
+     SAM2 obviously is not running in the browser, so a click that would
+     normally go to the model comes back with a generated ellipse instead:
+     the right shape of response, honestly fake.
+  ------------------------------------------------------------------ */
+  (function () {
+    'use strict';
+
+    var DEMO_VIDEO = '../assets/shark-yolo-keypoints.mp4';
+
+    var USER = {email: 'demo@example.org', name: 'Demo Annotator', role: 'annotator', is_admin: false};
+
+    var VIDEOS = [
+      {id: 'v-demo-01', video_name: 'APT26031401.mp4', encounter_code: 'APT26031401', site: 'Site A', status: 'assigned',    video_path: DEMO_VIDEO},
+      {id: 'v-demo-02', video_name: 'APT26031802.mp4', encounter_code: 'APT26031802', site: 'Site A', status: 'in_progress', video_path: DEMO_VIDEO},
+      {id: 'v-demo-03', video_name: 'BRW26040903.mp4', encounter_code: 'BRW26040903', site: 'Site B', status: 'complete',    video_path: DEMO_VIDEO},
+      {id: 'v-demo-04', video_name: 'BRW26041104.mp4', encounter_code: 'BRW26041104', site: 'Site B', status: 'assigned',    video_path: DEMO_VIDEO},
+      {id: 'v-demo-05', video_name: 'TMB26052205.mp4', encounter_code: 'TMB26052205', site: 'Site C', status: 'in_progress', video_path: DEMO_VIDEO},
+      {id: 'v-demo-06', video_name: 'TMB26052806.mp4', encounter_code: 'TMB26052806', site: 'Site C', status: 'assigned',    video_path: DEMO_VIDEO}
+    ];
+
+    /* A stand-in for a SAM2 mask: a soft ellipse around the clicked point,
+       returned as a base64 PNG exactly as the real endpoint would. */
+    function fakeMask(points, isBody) {
+      var W = 1280, H = 720;
+      var cx = (points && points[0] ? points[0][0] : W / 2);
+      var cy = (points && points[0] ? points[0][1] : H / 2);
+      var rx = isBody ? 380 : 78, ry = isBody ? 140 : 52;
+
+      var cv = document.createElement('canvas');
+      cv.width = W; cv.height = H;
+      var g = cv.getContext('2d');
+      g.clearRect(0, 0, W, H);
+      g.fillStyle = '#ffffff';
+      g.beginPath();
+      g.ellipse(cx, cy, rx, ry, isBody ? -0.06 : 0.2, 0, Math.PI * 2);
+      g.fill();
+
+      return {
+        mask_b64: cv.toDataURL('image/png').split(',')[1],
+        bbox: [Math.max(0, cx - rx), Math.max(0, cy - ry), Math.min(W, cx + rx), Math.min(H, cy + ry)]
+      };
+    }
+
+    function route(path, search, method, body) {
+      var q = new URLSearchParams(search || '');
+
+      if (path === '/auth/me')    return USER;
+      if (path === '/auth/login') return {url: null, message: 'Sign-in is disabled in the demo.'};
+
+      if (path === '/api/videos' && method === 'GET') return {videos: VIDEOS};
+      if (path === '/api/videos' && method === 'POST') {
+        return {id: 'v-demo-new', video_name: (body && body.video_name) || 'new.mp4', status: 'assigned'};
+      }
+
+      if (path === '/api/frames/enhance') {
+        // Brightness/contrast are applied on the canvas anyway; hand the
+        // frame straight back rather than pretending to process it.
+        return {frame_b64: body && body.frame_b64};
+      }
+
+      if (path === '/api/frames/segment') {
+        return fakeMask(body && body.points, !!(body && body.is_body));
+      }
+
+      if (path === '/api/annotations') {
+        return {success: true, id: 'ann-demo-' + Math.floor(Math.random() * 1e6),
+                message: 'Demo mode — annotation not persisted.'};
+      }
+
+      if (/^\/api\/export\//.test(path)) {
+        return {success: true, rows: 0,
+                message: 'Demo mode — export is disabled. In the real platform this writes COCO JSON, Google Forms CSV or a 3-tab Sheet.'};
+      }
+
+      if (/^\/api\/drive\//.test(path)) {
+        return {files: [], folders: [], message: 'Google Drive is not connected in the demo.'};
+      }
+
+      if (/^\/api\/admin\//.test(path)) {
+        return {success: true, encounters: [], annotators: [], workload: [], summary: {},
+                message: 'Admin tools are disabled in the demo.'};
+      }
+
+      return {success: true, message: 'Demo mode — this action is not persisted.'};
+    }
+
+    function json(body) {
+      var text = JSON.stringify(body);
+      if (typeof Response === 'function') {
+        return Promise.resolve(new Response(text, {status: 200, headers: {'Content-Type': 'application/json'}}));
+      }
+      return Promise.resolve({ok: true, status: 200,
+        json: function () { return Promise.resolve(JSON.parse(text)); },
+        text: function () { return Promise.resolve(text); }});
+    }
+
+    var nativeFetch = window.fetch ? window.fetch.bind(window) : null;
+
+    window.fetch = function (input, init) {
+      var url = (typeof input === 'string') ? input : (input && input.url) || '';
+      var method = ((init && init.method) || (input && input.method) || 'GET').toUpperCase();
+      var path = url, search = '';
+      var h = path.indexOf('#'); if (h !== -1) path = path.slice(0, h);
+      var qi = path.indexOf('?');
+      if (qi !== -1) { search = path.slice(qi + 1); path = path.slice(0, qi); }
+      if (/^https?:\/\//i.test(path)) { try { var u = new URL(path); path = u.pathname; search = u.search.slice(1); } catch (e) {} }
+
+      if (path.indexOf('/api/') === 0 || path.indexOf('/auth/') === 0) {
+        var parsed = null;
+        try { parsed = init && init.body && typeof init.body === 'string' ? JSON.parse(init.body) : null; } catch (e) {}
+        return json(route(path, search, method, parsed));
+      }
+      if (nativeFetch) return nativeFetch(input, init);
+      return Promise.reject(new Error('fetch unavailable'));
+    };
+
+    window.addEventListener('load', function () {
+      // The player takes /api/videos/<id>/stream as a <video src>, which never
+      // goes through fetch. Point it at the bundled sample clip instead.
+      if (window.videoPlayer && typeof window.videoPlayer.load === 'function') {
+        var origLoad = window.videoPlayer.load.bind(window.videoPlayer);
+        window.videoPlayer.load = function (p) {
+          return origLoad(/^\/api\/videos\/.*\/stream$/.test(p || '') ? DEMO_VIDEO : p);
+        };
+      }
+      // Nothing to sign into.
+      if (window.AppState) {
+        window.AppState._showLogin = function () {};
+        var hu = document.getElementById('header-user');
+        if (hu) hu.textContent = 'Demo Annotator';
+      }
+      // The admin dashboard is not part of the demo.
+      document.querySelectorAll('a[href="/admin/dashboard"]').forEach(function (a) { a.remove(); });
+    });
+  })();
+  </script>
+
+</head>
+<body>
+  <div class="demo-banner"><strong>Interactive demo</strong> &middot; sample clip and synthetic records, no sign-in and no backend. Segmentation is stubbed &mdash; SAM2 does not run in the browser.</div>
+
+
+<!-- ═══════════════════════════ HEADER ════════════════════════════ -->
+<header class="header">
+  <div class="header-left">
+    <span class="logo">Shark Scar Annotator</span>
+  </div>
+  <div class="header-center">
+    <span id="header-video-name" class="header-video-name">No video loaded</span>
+  </div>
+  <div class="header-right">
+    <span id="header-user" class="header-user">Not signed in</span>
+    <button class="btn btn-sm btn-ghost" id="btn-save-ann" title="Ctrl+S">💾 Save</button>
+    <div class="dropdown">
+      <button class="btn btn-sm btn-ghost" id="btn-export-menu">⬇ Export ▾</button>
+      <div class="dropdown-menu" id="export-menu">
+        <a class="dropdown-item" id="btn-export-coco">COCO JSON</a>
+        <a class="dropdown-item" id="btn-export-forms">Google Forms CSV</a>
+        <a class="dropdown-item" id="btn-export-json">Full JSON</a>
+      </div>
+    </div>
+    <button class="btn btn-sm btn-ghost" id="btn-shortcuts-help" title="Keyboard shortcuts">?</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ MAIN LAYOUT ═══════════════════════ -->
+<div class="workspace">
+
+  <!-- ─────────────────── LEFT PANEL ─────────────────────────── -->
+  <aside class="panel-left">
+    <div class="panel-tabs">
+      <button class="tab-btn active" data-tab="videos">My Videos</button>
+      <button class="tab-btn" data-tab="admin">Admin</button>
+    </div>
+
+    <!-- Videos tab -->
+    <div class="tab-content active" id="tab-videos">
+      <div class="search-bar">
+        <input type="text" id="video-search" placeholder="Search videos…" />
+      </div>
+      <div id="video-list" class="video-list">
+        <p class="muted">Loading videos…</p>
+      </div>
+    </div>
+
+    <!-- Admin tab -->
+    <div class="tab-content" id="tab-admin">
+      <a href="/admin/dashboard" class="btn btn-primary btn-block" style="margin-bottom:12px">Open Admin Dashboard</a>
+      <div class="divider"></div>
+      <div class="section-label">Add Video Manually</div>
+      <input type="text" class="input" id="admin-enc-code" placeholder="Encounter Code (LOCYYMMDDnn)" />
+      <input type="text" class="input" id="admin-video-name" placeholder="Video filename" />
+      <input type="text" class="input" id="admin-drive-id" placeholder="Google Drive file ID" />
+      <input type="text" class="input" id="admin-site" placeholder="Site (AN, FAR…)" />
+      <input type="number" class="input" id="admin-year" placeholder="Year" />
+      <textarea class="input" id="admin-notes" placeholder="Notes" rows="2"></textarea>
+      <button class="btn btn-primary btn-block" id="btn-admin-add">Add Video</button>
+
+      <div class="divider"></div>
+      <div class="section-label">Import CSV</div>
+      <input type="file" id="csv-file-input" accept=".csv" />
+      <button class="btn btn-secondary btn-block" id="btn-import-csv">Import CSV</button>
+
+      <div class="divider"></div>
+      <div class="section-label">Assign Video</div>
+      <input type="text" class="input" id="assign-video-id" placeholder="Video ID" />
+      <input type="text" class="input" id="assign-email" placeholder="Annotator email" />
+      <select class="input" id="assign-priority">
+        <option value="low">Low</option>
+        <option value="medium" selected>Medium</option>
+        <option value="high">High</option>
+        <option value="urgent">Urgent</option>
+      </select>
+      <input type="date" class="input" id="assign-due" />
+      <textarea class="input" id="assign-notes" placeholder="Notes" rows="2"></textarea>
+      <button class="btn btn-primary btn-block" id="btn-assign">Assign Video</button>
+      <div id="admin-status" class="status-msg"></div>
+
+      <div class="divider"></div>
+      <div class="section-label">Browse Google Drive</div>
+      <button class="btn btn-secondary btn-block" id="btn-drive-browse">Browse Drive</button>
+      <div id="drive-list" class="drive-list"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TOOLS -->
+    <div class="section-label">TOOLS</div>
+    <div class="tool-grid">
+      <button class="tool-btn" id="tool-body"      title="[F] Full body SAM segmentation">Body [F]</button>
+      <button class="tool-btn" id="tool-scar"      title="[S] Click to add scar">Scar [S]</button>
+      <button class="tool-btn" id="tool-keypoint"  title="[K] Place keypoints">Keypoint [K]</button>
+      <button class="tool-btn" id="tool-bbox"      title="[B] Draw labeled box">⬛ Box [B]</button>
+      <button class="tool-btn" id="tool-undo"      title="[Z] Undo">↩ Undo [Z]</button>
+      <button class="tool-btn danger" id="tool-reset" title="[R] Reset frame">🔄 Reset [R]</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">SHORTCUTS</div>
+    <div class="shortcuts-grid">
+      <span>Space</span><span>Play / Pause</span>
+      <span>← →</span><span>Step frame</span>
+      <span>⇧+← →</span><span>Jump 10</span>
+      <span>F</span><span>Body SAM</span>
+      <span>S</span><span>Add scar</span>
+      <span>K</span><span>Keypoints</span>
+      <span>B</span><span>Draw box</span>
+      <span>+ −</span><span>Zoom</span>
+      <span>Z</span><span>Undo</span>
+      <span>1–5</span><span>Confidence</span>
+      <span>Ctrl+S</span><span>Save</span>
+      <span>Esc</span><span>Cancel</span>
+    </div>
+  </aside>
+
+  <!-- ─────────────────── CENTER ────────────────────────────── -->
+  <main class="panel-center">
+
+    <!-- Video player -->
+    <div class="video-section">
+      <video id="video-element" controls preload="metadata">
+        <source src="" type="video/mp4" />
+      </video>
+
+      <div class="video-controls">
+        <button class="ctrl-btn" id="ctrl-play"  title="Space">▶</button>
+        <button class="ctrl-btn" id="ctrl-prev10" title="⇧+←">⏮ 10</button>
+        <button class="ctrl-btn" id="ctrl-prev1"  title="←">◀</button>
+        <button class="ctrl-btn" id="ctrl-next1"  title="→">▶</button>
+        <button class="ctrl-btn" id="ctrl-next10" title="⇧+→">10 ⏭</button>
+
+        <div class="seek-bar-wrap">
+          <input type="range" id="seek-bar" class="seek-bar" min="0" max="10000" value="0" step="1" />
+        </div>
+
+        <span id="time-display" class="time-display">0:00 / 0:00</span>
+
+        <select id="speed-select" class="speed-select">
+          <option value="0.25">0.25x</option>
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1x</option>
+          <option value="2">2x</option>
+        </select>
+
+        <span id="frame-display" class="frame-display">Frame: -</span>
+      </div>
+    </div>
+
+    <!-- Annotation canvas -->
+    <div class="canvas-wrap" id="canvas-wrap">
+      <canvas id="annotation-canvas"></canvas>
+      <!-- Bbox label input (shown on bbox draw completion) -->
+      <div id="bbox-label-popup" class="bbox-label-popup hidden">
+        <input type="text" id="bbox-label-input" placeholder="Label (Enter to save)" />
+      </div>
+    </div>
+
+    <!-- Image enhancement -->
+    <div class="enhance-bar">
+      <label>Brightness
+        <input type="range" id="brightness-slider" min="-100" max="100" value="0" step="1" />
+        <span id="brightness-val">0</span>
+      </label>
+      <label>Contrast
+        <input type="range" id="contrast-slider" min="50" max="300" value="100" step="5" />
+        <span id="contrast-val">1.0x</span>
+      </label>
+      <button class="btn btn-sm btn-ghost" id="btn-reset-enhance">Reset Image</button>
+      <span id="enhance-status" class="muted"></span>
+    </div>
+  </main>
+
+  <!-- ─────────────────── RIGHT PANEL ──────────────────────── -->
+  <aside class="panel-right">
+
+    <!-- Encounter info -->
+    <div class="section-label">ENCOUNTER</div>
+    <input type="text" class="input" id="enc-code" placeholder="Encounter Code (LOCYYMMDDnn)" />
+    <div class="enc-info-note">Every video here has a good scar image or dorsal fin frame — please annotate, don't skip.</div>
+    <div class="radio-group">
+      <label>Sides visible:</label>
+      <button class="radio-btn" data-group="sides" data-val="Left">L</button>
+      <button class="radio-btn" data-group="sides" data-val="Right">R</button>
+      <button class="radio-btn active" data-group="sides" data-val="Both">Both</button>
+    </div>
+    <div class="radio-group">
+      <label>Scars visible:</label>
+      <button class="radio-btn" data-group="scars-visible" data-val="YES">Yes</button>
+      <button class="radio-btn" data-group="scars-visible" data-val="NO">No</button>
+    </div>
+
+    <div id="no-scars-msg" class="no-scars-banner hidden">
+      <p><strong>No scars visible</strong> — annotation will be saved as "no scars."</p>
+      <button class="btn btn-primary btn-block btn-lg" id="btn-save-no-scars">💾 SAVE &amp; NEXT</button>
+    </div>
+
+    <div id="scar-form-section">
+    <div class="divider"></div>
+
+    <!-- Scar form -->
+    <div class="section-label">SCAR FORM</div>
+
+    <label class="field-label">Scar type</label>
+    <select class="input" id="scar-type">
+      <option value="">— select —</option>
+      <option value="GRAB">GRAB — multiple shallow bites</option>
+      <option value="BITE">BITE — deep crescent bite</option>
+      <option value="SCRATCH">SCRATCH — claw rake marks</option>
+      <option value="SCRAPE">SCRAPE — hard surface</option>
+      <option value="CANINE">CANINE — pinniped punctures</option>
+      <option value="COOKIE">COOKIE — cookie-cutter circular plug</option>
+      <option value="GEAR">GEAR — fishing gear/rope</option>
+      <option value="PROP">PROP — propeller lacerations</option>
+      <option value="TAGS">TAGS — previous tagging</option>
+      <option value="SQUID">SQUID — suction cup marks</option>
+      <option value="OTHER">OTHER — see notes</option>
+    </select>
+
+    <label class="field-label">Confidence (1=Unsure → 5=Certain)</label>
+    <div class="star-rating" id="confidence-stars">
+      <span class="star" data-val="1">★</span>
+      <span class="star" data-val="2">★</span>
+      <span class="star" data-val="3">★</span>
+      <span class="star" data-val="4">★</span>
+      <span class="star" data-val="5">★</span>
+    </div>
+    <input type="hidden" id="confidence-value" value="3" />
+
+    <label class="field-label">Side</label>
+    <div class="radio-group">
+      <button class="radio-btn" data-group="scar-side" data-val="Right">Right</button>
+      <button class="radio-btn active" data-group="scar-side" data-val="Left">Left</button>
+    </div>
+
+    <label class="field-label">Body Zone (click to select)</label>
+    <div class="zone-diagram" id="zone-diagram">
+      <!-- SVG shark body with clickable zones -->
+      <svg viewBox="0 0 500 155" xmlns="http://www.w3.org/2000/svg" id="zone-svg">
+        <!-- White shark silhouette with 12 clickable zones -->
+        <!-- Eye (centered in zone 1) -->
+        <circle cx="55" cy="80" r="2.5" fill="var(--text-muted)" opacity="0.5" pointer-events="none"/>
+        <!-- Gill slits (centered in zone 3/4 boundary) -->
+        <g opacity="0.25" pointer-events="none" stroke="var(--text-muted)" stroke-width="0.8">
+          <line x1="142" y1="60" x2="142" y2="120"/><line x1="148" y1="58" x2="148" y2="122"/>
+          <line x1="154" y1="56" x2="154" y2="124"/><line x1="160" y1="55" x2="160" y2="126"/>
+        </g>
+        <!-- Zone 1: HEAD -->
+        <g id="zone-1" class="zone-seg" data-zone="1">
+          <polygon points="19,87 50,69 81,58 81,118 42,102"/>
+          <text x="55" y="87">1</text>
+        </g>
+        <!-- Zone 2: NAPE -->
+        <g id="zone-2" class="zone-seg" data-zone="2">
+          <polygon points="82,58 102,53 139,46 139,128 110,124 81,119"/>
+          <text x="110" y="88">2</text>
+        </g>
+        <!-- Zone 3: SUPRAGILL -->
+        <g id="zone-3" class="zone-seg" data-zone="3">
+          <polygon points="140,46 160,44 183,42 182,54 139,58 140,54"/>
+          <text x="157" y="50">3</text>
+        </g>
+        <!-- Zone 4: GILLS -->
+        <g id="zone-4" class="zone-seg" data-zone="4">
+          <polygon points="139,58 159,56 182,53 179,94 178,106 175,131 140,128 140,120"/>
+          <text x="162" y="93">4</text>
+        </g>
+        <!-- Zone 5: PREDORSAL -->
+        <g id="zone-5" class="zone-seg" data-zone="5">
+          <polygon points="183,42 214,39 244,42 274,49 273,53 272,59 182,54"/>
+          <text x="228" y="48">5</text>
+        </g>
+        <!-- Zone 6: MID BODY -->
+        <g id="zone-6" class="zone-seg" data-zone="6">
+          <polygon points="182,54 274,60 273,99 273,122 232,129 227,118 206,112 179,106"/>
+          <text x="228" y="97">6</text>
+        </g>
+        <!-- Zone 7: INTERDORSAL -->
+        <g id="zone-7" class="zone-seg" data-zone="7">
+          <polygon points="274,50 309,58 337,65 360,71 359,81 360,85 320,74 273,59"/>
+          <text x="317" y="68">7</text>
+        </g>
+        <!-- Zone 8: PELVIC -->
+        <g id="zone-8" class="zone-seg" data-zone="8">
+          <polygon points="273,60 359,85 358,107 274,121"/>
+          <text x="316" y="93">8</text>
+        </g>
+        <!-- Zone 9: PEDUNCLE -->
+        <g id="zone-9" class="zone-seg" data-zone="9">
+          <polygon points="360,71 411,81 411,95 358,107"/>
+          <text x="385" y="89">9</text>
+        </g>
+        <!-- Zone D: DORSAL FIN -->
+        <g id="zone-D" class="zone-seg" data-zone="D">
+          <polygon points="215,37 238,5 250,-1 255,1 258,21 265,37 274,49 250,43 214,38"/>
+          <text x="247" y="26">D</text>
+        </g>
+        <!-- Zone P: PECTORAL -->
+        <g id="zone-P" class="zone-seg" data-zone="P">
+          <polygon points="179,106 228,118 231,130 246,154 233,153 210,145 191,132 176,131"/>
+          <text x="212" y="134">P</text>
+        </g>
+        <!-- Zone T: TAIL -->
+        <g id="zone-T" class="zone-seg" data-zone="T">
+          <polygon points="411,81 430,65 448,52 473,36 492,25 484,47 478,56 470,68 462,83 458,93 457,116 463,146 445,131 429,111 421,97 411,95"/>
+          <text x="460" y="85">T</text>
+        </g>
+      </svg>
+    </div>
+    <div id="selected-zone-label" class="selected-zone-label">Zone: — not selected —</div>
+    <input type="hidden" id="zone-value" value="" />
+
+    <label class="field-label">Color</label>
+    <div class="color-group" id="color-group">
+      <button class="color-btn" data-color="PINK"  style="background:#ff9999;">PINK</button>
+      <button class="color-btn" data-color="WHITE" style="background:#f0f0f0;color:#333;">WHITE</button>
+      <button class="color-btn" data-color="BLACK" style="background:#333;">BLACK</button>
+      <button class="color-btn" data-color="GREY"  style="background:#888;">GREY</button>
+      <button class="color-btn" data-color="OTHER" style="background:#777;">OTHER</button>
+    </div>
+    <input type="hidden" id="color-value" value="" />
+    <input type="text" class="input hidden" id="color-other-input" placeholder="Describe color…" />
+
+    <label class="field-label">Notes</label>
+    <textarea class="input" id="scar-notes" placeholder="Anything worth noting…" rows="2"></textarea>
+
+    <div class="optional-label">OPTIONAL</div>
+    <div class="radio-group small">
+      <label>Copepods body:</label>
+      <button class="radio-btn sm" data-group="copepods-body" data-val="YES">Y</button>
+      <button class="radio-btn sm" data-group="copepods-body" data-val="NO">N</button>
+    </div>
+    <div class="radio-group small">
+      <label>Copepods wound:</label>
+      <button class="radio-btn sm" data-group="copepods-wound" data-val="YES">Y</button>
+      <button class="radio-btn sm" data-group="copepods-wound" data-val="NO">N</button>
+    </div>
+    <div class="radio-group small">
+      <label>Multiple scars (same zone):</label>
+      <button class="radio-btn sm" data-group="multiple-scars" data-val="YES">Y</button>
+      <button class="radio-btn sm" data-group="multiple-scars" data-val="NO">N</button>
+    </div>
+
+    <button class="btn btn-primary btn-block mt-8" id="btn-add-scar">+ ADD SCAR</button>
+
+    <div class="divider"></div>
+
+    <!-- Scars list -->
+    <div class="section-label">SCARS <span id="scars-count" class="badge">0</span></div>
+    <div id="scars-list" class="scars-list">
+      <p class="muted">No scars added</p>
+    </div>
+    </div><!-- /scar-form-section -->
+
+    <div class="divider"></div>
+
+    <!-- Keypoints progress -->
+    <div class="section-label">KEYPOINTS <span id="kp-progress" class="badge">0/16</span></div>
+    <div class="kp-help">Click name to select · Alt+click = occluded</div>
+    <div id="kp-list" class="kp-list">
+      <p class="muted">Press K to start placing keypoints</p>
+    </div>
+    <button class="btn btn-sm btn-ghost btn-block" id="btn-skip-kp">Skip current (Tab)</button>
+    <button class="btn btn-sm btn-ghost btn-block" id="btn-reset-kp">Reset keypoints</button>
+
+    <div class="divider"></div>
+
+    <button class="btn btn-primary btn-block btn-lg" id="btn-save-and-next">💾 SAVE &amp; NEXT</button>
+    <button class="btn btn-success btn-block" id="btn-finish-video">✓ FINISH VIDEO</button>
+    <div id="save-status" class="status-msg"></div>
+  </aside>
+
+</div>
+
+<!-- ═══════════════════ SHORTCUTS MODAL ══════════════════════════ -->
+<div id="shortcuts-modal" class="modal hidden">
+  <div class="modal-box">
+    <h3>Keyboard Shortcuts</h3>
+    <table class="shortcuts-table">
+      <tr><td>Space</td><td>Play / Pause video</td></tr>
+      <tr><td>← / →</td><td>Step one frame</td></tr>
+      <tr><td>⇧+← / →</td><td>Jump 10 frames</td></tr>
+      <tr><td>F</td><td>Full body SAM segmentation</td></tr>
+      <tr><td>S</td><td>Add scar mode</td></tr>
+      <tr><td>K</td><td>Keypoint placement mode</td></tr>
+      <tr><td>B</td><td>Draw bounding box (drag)</td></tr>
+      <tr><td>Z</td><td>Undo last annotation</td></tr>
+      <tr><td>R</td><td>Reset frame annotations</td></tr>
+      <tr><td>+ / −</td><td>Zoom in / out canvas</td></tr>
+      <tr><td>Ctrl+S</td><td>Save annotation</td></tr>
+      <tr><td>1 – 5</td><td>Set scar confidence</td></tr>
+      <tr><td>Esc</td><td>Cancel / close</td></tr>
+    </table>
+    <button class="btn btn-primary" id="close-shortcuts-modal">Close</button>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="sharkscar/js/video_player.js"></script>
+<script src="sharkscar/js/canvas.js"></script>
+<script src="sharkscar/js/scar_form.js"></script>
+<script src="sharkscar/js/app.js"></script>
+</body>
+</html>

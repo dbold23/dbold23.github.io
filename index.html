@@ -41,16 +41,17 @@
     </script>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/variables.css?v=20260819v">
-    <link rel="stylesheet" href="css/base.css?v=20260819v">
-    <link rel="stylesheet" href="css/homescreen.css?v=20260819v">
-    <link rel="stylesheet" href="css/transitions.css?v=20260819v">
-    <link rel="stylesheet" href="css/path-forest.css?v=20260819v">
-    <link rel="stylesheet" href="css/path-ocean.css?v=20260819v">
-    <link rel="stylesheet" href="css/path-tech.css?v=20260819v">
-    <link rel="stylesheet" href="css/path-mind.css?v=20260819v">
-    <link rel="stylesheet" href="css/shared.css?v=20260819v">
-    <link rel="stylesheet" href="css/responsive.css?v=20260819v">
+    <link rel="stylesheet" href="css/variables.css?v=20260824v">
+    <link rel="stylesheet" href="css/base.css?v=20260824v">
+    <link rel="stylesheet" href="css/homescreen.css?v=20260824v">
+    <link rel="stylesheet" href="css/transitions.css?v=20260824v">
+    <link rel="stylesheet" href="css/path-forest.css?v=20260824v">
+    <link rel="stylesheet" href="css/path-ocean.css?v=20260824v">
+    <link rel="stylesheet" href="css/path-tech.css?v=20260824v">
+    <link rel="stylesheet" href="css/desktop-os.css?v=20260824v">
+    <link rel="stylesheet" href="css/path-mind.css?v=20260824v">
+    <link rel="stylesheet" href="css/shared.css?v=20260824v">
+    <link rel="stylesheet" href="css/responsive.css?v=20260824v">
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
@@ -462,7 +463,7 @@
                     <section class="rp-section">
                         <figure class="rp-plate">
                             <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="Automated keypoint tracking on a swimming white shark"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
-                            <figcaption><span class="rp-fignum">Figure 1</span>Automated keypoint tracking turns 4,850 archival videos into measurable landmarks.</figcaption>
+                            <figcaption><span class="rp-fignum">Figure 1</span>Automated keypoint tracking turns 4,850 archival videos into measurable landmarks. <span class="rp-caption-note">Clip shows the first-generation 5-keypoint model; the current pipeline uses the 16-keypoint schema.</span></figcaption>
                         </figure>
                         <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Background</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
@@ -629,7 +630,7 @@
                     <section class="rp-section">
                         <figure class="rp-plate">
                             <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="Keypoint tracking on a swimming shark, used as optical ground truth"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
-                            <figcaption><span class="rp-fignum">Figure 1</span>Optical ground truth: video keypoints give a tailbeat the tag can be checked against.</figcaption>
+                            <figcaption><span class="rp-fignum">Figure 1</span>Optical ground truth: video keypoints give a tailbeat the tag can be checked against. <span class="rp-caption-note">Clip shows the first-generation 5-keypoint model; the current pipeline uses the 16-keypoint schema.</span></figcaption>
                         </figure>
                         <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Validation against optical ground truth</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
@@ -1221,26 +1222,18 @@
             <div class="desktop-surface">
                 <img class="desktop-wallpaper" src="assets/desktop-wallpaper.avif" alt="" aria-hidden="true" width="1920" height="1440" loading="lazy" decoding="async">
                 <!-- Desktop icons (right-aligned column, macOS style) -->
+                <!-- Desktop icons: the apps live here. Labs, GitHub and
+                     contact moved to the dock, where a Mac would keep them. -->
                 <div class="desktop-icons">
-                    <!-- GitHub - external link -->
-                    <div class="desktop-icon" data-href="https://github.com/dbold23" data-external="true">
-                        <img src="assets/github logo no background_sticker.png" alt="GitHub" loading="lazy" decoding="async">
-                        <span class="desktop-icon-label">GitHub</span>
+                    <!-- RelayStation - opens the interactive demo -->
+                    <div class="desktop-icon" data-href="demos/relaystation.html" data-external="true">
+                        <img src="assets/icon-relaystation.svg" alt="RelayStation" width="128" height="128" loading="lazy" decoding="async">
+                        <span class="desktop-icon-label">RelayStation</span>
                     </div>
-                    <!-- JPSS-1 - scrolls to NOAA SAT HACK folder -->
-                    <div class="desktop-icon" data-href="#folder-noaa">
-                        <img src="assets/JPSS-1_logo-removebg-preview.png" alt="JPSS" loading="lazy" decoding="async">
-                        <span class="desktop-icon-label">NOAA Sat Hack</span>
-                    </div>
-                    <!-- Jorgensen Lab - scrolls to Jorgensen folder -->
-                    <div class="desktop-icon" data-href="#folder-jorgensen">
-                        <img src="assets/jorgensen-lab-logo.avif" alt="Jorgensen Lab" width="500" height="500" loading="lazy" decoding="async">
-                        <span class="desktop-icon-label">Jorgensen Lab</span>
-                    </div>
-                    <!-- Jue Lab - scrolls to Jue Lab folder -->
-                    <div class="desktop-icon" data-href="#folder-jue">
-                        <img src="assets/jue-lab-logo.avif" alt="Jue Lab" width="480" height="519" loading="lazy" decoding="async">
-                        <span class="desktop-icon-label">Jue Lab</span>
+                    <!-- Shark Scar Annotator - opens the interactive demo -->
+                    <div class="desktop-icon" data-href="demos/sharkscar.html" data-external="true">
+                        <img src="assets/icon-sharkscar.svg" alt="Shark Scar Annotator" width="128" height="128" loading="lazy" decoding="async">
+                        <span class="desktop-icon-label">Scar Annotator</span>
                     </div>
                 </div>
 
@@ -1406,7 +1399,7 @@
                                                 interpolation-decay="100"
                                                 camera-orbit="0.6579rad 1.3367rad 4.5m"
                                                 loading="lazy"
-                                                reveal="interaction"
+                                                reveal="manual"
                                                 style="width: 100%; height: 350px; border-radius: 8px 8px 0 0; background: rgba(10,14,20,0.9);">
                                                 <div slot="poster" class="model-poster">Click to load 3D model</div>
                                             </model-viewer>
@@ -2294,7 +2287,7 @@
                                     camera-controls
                                     shadow-intensity="0.5"
                                     loading="lazy"
-                                    reveal="interaction"
+                                    reveal="manual"
                                     style="width: 100%; height: 300px; border-radius: 8px; background: rgba(10,14,20,0.9); margin-bottom: 0.8rem;">
                                     <div slot="poster" class="model-poster">Click to load 3D model</div>
                                 </model-viewer>
@@ -2771,6 +2764,6 @@
     </footer>
 
     <!-- JavaScript (ES Modules) -->
-    <script type="module" src="js/app.js?v=20260819v"></script>
+    <script type="module" src="js/app.js?v=20260824v"></script>
 </body>
 </html>

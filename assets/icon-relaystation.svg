@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="RelayStation">
+  <defs>
+    <linearGradient id="rsBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#123a72"/>
+      <stop offset="1" stop-color="#071b3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" ry="28" fill="url(#rsBg)"/>
+  <rect x="0.75" y="0.75" width="126.5" height="126.5" rx="27.5" ry="27.5" fill="none" stroke="#ffffff" stroke-opacity="0.16"/>
+
+  <!-- mast -->
+  <path d="M64 52 L64 98" stroke="#dceefc" stroke-width="5" stroke-linecap="round"/>
+  <path d="M47 100 L64 62 L81 100" fill="none" stroke="#dceefc" stroke-width="5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M53 86 L75 86" stroke="#dceefc" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- broadcast arcs -->
+  <g fill="none" stroke="#00d9ff" stroke-linecap="round">
+    <path d="M46 44 a24 24 0 0 1 36 0" stroke-width="5"/>
+    <path d="M35 32 a40 40 0 0 1 58 0" stroke-width="5" stroke-opacity="0.62"/>
+  </g>
+  <circle cx="64" cy="50" r="6" fill="#00d9ff"/>
+</svg>

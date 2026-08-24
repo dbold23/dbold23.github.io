@@ -3,6 +3,7 @@
 // ============================================
 
 import { randomRange, prefersReducedMotion, sleep } from './utils.js';
+import { init as initDesktopOS, destroy as destroyDesktopOS } from './desktop-os.js';
 
 // Load model-viewer on demand for the 3D models in this path (fire-and-forget)
 import('https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js').catch(() => {});
@@ -78,10 +79,10 @@ function stopMatrix() {
 function clearIconEntrance() {
   const icons = document.querySelectorAll('.desktop-icons .desktop-icon');
   if (!icons.length) return;
-  // Wait for longest entrance delay (0.5s) + animation (0.4s) = ~1s
+  // Wait for longest entrance delay (0.7s) + animation (0.4s) = ~1.1s
   setTimeout(() => {
     icons.forEach(icon => icon.classList.add('entered'));
-  }, 1000);
+  }, 1200);
 }
 
 // ---- Desktop Icon Click Navigation ----
@@ -176,6 +177,43 @@ function stopHardwareViewer() {
   if (hwViewerCleanup) {
     hwViewerCleanup();
     hwViewerCleanup = null;
+  }
+}
+
+// ---- 3D Model Posters ----
+// model-viewer 3.x ships no click-to-load of its own: `reveal` is only ever
+// compared against "auto", nothing in the library calls dismissPoster(), and no
+// listener is bound to the poster. So a poster reading "Click to load 3D model"
+// sat there forever and the GLB was never so much as fetched. Driving the
+// dismissal from here keeps the click as the trigger, which is the point — the
+// two models are 1.4 MB between them and nobody pays for one until they ask.
+
+let modelPosterCleanup = null;
+
+function initModelPosters() {
+  const viewers = document.querySelectorAll('#path-tech model-viewer');
+  if (!viewers.length) return null;
+  const cleanups = [];
+
+  viewers.forEach((viewer) => {
+    function onClick() {
+      // The element only gains dismissPoster when the CDN module lands, which
+      // can be after the first click on a slow line. whenDefined resolves
+      // immediately once it has, so an early click still gets its model.
+      customElements.whenDefined('model-viewer').then(() => viewer.dismissPoster());
+    }
+
+    viewer.addEventListener('click', onClick);
+    cleanups.push(() => viewer.removeEventListener('click', onClick));
+  });
+
+  return () => cleanups.forEach((fn) => fn());
+}
+
+function stopModelPosters() {
+  if (modelPosterCleanup) {
+    modelPosterCleanup();
+    modelPosterCleanup = null;
   }
 }
 
@@ -438,6 +476,8 @@ export function start() {
   stickerClickCleanup = initStickerNav();
   fileTreeCleanup = initFileTree();
   hwViewerCleanup = initHardwareViewer();
+  modelPosterCleanup = initModelPosters();
+  initDesktopOS();
 }
 
 export function stop() {
@@ -445,4 +485,6 @@ export function stop() {
   stopMenubarClock();
   stopFileTree();
   stopHardwareViewer();
+  stopModelPosters();
+  destroyDesktopOS();
 }

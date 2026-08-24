@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Mail">
+  <defs>
+    <linearGradient id="mlBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3db8f5"/>
+      <stop offset="1" stop-color="#0a63b8"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" ry="28" fill="url(#mlBg)"/>
+  <rect x="0.75" y="0.75" width="126.5" height="126.5" rx="27.5" ry="27.5" fill="none" stroke="#ffffff" stroke-opacity="0.2"/>
+  <rect x="26" y="40" width="76" height="50" rx="8" ry="8" fill="#ffffff"/>
+  <path d="M30 46 L64 70 L98 46" fill="none" stroke="#0a63b8" stroke-width="6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

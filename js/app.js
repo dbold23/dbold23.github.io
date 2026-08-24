@@ -19,6 +19,29 @@ function scrollTopInstant() {
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 }
 
+// Entering a path resets the scroll, but the section carries on growing for a
+// second afterwards as its media and maps arrive, and that growth can drag the
+// viewport down with it. So hold the top briefly rather than setting it once
+// and hoping — and stand down the instant the reader scrolls for themselves,
+// because after that the position is theirs, not ours.
+function holdTop(ms = 1400) {
+  let released = false;
+  const release = () => { released = true; };
+  const events = ['wheel', 'touchstart', 'keydown'];
+  events.forEach((t) => window.addEventListener(t, release, { once: true, passive: true }));
+
+  const started = performance.now();
+  (function tick() {
+    if (released) return;
+    if (window.scrollY !== 0) scrollTopInstant();
+    if (performance.now() - started < ms) {
+      requestAnimationFrame(tick);
+    } else {
+      events.forEach((t) => window.removeEventListener(t, release));
+    }
+  })();
+}
+
 function warmPathMedia(path) {
   // Kick the entered path's lazy media so it loads behind the transition
   // overlay instead of popping in after the reveal
@@ -148,6 +171,8 @@ async function enterPath(path, fromHistory = false) {
   // leave `transitioning` true and wedge navigation for the rest of the visit.
   state.activePath = path;
   state.transitioning = false;
+
+  holdTop();
 
   // Init scroll manager for this path
   try {

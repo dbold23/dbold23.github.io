@@ -8,7 +8,12 @@ import { randomRange, prefersReducedMotion, sleep } from './utils.js';
    shape completely (traced SVG -> Leaflet), and the CSS that used to style the
    SVG is gone, so a visitor holding a cached copy of the old module would get
    new CSS driving old markup and see an empty panel. */
-import { init as initForestMap, destroy as destroyForestMap } from './forest-map.js?v=20260819v';
+// Inherit this module's own cache token rather than writing a second one that
+// has to be remembered separately — a literal here sat four bumps behind and
+// pinned forest-map.js to a stale copy. Dynamic so the token can be read from
+// import.meta before the import resolves.
+const { init: initForestMap, destroy: destroyForestMap } =
+  await import(`./forest-map.js${new URL(import.meta.url).search}`);
 
 const LEAF_COUNT = 20;
 let leaves = [];

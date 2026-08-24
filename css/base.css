@@ -29,6 +29,11 @@ img { max-width: 100%; height: auto; display: block; }
   position: relative;
   min-height: 100vh;
   padding: 0;
+  /* A freshly entered path keeps growing after it is shown — lazy media, map
+     tiles, parallax layers. Scroll anchoring reads that growth as a reason to
+     move the viewport, which is how a path could open part-way down instead of
+     at its top. Nothing here needs anchoring; entering always starts at 0. */
+  overflow-anchor: none;
 }
 
 .path-section.active {

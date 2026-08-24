@@ -179,7 +179,7 @@ const MENUS = {
     items: [
       { label: 'Toggle Matrix Rain', action: 'matrix' },
       { label: 'Toggle Scanlines', action: 'scanlines' },
-      { label: 'Invert Display', action: 'invert' },
+      { label: 'Why?', action: 'invert' },
       { sep: true },
       { label: 'Enter Full Screen', action: 'zoom', key: '⌃⌘F' },
     ],
@@ -889,6 +889,33 @@ function openMail() {
   });
 }
 
+// -------------------------------------------------------------- Site nav
+
+// The path nav is a pill fixed near the top of the window, which on this path
+// puts a second floating bar directly under the menubar. Rather than build a
+// copy in the menubar and wire up duplicate handlers, the real element moves
+// in and moves back out — same buttons, same listeners, no second source of
+// truth about which path is active.
+let navReturn = null;
+
+function adoptNav() {
+  const nav = document.getElementById('path-nav');
+  const bar = document.querySelector('.macos-menubar');
+  const right = bar?.querySelector('.menubar-right');
+  if (!nav || !bar || !right || navReturn) return;
+  navReturn = { parent: nav.parentNode, next: nav.nextSibling };
+  bar.insertBefore(nav, right);
+  nav.classList.add('in-menubar');
+}
+
+function releaseNav() {
+  const nav = document.getElementById('path-nav');
+  if (!nav || !navReturn) return;
+  navReturn.parent.insertBefore(nav, navReturn.next);
+  nav.classList.remove('in-menubar');
+  navReturn = null;
+}
+
 // ------------------------------------------------------------ lifecycle
 
 export function init() {
@@ -896,12 +923,14 @@ export function init() {
   initWindowResize(win);
   initMenubar();
   initDock();
+  adoptNav();
   // The desktop icons are wired in transition-tech.js, which has no reach into
   // this module's window manager; an event is the seam between the two.
   on(window, 'os-open-app', (e) => openAppWindow(e.detail));
 }
 
 export function destroy() {
+  releaseNav();
   while (cleanups.length) cleanups.pop()();
   closeDialog();
   document.querySelectorAll('.os-mail, .os-dock, .os-toast, .os-app').forEach((el) => el.remove());

@@ -318,7 +318,7 @@
    rather than in the DOM because the whole sleep state is one class on the
    surface and nothing should have to be built or torn down to show it. */
 .desktop-surface.os-asleep::after {
-  content: 'Oh — hello.\A That’s you, in the reflection.\A A black screen is the most honest mirror in the house.\A\A Click anywhere to wake';
+  content: 'Oh — hello.\A That’s you, in the reflection.\A\A Click anywhere to wake';
   position: absolute; inset: 0; z-index: 80;
   display: flex; align-items: center; justify-content: center;
   background: #000; color: rgba(255,255,255,0.3);
@@ -412,4 +412,93 @@
     margin: 16px 0;
   }
   .os-app.maximized { position: relative; inset: auto; }
+}
+
+/* ---------- traffic lights ---------- */
+
+/* The bars these sit in are drag handles carrying cursor: grab, which the
+   dots were inheriting — a move cursor on a button that does not move. */
+.terminal-dots .dot,
+.os-app-bar .dot,
+.os-dialog-bar .dot,
+.os-mail-bar .dot {
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Glyphs appear on hovering the group, as they do on macOS — hovering one
+   light shows all three, so you can see what the others will do. */
+.terminal-dots .dot::after,
+.os-app-bar .dot::after,
+.os-dialog-bar .dot::after,
+.os-mail-bar .dot::after {
+  content: '';
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.62);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  pointer-events: none;
+}
+.terminal-dots:hover .dot::after,
+.os-app-bar .terminal-dots:hover .dot::after,
+.os-dialog-bar .terminal-dots:hover .dot::after,
+.os-mail-bar .terminal-dots:hover .dot::after { opacity: 1; }
+
+.terminal-dots .dot.red::after,
+.os-app-bar .dot.red::after,
+.os-dialog-bar .dot.red::after,
+.os-mail-bar .dot.red::after { content: '\00D7'; font-size: 11px; }
+
+.terminal-dots .dot.yellow::after,
+.os-app-bar .dot.yellow::after,
+.os-dialog-bar .dot.yellow::after,
+.os-mail-bar .dot.yellow::after { content: '\2212'; }
+
+.terminal-dots .dot.green::after,
+.os-app-bar .dot.green::after,
+.os-dialog-bar .dot.green::after,
+.os-mail-bar .dot.green::after { content: '\2197'; font-size: 10px; }
+
+/* ---------- site nav, adopted into the menubar ---------- */
+
+/* On this path the floating pill is redundant furniture: there is already a
+   bar across the top of the screen. The nav moves into it and drops the
+   pill's positioning and chrome, keeping its own buttons and handlers. */
+.v2-nav.in-menubar {
+  position: static;
+  transform: none;
+  z-index: auto;
+  padding: 0;
+  gap: 0.5rem;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+.v2-nav.in-menubar .nav-home { width: 22px; height: 22px; }
+.v2-nav.in-menubar .nav-home svg { width: 13px; height: 13px; }
+.v2-nav.in-menubar .nav-paths { gap: 2px; }
+.v2-nav.in-menubar .nav-btn {
+  padding: 2px 9px;
+  font-size: 0.76rem;
+  border-radius: 4px;
+}
+.v2-nav.in-menubar .nav-btn-dot { width: 5px; height: 5px; }
+.v2-nav.in-menubar .nav-cv {
+  padding: 1px 9px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+}
+
+@media (max-width: 968px) {
+  /* Below the desktop breakpoint the menubar is decoration, so the nav goes
+     back to being a pill the reader can actually reach. */
+  .v2-nav.in-menubar { position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); }
 }

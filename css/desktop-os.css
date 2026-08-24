@@ -502,3 +502,18 @@
      back to being a pill the reader can actually reach. */
   .v2-nav.in-menubar { position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); }
 }
+
+/* ---------- desktop file labels ---------- */
+
+/* The label is nowrap + ellipsis and centred, so a name wider than 94px lost
+   characters off BOTH ends — "Sambold_CV.docx" showed as "ambold_CV.d…".
+   The Finder wraps a long filename onto a second line instead of truncating
+   it, so this does too, and only ellipsises past two. */
+.desktop-icons .desktop-icon-label {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

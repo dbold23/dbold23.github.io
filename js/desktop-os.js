@@ -13,7 +13,19 @@ import { prefersReducedMotion } from './utils.js';
 // emails it on works — Formspree, Web3Forms, a Worker of your own. Left empty,
 // the app still composes the message and hands it to the visitor's mail client
 // instead, so the form is never a dead end.
+// Where the Mail app posts.
+//
+//   Formspree   MAIL_ENDPOINT = 'https://formspree.io/f/YOUR_ID'
+//               MAIL_EXTRA    = {}
+//   Web3Forms   MAIL_ENDPOINT = 'https://api.web3forms.com/submit'
+//               MAIL_EXTRA    = { access_key: 'YOUR_KEY' }
+//
+// Anything that takes a JSON POST and emails it on will do; MAIL_EXTRA covers
+// services that want a key in the body rather than a secret in the URL.
+// Left empty, the app composes the message and hands it to the visitor's own
+// mail client instead, so the form is never a dead end.
 const MAIL_ENDPOINT = '';
+const MAIL_EXTRA = {};
 const CONTACT_EMAIL = 'daniel.sambold@gmail.com';
 
 // Rate limit, enforced in the browser. This is politeness, not security — the
@@ -980,7 +992,8 @@ function openMail() {
       const res = await fetch(MAIL_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name: data.name, email: data.email, subject: data.subject, message: data.message }),
+        body: JSON.stringify({ ...MAIL_EXTRA, name: data.name, email: data.email,
+                               subject: data.subject, message: data.message }),
       });
       if (!res.ok) throw new Error(`Server said ${res.status}`);
       recordSend(gate.log);

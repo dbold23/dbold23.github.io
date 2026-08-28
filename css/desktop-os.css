@@ -630,6 +630,11 @@
      margin-top: auto in a flex column drops it to the bottom of the surface
      when there is room and lets it sit after the content when there is not,
      which is what absolute positioning would have got wrong. */
+  /* A row of files on a surface nothing can be dragged around is decoration.
+     Both apps are already in the dock and the CV joins them there, so nothing
+     is lost by dropping the icons — and the file tree gets the space. */
+  .desktop-icons { display: none; }
+
   /* Collapsing the menubar above took 28px of height out of the page, and that
      28px was quietly doing a job: it pushed the surface clear of the nav pill,
      which is fixed at top: 1.5rem. Without it the icons sat under the pill and
@@ -707,4 +712,23 @@
   /* Sheets get a real bar to grab and a bigger title, since they are now the
      full width of the screen rather than a small floating window. */
   .os-dialog-bar, .os-mail-bar { padding: 13px 16px; }
+}
+
+/* ---------- logos vs app icons ---------- */
+
+/* Every dock button is the same box, but the artwork inside is not the same
+   shape. The app icons are square tiles that fill it; the lab and GitHub marks
+   are bare logos on transparency, and JPSS-1 is 262x176 — object-fit: contain
+   letterboxes that to 38x25, so it reads as a smaller icon sitting in a row of
+   bigger ones. Giving the bare logos a tile of their own makes every item the
+   same size, and gives the dark GitHub mark something to sit on. */
+.os-dock-app.is-logo img {
+  background: #f4f7fa;
+  border-radius: 11px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 968px) {
+  .os-dock-app.is-logo img { border-radius: 9px; padding: 4px; }
 }

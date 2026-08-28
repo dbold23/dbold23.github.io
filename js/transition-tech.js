@@ -3,7 +3,12 @@
 // ============================================
 
 import { randomRange, prefersReducedMotion, sleep } from './utils.js';
-import { init as initDesktopOS, destroy as destroyDesktopOS } from './desktop-os.js';
+// Carries this module's own cache token. A bare specifier here has no token at
+// all, so the browser pins desktop-os.js on first fetch and every bump of
+// index.html's version sails straight past it — the file changes and nobody
+// downstream ever sees the change. Dynamic so import.meta can be read first.
+const { init: initDesktopOS, destroy: destroyDesktopOS } =
+  await import(`./desktop-os.js${new URL(import.meta.url).search}`);
 
 // Load model-viewer on demand for the 3D models in this path (fire-and-forget)
 import('https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js').catch(() => {});

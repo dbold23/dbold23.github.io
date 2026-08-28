@@ -777,10 +777,10 @@ const DOCK_APPS = [
   { id: 'relay',     label: 'RelayStation',     icon: 'assets/icon-relaystation.png',  app: 'relay' },
   { id: 'scar',      label: 'Scar Annotator',   icon: 'assets/icon-sharkscar.png',     app: 'scar' },
   { sep: true },
-  { id: 'jorgensen', label: 'Jorgensen Lab',    icon: 'assets/jorgensen-lab-logo.avif', target: '#folder-jorgensen' },
-  { id: 'jue',       label: 'Jue Lab',          icon: 'assets/jue-lab-logo.avif',       target: '#folder-jue' },
-  { id: 'noaa',      label: 'NOAA Sat Hack',    icon: 'assets/JPSS-1_logo-removebg-preview.png', target: '#folder-noaa' },
-  { id: 'github',    label: 'GitHub',           icon: 'assets/github logo no background_sticker.png', href: 'https://github.com/dbold23', external: true },
+  { id: 'jorgensen', label: 'Jorgensen Lab',    icon: 'assets/jorgensen-lab-logo.avif', target: '#folder-jorgensen', tile: true },
+  { id: 'jue',       label: 'Jue Lab',          icon: 'assets/jue-lab-logo.avif',       target: '#folder-jue', tile: true },
+  { id: 'noaa',      label: 'NOAA Sat Hack',    icon: 'assets/JPSS-1_logo-removebg-preview.png', target: '#folder-noaa', tile: true },
+  { id: 'github',    label: 'GitHub',           icon: 'assets/github logo no background_sticker.png', href: 'https://github.com/dbold23', external: true, tile: true },
   { sep: true },
   { id: 'mail',      label: 'Mail',             icon: 'assets/icon-mail.svg',           action: 'mail' },
 ];
@@ -799,12 +799,26 @@ function syncDock() {
   const mailOpen = !!document.querySelector('.os-mail');
 
   dock.querySelectorAll('.os-dock-app').forEach((btn) => {
-    const app = DOCK_APPS.find((a) => a.id === btn.dataset.id);
+    const app = dockApps.find((a) => a.id === btn.dataset.id);
     const lit = app?.app ? openApps.has(app.app)
               : app?.action === 'mail' ? mailOpen
               : false;
     btn.classList.toggle('running', lit);
   });
+}
+
+// Below the breakpoint the desktop icons are hidden — a row of files on a
+// surface you cannot drag anything around is decoration. The apps are already
+// in the dock; the CV is not, so it joins them there rather than being lost
+// with the icons.
+let dockApps = DOCK_APPS;
+
+function currentDockApps() {
+  if (isDesktop()) return DOCK_APPS;
+  return DOCK_APPS.concat([
+    { sep: true },
+    { id: 'cv', label: 'CV', icon: 'assets/icon-cv-doc.svg', action: 'cv' },
+  ]);
 }
 
 function initDock(ctx) {
@@ -813,9 +827,10 @@ function initDock(ctx) {
 
   const dock = document.createElement('div');
   dock.className = 'os-dock';
-  dock.innerHTML = `<div class="os-dock-inner">${DOCK_APPS.map((a) => a.sep
+  dockApps = currentDockApps();
+  dock.innerHTML = `<div class="os-dock-inner">${dockApps.map((a) => a.sep
     ? '<span class="os-dock-sep" aria-hidden="true"></span>'
-    : `<button type="button" class="os-dock-app" data-id="${a.id}" aria-label="${a.label}">
+    : `<button type="button" class="os-dock-app${a.tile ? ' is-logo' : ''}" data-id="${a.id}" aria-label="${a.label}">
          <span class="os-dock-tip">${a.label}</span>
          <img src="${a.icon}" alt="" decoding="async">
          <span class="os-dock-dot" aria-hidden="true"></span>
@@ -826,7 +841,7 @@ function initDock(ctx) {
   on(dock, 'click', (e) => {
     const btn = e.target.closest('.os-dock-app');
     if (!btn) return;
-    const app = DOCK_APPS.find((a) => a.id === btn.dataset.id);
+    const app = dockApps.find((a) => a.id === btn.dataset.id);
     if (!app) return;
 
     btn.classList.add('bouncing');
@@ -836,6 +851,7 @@ function initDock(ctx) {
     if (app.href) { window.open(app.href, '_blank', 'noopener'); return; }
     if (app.target) { jumpToFolder(app.target); return; }
     if (app.action === 'mail') { openMail(); return; }
+    if (app.action === 'cv') { openWordDoc(); return; }
     if (app.action === 'focus-terminal') {
       const win = document.getElementById('tech-file-tree');
       win?.classList.remove('minimized');

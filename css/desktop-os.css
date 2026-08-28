@@ -623,9 +623,30 @@
   .macos-menubar .menubar-left,
   .macos-menubar .menubar-right { display: none; }
 
+  /* The surface is min-height: calc(100vh - 28px), so it is a screenful tall
+     whatever the content does. With the dock in normal flow that left it
+     stranded directly under the file tree with a third of the screen of empty
+     wallpaper beneath — a dock floating in the middle of the desktop.
+     margin-top: auto in a flex column drops it to the bottom of the surface
+     when there is room and lets it sit after the content when there is not,
+     which is what absolute positioning would have got wrong. */
+  /* Collapsing the menubar above took 28px of height out of the page, and that
+     28px was quietly doing a job: it pushed the surface clear of the nav pill,
+     which is fixed at top: 1.5rem. Without it the icons sat under the pill and
+     it took their taps. responsive.css already corrects this, but only below
+     640px — the same correction is needed everywhere the pill floats, which is
+     everywhere below the desktop breakpoint. */
+  .desktop-surface {
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(4.75rem + env(safe-area-inset-top, 0px));
+  }
+  .desktop-surface > .desktop-icons,
+  .desktop-surface > .terminal-window { flex: 0 0 auto; }
+
   /* A compact single row that scrolls sideways rather than stacking into a
      block two hundred pixels tall. */
-  .os-dock { margin: 14px auto 4px; max-width: 100%; }
+  .os-dock { margin: 14px auto 4px; max-width: 100%; margin-top: auto; }
   .os-dock-inner {
     flex-wrap: nowrap;
     overflow-x: auto;

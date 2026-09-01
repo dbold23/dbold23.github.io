@@ -534,7 +534,9 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  /* The gutter is a share of the column, not a constant. At 1920 a flat 2rem
+     left the card sitting in 277px of dead space it had no way to use. */
+  padding: 3rem clamp(1.5rem, 2.2vw, 3rem);
 }
 
 /* The hero is not a stop. The footer is.
@@ -642,17 +644,29 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
   z-index: 10;
 }
 
-/* ---- Forest Cards (glassmorphism) ---- */
+/* ---- Forest Cards ----
+   Not a panel. A glass box 580px wide, floated in the middle of an 857px
+   column, read as a chip sitting on top of the landscape rather than as part
+   of it — and widening the box only made a bigger box. So the box goes: no
+   fill, no border, no radius, no blur, and no padding for any of them to
+   enclose. The column is the frame.
+
+   What holds the writing together instead is the rule the hero paragraph
+   already uses (.forest-philosophy, above) and the type's own shadow, which
+   has to work harder now that nothing sits between it and the tree layers —
+   one tight radius for edge contrast, one wide one to settle the leaf drift
+   behind the text. Dropping the backdrop-filter is also 16px of live blur off
+   every frame the map is animating in.
+
+   The 960px cap is all that is left of the old max-width, and only so an
+   ultrawide cannot run the measure past what is comfortable to read. */
 .forest-card {
-  background: rgba(15, 42, 30, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(74, 155, 106, 0.25);
-  border-radius: 16px;
-  padding: 2.5rem;
-  max-width: 580px;
+  max-width: 60rem;
   width: 100%;
+  padding-left: 1.4rem;
+  border-left: 3px solid var(--forest-bright);
   color: var(--white);
+  text-shadow: 0 1px 2px rgba(6, 20, 12, 0.85), 0 2px 18px rgba(6, 20, 12, 0.75);
 
   /* Slide-in animation */
   opacity: 0;
@@ -666,36 +680,45 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
 }
 
 .forest-card .card-img-wrap {
-  margin: -2.5rem -2.5rem 1.5rem -2.5rem;
-  border-radius: 16px 16px 0 0;
+  /* No card edge left to bleed to, so it stops being a header band and goes
+     back to being a photograph standing in the column. */
+  margin: 0 0 1.5rem;
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .forest-card .card-img-wrap img {
   width: 100%;
-  height: 230px;
+  /* Bounded by the window's height as well as its width: the card is
+     snap-centred, so one that outgrows the window loses its top and its bottom
+     at once, and a 1366x768 laptop is wide enough to ask for a band it has no
+     vertical room to show. */
+  height: min(clamp(230px, 15vw, 320px), 26vh);
   object-fit: cover;
   display: block;
 }
 
 .forest-card h3 {
-  font-size: 1.55rem;
+  /* With the panel gone the type is the only thing carrying the column, so it
+     is set to be read across a half-screen rather than inside a 580px chip. */
+  font-size: clamp(1.7rem, 0.2rem + 1.85vw, 3rem);
   font-weight: 700;
   color: var(--forest-bright);
-  margin-bottom: 0.8rem;
+  /* em, so the gaps grow with the type rather than tightening against it. */
+  margin-bottom: 0.55em;
 }
 
 .forest-card p {
-  font-size: 1.05rem;
-  line-height: 1.65;
+  font-size: clamp(1.1rem, 0.28rem + 1.02vw, 1.5rem);
+  line-height: 1.6;
   color: rgba(255,255,255,0.8);
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.75em;
 }
 
 .forest-card ul {
-  margin: 0.5rem 0 1rem 1.2rem;
-  font-size: 0.98rem;
-  line-height: 1.6;
+  margin: 0.8em 0 1.2em 1.1em;
+  font-size: clamp(1rem, 0.3rem + 0.87vw, 1.35rem);
+  line-height: 1.55;
   color: rgba(255,255,255,0.75);
 }
 
@@ -706,16 +729,42 @@ html:has(.forest-map-sticky[data-camera="exploring"]) {
 .forest-card .card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+
+/* A card ends and the rest of the window is unbroken forest, which reads as the
+   end of the section rather than as the gap before the next stop — there is no
+   scrollbar to argue otherwise, because the snap container hides one screen at
+   a time. So the chevron the overview step uses to teach the gesture repeats
+   under every card to say the gesture still applies. The last card keeps it:
+   what comes after that one is the footer, which is also more.
+
+   Deliberately the same glyph and the same bob as .scroll-prompt above, at a
+   size that reads as a repeat of the instruction rather than a new control. */
+.forest-card .card-scroll-cue {
+  display: flex;
+  align-items: center;
+  margin-top: 1.6rem;
+  color: var(--forest-bright);
+  opacity: 0.7;
+  animation: scrollPromptBob 2s ease-in-out infinite;
+}
+
+.forest-card .card-scroll-cue svg {
+  display: block;
+  /* No shadow: the card's block shadow is for type, and on a 2px stroke it
+     just smears the arrow. */
+  filter: none;
 }
 
 .forest-card .tag {
   background: rgba(74, 155, 106, 0.2);
   color: var(--forest-bright);
-  font-size: 0.75rem;
+  font-size: clamp(0.78rem, 0.6rem + 0.25vw, 1rem);
   font-weight: 600;
-  padding: 0.25rem 0.65rem;
+  padding: 0.3em 0.85em;
   border-radius: 20px;
   border: 1px solid rgba(74, 155, 106, 0.2);
+  text-shadow: none;
 }

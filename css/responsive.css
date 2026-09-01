@@ -37,8 +37,8 @@
   /* Forest map — tablet */
   .forest-map-sticky { width: 50%; }
   .forest-step { margin-left: 50%; }
-  .forest-card { max-width: 360px; padding: 1.5rem; }
-  .forest-card .card-img-wrap { margin: -1.5rem -1.5rem 1.2rem -1.5rem; }
+  .forest-card { max-width: 100%; padding-left: 1.1rem; }
+  .forest-card .card-img-wrap { margin-bottom: 1.2rem; }
   .forest-card .card-img-wrap img { height: 180px; }
   .forest-card h3 { font-size: 1.3rem; }
   .forest-card p { font-size: 0.9rem; }
@@ -552,12 +552,13 @@
    cards ran 466-780px against a reading window of 280px.
 
    So the cards lose the weight they do not need at this width: the image is a
-   third of some of them, the padding was 24px a side, and the type was set for
-   a 360px desktop column. */
+   third of some of them, and the type was set for a 360px desktop column. The
+   padding used to be the third item on that list; the box it belonged to is
+   gone now, and all that is left is enough offset to clear the rule. */
 @media (max-width: 640px) {
   .forest-card {
-    padding: 1rem;
-    border-radius: 12px;
+    padding-left: 0.9rem;
+    border-left-width: 2px;
   }
 
   /* The two cards that carry a photograph were the two that did not fit — the

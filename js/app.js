@@ -207,6 +207,15 @@ async function exitCurrentPath() {
   const section = document.getElementById(`path-${path}`);
   if (section) section.classList.remove('active');
 
+  // And the footer with it. Once the section is gone the footer is the only
+  // thing left in the document, so it stops being a footer and becomes the
+  // whole page — sitting at scroll 0, full height, straight behind an entrance
+  // overlay that is deliberately transparent through the middle. That is the
+  // "Let's Connect" showing through the branches on the way between two paths.
+  // It belongs to a path view, and mid-transition there is no path view;
+  // enterPath puts it back as soon as the new section is on screen.
+  if (footer) footer.classList.remove('visible');
+
   state.activePath = null;
 }
 

@@ -792,7 +792,7 @@ const DOCK_APPS = [
   { id: 'jorgensen', label: 'Jorgensen Lab',    icon: 'assets/jorgensen-lab-logo.avif', target: '#folder-jorgensen', tile: true },
   { id: 'jue',       label: 'Jue Lab',          icon: 'assets/jue-lab-logo.avif',       target: '#folder-jue', tile: true },
   { id: 'noaa',      label: 'NOAA Sat Hack',    icon: 'assets/JPSS-1_logo-removebg-preview.png', target: '#folder-noaa', tile: true },
-  { id: 'github',    label: 'GitHub',           icon: 'assets/github logo no background_sticker.png', href: 'https://github.com/dbold23', external: true, tile: true },
+  { id: 'github',    label: 'GitHub',           icon: 'assets/git hub logo no background.png', href: 'https://github.com/dbold23', external: true, tile: true },
   { sep: true },
   { id: 'mail',      label: 'Mail',             icon: 'assets/icon-mail.svg',           action: 'mail' },
 ];

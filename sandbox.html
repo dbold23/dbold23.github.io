@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Field Sites | Daniel Sambold</title>
+    <meta name="description" content="A satellite map sandbox: pan and zoom real imagery of every field site, lab and study area behind the research.">
+
+    <link rel="canonical" href="https://dbold23.github.io/sandbox.html">
+    <meta name="theme-color" content="#05121f">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dbold23.github.io/sandbox.html">
+    <meta property="og:title" content="Field Sites | Daniel Sambold">
+    <meta property="og:description" content="A satellite map sandbox: pan and zoom real imagery of every field site, lab and study area behind the research.">
+    <meta property="og:image" content="https://dbold23.github.io/assets/social-preview.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Tiles come from Esri; warm the connection before Leaflet asks for them -->
+    <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+    <link rel="stylesheet" href="css/variables.css?v=20260816b">
+    <link rel="stylesheet" href="css/sandbox.css?v=20260816b">
+</head>
+<body class="sandbox-body">
+
+    <header class="sandbox-header">
+        <a class="sandbox-back" href="index.html">&larr; Portfolio</a>
+
+        <div class="sandbox-titles">
+            <h1 class="sandbox-title">Field Sites</h1>
+            <p class="sandbox-sub">Real satellite imagery. Drag to pan, scroll to zoom, or pick a site.</p>
+        </div>
+
+        <div class="sandbox-controls">
+            <div class="seg" role="group" aria-label="Base imagery">
+                <button type="button" class="ctl" data-basemap="satellite" aria-pressed="true">Satellite</button>
+                <button type="button" class="ctl" data-basemap="ocean" aria-pressed="false">Sea floor</button>
+            </div>
+
+            <button type="button" class="ctl ctl-outline is-on" id="labels-btn" aria-pressed="true">Labels</button>
+            <button type="button" class="ctl ctl-outline tour-btn" id="tour-btn" aria-pressed="false">
+                <span class="tour-dot" aria-hidden="true"></span>
+                <span class="tour-label">Guided tour</span>
+            </button>
+            <button type="button" class="ctl ctl-outline" id="home-btn">Reset view</button>
+        </div>
+    </header>
+
+    <div class="sandbox-shell">
+        <nav class="site-rail" id="site-rail" aria-label="Field sites"></nav>
+
+        <div class="map-wrap">
+            <div id="map" role="application" aria-label="Satellite map of field sites. Drag to pan, scroll or use the zoom buttons to zoom."></div>
+
+            <div class="map-readout" aria-hidden="true">
+                <span id="readout-center">&mdash;</span>
+                <span id="readout-zoom">&mdash;</span>
+            </div>
+
+            <aside class="site-card" id="site-card" aria-live="polite" hidden></aside>
+        </div>
+    </div>
+
+    <script src="vendor/leaflet/leaflet.js"></script>
+    <script type="module" src="js/sandbox-map.js?v=20260816b"></script>
+</body>
+</html>

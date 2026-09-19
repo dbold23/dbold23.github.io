@@ -206,7 +206,7 @@
    the whole dock breathe every time the pointer crossed it. */
 .os-dock-app {
   position: relative;
-  width: 50px; height: 50px;
+  width: 58px; height: 58px;
   padding: 0; border: 0; background: none; cursor: pointer;
   transform: translateY(0);
   transform-origin: bottom center;
@@ -248,7 +248,7 @@
 @media (max-width: 968px) {
   .os-dock { position: static; transform: none; margin: 18px auto 4px; max-width: 100%; }
   .os-dock-inner { flex-wrap: wrap; justify-content: center; }
-  .os-dock-app { width: 44px; height: 44px; }
+  .os-dock-app { width: 50px; height: 50px; }
   .os-dock-app:hover { transform: none; }
   .os-dock-tip { display: none; }
 }
@@ -662,7 +662,7 @@
     scrollbar-width: none;
   }
   .os-dock-inner::-webkit-scrollbar { display: none; }
-  .os-dock-app { width: 38px; height: 38px; flex: 0 0 auto; }
+  .os-dock-app { width: 44px; height: 44px; flex: 0 0 auto; }
   .os-dock-app img { border-radius: 9px; }
   .os-dock-dot { bottom: -5px; width: 3px; height: 3px; }
 
@@ -718,17 +718,22 @@
 
 /* Every dock button is the same box, but the artwork inside is not the same
    shape. The app icons are square tiles that fill it; the lab and GitHub marks
-   are bare logos on transparency, and JPSS-1 is 262x176 — object-fit: contain
-   letterboxes that to 38x25, so it reads as a smaller icon sitting in a row of
-   bigger ones. Giving the bare logos a tile of their own makes every item the
-   same size, and gives the dark GitHub mark something to sit on. */
+   are bare logos on transparency, and JPSS-1 is wider than it is tall, so
+   object-fit: contain letterboxes it. Giving the bare logos a tile of their
+   own makes every item the same size, and gives the dark GitHub mark something
+   to sit on.
+
+   The padding here costs readable artwork twice over, since these marks carry
+   ring text that is already at the edge of legible at dock size. The source
+   files are trimmed to their ink, so the tile only needs enough inset to keep
+   the art off the rounded corner. */
 .os-dock-app.is-logo img {
   background: #f4f7fa;
   border-radius: 11px;
-  padding: 5px;
+  padding: 2px;
   box-sizing: border-box;
 }
 
 @media (max-width: 968px) {
-  .os-dock-app.is-logo img { border-radius: 9px; padding: 4px; }
+  .os-dock-app.is-logo img { border-radius: 9px; padding: 1px; }
 }

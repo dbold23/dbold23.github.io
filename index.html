@@ -1304,8 +1304,8 @@
                                           ┌───────────────┐   ┌──────────────┐
 ┌──────────────┐   ┌──────────────────┐   │ YOLO pose     │──▶│ morphometrics│
 │ dorsal cams, │──▶│ SharkScar-       │──▶│ 16 keypoints  │   │ body conditn │
-│ ROV + boat   │   │ Annotator        │   │ 0.96 box mAP50│   └──────────────┘
-│ video        │   │ 15-pt skeleton   │   └───────────────┘
+│ ROV + boat   │   │ Annotator        │   │ .74 pose mAP50│   └──────────────┘
+│ video        │   │ 16-pt skeleton   │   └───────────────┘
 └──────────────┘   └────────┬─────────┘   ┌───────────────┐   ┌──────────────┐
                             │             │ PorpoiseID    │──▶│ resightings, │
                             └────────────▶│ ArcFace re-ID │   │ catalogues   │
@@ -1348,17 +1348,17 @@
                             <div class="file-content">
                                 <div class="file-badge">1st Place, NOAA Satellite Hack 2025</div>
                                 <img src="assets/NOAA SAT HACK SLIDE OF SUMMARY_compressed.jpg" alt="NOAA SatHack Summary" loading="lazy">
-                                <p>Real-time HAB monitoring combining NOAA VIIRS satellite data, buoy measurements, and ensemble ML. Built 3 custom REST APIs, dual dashboards for growers and public safety, and automated alert system.</p>
+                                <p>Harmful algal bloom monitoring built for the hackathon: NOAA VIIRS satellite data and pier measurements behind dashboards for shellfish growers and public safety. The hackathon model was later found to leak its own label, so the project was rebuilt as an honest forecast.</p>
                                 <ul>
-                                    <li>Automated NOAA ERDDAP fetching, 3D spatiotemporal datacube</li>
-                                    <li>XGBoost + CNN-LSTM + Kernel SVM ensemble (86%+ accuracy)</li>
-                                    <li>Species-specific bioaccumulation timelines</li>
-                                    <li>Historical validation against 1998 &amp; 2015 bloom events</li>
+                                    <li>Weekly <em>Pseudo-nitzschia</em> and domoic acid forecasts for Santa Cruz and Monterey wharves, 1 to 3 weeks ahead</li>
+                                    <li>Trained on 2011&ndash;2025 CalHABMAP samples and SCCOOS ERDDAP pier data</li>
+                                    <li>Leave-one-year-out AUC 0.76&ndash;0.89, reported against the naive &ldquo;same as this week&rdquo; baseline</li>
+                                    <li>Dashboards for growers and public safety</li>
                                 </ul>
                                 <div class="card-tags">
                                     <span class="tag">Python/Flask</span>
                                     <span class="tag">XGBoost</span>
-                                    <span class="tag">CNN-LSTM</span>
+                                    <span class="tag">ERDDAP</span>
                                     <span class="tag">NOAA VIIRS</span>
                                 </div>
                             </div>
@@ -1441,16 +1441,16 @@
                                             </div>
                                             <!-- Part descriptions (swap on click) -->
                                             <div class="hw-part-desc" data-for="overview">
-                                                <p>Custom-built edge station: Raspberry Pi 5 + RTL-SDR Blog V4 + SIM7028 NB-IoT HAT. Each unit operates autonomously in the field for weeks, detecting VHF wildlife tags across the 151 MHz band.</p>
+                                                <p>Custom-built edge station: Raspberry Pi 5 + RTL-SDR Blog V4 + SIM7028 NB-IoT HAT. Each unit runs unattended in the field, detecting VHF wildlife tags in the 151 MHz band. One ran 42 days at Elkhorn Slough, detecting and queuing locally through a cellular outage without losing an event.</p>
                                             </div>
                                             <div class="hw-part-desc" data-for="pi" style="display:none;">
-                                                <p><strong>Raspberry Pi 5</strong>: The brain of each relay station. Runs the 927-line FFT detection engine, Flask dashboard, and offline event queue. Processes 256K IQ samples per scan cycle. Connects to the SDR via USB and the cellular HAT via GPIO.</p>
+                                                <p><strong>Raspberry Pi 5</strong>: The brain of each relay station. Runs the detection chain (about 4,500 lines: STFT survey, matched filter, period fold, pattern validator), a local Flask status page and the offline event queue. Reads 256K IQ samples, 128 ms of radio, at a time. Connects to the SDR via USB and the cellular HAT via GPIO.</p>
                                             </div>
                                             <div class="hw-part-desc" data-for="sdr" style="display:none;">
-                                                <p><strong>RTL-SDR Blog V4</strong>: Software Defined Radio tuned to 151 MHz VHF wildlife band. Auto-calibration sweeps gain from 15&ndash;45 dB on boot to find optimal sensitivity. Feeds raw IQ samples to the Pi for real-time spectral analysis.</p>
+                                                <p><strong>RTL-SDR Blog V4</strong>: Software Defined Radio tuned to 151 MHz VHF wildlife band. On boot it tests gains from 10 to 49.6 dB and keeps the highest one that does not clip. Feeds raw IQ samples to the Pi for real-time spectral analysis.</p>
                                             </div>
                                             <div class="hw-part-desc" data-for="hat" style="display:none;">
-                                                <p><strong>SIM7028 NB-IoT HAT</strong>: Cellular modem for field deployment without WiFi. Communicates via AT commands over serial (/dev/ttyAMA0). Sends ~650 byte detection alerts. Automatic WiFi&rarr;NB-IoT failover with exponential backoff.</p>
+                                                <p><strong>SIM7028 NB-IoT HAT</strong>: Cellular modem for field deployment without WiFi. Communicates via AT commands over serial (/dev/ttyAMA0), posting batches of up to 50 compact events over HTTP. Automatic WiFi&rarr;NB-IoT failover with exponential backoff.</p>
                                             </div>
                                         </div>
                                         <div class="card-tags">
@@ -1467,7 +1467,7 @@
                                     <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
                                         <span class="file-name">detector.py</span>
-                                        <span class="file-desc">FFT Signal Processing</span>
+                                        <span class="file-desc">Detection Chain</span>
                                     </button>
                                     <div class="file-content">
                                         <div class="file-gallery">
@@ -1475,19 +1475,19 @@
                                             <img src="assets/relay-channel-heatmap.png" alt="Channel heatmap: pulse detection across frequencies" loading="lazy">
                                             <img src="assets/relay-snr-comparison.png" alt="SNR comparison at different signal strengths" loading="lazy">
                                         </div>
-                                        <p>927-line multi-channel FFT-based detection engine. Processes 256K IQ samples through adaptive baseline tracking, pattern validation with ghost filtering, and coefficient-of-variation analysis to distinguish true repeating tags (CV &lt; 0.15) from noise.</p>
+                                        <p>A four-stage detection chain, rebuilt in September 2026. On synthetic noise it confirms a tag at &minus;18 to &minus;21 dB in-channel SNR, against +9 to +12 dB for the earlier FFT detector: roughly 30 dB more sensitive. Field validation of the new chain is still to come.</p>
                                         <ul>
-                                            <li>Multi-channel FFT across 151.19&ndash;151.45 MHz (20 kHz channels)</li>
-                                            <li>Adaptive baseline with rolling deque for noise floor tracking</li>
-                                            <li>Pulse pattern validation: handles missed pulses via 2x&ndash;3x interval estimation</li>
-                                            <li>Tag locking at 90%+ confidence, which skips validation for confirmed detections</li>
-                                            <li>Bandwidth filtering rejects broadband noise (&gt;15 kHz signal width)</li>
+                                            <li>STFT survey: 500 Hz bins, a pulse-length sliding mean, each bin normalised by its own learnt level, and a CFAR gate fitted from the station's own noise</li>
+                                            <li>Per-tag matched filter with a predicted-arrival tracking gate</li>
+                                            <li>Acquisition fold: folds every carrier bin at the beacon period, so a tag too weak to see in one pulse still locks</li>
+                                            <li>Period fold with a self-calibrating gate (shuffled surrogates of the station's own data, Gumbel fit)</li>
+                                            <li>Pattern validator: intervals folded onto the beacon period, ghost filtering, CV &lt; 0.15, lock at 10 pulses and 90% confidence</li>
                                         </ul>
                                         <div class="card-tags">
-                                            <span class="tag">NumPy FFT</span>
-                                            <span class="tag">Scipy</span>
+                                            <span class="tag">NumPy</span>
+                                            <span class="tag">Matched Filter</span>
+                                            <span class="tag">CFAR</span>
                                             <span class="tag">DSP</span>
-                                            <span class="tag">Adaptive Thresholding</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1629,7 +1629,7 @@
                                                 <div class="dash-footer">RelayStation v2 &middot; Radio Tag Detection System</div>
                                             </div>
                                         </div>
-                                        <p>Dual dashboard architecture: local Flask station dashboard for real-time tag detection and system health, plus a centralized FastAPI server with 35+ REST endpoints, 8-table SQLite schema, HMAC auth, and Leaflet geographic mapping for multi-station fleet monitoring.</p>
+                                        <p>Two layers: a local Flask status page on each station, and a central FastAPI server for the fleet with about 85 REST endpoints, a 19-table SQLite schema, per-station API keys with remote rotation, ntfy push alerts, over-the-air code updates, remote diagnostics, range-walk calibration and Leaflet maps.</p>
                                         <div class="card-tags">
                                             <span class="tag">Flask</span>
                                             <span class="tag">FastAPI</span>
@@ -1661,7 +1661,7 @@
    │Offline│ ← SQLite queue
    │Queue  │   (10K events max)
    └───────┘</div>
-                                        <p>Automatic WiFi-to-NB-IoT failover for network resilience. SQLite-backed offline queue buffers detections during connectivity gaps. Batched events use single-letter JSON keys to achieve ~650 bytes per cellular alert. Exponential backoff (2s&rarr;60s) with connection state machine tracking wifi/nbiot/offline states.</p>
+                                        <p>Automatic WiFi-to-NB-IoT failover for network resilience. SQLite-backed offline queue buffers detections during connectivity gaps. Batched events use single-letter JSON keys to keep cellular uploads small. Exponential backoff (2s&rarr;60s per request) with connection state machine tracking wifi/nbiot/offline states.</p>
                                         <div class="card-tags">
                                             <span class="tag">NB-IoT</span>
                                             <span class="tag">AT Commands</span>
@@ -1673,7 +1673,7 @@
 
                                 <!-- range-tests.md - Field Deployment -->
                                 <div class="tree-file">
-                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
                                         <span class="file-name">range-tests.md</span>
                                         <span class="file-desc">Field Deployment</span>
@@ -1683,36 +1683,36 @@
                                             <img src="assets/relay-range-map.png" alt="Wildlife tag detection map: antenna range test results" loading="lazy">
                                             <img src="assets/relay-antenna-analysis.avif" alt="Antenna beam pattern and directional analysis" width="1600" height="792" loading="lazy">
                                         </div>
-                                        <p>Field-tested at Monterey Bay coastal sites. Yagi directional antenna achieves 1,700+ ft max range with 62% detection rate. Auto-calibration sweep optimizes SDR gain (15&ndash;45 dB) on boot. Watchdog daemon monitors system health every 60s with 3-strike escalation policy.</p>
+                                        <p>Three cellular stations built; one is in the field at Elkhorn Slough, with a solar standalone variant (e-ink display, USB export, no network needed) built for the Gal&aacute;pagos. The maps here are from an early Yagi range test run with the previous detector; an outdoor range walk with the new chain is next. A watchdog checks system health every 60 s with a 3-strike escalation policy, and stations update themselves over the air with staged apply and rollback.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
-                                                <div class="stat-val">1,700 ft</div>
-                                                <div class="stat-label">Max Range</div>
+                                                <div class="stat-val">&minus;21 dB</div>
+                                                <div class="stat-label">Tag Lock SNR (synthetic)</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">62%</div>
-                                                <div class="stat-label">Detection Rate</div>
+                                                <div class="stat-val">42 days</div>
+                                                <div class="stat-label">Longest Unattended Run</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">~30&deg;</div>
-                                                <div class="stat-label">Beamwidth</div>
+                                                <div class="stat-val">10K</div>
+                                                <div class="stat-label">Offline Queue Events</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">~650 B</div>
-                                                <div class="stat-label">Per Alert</div>
-                                            </div>
-                                            <div class="stat-metric">
-                                                <div class="stat-val">3&ndash;50+</div>
-                                                <div class="stat-label">Stations</div>
+                                                <div class="stat-val">3</div>
+                                                <div class="stat-label">Cellular Stations Built</div>
                                             </div>
                                         </div>
                                         <div class="card-tags">
                                             <span class="tag">Field Testing</span>
                                             <span class="tag">Yagi Antenna</span>
-                                            <span class="tag">Auto-Calibration</span>
                                             <span class="tag">Watchdog</span>
+                                            <span class="tag">OTA Updates</span>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="tree-link">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <a href="https://github.com/dbold23/relaystation-skeleton" target="_blank" rel="noopener">&rarr; github.com/dbold23/relaystation-skeleton (public outline)</a>
                                 </div>
                             </div>
                         </div>
@@ -1735,7 +1735,7 @@
                                     <div class="file-content">
                                         <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="YOLOv8 pose detection on white shark (early 5-keypoint model)"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
                                         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem; margin-bottom:1rem; font-style:italic;">Shown: first-generation 5-keypoint model. Current pipeline uses the 16-keypoint schema described below.</p>
-                                        <p>YOLOv8-pose model trained on 16 anatomical keypoints: 9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips, for white shark body condition assessment from underwater video. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
+                                        <p>YOLOv8-pose model trained on 16 anatomical keypoints: 9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips and fin insertions, for white shark body measurement from underwater video. Extracts angle-tolerant morphometric ratios including total length, fork length and head-to-total ratio across 4 California research sites; a body condition index is in development. The current model scores 0.74 pose mAP50 on 163 held-out frames and averages 12.4 px keypoint error on 414 human-labelled frames.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
                                                 <div class="stat-val">16-pt</div>
@@ -1746,8 +1746,8 @@
                                                 <div class="stat-label">Videos</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">0.96</div>
-                                                <div class="stat-label">Box mAP50</div>
+                                                <div class="stat-val">0.74</div>
+                                                <div class="stat-label">Pose mAP50</div>
                                             </div>
                                             <div class="stat-metric">
                                                 <div class="stat-val">4</div>
@@ -1767,10 +1767,10 @@
                                     <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
                                         <span class="file-name">pipeline.yaml</span>
-                                        <span class="file-desc">8-Stage Active Learning</span>
+                                        <span class="file-desc">Active Learning Pipeline</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Semi-supervised 8-stage pipeline: video cataloging &rarr; frame extraction &rarr; seed annotation &rarr; model training &rarr; active learning selection &rarr; human correction &rarr; pseudo-label amplification &rarr; refinement. Processes 4,850 videos (661&nbsp;GB) spanning 2012&ndash;2026 across A&ntilde;o Nuevo, Aptos, Farallon Islands, and Point Reyes. Uncertainty + k-center diversity scoring selects the most informative frames for annotation, with pre-annotation from the current best model to accelerate human review.</p>
+                                        <p>Semi-supervised pipeline, designed in eight stages: video cataloging &rarr; frame extraction &rarr; seed annotation &rarr; model training &rarr; active learning selection &rarr; human correction &rarr; pseudo-label amplification &rarr; refinement. Active-learning rounds have run through four dataset versions; pseudo-labelling is next. Catalogs 4,850 videos (661&nbsp;GB) spanning 2012&ndash;2025 across A&ntilde;o Nuevo, Aptos, Farallon Islands, and Point Reyes. Uncertainty + k-center diversity scoring selects the most informative frames for annotation, with pre-annotation from the current best model to accelerate human review.</p>
                                         <div class="card-tags">
                                             <span class="tag">Active Learning</span>
                                             <span class="tag">Semi-Supervised</span>
@@ -1794,6 +1794,48 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Shark Pose 3D (nested sub-folder) -->
+                        <div class="tree-folder" id="folder-shark-pose-3d">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="folder-toggle" aria-expanded="false">
+                                <span class="folder-arrow">▶</span>
+                                <span class="folder-name">shark-pose-3d/</span>
+                                <span class="folder-desc">3D Body Shape from Video</span>
+                            </button>
+                            <div class="folder-children">
+                                <div class="tree-file">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
+                                    <button class="file-toggle">
+                                        <span class="file-name">README.md</span>
+                                        <span class="file-desc">Model Fitting</span>
+                                    </button>
+                                    <div class="file-content">
+                                        <p>Fits a parametric 3D white shark model (16-joint skeleton, PCA shape space) to ordinary underwater video, using the pose model's keypoints and SAM2 silhouettes, one individual at a time, then reads off length proportions and the girth profile. A full corpus pass fitted 1,022 video windows covering 250 individual sharks. Length proportions repeat across an individual's own clips to a 0.12% median coefficient of variation.</p>
+                                        <p>Absolute girth and volume are not quotable yet: against a known-truth control the fitter reads girth 7 to 12% high, and calibration against drone-measured sharks is the next step.</p>
+                                        <div class="stat-metrics">
+                                            <div class="stat-metric">
+                                                <div class="stat-val">250</div>
+                                                <div class="stat-label">Individuals Fitted</div>
+                                            </div>
+                                            <div class="stat-metric">
+                                                <div class="stat-val">0.12%</div>
+                                                <div class="stat-label">Length CV</div>
+                                            </div>
+                                        </div>
+                                        <div class="card-tags">
+                                            <span class="tag">3D Shape Model</span>
+                                            <span class="tag">SAM2</span>
+                                            <span class="tag">PyTorch</span>
+                                            <span class="tag">Analysis by Synthesis</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tree-link">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <a href="https://github.com/dbold23/shark-pose-3d-skeleton" target="_blank" rel="noopener">&rarr; github.com/dbold23/shark-pose-3d-skeleton (public outline)</a>
+                                </div>
+                            </div>
+                        </div>
                         <!-- PorpoiseID (nested sub-folder) -->
                         <div class="tree-folder" id="folder-porpoise-id">
                             <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
@@ -1814,11 +1856,11 @@
                                         <div class="file-gallery">
                                             <img src="assets/porpoise-match-example.png" alt="Porpoise dorsal fin match example showing query and top-5 candidates" loading="lazy">
                                         </div>
-                                        <p>Automated harbor porpoise individual identification from dorsal fin photos. SAM 2 segments the body, protrusion geometry extracts the fin, MegaDescriptor-L-384, chosen over DINOv2-base and a two-backbone ensemble on this catalogue, embeds the crop through an ArcFace head, and cosine similarity ranks the 198-individual catalog.</p>
+                                        <p>Automated harbor porpoise individual identification from dorsal fin photos. SAM 2 segments the body, protrusion geometry extracts the fin, the crop is embedded through an ArcFace head, and cosine similarity ranks the 198-individual catalog. MegaDescriptor-L-384 beat DINOv2-base and a two-backbone ensemble on a temporal split and is being swapped into the matcher.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
-                                                <div class="stat-val">93.0%</div>
-                                                <div class="stat-label">Rank-1, LOO</div>
+                                                <div class="stat-val">30.5%</div>
+                                                <div class="stat-label">Rank-1, Temporal</div>
                                             </div>
                                             <div class="stat-metric">
                                                 <div class="stat-val">198</div>
@@ -1829,8 +1871,8 @@
                                                 <div class="stat-label">Images</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">360/hr</div>
-                                                <div class="stat-label">Throughput</div>
+                                                <div class="stat-val">57.4%</div>
+                                                <div class="stat-label">Rank-5, Temporal</div>
                                             </div>
                                         </div>
                                         <div class="card-tags">
@@ -1853,7 +1895,7 @@
                                             <img src="assets/porpoise-cmc-curve.png" alt="Cumulative match characteristic curve" loading="lazy">
                                             <img src="assets/porpoise-accuracy-vs-gallery.png" alt="Accuracy vs gallery size showing more photos improve matching" loading="lazy">
                                         </div>
-                                        <p>Leave-one-out evaluation on individuals with &ge;5 sightings yields 93.0% rank-1 and 98.3% rank-5 accuracy. Temporal split (train &le;2022, test 2023+) gives 30.5% rank-1, which reflects the real challenge of fin shape change over years. Gallery size experiments confirm more photos per individual directly improve re-ID accuracy.</p>
+                                        <p>The honest test is temporal: train on photos through 2022, identify animals photographed in 2023 and later. MegaDescriptor scores 30.5% rank-1 and 57.4% rank-5 there, against 12.8% for the raw DINOv2 baseline; fin shape changes over years, and that is the real problem. A leave-one-out check reaches 93%, but its embedding head had seen the test photos, so it is not quoted as accuracy. Gallery size experiments confirm more photos per individual directly improve re-ID accuracy.</p>
                                         <div class="card-tags">
                                             <span class="tag">CMC Curve</span>
                                             <span class="tag">Leave-One-Out</span>
@@ -1869,12 +1911,11 @@
                                         <span class="file-desc">Gradio Web UI</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Gradio web interface for field researchers to upload dorsal fin photos and receive ranked identity matches. Includes catalog browsing with individual sighting histories, Dropbox integration for photo ingestion, and batch processing. Deployed on an 8-node Raspberry Pi Kubernetes cluster processing 360 images/hour.</p>
+                                        <p>Gradio web interface for field researchers to upload dorsal fin photos and receive ranked identity matches. Includes catalog browsing with individual sighting histories, Dropbox integration for photo ingestion, and batch processing.</p>
                                         <div class="card-tags">
                                             <span class="tag">Gradio</span>
                                             <span class="tag">Dropbox API</span>
-                                            <span class="tag">Kubernetes</span>
-                                            <span class="tag">Raspberry Pi</span>
+                                            <span class="tag">Batch Processing</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1897,23 +1938,23 @@
                                         <span class="file-desc">Flask + SAM2 Backend</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Full-stack Flask annotation platform for shark scar and morphometric data. SAM2 AI segmentation for body and scar detection, 15-point keypoint skeleton with auto-generation (click snout + caudal, remaining 13 points placed automatically), and 12-zone body diagram with 11 scar types. Multi-annotator consensus scoring with weighted voting by experience, proficiency, and confidence tiers.</p>
+                                        <p>Full-stack Flask annotation platform for shark scar and morphometric data. SAM2 AI segmentation for body and scar detection, 16-point keypoint skeleton with auto-generation (click snout and caudal notch, the rest placed automatically, then refine), a 14-zone body diagram with 12 scar types, and scar tracks that follow one mark across frames for a second rater to verify. Multi-annotator consensus is count-based agreement per scar, with confirmed, probable and disputed states; experience and proficiency weights only break ties.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
-                                                <div class="stat-val">15-pt</div>
+                                                <div class="stat-val">16-pt</div>
                                                 <div class="stat-label">Skeleton</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">12</div>
+                                                <div class="stat-val">14</div>
                                                 <div class="stat-label">Body Zones</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">11</div>
+                                                <div class="stat-val">12</div>
                                                 <div class="stat-label">Scar Types</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">5&ndash;7</div>
-                                                <div class="stat-label">Annotators</div>
+                                                <div class="stat-val">6</div>
+                                                <div class="stat-label">Export Formats</div>
                                             </div>
                                         </div>
                                         <div class="card-tags">
@@ -1933,8 +1974,8 @@
                                         <span class="file-desc">Body Zone Diagram</span>
                                     </button>
                                     <div class="file-content">
-                                        <img src="assets/shark-annotator-zones.png" alt="12-zone shark body diagram for anatomical scar location" loading="lazy">
-                                        <p>Interactive 12-zone SVG body diagram for precise anatomical scar placement. Each zone is clickable and color-coded. Scar annotations include type classification, confidence rating (1&ndash;5 stars), side (left/right/dorsal/ventral), and free-text notes. Auto-save triggers every 5 minutes with unsaved-changes browser guard.</p>
+                                        <img src="assets/shark-annotator-zones.png" alt="Shark body zone diagram for anatomical scar location" loading="lazy">
+                                        <p>Interactive 14-zone SVG body diagram for precise anatomical scar placement, including dorsal and ventral bands, the belly and each fin. Each zone is clickable and color-coded. Scar annotations include type classification, confidence rating (1&ndash;5 stars), side (left or right), and free-text notes. Auto-save triggers every 5 minutes with unsaved-changes browser guard.</p>
                                         <div class="card-tags">
                                             <span class="tag">SVG</span>
                                             <span class="tag">Interactive</span>
@@ -1944,13 +1985,13 @@
                                 </div>
                                 <!-- exports.py - Data Export -->
                                 <div class="tree-file">
-                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
                                         <span class="file-name">exports.py</span>
                                         <span class="file-desc">Multi-Format Export</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Export pipeline supporting COCO JSON, Google Forms CSV, Keypoint CSV (wide format), and Google Sheets (3-tab: Scars, Keypoints, Admin Flags) with auto-sync on every annotation save. Google Drive integration auto-resolves video IDs with 3-tier resolution (local &rarr; cached &rarr; Drive). Deployed at <a href="https://annotate.shark-id.org" target="_blank" rel="noopener">annotate.shark-id.org</a> on AWS EC2 with Docker Compose and nginx reverse proxy.</p>
+                                        <p>Export pipeline supporting COCO JSON, Google Forms CSV, Keypoint CSV (wide format), full JSON, Google Sheets (3-tab: Scars, Keypoints, Admin Flags) with auto-sync on every annotation save, and a Darwin Core Archive ready for OBIS and GBIF. Google Drive integration auto-resolves video IDs with 3-tier resolution (local &rarr; cached &rarr; Drive). Deployed at <a href="https://annotate.shark-id.org" target="_blank" rel="noopener">annotate.shark-id.org</a> on AWS EC2 with Docker Compose and nginx reverse proxy.</p>
                                         <div class="card-tags">
                                             <span class="tag">Google Sheets API</span>
                                             <span class="tag">Google Drive API</span>
@@ -1959,6 +2000,10 @@
                                             <span class="tag">nginx</span>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="tree-link">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <a href="https://github.com/dbold23/shark-scar-annotator-skeleton" target="_blank" rel="noopener">&rarr; github.com/dbold23/shark-scar-annotator-skeleton (public outline)</a>
                                 </div>
                             </div>
                         </div>
@@ -1978,7 +2023,7 @@
                                         <span class="file-desc">Particle Filter + FFBS</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Sequential Monte Carlo particle filter with a forward-filter backward-sample smoother. Dead reckoning from accelerometer and magnetometer data drifts without bound; GPS and acoustic fixes enter as observations and the backward pass redistributes the correction across the whole track rather than snapping it at each fix. Bathymetry enters as a constraint, so a reconstructed track cannot cross land.</p>
+                                        <p>Sequential Monte Carlo particle filter with a forward-filter backward-sample smoother. Dead reckoning from accelerometer and magnetometer data drifts without bound; GPS and acoustic fixes enter as observations and the backward pass redistributes the correction across the whole track rather than snapping it at each fix. A water mask and the bathymetry enter as constraints, so a reconstructed track cannot cross land or sit deeper than the seafloor.</p>
                                         <div class="card-tags">
                                             <span class="tag">Particle Filter</span>
                                             <span class="tag">FFBS</span>
@@ -1993,7 +2038,7 @@
                                         <span class="file-desc">Interchange Formats</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>A reconstructed track is only useful if it leaves the project. Readers and writers for CF-1.8 NetCDF, Movebank and GeoJSON, so a track can go into a national archive, a movement-ecology repository or a GIS without a bespoke converter. DeepLabCut and SLEAP keypoint exports come in the other direction as optical ground truth.</p>
+                                        <p>A reconstructed track is only useful if it leaves the project. It exports to CF-1.8 NetCDF, Movebank CSV and GeoJSON, so a track can go into a national archive, a movement-ecology repository or a GIS without a bespoke converter. DeepLabCut and SLEAP keypoint exports come in the other direction as optical ground truth.</p>
                                         <div class="card-tags">
                                             <span class="tag">CF-1.8 NetCDF</span>
                                             <span class="tag">Movebank</span>
@@ -2004,7 +2049,7 @@
                                     </div>
                                 </div>
                                 <div class="tree-file">
-                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
                                         <span class="file-name">eval/splits.py</span>
                                         <span class="file-desc">Subject-Level Splitting</span>
@@ -2017,6 +2062,10 @@
                                             <span class="tag">Macro-F1</span>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="tree-link">
+                                    <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└──</div>
+                                    <a href="https://github.com/dbold23/anchor-track-skeleton" target="_blank" rel="noopener">&rarr; github.com/dbold23/anchor-track-skeleton (public outline)</a>
                                 </div>
                             </div>
                         </div>
@@ -2048,7 +2097,7 @@
                                                 <div class="stat-label">Species</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">6</div>
+                                                <div class="stat-val">5</div>
                                                 <div class="stat-label">LLM Backends</div>
                                             </div>
                                             <div class="stat-metric">
@@ -2122,7 +2171,7 @@
                                 <span class="file-desc">Schema Evolution, 10 Steps</span>
                             </button>
                             <div class="file-content">
-                                <p>Ten SQL Server migrations with rollback scripts, restructuring annotations into an observation, localization and geometry hierarchy. Several contributors can now attach geometry to the same animal while license, observer and review state stay attached to each contribution rather than to the animal.</p>
+                                <p>Ten SQL Server migrations (three with rollback scripts), restructuring annotations into an observation, localization and geometry hierarchy. Several contributors can now attach geometry to the same animal while license, observer and review state stay attached to each contribution rather than to the animal.</p>
                                 <div class="card-tags">
                                     <span class="tag">SQL Server</span>
                                     <span class="tag">Flyway</span>
@@ -2144,10 +2193,6 @@
                                         <div class="stat-val">17</div>
                                         <div class="stat-label">Unit Tests</div>
                                     </div>
-                                    <div class="stat-metric">
-                                        <div class="stat-val">3</div>
-                                        <div class="stat-label">Export Formats</div>
-                                    </div>
                                 </div>
                                 <div class="card-tags">
                                     <span class="tag">Java 21</span>
@@ -2164,10 +2209,10 @@
                                 <span class="file-desc">Corpus Wide Mask Generation</span>
                             </button>
                             <div class="file-content">
-                                <p>Converts existing bounding boxes into segmentation masks across the whole database, scaling from a SAM 2 pilot to a full corpus SAM 3 run. Sharded by image over a WAL mode SQLite manifest used as a lock free work queue: workers claim shards with BEGIN IMMEDIATE leases so a dead worker's shards are reclaimed automatically, commits are temp and rename so a crash never marks a half written shard complete, and one long lived worker per GPU keeps the model loaded once.</p>
+                                <p>Converts existing bounding boxes into segmentation masks across the whole database with SAM 2.1: 1,169,279 masks graded over about 409,000 images, 869,377 of them auto-accepted. Sharded by image over a WAL mode SQLite manifest used as a lock free work queue: workers claim shards with BEGIN IMMEDIATE leases so a dead worker's shards are reclaimed automatically, commits are temp and rename so a crash never marks a half written shard complete, and one long lived worker per GPU keeps the model loaded once.</p>
                                 <p>Nothing is accepted on faith. Each mask takes the best of three multimask candidates by predicted IoU, carries a stability score computed from mask logits, and lands in one of three tiers on dual thresholds. Rejects are routed to a sidecar with an explicit deferred count, so the accept rate cannot be inflated by quietly dropping the hard cases.</p>
                                 <div class="card-tags">
-                                    <span class="tag">SAM 2 / SAM 3</span>
+                                    <span class="tag">SAM 2.1</span>
                                     <span class="tag">Multi-GPU</span>
                                     <span class="tag">SQLite WAL</span>
                                     <span class="tag">Crash Recovery</span>
@@ -2177,7 +2222,7 @@
                         <div class="tree-file">
                             <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
                             <button class="file-toggle">
-                                <span class="file-name">segment_service.py</span>
+                                <span class="file-name">sam-service/</span>
                                 <span class="file-desc">ONNX Smart Select</span>
                             </button>
                             <div class="file-content">
@@ -2192,7 +2237,7 @@
                         <div class="tree-file">
                             <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
                             <button class="file-toggle">
-                                <span class="file-name">dataset_planner.py</span>
+                                <span class="file-name">fndata/plan.py</span>
                                 <span class="file-desc">Training Slice Characterization</span>
                             </button>
                             <div class="file-content">
@@ -2231,7 +2276,7 @@
                                     <li><strong>Analyze</strong>: Fit Gompertz growth models, classify curves (GOOD/BAD)</li>
                                     <li><strong>Haldane</strong>: Fit mechanistic substrate inhibition ODE to pesticide strains</li>
                                     <li><strong>Advanced Stats</strong>: GP truncation, Bayesian hierarchical models (NUTS/DEMetropolisZ), bootstrap CIs, WAIC/LOO model comparison</li>
-                                    <li><strong>Plot &amp; Validate</strong>: 480 synthetic curves + interactive manual audit tool</li>
+                                    <li><strong>Plot &amp; Validate</strong>: 1,139 synthetic curves with known answers across 64 scenarios, plus an interactive manual audit tool</li>
                                 </ul>
                                 <div class="card-tags">
                                     <span class="tag">Python</span>
@@ -2250,15 +2295,15 @@
                             </button>
                             <div class="file-content">
                                 <div class="file-gallery">
-                                    <img src="assets/tecan-classification-summary.png" alt="Classification summary" loading="lazy">
-                                    <img src="assets/tecan-confusion-matrix.png" alt="Validation confusion matrix" loading="lazy">
+                                    <img src="assets/tecan-benchmark-v2-summary.png" alt="Curve quality classification summary on the 1,139-curve synthetic benchmark" width="2090" height="1491" loading="lazy">
                                 </div>
+                                <p>The curve grader calls 87.6% of the 960 fairly decidable synthetic curves correctly (balanced accuracy 87.9%), and agrees with a manual audit on 83 of 85 real curves. An earlier 99.5% figure was withdrawn after the benchmark was rebuilt to be harder and fairer.</p>
                             </div>
                         </div>
                         <!-- Link -->
                         <div class="tree-link">
                             <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
-                            <a href="https://github.com/dbold23/JueLab_Toolbox" target="_blank" rel="noopener">&rarr; github.com/dbold23/JueLab_Toolbox</a>
+                            <a href="https://github.com/dbold23/TECAN-Growth-Curve-Analysis-Pipeline" target="_blank" rel="noopener">&rarr; github.com/dbold23/TECAN-Growth-Curve-Analysis-Pipeline</a>
                         </div>
                     </div>
                 </div>
@@ -2292,6 +2337,22 @@
                             <div class="file-content">
                                 <img src="assets/water-quality-sensor.avif" alt="Water Quality Sensor" width="996" height="1174" loading="lazy">
                                 <p>Custom monitoring devices measuring pH, temperature, DO, and salinity in real-time.</p>
+                            </div>
+                        </div>
+                        <div class="tree-file">
+                            <div class="tree-connector">&nbsp;&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">terramesh/</span>
+                                <span class="file-desc">Habitat Survey App (In Progress)</span>
+                            </button>
+                            <div class="file-content">
+                                <p>An iPhone app for walking a site and placing geotagged photo, LiDAR depth and species observations of habitat in a local 3D map, with a 507-species capture guide on the device. A Cloudflare Worker backend publishes each survey as a web page. On-device accuracy is still being verified.</p>
+                                <p><a href="https://github.com/dbold23/terramesh-skeleton" target="_blank" rel="noopener">&rarr; github.com/dbold23/terramesh-skeleton (public outline)</a></p>
+                                <div class="card-tags">
+                                    <span class="tag">iOS</span>
+                                    <span class="tag">LiDAR</span>
+                                    <span class="tag">Cloudflare Workers</span>
+                                </div>
                             </div>
                         </div>
                         <div class="tree-file">
@@ -2329,11 +2390,11 @@
                         <div class="skills-output">
                             <div class="skill-row">
                                 <span class="skill-key">Languages</span>
-                                <span class="skill-val">Python, R, SQL, C/Arduino, JavaScript, Unix/Bash</span>
+                                <span class="skill-val">Python, R, SQL, Java, C/Arduino, JavaScript, Unix/Bash</span>
                             </div>
                             <div class="skill-row">
                                 <span class="skill-key">ML / AI</span>
-                                <span class="skill-val">YOLO, XGBoost, CNN-LSTM, Computer Vision, scikit-learn</span>
+                                <span class="skill-val">PyTorch, YOLO pose, SAM 2, ArcFace re-ID, XGBoost, Bayesian (PyMC), scikit-learn</span>
                             </div>
                             <div class="skill-row">
                                 <span class="skill-key">Web</span>
@@ -2345,7 +2406,7 @@
                             </div>
                             <div class="skill-row">
                                 <span class="skill-key">Data / DSP</span>
-                                <span class="skill-val">NumPy FFT, Satellite Data, Statistical Analysis, Visualization</span>
+                                <span class="skill-val">NumPy, matched filtering, CFAR, Satellite Data, Statistical Analysis, Visualization</span>
                             </div>
                             <div class="skill-row">
                                 <span class="skill-key">Geospatial</span>
@@ -2353,7 +2414,7 @@
                             </div>
                             <div class="skill-row">
                                 <span class="skill-key">DevOps</span>
-                                <span class="skill-val">Git, Linux, SSH, Systemd, Watchdog, Remote Deploy</span>
+                                <span class="skill-val">Git, Linux, Docker, AWS EC2, nginx, Systemd, OTA updates</span>
                             </div>
                         </div>
                     </div>

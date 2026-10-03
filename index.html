@@ -41,17 +41,17 @@
     </script>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/variables.css?v=20260919a">
-    <link rel="stylesheet" href="css/base.css?v=20260919a">
-    <link rel="stylesheet" href="css/homescreen.css?v=20260919a">
-    <link rel="stylesheet" href="css/transitions.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-forest.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-ocean.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-tech.css?v=20260919a">
-    <link rel="stylesheet" href="css/desktop-os.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-mind.css?v=20260919a">
-    <link rel="stylesheet" href="css/shared.css?v=20260919a">
-    <link rel="stylesheet" href="css/responsive.css?v=20260919a">
+    <link rel="stylesheet" href="css/variables.css?v=20261003a">
+    <link rel="stylesheet" href="css/base.css?v=20261003a">
+    <link rel="stylesheet" href="css/homescreen.css?v=20261003a">
+    <link rel="stylesheet" href="css/transitions.css?v=20261003a">
+    <link rel="stylesheet" href="css/path-forest.css?v=20261003a">
+    <link rel="stylesheet" href="css/path-ocean.css?v=20261003a">
+    <link rel="stylesheet" href="css/path-tech.css?v=20261003a">
+    <link rel="stylesheet" href="css/desktop-os.css?v=20261003a">
+    <link rel="stylesheet" href="css/path-mind.css?v=20261003a">
+    <link rel="stylesheet" href="css/shared.css?v=20261003a">
+    <link rel="stylesheet" href="css/responsive.css?v=20261003a">
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
@@ -415,6 +415,15 @@
                         <p class="bubble-name" id="bubble-label-fieldops">Getting to where the data is</p>
                         <button type="button" class="research-bubble" data-panel="fieldops" aria-labelledby="bubble-label-fieldops" aria-expanded="false" aria-haspopup="dialog">
                             <img class="bubble-photo" src="assets/bubbles/fieldops.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
+                <li class="bubble-cell" style="--lane: 0.000; --rise-delay: -16.1s; --sway-dur: 10.5s; --sway-delay: -5.5s; --sway-k: 1.39; --scale: 1.05; --z: 105">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-terramesh">Which visit would teach the map the most</p>
+                        <button type="button" class="research-bubble" data-panel="terramesh" aria-labelledby="bubble-label-terramesh" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/terramesh.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
                             <span class="bubble-gloss" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -1202,6 +1211,105 @@
                 </div>
             </article>
         </template>
+
+        <template data-panel="terramesh">
+            <article class="rp rp--program">
+                <header class="rp-head rp-head--data">
+                    <img class="rp-cover" src="assets/terramesh/cover-valley.avif" alt="" aria-hidden="true" decoding="async">
+                    <p class="rp-org">TerraMesh</p>
+                    <h3 class="rp-title">A Field Instrument for a Living Planet</h3>
+                    <p class="rp-byline">Founder and lead developer</p>
+                    <p class="rp-dateline">2026 – Present</p>
+                </header>
+                <dl class="rp-record">
+                    <div><dt>Platform</dt><dd>an iPhone app, a Mac station and a public web layer</dd></div>
+                    <div><dt>Missions</dt><dd>biodiversity, geology, ocean and sky, surveyed together</dd></div>
+                    <div><dt>Gaia benchmark</dt><dd>map error 0.273 against 0.298 for random visits, on a synthetic region</dd></div>
+                    <div><dt>Status</dt><dd>each feature ships switched off and turns on after a field test proves it</dd></div>
+                </dl>
+                <section class="rp-abstract">
+                    <h4>The programme</h4>
+                    <p>Most citizen science collects whatever people happen to send and maps it afterwards. TerraMesh turns that around. Its interpreter, Gaia, keeps a map of its own doubt, the fog over each place, and asks people for the one visit that would clear the most of it. People walk, look, listen and scan with a phone, and every minute of effort is counted, so a species not found means something too.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/fog-poster.avif" aria-label="Fog lifts off a satellite view of a valley where people have walked, then slowly returns"><source src="assets/terramesh/fog.mp4" type="video/mp4"><source src="assets/terramesh/fog.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 1</span>Fog lifts where people have looked and regrows as the records age. Drawn in code over Sentinel-2 imagery and a Copernicus elevation model.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Fog is what we don’t know yet</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Every place and species carries an honest interval, which widens again as its records grow old</li>
+                                    <li>Absence is reported as effort: “we looked and listened for 20 minutes; if a wren were here, we’d have found it 8 times in 10”</li>
+                                    <li>Only minutes in which the phone or the person could actually have found something are counted</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/walk-poster.avif" aria-label="A walker crosses a hexagonal map, clearing the fog over each tile it passes"><source src="assets/terramesh/walk.mp4" type="video/mp4"><source src="assets/terramesh/walk.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 2</span>A walk, tile by tile.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Walk a place</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>The map is a mesh of hexagonal tiles; a walk records what lives there and exactly where the person looked</li>
+                                    <li>Public outputs use coarse tiles, never exact points, and sensitive species and private places never appear at all</li>
+                                    <li>A record reaches research grade only when two or more people review it and more than two thirds agree. The phone’s suggestion never counts.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/gaia-poster.avif" aria-label="The Earth rendered from satellite data, wrapped in a mesh of tiles, with cloud and wind layers passing over it"><source src="assets/terramesh/gaia.mp4" type="video/mp4"><source src="assets/terramesh/gaia.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 3</span>The whole planet as one shared state, layer by layer: life, water, air and rock. Sentinel-2, Copernicus DEM and NOAA GFS.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">A planetary data interpreter</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Gaia is plain, deterministic statistics on saved records, not a chatbot: the same records always give the same numbers</li>
+                                    <li>It picks each next visit by expected information gain, priced under the forecast weather and tide, inside hard safety and privacy rules</li>
+                                    <li>Every ask is a forecast locked before the visit and scored after it, and the person who went sees whether Gaia was right</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="456" height="590" poster="assets/terramesh/scene-bio-poster.avif" aria-label="A golden-hour trail through dry grass, where a patch of poppies is picked out and named"><source src="assets/terramesh/scene-bio.mp4" type="video/mp4"><source src="assets/terramesh/scene-bio.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 4</span>The biodiversity mission, as drawn for TerraMesh’s reels in hand-written WebGL.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">4</span><span class="rp-fold-title">One place, every sphere</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Photos named on the phone by BioCLIP and confirmed by a person; sound clips around Perch and BirdNET detections, never speech</li>
+                                    <li>3D scans from LiDAR and ARKit, rebuilt on the station with COLMAP and scaled by printed AprilTag cubes</li>
+                                    <li>Records leave in Darwin Core with effort and absence, built for GBIF</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <div class="rp-tags">
+                    <span class="tag">Citizen Science</span>
+                    <span class="tag">Bayesian Occupancy</span>
+                    <span class="tag">iOS</span>
+                    <span class="tag">Photogrammetry</span>
+                    <span class="tag">Privacy</span>
+                </div>
+                <p class="rp-crosslink">
+                    See it move
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-terramesh">Technology / TerraMesh</button>
+                </p>
+            </article>
+        </template>
     </section>
 
     <!-- ============================================
@@ -1240,6 +1348,11 @@
                 <!-- Desktop icons: the apps live here. Labs, GitHub and
                      contact moved to the dock, where a Mac would keep them. -->
                 <div class="desktop-icons">
+                    <!-- TerraMesh - opens the animated tour of the app -->
+                    <div class="desktop-icon" data-app="terramesh">
+                        <img src="assets/icon-terramesh.png" alt="TerraMesh" width="128" height="128" loading="lazy" decoding="async">
+                        <span class="desktop-icon-label">TerraMesh</span>
+                    </div>
                     <!-- RelayStation - opens the interactive demo -->
                     <div class="desktop-icon" data-app="relay">
                         <img src="assets/icon-relaystation.png" alt="RelayStation" width="128" height="128" loading="lazy" decoding="async">
@@ -1325,6 +1438,121 @@
                                     <span class="tag">Field to Model</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ TERRAMESH ============ -->
+                <div class="tree-folder tree-folder--terramesh" id="folder-terramesh">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">TerraMesh/</span>
+                        <span class="folder-desc">Field Science App, Founder</span>
+                    </button>
+                    <div class="folder-children">
+                        <!-- README -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">README.md</span>
+                                <span class="file-desc">A Field Instrument for a Living Planet</span>
+                            </button>
+                            <div class="file-content">
+                                <div class="tm-reel">
+                                    <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/walk-poster.avif" aria-label="A walker crosses a hexagonal map, clearing the fog over each tile it passes"><source src="assets/terramesh/walk.mp4" type="video/mp4"><source src="assets/terramesh/walk.webm" type="video/webm"></video>
+                                    <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/fog-poster.avif" aria-label="Fog lifts off a satellite view of a valley, then slowly returns"><source src="assets/terramesh/fog.mp4" type="video/mp4"><source src="assets/terramesh/fog.webm" type="video/webm"></video>
+                                </div>
+                                <p>People walk, look, listen and scan a place with an iPhone, and the app turns what they record into evidence about that place: species heard and seen, rock and tidepools in 3D, ground cover, tide and wind, and how all of it changes over time. The game is making the planet&rsquo;s records more certain.</p>
+                                <ul>
+                                    <li>Four missions surveyed together: biodiversity, geology, ocean and sky</li>
+                                    <li>Sampling effort counted for every survey, so not finding something carries weight</li>
+                                    <li>Only a person&rsquo;s confirmed name counts; research grade needs two or more reviewers and more than two thirds agreeing</li>
+                                    <li>Every new feature ships switched off and turns on only after a field test proves it</li>
+                                </ul>
+                                <div class="card-tags">
+                                    <span class="tag">Swift</span>
+                                    <span class="tag">SwiftUI</span>
+                                    <span class="tag">ARKit</span>
+                                    <span class="tag">Core ML</span>
+                                    <span class="tag">Python</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Gaia -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">gaia.py</span>
+                                <span class="file-desc">Planetary Data Interpreter</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Gaia is plain, deterministic statistics on saved records, not a chatbot: the same records always give the same numbers. For every place and species it estimates how often a careful visit finds it, how sure that estimate is, and which next visit would teach the map the most, inside hard safety and privacy rules. Every ask is a forecast written down before the visit and scored after it.</p>
+                                <ul>
+                                    <li>Occupancy with imperfect detection, counted on calm-equivalent minutes of effort</li>
+                                    <li>Visits chosen by expected information gain (BALD, EPIG)</li>
+                                    <li>Wind as one shared, estimated unknown for how much it hides sound, learned across every place and species</li>
+                                    <li>A hash-chained ledger of predictions, locked before each visit</li>
+                                </ul>
+                                <div class="stat-metrics">
+                                    <div class="stat-metric">
+                                        <div class="stat-val">0.273</div>
+                                        <div class="stat-label">Map Error, Gaia (synthetic)</div>
+                                    </div>
+                                    <div class="stat-metric">
+                                        <div class="stat-val">0.298</div>
+                                        <div class="stat-label">Map Error, Random Visits</div>
+                                    </div>
+                                    <div class="stat-metric">
+                                        <div class="stat-val">0</div>
+                                        <div class="stat-label">Safety Rule Breaks</div>
+                                    </div>
+                                </div>
+                                <div class="card-tags">
+                                    <span class="tag">Bayesian Occupancy</span>
+                                    <span class="tag">Experimental Design</span>
+                                    <span class="tag">Proper Scoring</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Station -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">station/</span>
+                                <span class="file-desc">Vault, Photogrammetry, Re-ID</span>
+                            </button>
+                            <div class="file-content">
+                                <p>A Mac station copies every survey into an append-only vault and runs the heavy models: COLMAP and OpenMVS photogrammetry seeded with ARKit poses and scaled by printed AprilTag cubes, sound ID (Perch, BirdNET), individual shark re-identification (MiewID, LightGlue) and face blurring before anything leaves.</p>
+                                <div class="card-tags">
+                                    <span class="tag">COLMAP</span>
+                                    <span class="tag">OpenMVS</span>
+                                    <span class="tag">AprilTag</span>
+                                    <span class="tag">BioCLIP</span>
+                                    <span class="tag">Perch</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Privacy -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">privacy.md</span>
+                                <span class="file-desc">Tiles, Not Pins</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Records go outward in Darwin Core with effort and absence, on coarse H3 tiles rather than exact points. Sensitive species and private places never appear in public, faces are blurred, and sound is kept only around detections, never speech.</p>
+                                <div class="card-tags">
+                                    <span class="tag">H3</span>
+                                    <span class="tag">Darwin Core</span>
+                                    <span class="tag">Cloudflare Workers</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Launch -->
+                        <div class="tree-link">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
+                            <a href="demos/terramesh/index.html" data-open-app="terramesh">&rarr; open TerraMesh.app</a>
                         </div>
                     </div>
                 </div>
@@ -2376,7 +2604,7 @@
         <div class="path-content">
             <div class="path-header fade-in">
                 <h2 class="path-title">Captain's Log</h2>
-                <p class="path-intro">The story behind the science: eight chapters, one thread</p>
+                <p class="path-intro">The story behind the science: nine chapters, one thread</p>
             </div>
 
             <!-- Captain's Log: full screen chapters -->
@@ -2512,11 +2740,31 @@
                     </article>
                     <article class="log-chapter" data-chapter="7" aria-hidden="true">
                         <div class="log-media">
-                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy" decoding="async">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="960" height="568" poster="assets/terramesh/log-fog-poster.avif" aria-label="Fog lifting off a satellite view of a river valley along a walked trail, then slowly returning"><source src="assets/terramesh/log-fog.mp4" type="video/mp4"><source src="assets/terramesh/log-fog.webm" type="video/webm"></video>
                         </div>
                         <div class="log-scrim" aria-hidden="true"></div>
                         <div class="log-copy">
                             <p class="log-chapter-label">Chapter VIII</p>
+                            <h3 class="log-title">TerraMesh</h3>
+                            <p class="log-period">2026 &ndash; Present</p>
+                            <div class="log-narrative">
+                                <p>Every project before this one ended at the same wall. A survey tells you what someone found on one day, and almost nothing about what they would have missed. So I started building TerraMesh: a phone app that turns a walk into evidence about a place, with every minute of looking counted, so that not finding something finally means something too.</p>
+                                <p>At its centre is Gaia, an interpreter that keeps a map of its own doubt and asks people for the visit that would clear the most of it. Every ask is written down before the visit and scored after it. It is the honest-evaluation habit from MBARI and the cheap-instrument habit from the relay stations, pointed at a whole planet instead of one species.</p>
+                            </div>
+                            <div class="log-chips">
+                                <span class="log-chip">Founder</span>
+                                <span class="log-chip">Four Missions</span>
+                                <span class="log-chip">Gaia</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="log-chapter" data-chapter="8" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy" decoding="async">
+                        </div>
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter IX</p>
                             <h3 class="log-title">Now + Next</h3>
                             <p class="log-period">Present</p>
                             <div class="log-narrative">
@@ -2544,7 +2792,8 @@
                             <li><button type="button" class="log-dot" data-chapter="4"><span class="log-dot-num">V</span><span class="log-dot-name">HABHub</span></button></li>
                             <li><button type="button" class="log-dot" data-chapter="5"><span class="log-dot-num">VI</span><span class="log-dot-name">Hardware</span></button></li>
                             <li><button type="button" class="log-dot" data-chapter="6"><span class="log-dot-num">VII</span><span class="log-dot-name">MBARI</span></button></li>
-                            <li><button type="button" class="log-dot" data-chapter="7"><span class="log-dot-num">VIII</span><span class="log-dot-name">Now + Next</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="7"><span class="log-dot-num">VIII</span><span class="log-dot-name">TerraMesh</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="8"><span class="log-dot-num">IX</span><span class="log-dot-name">Now + Next</span></button></li>
                         </ol>
                         <!-- Where you are, for the phone layout, which turns the
                              chapter rail off. Hidden on a wide screen, where the
@@ -2785,6 +3034,6 @@
     </footer>
 
     <!-- JavaScript (ES Modules) -->
-    <script type="module" src="js/app.js?v=20260919a"></script>
+    <script type="module" src="js/app.js?v=20261003a"></script>
 </body>
 </html>

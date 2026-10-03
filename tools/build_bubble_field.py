@@ -2,7 +2,7 @@
 """Lay out the Research bubbles as a drifting field.
 
 The page used to be a heading, a lede and six labelled pods above a grid. All of
-that scaffolding is gone: the nine bubbles are the page now, rising through the
+that scaffolding is gone: the bubbles are the page now, rising through the
 same water the WebGL backdrop is drawing and wrapping round when they clear the
 top. Whoever the work was done with is on the panel that opens; a circle two
 hundred pixels across cannot carry it as well as it can carry the question the
@@ -55,7 +55,21 @@ BUBBLES = [
     ('porpoise',    'Mark-recapture without tagging'),
     ('southafrica', 'Surveying an unfamiliar coast'),
     ('fieldops',    'Getting to where the data is'),
+    # Gaia's third question, which is the one the whole app is built around:
+    # not "what lives here" but which visit would settle the most doubt.
+    ('terramesh',   'Which visit would teach the map the most'),
 ]
+
+# Bubbles added after the original nine are placed by hand rather than by the
+# ladder below, so adding one does not reshuffle the nine that were already
+# tuned. key -> (lane, phase). TerraMesh's spot was searched over a 101 x 200
+# grid of lanes and phases for the widest clearance from the other nine across
+# four viewports (1440x900, 1024x700, 800x900, 390x844): it costs the field
+# about 4% of its tightest clearance, where the next golden-ratio slot would
+# have cost 17%.
+PLACED = {
+    'terramesh': (0.0, 0.35),
+}
 
 # Two numbers place each bubble: a lane across the stage and a phase round the
 # lap. What matters is not either sequence on its own but that they are not the
@@ -91,8 +105,11 @@ RISE_SECONDS = 46          # one lap of the field, top to bottom
 
 
 def cell(i, key, label):
-    lane = min(1.0, max(0.0, LANES[i] + LANE_JITTER[i]))
-    phase = (i * GOLDEN) % 1.0
+    if key in PLACED:
+        lane, phase = PLACED[key]
+    else:
+        lane = min(1.0, max(0.0, LANES[i] + LANE_JITTER[i]))
+        phase = (i * GOLDEN) % 1.0
 
     # Sway periods are deliberately mutual non-multiples, so no two bubbles
     # ever fall into step for long

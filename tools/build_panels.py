@@ -83,6 +83,30 @@ def video(stem, label):
             f'<source src="assets/{stem}.mp4" type="video/mp4"></video>')
 
 
+def reel(path, label):
+    """An mp4-only clip with a poster, for the TerraMesh reels.
+
+    They live under assets/terramesh/ with a -poster.avif beside each. H.264
+    goes first because it came out smaller than VP9 for most of these reels;
+    the VP9 copy is there for browsers without H.264.
+    """
+    src = V2 / f'{path}.mp4'
+    w, h = (512, 288)
+    if src.exists():
+        try:
+            out = subprocess.run(
+                ['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                 '-show_entries', 'stream=width,height', '-of', 'csv=p=0', str(src)],
+                capture_output=True, text=True, check=True).stdout.strip()
+            w, h = (int(v) for v in out.split(',')[:2])
+        except Exception:
+            pass
+    return (f'<video class="lazy-video" muted loop playsinline preload="none" '
+            f'width="{w}" height="{h}" poster="{path}-poster.avif" aria-label="{html.escape(label)}">'
+            f'<source src="{path}.mp4" type="video/mp4">'
+            f'<source src="{path}.webm" type="video/webm"></video>')
+
+
 PANELS = [
     {
         'key': 'shark',
@@ -502,6 +526,63 @@ PANELS = [
         ],
         'quote': 'From kelp canopy surveys to offshore tagging operations, every day on the water has reinforced the same lesson: marine field research is where assumptions meet reality. The ocean does not care about your methods section. It demands adaptability, teamwork, and respect for the unpredictable.',
         'tags': ['Scientific Diving', 'Vessel Operations', 'Kelp Forests'],
+    },
+
+    # TerraMesh's reels are drawn in code over open satellite data by the
+    # TerraMesh Instagram renderer; none of it is generated imagery. Public
+    # wording follows the project: Gaia is a "planetary data interpreter".
+    {
+        'key': 'terramesh',
+        'kind': 'program',
+        'cover': 'assets/terramesh/cover-valley.avif',
+        'cover_tone': 'data',
+        'org': 'TerraMesh',
+        'title': 'A Field Instrument for a Living Planet',
+        'byline': 'Founder and lead developer',
+        'dateline': '2026 – Present',
+        'record': [
+            ('Platform', 'an iPhone app, a Mac station and a public web layer'),
+            ('Missions', 'biodiversity, geology, ocean and sky, surveyed together'),
+            ('Gaia benchmark', 'map error 0.273 against 0.298 for random visits, on a synthetic region'),
+            ('Status', 'each feature ships switched off and turns on after a field test proves it'),
+        ],
+        'abstract': 'Most citizen science collects whatever people happen to send and maps it afterwards. TerraMesh turns that around. Its interpreter, Gaia, keeps a map of its own doubt, the fog over each place, and asks people for the one visit that would clear the most of it. People walk, look, listen and scan with a phone, and every minute of effort is counted, so a species not found means something too.',
+        'sections': [
+            {
+                'title': 'Fog is what we don’t know yet',
+                'body': ['Every place and species carries an honest interval, which widens again as its records grow old',
+                         'Absence is reported as effort: “we looked and listened for 20 minutes; if a wren were here, we’d have found it 8 times in 10”',
+                         'Only minutes in which the phone or the person could actually have found something are counted'],
+                'figure': (reel('assets/terramesh/fog', 'Fog lifts off a satellite view of a valley where people have walked, then slowly returns'),
+                           'Fog lifts where people have looked and regrows as the records age. Drawn in code over Sentinel-2 imagery and a Copernicus elevation model.'),
+            },
+            {
+                'title': 'Walk a place',
+                'body': ['The map is a mesh of hexagonal tiles; a walk records what lives there and exactly where the person looked',
+                         'Public outputs use coarse tiles, never exact points, and sensitive species and private places never appear at all',
+                         'A record reaches research grade only when two or more people review it and more than two thirds agree. The phone’s suggestion never counts.'],
+                'figure': (reel('assets/terramesh/walk', 'A walker crosses a hexagonal map, clearing the fog over each tile it passes'),
+                           'A walk, tile by tile.'),
+            },
+            {
+                'title': 'A planetary data interpreter',
+                'body': ['Gaia is plain, deterministic statistics on saved records, not a chatbot: the same records always give the same numbers',
+                         'It picks each next visit by expected information gain, priced under the forecast weather and tide, inside hard safety and privacy rules',
+                         'Every ask is a forecast locked before the visit and scored after it, and the person who went sees whether Gaia was right'],
+                'figure': (reel('assets/terramesh/gaia', 'The Earth rendered from satellite data, wrapped in a mesh of tiles, with cloud and wind layers passing over it'),
+                           'The whole planet as one shared state, layer by layer: life, water, air and rock. Sentinel-2, Copernicus DEM and NOAA GFS.'),
+            },
+            {
+                'title': 'One place, every sphere',
+                'body': ['Photos named on the phone by BioCLIP and confirmed by a person; sound clips around Perch and BirdNET detections, never speech',
+                         '3D scans from LiDAR and ARKit, rebuilt on the station with COLMAP and scaled by printed AprilTag cubes',
+                         'Records leave in Darwin Core with effort and absence, built for GBIF'],
+                'figure': (reel('assets/terramesh/scene-bio', 'A golden-hour trail through dry grass, where a patch of poppies is picked out and named'),
+                           'The biodiversity mission, as drawn for TerraMesh’s reels in hand-written WebGL.'),
+            },
+        ],
+        'tags': ['Citizen Science', 'Bayesian Occupancy', 'iOS', 'Photogrammetry', 'Privacy'],
+        'crosslink': ('See it move', [('folder-terramesh', 'Technology / TerraMesh')]),
     },
 ]
 

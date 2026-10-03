@@ -174,6 +174,7 @@ const MENUS = {
       { label: 'New Mail Message', action: 'mail', key: '⌘N' },
       { label: 'Open RelayStation', action: 'open-relay' },
       { label: 'Open Scar Annotator', action: 'open-scar' },
+      { label: 'Open TerraMesh', action: 'open-terramesh' },
       { sep: true },
       { label: 'Close Window', action: 'close', key: '⌘W' },
     ],
@@ -495,6 +496,9 @@ function runAction(action, ctx) {
     case 'open-scar':
       openAppWindow('scar');
       break;
+    case 'open-terramesh':
+      openAppWindow('terramesh');
+      break;
     case 'path-forest':
     case 'path-ocean':
     case 'path-mind':
@@ -573,6 +577,7 @@ function makeDraggable(el, handle) {
 const APP_WINDOWS = {
   relay: { title: 'RelayStation Central', src: 'demos/relaystation/index.html', w: 1160, h: 720 },
   scar:  { title: 'Shark Scar Annotator', src: 'demos/sharkscar.html',    w: 1180, h: 720 },
+  terramesh: { title: 'TerraMesh', src: 'demos/terramesh/index.html', w: 1160, h: 760 },
 };
 
 let appZ = 70;
@@ -788,6 +793,7 @@ const DOCK_APPS = [
   { id: 'finder',    label: 'Finder',           icon: 'assets/icon-finder.svg',        action: 'focus-terminal' },
   { id: 'relay',     label: 'RelayStation',     icon: 'assets/icon-relaystation.png',  app: 'relay' },
   { id: 'scar',      label: 'Scar Annotator',   icon: 'assets/icon-sharkscar.png',     app: 'scar' },
+  { id: 'terramesh', label: 'TerraMesh',        icon: 'assets/icon-terramesh.png',     app: 'terramesh' },
   { sep: true },
   { id: 'jorgensen', label: 'Jorgensen Lab',    icon: 'assets/jorgensen-lab-logo.avif', target: '#folder-jorgensen', tile: true },
   { id: 'jue',       label: 'Jue Lab',          icon: 'assets/jue-lab-logo.avif',       target: '#folder-jue', tile: true },
@@ -1049,6 +1055,12 @@ export function init() {
   // this module's window manager; an event is the seam between the two.
   on(window, 'os-open-app', (e) => openAppWindow(e.detail));
   on(window, 'os-open-cv', () => openWordDoc());
+  // A line in the file tree can launch an app too, so a project's folder
+  // and its running app are one click apart.
+  on(document, 'click', (e) => {
+    const btn = e.target.closest('[data-open-app]');
+    if (btn) { e.preventDefault(); openAppWindow(btn.dataset.openApp); }
+  });
 
   // Crossing the breakpoint after load would otherwise leave the nav parked in
   // a menubar that has just been hidden, taking the site's navigation with it.

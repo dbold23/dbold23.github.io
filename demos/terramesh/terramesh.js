@@ -87,7 +87,7 @@
     if (Mark) Mark.play(heroLeaf, { fg: C.lime, bg: C.forest });
   });
 
-  // Faint mesh behind the mark, breathing with a slow travelling fog.
+  // Faint mesh behind the mark, breathing with a slow traveling fog.
   (function heroMesh() {
     const cv = $('.hex-drift'), ctx = cv.getContext('2d');
     let W, H, cells, R, run = false, raf = 0, last = 0;
@@ -332,7 +332,7 @@
     const size = () => ({ w: W, h: H, dpr } = fit(cv));
     const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
-    // Nearest hex centre for a point, in the same pointy-top layout as hexGrid
+    // Nearest hex center for a point, in the same pointy-top layout as hexGrid
     function cellOf(px, py, r) {
       const q = (Math.sqrt(3) / 3 * px - py / 3) / r, rr = (2 / 3 * py) / r;
       let x = q, z = rr, y = -x - z;
@@ -354,7 +354,7 @@
       drawCover(ctx, valley, W, H, 0.55);
       ctx.fillStyle = 'rgba(13,42,46,0.35)'; ctx.fillRect(0, 0, W, H);
 
-      // Grid, anchored at the centre so it grows out from the middle
+      // Grid, anchored at the center so it grows out from the middle
       ctx.save(); ctx.translate(W / 2, H / 2);
       const hw = Math.sqrt(3) * r, n = Math.ceil(Math.max(W, H) / (1.5 * r)) + 2;
       ctx.lineWidth = 1 * dpr;

@@ -1209,3 +1209,4 @@
    phone they were made for. */
 .tm-reel { display: grid; grid-template-columns: repeat(2, minmax(0, 200px)); gap: 0.6rem; margin-bottom: 0.8rem; }
 .tm-reel video { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 10px; background: #0D2A2E; }
+.tm-status { margin-top: 0.6rem; font-size: 0.85em; opacity: 0.75; }

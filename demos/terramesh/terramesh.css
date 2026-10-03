@@ -107,8 +107,10 @@ p { margin: 0; }
 .m-media { aspect-ratio: 456 / 470; overflow: hidden; background: var(--accent); }
 .m-media video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; transform: scale(1.04); transition: transform 1.2s var(--out); }
 .mission:hover .m-media video { transform: scale(1.1); }
-.m-body { position: relative; padding: 52px 20px 22px; }
-.m-leaf { position: absolute; top: -70px; left: 8px; width: 140px; height: 140px; pointer-events: none; }
+.m-body { position: relative; padding: 138px 20px 22px; }
+/* Big enough that the mission leaf keeps its own detail (gullies, waves,
+   clouds, dots): below about 130 px the kit falls back to the plain leaf. */
+.m-leaf { position: absolute; top: -62px; left: -4px; width: 200px; height: 200px; pointer-events: none; }
 .m-body h3 { font-size: 24px; color: var(--accent); }
 .m-body p { margin-top: 8px; font-size: 15px; color: var(--ink); }
 .capture { list-style: none; padding: 0; margin: clamp(36px, 6vh, 56px) auto 0; max-width: 1180px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }

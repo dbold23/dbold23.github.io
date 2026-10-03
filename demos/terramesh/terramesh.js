@@ -255,7 +255,9 @@
     m.classList.add('in');
     const cv = $('.m-leaf', m);
     const cs = getComputedStyle(m);
-    const opts = { style: m.dataset.style, fg: cs.getPropertyValue('--accent').trim(), bg: cs.getPropertyValue('--tint').trim() };
+    // size keeps the leaf above the kit's small-size cut-off, so each mission
+    // leaf draws with its own detail rather than falling back to the plain one
+    const opts = { style: m.dataset.style, fg: cs.getPropertyValue('--accent').trim(), bg: cs.getPropertyValue('--tint').trim(), size: 92 };
     if (Mark) setTimeout(() => Mark.play(cv, opts), 250 + 120 * Number(m.style.getPropertyValue('--i') || 0));
   }, 0.25);
 

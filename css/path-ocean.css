@@ -1462,3 +1462,14 @@
     bottom: calc(clamp(0.9rem, 2.5vw, 1.6rem) + 3.4rem + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* The TerraMesh reels are portrait phone frames. Covering a half-band plate
+   would crop their captions off the top, so they keep their whole frame and
+   centre on the plate instead. */
+.rp-plate video[width="540"][height="960"] {
+  width: min(100%, calc(70vh * 9 / 16));
+  margin-inline: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+  background: #0D2A2E;
+}

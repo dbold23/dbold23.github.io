@@ -5,12 +5,12 @@ Each panel is laid out like a short paper: a title block with a byline, an
 abstract, numbered figures carrying the visual weight, and numbered sections
 whose prose stays folded until asked for.
 
-Three kinds, because a lab study, a field season and a teaching programme are
+Three kinds, because a lab study, a field season and a teaching program are
 not the same document:
 
   paper    title block, Abstract, numbered Figures, numbered sections, References
   field    a field record: dates/site/hours masthead, numbered Plates, log sections
-  program  a programme outline: sites and duration masthead, Figures, curriculum
+  program  a program outline: sites and duration masthead, Figures, curriculum
 
 Regenerating overwrites the templates in index.html between the first
 <template data-panel> and the last </template>. Edit this file, not the HTML.
@@ -83,6 +83,30 @@ def video(stem, label):
             f'<source src="assets/{stem}.mp4" type="video/mp4"></video>')
 
 
+def reel(path, label):
+    """An mp4-only clip with a poster, for the TerraMesh reels.
+
+    They live under assets/terramesh/ with a -poster.avif beside each. H.264
+    goes first because it came out smaller than VP9 for most of these reels;
+    the VP9 copy is there for browsers without H.264.
+    """
+    src = V2 / f'{path}.mp4'
+    w, h = (512, 288)
+    if src.exists():
+        try:
+            out = subprocess.run(
+                ['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                 '-show_entries', 'stream=width,height', '-of', 'csv=p=0', str(src)],
+                capture_output=True, text=True, check=True).stdout.strip()
+            w, h = (int(v) for v in out.split(',')[:2])
+        except Exception:
+            pass
+    return (f'<video class="lazy-video" muted loop playsinline preload="none" '
+            f'width="{w}" height="{h}" poster="{path}-poster.avif" aria-label="{html.escape(label)}">'
+            f'<source src="{path}.mp4" type="video/mp4">'
+            f'<source src="{path}.webm" type="video/webm"></video>')
+
+
 PANELS = [
     {
         'key': 'shark',
@@ -106,7 +130,7 @@ PANELS = [
                 'title': 'Field methods',
                 'body': ['Tagging operations from small vessels: approach, tag placement, recovery',
                          'Dorsal fin mounted camera and sensor package deployment and retrieval',
-                         'Photo identification capture feeding a multi-year individual catalogue'],
+                         'Photo identification capture feeding a multi-year individual catalog'],
                 'figure': (video('shark-tagging', 'Shark tagging operation from a small vessel'),
                            'Tagging from a small vessel. Most of the method is getting the boat and the animal in the same place calmly.'),
             },
@@ -161,7 +185,7 @@ PANELS = [
                          f'Every mask is scored and tiered into {FATHOMNET["grading_tiers"]}, with rejects held under an explicit deferred count so the accept rate cannot be quietly inflated',
                          f'Exports carry the new geometry across {FATHOMNET["export_formats"]} with per-record license propagation'],
                 'figure': (img('assets/panels/fathomnet-masks.avif',
-                               'A deep-sea frame with segmentation masks over a crinoid and neighbouring animals'),
+                               'A deep-sea frame with segmentation masks over a crinoid and neighboring animals'),
                            'The output: an animal described by its outline rather than by a rectangle.'),
             },
         ],
@@ -209,8 +233,8 @@ PANELS = [
                          'Per-class precision, recall, F1, balanced accuracy, and macro-F1',
                          'Replaced an evaluation path that leaked individual-animal signal between train and test'],
                 'figure': (img('assets/panels/anchor-track-diagnostics.avif',
-                               'Diagnostic panels from a reconstructed track: drift over time, tilt-compensated heading, and speed coloured by behavior state'),
-                           'Per-deployment diagnostics: drift against elapsed time, and speed coloured by classified behavior state.'),
+                               'Diagnostic panels from a reconstructed track: drift over time, tilt-compensated heading, and speed colored by behavior state'),
+                           'Per-deployment diagnostics: drift against elapsed time, and speed colored by classified behavior state.'),
             },
             {
                 'title': 'Arresting the drift',
@@ -231,7 +255,7 @@ PANELS = [
         'key': 'porpoise',
         'kind': 'paper',
         'cover_pos': '50% 28%',
-        'org': 'Independent, with Jorgensen Lab and partner catalogues',
+        'org': 'Independent, with Jorgensen Lab and partner catalogs',
         'title': 'Individual Re-Identification Across Species',
         'byline': 'Design and evaluation',
         'dateline': '2025 – Present &middot; Monterey Bay',
@@ -241,7 +265,7 @@ PANELS = [
                 'title': 'Harbor porpoise, by fin outline',
                 'body': [f'SAM 2 segments the body, protrusion geometry extracts the dorsal fin, and {REID["porpoise_backbone"]} embeds the crop through an ArcFace head with cosine-similarity ranking',
                          f'{REID["porpoise_individuals"]} individuals, {REID["porpoise_sightings"]} sightings, {REID["porpoise_images"]} images',
-                         f'{REID["porpoise_backbones_evaluated"]} were benchmarked on this catalogue before one was chosen'],
+                         f'{REID["porpoise_backbones_evaluated"]} were benchmarked on this catalog before one was chosen'],
                 'figure': (img('assets/panels/porpoise-animal.avif',
                                'A harbor porpoise surfacing, its small triangular dorsal fin clear of the water'),
                            'About a second of animal, once. The notches and scarring along that fin are the whole signature, which is why the pipeline starts by finding it.'),
@@ -250,7 +274,7 @@ PANELS = [
                 'title': 'Sevengill shark, by spot constellation',
                 'body': [f'Broadnose sevengill (<em>{REID["sevengill_species"]}</em>) carry {REID["sevengill_signal"]}, so the same re-identification problem needs a different feature entirely',
                          f'Three tracks run in parallel: {REID["sevengill_tracks"]}',
-                         f'{REID["sevengill_images"]} images catalogued, {REID["sevengill_labelled_individuals"]} individuals labelled so far',
+                         f'{REID["sevengill_images"]} images cataloged, {REID["sevengill_labelled_individuals"]} individuals labeled so far',
                          f'The useful finding so far is a negative one: {REID["sevengill_lowdata"]}'],
                 'figure': (img('assets/panels/porpoise-cmc.avif',
                                'Cumulative match characteristic curves for the re-identification model'),
@@ -260,22 +284,22 @@ PANELS = [
                 'title': 'Reporting it honestly',
                 'body': [f'Temporal split ({REID["porpoise_temporal_condition"]}), which is the unbiased evaluation: {REID["porpoise_temporal_rank1"]} rank-1 and {REID["porpoise_temporal_rank5"]} rank-5, on {REID["porpoise_temporal_config"]}',
                          f'Leave-one-out on {REID["porpoise_loo_condition"]} gives {REID["porpoise_loo_rank1"]} rank-1, and that number is inflated: the metric head sees the test animals during training. It is useful for the gallery-size experiment and for nothing else.',
-                         f'The gap between the two is the actual result. {REID["porpoise_caveat"].capitalize()}, so a model tested on the years it trained on is answering an easier question than a field programme ever asks.'],
+                         f'The gap between the two is the actual result. {REID["porpoise_caveat"].capitalize()}, so a model tested on the years it trained on is answering an easier question than a field program ever asks.'],
                 'figure': (img('assets/porpoise-accuracy-vs-gallery.png',
                                'Accuracy plotted against gallery size'),
-                           'Accuracy against gallery size, which is what decides whether any of this scales to a larger catalogue.'),
+                           'Accuracy against gallery size, which is what decides whether any of this scales to a larger catalog.'),
             },
             {
                 'title': 'Where it goes next',
-                'body': [f'The catalogue platform is built to host {REID["platform_scope"]}, because the expensive part is never the model, it is the labelled catalogue and the field relationships behind it.',
-                         'Open-set matching is the harder half: telling a known animal from one the catalogue has never seen, with a confidence a biologist can act on.'],
+                'body': [f'The catalog platform is built to host {REID["platform_scope"]}, because the expensive part is never the model, it is the labeled catalog and the field relationships behind it.',
+                         'Open-set matching is the harder half: telling a known animal from one the catalog has never seen, with a confidence a biologist can act on.'],
                 'figure': (img('assets/panels/porpoise-resight.avif',
                                'The same harbor porpoise photographed four years after Figure 1, from the same side, in different water'),
                            'Pointer again, same flank, four years after Figure&nbsp;1. That is a resighting, and it is the only thing any of this machinery exists to notice.'),
             },
         ],
         'tags': ['Re-Identification', 'Metric Learning', 'Photo-ID', 'Mark-Recapture', 'Open-Set'],
-        'crosslink': ('The pipeline and the catalogue', [('folder-porpoise-id', 'Technology / porpoise-fin-id')]),
+        'crosslink': ('The pipeline and the catalog', [('folder-porpoise-id', 'Technology / porpoise-fin-id')]),
     },
     {
         'key': 'aquaculture',
@@ -285,7 +309,7 @@ PANELS = [
         'title': 'Sustainable Urchin Aquaculture',
         'byline': 'Lead Technician &middot; Mentor: Dr. Luke Gardner',
         'dateline': 'Spring 2024 – Present &middot; Moss Landing, California',
-        'abstract': 'Purple urchins strip a kelp forest and then sit in the barrens they made, starving, with gonads too small to sell. If you can fatten those animals in tanks, removing them stops being a cost centre and starts being a fishery. Two experiments test whether that works, run end to end from hypothesis through manuscript. Related work looks at eelgrass (<em>Zostera marina</em>) as a cornerstone for California aquaculture and blue carbon.',
+        'abstract': 'Purple urchins strip a kelp forest and then sit in the barrens they made, starving, with gonads too small to sell. If you can fatten those animals in tanks, removing them stops being a cost center and starts being a fishery. Two experiments test whether that works, run end to end from hypothesis through manuscript. Related work looks at eelgrass (<em>Zostera marina</em>) as a cornerstone for California aquaculture and blue carbon.',
         'lead': (img('assets/panels/aquaculture-facility.avif',
                       'The aquaculture facility at Moss Landing, between two rows of culture tanks'),
                  'The facility at Moss Landing. Both experiments run down these two rows.'),
@@ -344,7 +368,7 @@ PANELS = [
                          'A Haldane inhibition model fitted alongside Gompertz and compared by AIC, so inhibition is tested rather than assumed',
                          'Bayesian hierarchical modeling with partial pooling and bootstrap confidence intervals over strain-level estimates'],
                 'figure': (img('assets/panels/tecan-degradation-ranking.avif',
-                               'The twenty strongest pesticide-degrading candidates ranked by degradation capacity, with confidence intervals, coloured by pesticide'),
+                               'The twenty strongest pesticide-degrading candidates ranked by degradation capacity, with confidence intervals, colored by pesticide'),
                            'The answer, on real plates: the twenty best candidates across five pesticides, ranked by growth rate times yield and attenuated by how strongly the compound inhibits them.'),
             },
             {
@@ -408,7 +432,7 @@ PANELS = [
             {
                 'title': 'Teaching it out',
                 'body': ['Students assemble a full station end to end, from bare board to a unit logging tags in the field, then site it and maintain it',
-                         'Hardware only its builder can repair is a demo. A station a local team can rebuild from parts is infrastructure, and that is the difference the programme is built around.'],
+                         'Hardware only its builder can repair is a demo. A station a local team can rebuild from parts is infrastructure, and that is the difference the program is built around.'],
                 'figure': (img('assets/relay-detailed-verification.avif',
                                'Detection verification output from a deployed relay station'),
                            'Verification from a student-built unit. The test is whether it detects a real tag, not whether it powers on.'),
@@ -416,7 +440,7 @@ PANELS = [
         ],
         'tags': ['VHF Telemetry', 'Field Instrumentation', 'Galápagos', 'Training'],
         'crosslink': ('Build it yourself', [('folder-relay', 'Technology / relay-station')]),
-        'refs_title': 'Programme overview',
+        'refs_title': 'Program overview',
         'presentations': [
             (None, None,
              'https://docs.google.com/presentation/d/1Ghkgao_iwUbkBy0n7kmHcbhW50ed88gM/embed?start=false&loop=false&delayms=3000',
@@ -503,6 +527,63 @@ PANELS = [
         'quote': 'From kelp canopy surveys to offshore tagging operations, every day on the water has reinforced the same lesson: marine field research is where assumptions meet reality. The ocean does not care about your methods section. It demands adaptability, teamwork, and respect for the unpredictable.',
         'tags': ['Scientific Diving', 'Vessel Operations', 'Kelp Forests'],
     },
+
+    # TerraMesh's reels are drawn in code over open satellite data by the
+    # TerraMesh Instagram renderer; none of it is generated imagery. Public
+    # wording follows the project: Gaia is a "planetary data interpreter".
+    {
+        'key': 'terramesh',
+        'kind': 'program',
+        'cover': 'assets/terramesh/cover-valley.avif',
+        'cover_tone': 'data',
+        'org': 'TerraMesh',
+        'title': 'A Field Instrument for a Living Planet',
+        'byline': 'Founder and lead developer',
+        'dateline': '2026 – Present',
+        'record': [
+            ('Platform', 'an iPhone app, a Mac station and a public web layer'),
+            ('Missions', 'biodiversity, geology, ocean and sky, surveyed together'),
+            ('Gaia benchmark', 'map error 0.273 against 0.298 for random visits, on a synthetic region'),
+            ('Status', 'each feature ships switched off and turns on after a field test proves it'),
+        ],
+        'abstract': 'Most citizen science collects whatever people happen to send and maps it afterwards. TerraMesh turns that around. Its interpreter, Gaia, keeps a map of its own doubt, the fog over each place, and asks people for the one visit that would clear the most of it. People walk, look, listen and scan with a phone, and every minute of effort is counted, so a species not found means something too.',
+        'sections': [
+            {
+                'title': 'Fog is what we don’t know yet',
+                'body': ['Every place and species carries an honest interval, which widens again as its records grow old',
+                         'Absence is reported as effort: “we looked and listened for 20 minutes; if a wren were here, we’d have found it 8 times in 10”',
+                         'Only minutes in which the phone or the person could actually have found something are counted'],
+                'figure': (reel('assets/terramesh/fog', 'Fog lifts off a satellite view of a valley where people have walked, then slowly returns'),
+                           'Fog lifts where people have looked and regrows as the records age. Drawn in code over Sentinel-2 imagery and a Copernicus elevation model.'),
+            },
+            {
+                'title': 'Walk a place',
+                'body': ['The map is a mesh of hexagonal tiles; a walk records what lives there and exactly where the person looked',
+                         'Public outputs use coarse tiles, never exact points, and sensitive species and private places never appear at all',
+                         'A record reaches research grade only when two or more people review it and more than two thirds agree. The phone’s suggestion never counts.'],
+                'figure': (reel('assets/terramesh/walk', 'A walker crosses a hexagonal map, clearing the fog over each tile it passes'),
+                           'A walk, tile by tile.'),
+            },
+            {
+                'title': 'A planetary data interpreter',
+                'body': ['Gaia is plain, deterministic statistics on saved records, not a chatbot: the same records always give the same numbers',
+                         'It picks each next visit by expected information gain, priced under the forecast weather and tide, inside hard safety and privacy rules',
+                         'Every ask is a forecast locked before the visit and scored after it, and the person who went sees whether Gaia was right'],
+                'figure': (reel('assets/terramesh/gaia', 'The Earth rendered from satellite data, wrapped in a mesh of tiles, with cloud and wind layers passing over it'),
+                           'The whole planet as one shared state, layer by layer: life, water, air and rock. Sentinel-2, Copernicus DEM and NOAA GFS.'),
+            },
+            {
+                'title': 'One place, every sphere',
+                'body': ['Photos named on the phone by BioCLIP and confirmed by a person; sound clips around Perch and BirdNET detections, never speech',
+                         '3D scans from LiDAR and ARKit, rebuilt on the station with COLMAP and scaled by printed AprilTag cubes',
+                         'Records leave in Darwin Core with effort and absence, built for GBIF'],
+                'figure': (reel('assets/terramesh/scene-bio', 'A golden-hour trail through dry grass, where a patch of poppies is picked out and named'),
+                           'The biodiversity mission, as drawn for TerraMesh’s reels in hand-written WebGL.'),
+            },
+        ],
+        'tags': ['Citizen Science', 'Bayesian Occupancy', 'iOS', 'Photogrammetry', 'Privacy'],
+        'crosslink': ('See it move', [('folder-terramesh', 'Technology / TerraMesh')]),
+    },
 ]
 
 def cover_for(p):
@@ -529,7 +610,7 @@ def cover_for(p):
 
 
 FIG_WORD = {'paper': 'Figure', 'program': 'Figure', 'field': 'Plate'}
-ABSTRACT_WORD = {'paper': 'Abstract', 'program': 'The programme', 'field': 'Field notes'}
+ABSTRACT_WORD = {'paper': 'Abstract', 'program': 'The program', 'field': 'Field notes'}
 
 
 def render(p):
@@ -558,7 +639,7 @@ def render(p):
     a(f'{IND}            <p class="rp-dateline">{p["dateline"]}</p>')
     a(f'{IND}        </header>')
 
-    # ---- Field/programme masthead ----
+    # ---- Field/program masthead ----
     if p.get('record'):
         a(f'{IND}        <dl class="rp-record">')
         for term, value in p['record']:

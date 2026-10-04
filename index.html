@@ -41,17 +41,17 @@
     </script>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/variables.css?v=20260919a">
-    <link rel="stylesheet" href="css/base.css?v=20260919a">
-    <link rel="stylesheet" href="css/homescreen.css?v=20260919a">
-    <link rel="stylesheet" href="css/transitions.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-forest.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-ocean.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-tech.css?v=20260919a">
-    <link rel="stylesheet" href="css/desktop-os.css?v=20260919a">
-    <link rel="stylesheet" href="css/path-mind.css?v=20260919a">
-    <link rel="stylesheet" href="css/shared.css?v=20260919a">
-    <link rel="stylesheet" href="css/responsive.css?v=20260919a">
+    <link rel="stylesheet" href="css/variables.css?v=20261003b">
+    <link rel="stylesheet" href="css/base.css?v=20261003b">
+    <link rel="stylesheet" href="css/homescreen.css?v=20261003b">
+    <link rel="stylesheet" href="css/transitions.css?v=20261003b">
+    <link rel="stylesheet" href="css/path-forest.css?v=20261003b">
+    <link rel="stylesheet" href="css/path-ocean.css?v=20261003b">
+    <link rel="stylesheet" href="css/path-tech.css?v=20261003b">
+    <link rel="stylesheet" href="css/desktop-os.css?v=20261003b">
+    <link rel="stylesheet" href="css/path-mind.css?v=20261003b">
+    <link rel="stylesheet" href="css/shared.css?v=20261003b">
+    <link rel="stylesheet" href="css/responsive.css?v=20261003b">
 
     <style>body { opacity: 0; transition: opacity 0.4s; } body.loaded { opacity: 1; }</style>
 
@@ -419,6 +419,15 @@
                         </button>
                     </div>
                 </li>
+                <li class="bubble-cell" style="--lane: 0.000; --rise-delay: -16.1s; --sway-dur: 10.5s; --sway-delay: -5.5s; --sway-k: 1.39; --scale: 1.05; --z: 105">
+                    <div class="bubble-float">
+                        <p class="bubble-name" id="bubble-label-terramesh">Which visit would teach the map the most</p>
+                        <button type="button" class="research-bubble" data-panel="terramesh" aria-labelledby="bubble-label-terramesh" aria-expanded="false" aria-haspopup="dialog">
+                            <img class="bubble-photo" src="assets/bubbles/terramesh.avif" alt="" width="440" height="440" loading="lazy" decoding="async">
+                            <span class="bubble-gloss" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </li>
             </ul>
             <!-- /BUBBLE FIELD -->
         </div>
@@ -502,7 +511,7 @@
                                 <ul>
                                     <li>Tagging operations from small vessels: approach, tag placement, recovery</li>
                                     <li>Dorsal fin mounted camera and sensor package deployment and retrieval</li>
-                                    <li>Photo identification capture feeding a multi-year individual catalogue</li>
+                                    <li>Photo identification capture feeding a multi-year individual catalog</li>
                                 </ul>
                             </div>
                         </details>
@@ -581,7 +590,7 @@
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/fathomnet-masks.avif" alt="A deep-sea frame with segmentation masks over a crinoid and neighbouring animals" width="1100" height="594" loading="lazy" decoding="async">
+                            <img src="assets/panels/fathomnet-masks.avif" alt="A deep-sea frame with segmentation masks over a crinoid and neighboring animals" width="1100" height="594" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 1</span>The output: an animal described by its outline rather than by a rectangle.</figcaption>
                         </figure>
                         <details class="rp-fold" open>
@@ -660,8 +669,8 @@
                     </section>
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/anchor-track-diagnostics.avif" alt="Diagnostic panels from a reconstructed track: drift over time, tilt-compensated heading, and speed coloured by behavior state" width="1100" height="816" loading="lazy" decoding="async">
-                            <figcaption><span class="rp-fignum">Figure 2</span>Per-deployment diagnostics: drift against elapsed time, and speed coloured by classified behavior state.</figcaption>
+                            <img src="assets/panels/anchor-track-diagnostics.avif" alt="Diagnostic panels from a reconstructed track: drift over time, tilt-compensated heading, and speed colored by behavior state" width="1100" height="816" loading="lazy" decoding="async">
+                            <figcaption><span class="rp-fignum">Figure 2</span>Per-deployment diagnostics: drift against elapsed time, and speed colored by classified behavior state.</figcaption>
                         </figure>
                         <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Evaluation without leakage</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
@@ -708,7 +717,7 @@
             <article class="rp rp--paper">
                 <header class="rp-head">
                     <img class="rp-cover" src="assets/panels/porpoise-animal.avif" alt="" aria-hidden="true" decoding="async" style="object-position:50% 28%">
-                    <p class="rp-org">Independent, with Jorgensen Lab and partner catalogues</p>
+                    <p class="rp-org">Independent, with Jorgensen Lab and partner catalogs</p>
                     <h3 class="rp-title">Individual Re-Identification Across Species</h3>
                     <p class="rp-byline">Design and evaluation</p>
                     <p class="rp-dateline">2025 – Present &middot; Monterey Bay</p>
@@ -729,7 +738,7 @@
                                 <ul>
                                     <li>SAM 2 segments the body, protrusion geometry extracts the dorsal fin, and MegaDescriptor-L-384 embeds the crop through an ArcFace head with cosine-similarity ranking</li>
                                     <li>198 individuals, 2,393 sightings, 2,153 images</li>
-                                    <li>MegaDescriptor-L-384, DINOv2-base and a two-backbone ensemble were benchmarked on this catalogue before one was chosen</li>
+                                    <li>MegaDescriptor-L-384, DINOv2-base and a two-backbone ensemble were benchmarked on this catalog before one was chosen</li>
                                 </ul>
                             </div>
                         </details>
@@ -745,7 +754,7 @@
                                 <ul>
                                     <li>Broadnose sevengill (<em>Notorynchus cepedianus</em>) carry natural freckling, matched as a spot constellation rather than an outline, so the same re-identification problem needs a different feature entirely</li>
                                     <li>Three tracks run in parallel: a fine-tuned MiewID head-crop embedding, a spot-graph GNN, and ALFRE-ID zero-shot local features</li>
-                                    <li>1,099 images catalogued, 51 individuals labelled so far</li>
+                                    <li>1,099 images cataloged, 51 individuals labeled so far</li>
                                     <li>The useful finding so far is a negative one: below roughly 1,000 to 2,000 images, local-feature aggregation beats fine-tuned metric learning, so the zero-shot track leads</li>
                                 </ul>
                             </div>
@@ -754,7 +763,7 @@
                     <section class="rp-section">
                         <figure class="rp-plate">
                             <img src="assets/porpoise-accuracy-vs-gallery.png" alt="Accuracy plotted against gallery size" width="1600" height="807" loading="lazy" decoding="async">
-                            <figcaption><span class="rp-fignum">Figure 3</span>Accuracy against gallery size, which is what decides whether any of this scales to a larger catalogue.</figcaption>
+                            <figcaption><span class="rp-fignum">Figure 3</span>Accuracy against gallery size, which is what decides whether any of this scales to a larger catalog.</figcaption>
                         </figure>
                         <details class="rp-fold" open>
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Reporting it honestly</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
@@ -762,7 +771,7 @@
                                 <ul>
                                     <li>Temporal split (train ≤ 2022, test 2023+), which is the unbiased evaluation: 30.5% rank-1 and 57.4% rank-5, on MegaDescriptor with SGD, cosine schedule, scale 64</li>
                                     <li>Leave-one-out on 94 individuals with at least 5 sightings gives 93.0% rank-1, and that number is inflated: the metric head sees the test animals during training. It is useful for the gallery-size experiment and for nothing else.</li>
-                                    <li>The gap between the two is the actual result. Dorsal fin shape changes over years, which is what the temporal split exposes, so a model tested on the years it trained on is answering an easier question than a field programme ever asks.</li>
+                                    <li>The gap between the two is the actual result. Dorsal fin shape changes over years, which is what the temporal split exposes, so a model tested on the years it trained on is answering an easier question than a field program ever asks.</li>
                                 </ul>
                             </div>
                         </details>
@@ -776,8 +785,8 @@
                             <summary><span class="rp-fold-num">4</span><span class="rp-fold-title">Where it goes next</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
-                                    <li>The catalogue platform is built to host any patterned marine species, with leopard sharks and eagle rays as the next candidates, because the expensive part is never the model, it is the labelled catalogue and the field relationships behind it.</li>
-                                    <li>Open-set matching is the harder half: telling a known animal from one the catalogue has never seen, with a confidence a biologist can act on.</li>
+                                    <li>The catalog platform is built to host any patterned marine species, with leopard sharks and eagle rays as the next candidates, because the expensive part is never the model, it is the labeled catalog and the field relationships behind it.</li>
+                                    <li>Open-set matching is the harder half: telling a known animal from one the catalog has never seen, with a confidence a biologist can act on.</li>
                                 </ul>
                             </div>
                         </details>
@@ -791,7 +800,7 @@
                     <span class="tag">Open-Set</span>
                 </div>
                 <p class="rp-crosslink">
-                    The pipeline and the catalogue
+                    The pipeline and the catalog
                     <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-porpoise-id">Technology / porpoise-fin-id</button>
                 </p>
             </article>
@@ -808,7 +817,7 @@
                 </header>
                 <section class="rp-abstract">
                     <h4>Abstract</h4>
-                    <p>Purple urchins strip a kelp forest and then sit in the barrens they made, starving, with gonads too small to sell. If you can fatten those animals in tanks, removing them stops being a cost centre and starts being a fishery. Two experiments test whether that works, run end to end from hypothesis through manuscript. Related work looks at eelgrass (<em>Zostera marina</em>) as a cornerstone for California aquaculture and blue carbon.</p>
+                    <p>Purple urchins strip a kelp forest and then sit in the barrens they made, starving, with gonads too small to sell. If you can fatten those animals in tanks, removing them stops being a cost center and starts being a fishery. Two experiments test whether that works, run end to end from hypothesis through manuscript. Related work looks at eelgrass (<em>Zostera marina</em>) as a cornerstone for California aquaculture and blue carbon.</p>
                 </section>
                 <figure class="rp-plate rp-plate--wide">
                     <img src="assets/panels/aquaculture-facility.avif" alt="The aquaculture facility at Moss Landing, between two rows of culture tanks" width="1100" height="1955" loading="lazy" decoding="async">
@@ -904,7 +913,7 @@
                 <div class="rp-sections">
                     <section class="rp-section">
                         <figure class="rp-plate">
-                            <img src="assets/panels/tecan-degradation-ranking.avif" alt="The twenty strongest pesticide-degrading candidates ranked by degradation capacity, with confidence intervals, coloured by pesticide" width="1100" height="870" loading="lazy" decoding="async">
+                            <img src="assets/panels/tecan-degradation-ranking.avif" alt="The twenty strongest pesticide-degrading candidates ranked by degradation capacity, with confidence intervals, colored by pesticide" width="1100" height="870" loading="lazy" decoding="async">
                             <figcaption><span class="rp-fignum">Figure 1</span>The answer, on real plates: the twenty best candidates across five pesticides, ranked by growth rate times yield and attenuated by how strongly the compound inhibits them.</figcaption>
                         </figure>
                         <details class="rp-fold" open>
@@ -963,7 +972,7 @@
                     <div><dt>Cost per station</dt><dd>under $100, against a $695 commercial receiver</dd></div>
                 </dl>
                 <section class="rp-abstract">
-                    <h4>The programme</h4>
+                    <h4>The program</h4>
                     <p>A commercial VHF telemetry receiver costs $695, which is the real reason so much of the world has no telemetry coverage. I built one for under $100, deployed it in the Galápagos and across California sites, measured what it actually detects in the field rather than on a datasheet, and taught local teams to build and repair their own.</p>
                 </section>
                 <div class="rp-sections">
@@ -1035,14 +1044,14 @@
                             <div class="rp-fold-body">
                                 <ul>
                                     <li>Students assemble a full station end to end, from bare board to a unit logging tags in the field, then site it and maintain it</li>
-                                    <li>Hardware only its builder can repair is a demo. A station a local team can rebuild from parts is infrastructure, and that is the difference the programme is built around.</li>
+                                    <li>Hardware only its builder can repair is a demo. A station a local team can rebuild from parts is infrastructure, and that is the difference the program is built around.</li>
                                 </ul>
                             </div>
                         </details>
                     </section>
                 </div>
                 <section class="rp-block rp-block--gallery">
-                    <h4>Programme overview</h4>
+                    <h4>Program overview</h4>
                     <div class="pres-gallery">
                         <div class="pres-stage">
                             <button type="button" class="pres-facade" data-embed="https://docs.google.com/presentation/d/1Ghkgao_iwUbkBy0n7kmHcbhW50ed88gM/embed?start=false&loop=false&delayms=3000" data-embed-title="Relay Station Training Program overview" aria-label="Open Relay Station Training Program overview"><img class="pres-shot" src="assets/pres/relay-1.avif" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="pres-play" aria-hidden="true"></span><span class="pres-facade-label">Open</span></button>
@@ -1202,6 +1211,105 @@
                 </div>
             </article>
         </template>
+
+        <template data-panel="terramesh">
+            <article class="rp rp--program">
+                <header class="rp-head rp-head--data">
+                    <img class="rp-cover" src="assets/terramesh/cover-valley.avif" alt="" aria-hidden="true" decoding="async">
+                    <p class="rp-org">TerraMesh</p>
+                    <h3 class="rp-title">A Field Instrument for a Living Planet</h3>
+                    <p class="rp-byline">Founder and lead developer</p>
+                    <p class="rp-dateline">2026 – Present</p>
+                </header>
+                <dl class="rp-record">
+                    <div><dt>Platform</dt><dd>an iPhone app, a Mac station and a public web layer</dd></div>
+                    <div><dt>Missions</dt><dd>biodiversity, geology, ocean and sky, surveyed together</dd></div>
+                    <div><dt>Gaia benchmark</dt><dd>map error 0.273 against 0.298 for random visits, on a synthetic region</dd></div>
+                    <div><dt>Status</dt><dd>each feature ships switched off and turns on after a field test proves it</dd></div>
+                </dl>
+                <section class="rp-abstract">
+                    <h4>The program</h4>
+                    <p>Most citizen science collects whatever people happen to send and maps it afterwards. TerraMesh turns that around. Its interpreter, Gaia, keeps a map of its own doubt, the fog over each place, and asks people for the one visit that would clear the most of it. People walk, look, listen and scan with a phone, and every minute of effort is counted, so a species not found means something too.</p>
+                </section>
+                <div class="rp-sections">
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/fog-poster.avif" aria-label="Fog lifts off a satellite view of a valley where people have walked, then slowly returns"><source src="assets/terramesh/fog.mp4" type="video/mp4"><source src="assets/terramesh/fog.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 1</span>Fog lifts where people have looked and regrows as the records age. Drawn in code over Sentinel-2 imagery and a Copernicus elevation model.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">1</span><span class="rp-fold-title">Fog is what we don’t know yet</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Every place and species carries an honest interval, which widens again as its records grow old</li>
+                                    <li>Absence is reported as effort: “we looked and listened for 20 minutes; if a wren were here, we’d have found it 8 times in 10”</li>
+                                    <li>Only minutes in which the phone or the person could actually have found something are counted</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/walk-poster.avif" aria-label="A walker crosses a hexagonal map, clearing the fog over each tile it passes"><source src="assets/terramesh/walk.mp4" type="video/mp4"><source src="assets/terramesh/walk.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 2</span>A walk, tile by tile.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">2</span><span class="rp-fold-title">Walk a place</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>The map is a mesh of hexagonal tiles; a walk records what lives there and exactly where the person looked</li>
+                                    <li>Public outputs use coarse tiles, never exact points, and sensitive species and private places never appear at all</li>
+                                    <li>A record reaches research grade only when two or more people review it and more than two thirds agree. The phone’s suggestion never counts.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/gaia-poster.avif" aria-label="The Earth rendered from satellite data, wrapped in a mesh of tiles, with cloud and wind layers passing over it"><source src="assets/terramesh/gaia.mp4" type="video/mp4"><source src="assets/terramesh/gaia.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 3</span>The whole planet as one shared state, layer by layer: life, water, air and rock. Sentinel-2, Copernicus DEM and NOAA GFS.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">A planetary data interpreter</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Gaia is plain, deterministic statistics on saved records, not a chatbot: the same records always give the same numbers</li>
+                                    <li>It picks each next visit by expected information gain, priced under the forecast weather and tide, inside hard safety and privacy rules</li>
+                                    <li>Every ask is a forecast locked before the visit and scored after it, and the person who went sees whether Gaia was right</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                    <section class="rp-section">
+                        <figure class="rp-plate">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="456" height="590" poster="assets/terramesh/scene-bio-poster.avif" aria-label="A golden-hour trail through dry grass, where a patch of poppies is picked out and named"><source src="assets/terramesh/scene-bio.mp4" type="video/mp4"><source src="assets/terramesh/scene-bio.webm" type="video/webm"></video>
+                            <figcaption><span class="rp-fignum">Figure 4</span>The biodiversity mission, as drawn for TerraMesh’s reels in hand-written WebGL.</figcaption>
+                        </figure>
+                        <details class="rp-fold" open>
+                            <summary><span class="rp-fold-num">4</span><span class="rp-fold-title">One place, every sphere</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
+                            <div class="rp-fold-body">
+                                <ul>
+                                    <li>Photos named on the phone by BioCLIP and confirmed by a person; sound clips around Perch and BirdNET detections, never speech</li>
+                                    <li>3D scans from LiDAR and ARKit, rebuilt on the station with COLMAP and scaled by printed AprilTag cubes</li>
+                                    <li>Records leave in Darwin Core with effort and absence, built for GBIF</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </section>
+                </div>
+                <div class="rp-tags">
+                    <span class="tag">Citizen Science</span>
+                    <span class="tag">Bayesian Occupancy</span>
+                    <span class="tag">iOS</span>
+                    <span class="tag">Photogrammetry</span>
+                    <span class="tag">Privacy</span>
+                </div>
+                <p class="rp-crosslink">
+                    See it move
+                    <button type="button" class="rp-crosslink-btn" data-goto-tech="folder-terramesh">Technology / TerraMesh</button>
+                </p>
+            </article>
+        </template>
     </section>
 
     <!-- ============================================
@@ -1240,6 +1348,11 @@
                 <!-- Desktop icons: the apps live here. Labs, GitHub and
                      contact moved to the dock, where a Mac would keep them. -->
                 <div class="desktop-icons">
+                    <!-- TerraMesh - opens the animated tour of the app -->
+                    <div class="desktop-icon" data-app="terramesh">
+                        <img src="assets/icon-terramesh.png" alt="TerraMesh" width="128" height="128" loading="lazy" decoding="async">
+                        <span class="desktop-icon-label">TerraMesh</span>
+                    </div>
                     <!-- RelayStation - opens the interactive demo -->
                     <div class="desktop-icon" data-app="relay">
                         <img src="assets/icon-relaystation.png" alt="RelayStation" width="128" height="128" loading="lazy" decoding="async">
@@ -1308,7 +1421,7 @@
 │ video        │   │ 15-pt skeleton   │   └───────────────┘
 └──────────────┘   └────────┬─────────┘   ┌───────────────┐   ┌──────────────┐
                             │             │ PorpoiseID    │──▶│ resightings, │
-                            └────────────▶│ ArcFace re-ID │   │ catalogues   │
+                            └────────────▶│ ArcFace re-ID │   │ catalogs   │
                                           └───────────────┘   └──────────────┘
 
                    ┌──────────────────────────────────────────────────────┐
@@ -1325,6 +1438,124 @@
                                     <span class="tag">Field to Model</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ TERRAMESH ============ -->
+                <div class="tree-folder tree-folder--terramesh" id="folder-terramesh">
+                    <div class="tree-connector">├──</div>
+                    <button class="folder-toggle" aria-expanded="false">
+                        <span class="folder-arrow">▶</span>
+                        <span class="folder-name">TerraMesh/</span>
+                        <span class="folder-desc">Field Science App, Founder</span>
+                    </button>
+                    <div class="folder-children">
+                        <!-- README -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">README.md</span>
+                                <span class="file-desc">A Field Instrument for a Living Planet</span>
+                            </button>
+                            <div class="file-content">
+                                <div class="tm-reel">
+                                    <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/walk-poster.avif" aria-label="A walker crosses a hexagonal map, clearing the fog over each tile it passes"><source src="assets/terramesh/walk.mp4" type="video/mp4"><source src="assets/terramesh/walk.webm" type="video/webm"></video>
+                                    <video class="lazy-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/terramesh/fog-poster.avif" aria-label="Fog lifts off a satellite view of a valley, then slowly returns"><source src="assets/terramesh/fog.mp4" type="video/mp4"><source src="assets/terramesh/fog.webm" type="video/webm"></video>
+                                </div>
+                                <p>TerraMesh is an iPhone app for field science that counts every minute of looking. People walk, listen and scan a place, and each survey becomes evidence about it: species seen and heard, rock and tidepools in 3D, ground cover, tide and wind, and how all of it changes over time. Places start in fog and clear as careful visits add up.</p>
+                                <ul>
+                                    <li><strong>Four missions, one walk:</strong> biodiversity, geology, ocean and sky are surveyed together</li>
+                                    <li><strong>Absence counts:</strong> sampling effort is logged for every survey, so not finding something is real data</li>
+                                    <li><strong>Gaia keeps a map of its own doubt</strong> and points to the visit that would teach it the most</li>
+                                    <li><strong>People decide what counts:</strong> research grade needs two or more reviewers with more than two thirds agreeing; the model never votes</li>
+                                    <li><strong>Tiles, not pins:</strong> places are shared as hexagonal tiles, not pins; faces are blurred and speech is never kept</li>
+                                    <li><strong>Proven before it ships:</strong> every new feature starts switched off and turns on only after a field test</li>
+                                </ul>
+                                <p class="tm-status">Status: in field testing. Nothing is public yet.</p>
+                                <div class="card-tags">
+                                    <span class="tag">Swift</span>
+                                    <span class="tag">SwiftUI</span>
+                                    <span class="tag">ARKit</span>
+                                    <span class="tag">Core ML</span>
+                                    <span class="tag">Python</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Gaia -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">gaia.py</span>
+                                <span class="file-desc">Planetary Data Interpreter</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Gaia is plain, deterministic statistics on saved records, not a chatbot: the same records always give the same numbers. For every place and species it estimates how often a careful visit finds it, how sure that estimate is, and which next visit would teach the map the most, inside hard safety and privacy rules. Every ask is a forecast written down before the visit and scored after it.</p>
+                                <ul>
+                                    <li>Occupancy with imperfect detection, counted on calm-equivalent minutes of effort</li>
+                                    <li>Visits chosen by expected information gain (BALD, EPIG)</li>
+                                    <li>Wind as one shared, estimated unknown for how much it hides sound, learned across every place and species</li>
+                                    <li>A hash-chained ledger of predictions, locked before each visit</li>
+                                </ul>
+                                <div class="stat-metrics">
+                                    <div class="stat-metric">
+                                        <div class="stat-val">0.273</div>
+                                        <div class="stat-label">Map Error, Gaia (synthetic)</div>
+                                    </div>
+                                    <div class="stat-metric">
+                                        <div class="stat-val">0.298</div>
+                                        <div class="stat-label">Map Error, Random Visits</div>
+                                    </div>
+                                    <div class="stat-metric">
+                                        <div class="stat-val">0</div>
+                                        <div class="stat-label">Safety Rule Breaks</div>
+                                    </div>
+                                </div>
+                                <div class="card-tags">
+                                    <span class="tag">Bayesian Occupancy</span>
+                                    <span class="tag">Experimental Design</span>
+                                    <span class="tag">Proper Scoring</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Station -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">station/</span>
+                                <span class="file-desc">Vault, Photogrammetry, Re-ID</span>
+                            </button>
+                            <div class="file-content">
+                                <p>A Mac station copies every survey into an append-only vault and runs the heavy models: COLMAP and OpenMVS photogrammetry seeded with ARKit poses and scaled by printed AprilTag cubes, sound ID (Perch, BirdNET), individual shark re-identification (MiewID, LightGlue) and face blurring before anything leaves.</p>
+                                <div class="card-tags">
+                                    <span class="tag">COLMAP</span>
+                                    <span class="tag">OpenMVS</span>
+                                    <span class="tag">AprilTag</span>
+                                    <span class="tag">BioCLIP</span>
+                                    <span class="tag">Perch</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Privacy -->
+                        <div class="tree-file">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;├──</div>
+                            <button class="file-toggle">
+                                <span class="file-name">privacy.md</span>
+                                <span class="file-desc">Tiles, Not Pins</span>
+                            </button>
+                            <div class="file-content">
+                                <p>Records go outward in Darwin Core with effort and absence, on coarse H3 tiles rather than exact points. Sensitive species and private places never appear in public, faces are blurred, and sound is kept only around detections, never speech.</p>
+                                <div class="card-tags">
+                                    <span class="tag">H3</span>
+                                    <span class="tag">Darwin Core</span>
+                                    <span class="tag">Cloudflare Workers</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Launch -->
+                        <div class="tree-link">
+                            <div class="tree-connector">│&nbsp;&nbsp;&nbsp;└──</div>
+                            <a href="demos/terramesh/index.html" data-open-app="terramesh">&rarr; open TerraMesh.app</a>
                         </div>
                     </div>
                 </div>
@@ -1814,7 +2045,7 @@
                                         <div class="file-gallery">
                                             <img src="assets/porpoise-match-example.png" alt="Porpoise dorsal fin match example showing query and top-5 candidates" loading="lazy">
                                         </div>
-                                        <p>Automated harbor porpoise individual identification from dorsal fin photos. SAM 2 segments the body, protrusion geometry extracts the fin, MegaDescriptor-L-384, chosen over DINOv2-base and a two-backbone ensemble on this catalogue, embeds the crop through an ArcFace head, and cosine similarity ranks the 198-individual catalog.</p>
+                                        <p>Automated harbor porpoise individual identification from dorsal fin photos. SAM 2 segments the body, protrusion geometry extracts the fin, MegaDescriptor-L-384, chosen over DINOv2-base and a two-backbone ensemble on this catalog, embeds the crop through an ArcFace head, and cosine similarity ranks the 198-individual catalog.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
                                                 <div class="stat-val">93.0%</div>
@@ -2010,7 +2241,7 @@
                                         <span class="file-desc">Subject-Level Splitting</span>
                                     </button>
                                     <div class="file-content">
-                                        <p>Splits are taken by animal, never by record. A random split puts the same individual on both sides, and a behavior classifier can then score well by recognising the animal rather than the behavior. Subject-level leave-one-out, with per-class precision, recall and F1 reported next to balanced accuracy and macro-F1 so a majority class cannot hide inside a single headline number.</p>
+                                        <p>Splits are taken by animal, never by record. A random split puts the same individual on both sides, and a behavior classifier can then score well by recognizing the animal rather than the behavior. Subject-level leave-one-out, with per-class precision, recall and F1 reported next to balanced accuracy and macro-F1 so a majority class cannot hide inside a single headline number.</p>
                                         <div class="card-tags">
                                             <span class="tag">Subject-level LOO</span>
                                             <span class="tag">Leakage Control</span>
@@ -2196,7 +2427,7 @@
                                 <span class="file-desc">Training Slice Characterization</span>
                             </button>
                             <div class="file-content">
-                                <p>Answers what you actually get if you train on a proposed slice of an annotated survey corpus, from bounded SQL aggregates rather than a full export. Reports an exclusion waterfall attributing every dropped annotation to one named stage, per concept trainability thresholds and the untrainable long tail, train and test leakage counts under four candidate split keys, and unlabelled positive contamination.</p>
+                                <p>Answers what you actually get if you train on a proposed slice of an annotated survey corpus, from bounded SQL aggregates rather than a full export. Reports an exclusion waterfall attributing every dropped annotation to one named stage, per concept trainability thresholds and the untrainable long tail, train and test leakage counts under four candidate split keys, and unlabeled positive contamination.</p>
                                 <div class="card-tags">
                                     <span class="tag">Data Curation</span>
                                     <span class="tag">Leakage Analysis</span>
@@ -2376,7 +2607,7 @@
         <div class="path-content">
             <div class="path-header fade-in">
                 <h2 class="path-title">Captain's Log</h2>
-                <p class="path-intro">The story behind the science: eight chapters, one thread</p>
+                <p class="path-intro">The story behind the science: nine chapters, one thread</p>
             </div>
 
             <!-- Captain's Log: full screen chapters -->
@@ -2512,11 +2743,31 @@
                     </article>
                     <article class="log-chapter" data-chapter="7" aria-hidden="true">
                         <div class="log-media">
-                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy" decoding="async">
+                            <video class="lazy-video" muted loop playsinline preload="none" width="960" height="568" poster="assets/terramesh/log-fog-poster.avif" aria-label="Fog lifting off a satellite view of a river valley along a walked trail, then slowly returning"><source src="assets/terramesh/log-fog.mp4" type="video/mp4"><source src="assets/terramesh/log-fog.webm" type="video/webm"></video>
                         </div>
                         <div class="log-scrim" aria-hidden="true"></div>
                         <div class="log-copy">
                             <p class="log-chapter-label">Chapter VIII</p>
+                            <h3 class="log-title">TerraMesh</h3>
+                            <p class="log-period">2026 &ndash; Present</p>
+                            <div class="log-narrative">
+                                <p>Every project before this one ended at the same wall. A survey tells you what someone found on one day, and almost nothing about what they would have missed. So I started building TerraMesh: a phone app that turns a walk into evidence about a place, with every minute of looking counted, so that not finding something finally means something too.</p>
+                                <p>At its center is Gaia, an interpreter that keeps a map of its own doubt and asks people for the visit that would clear the most of it. Every ask is written down before the visit and scored after it, so the app can never quietly flatter itself. The goal is the same one behind the relay stations: cheap instruments, honest numbers, and records anyone can build on.</p>
+                            </div>
+                            <div class="log-chips">
+                                <span class="log-chip">Founder</span>
+                                <span class="log-chip">Four Missions</span>
+                                <span class="log-chip">Gaia</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="log-chapter" data-chapter="8" aria-hidden="true">
+                        <div class="log-media">
+                            <img src="assets/feildops.jpg" alt="Marine field operations" loading="lazy" decoding="async">
+                        </div>
+                        <div class="log-scrim" aria-hidden="true"></div>
+                        <div class="log-copy">
+                            <p class="log-chapter-label">Chapter IX</p>
                             <h3 class="log-title">Now + Next</h3>
                             <p class="log-period">Present</p>
                             <div class="log-narrative">
@@ -2544,7 +2795,8 @@
                             <li><button type="button" class="log-dot" data-chapter="4"><span class="log-dot-num">V</span><span class="log-dot-name">HABHub</span></button></li>
                             <li><button type="button" class="log-dot" data-chapter="5"><span class="log-dot-num">VI</span><span class="log-dot-name">Hardware</span></button></li>
                             <li><button type="button" class="log-dot" data-chapter="6"><span class="log-dot-num">VII</span><span class="log-dot-name">MBARI</span></button></li>
-                            <li><button type="button" class="log-dot" data-chapter="7"><span class="log-dot-num">VIII</span><span class="log-dot-name">Now + Next</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="7"><span class="log-dot-num">VIII</span><span class="log-dot-name">TerraMesh</span></button></li>
+                            <li><button type="button" class="log-dot" data-chapter="8"><span class="log-dot-num">IX</span><span class="log-dot-name">Now + Next</span></button></li>
                         </ol>
                         <!-- Where you are, for the phone layout, which turns the
                              chapter rail off. Hidden on a wide screen, where the
@@ -2606,7 +2858,7 @@
                     <li>Converted existing bounding-box annotations into graded segmentation masks across the FathomNet database, scaling from a SAM 2 pilot to a full-corpus SAM 3 run. Built the sharded, crash-safe orchestrator: shard by image, a WAL-mode SQLite manifest as a lock-free work queue with BEGIN IMMEDIATE lease claims so a dead worker's shards are reclaimed automatically, temp-and-rename commits so a crash never marks a half-written shard complete, and one long-lived worker per GPU with the model loaded once.</li>
                     <li>Graded every mask rather than accepting it: best-of-three multimask selection by SAM's predicted IoU, a stability score computed from mask logits, and AUTO_ACCEPT / REVIEW / REJECT tiers on dual thresholds, with rejects routed to a sidecar carrying an explicit deferred count so accept rate could not be inflated.</li>
                     <li>Built a loopback ONNX segmentation service (SlimSAM-77-uniform, ONNX Runtime / CoreML) filling FathomNet's SegmentationProvider seam so the editor's Smart Select returns real object masks instead of the shipped stub's disc.</li>
-                    <li>Built a dataset planning tool that characterizes a proposed ML training slice of an annotated survey imagery corpus from bounded SQL aggregates: an exclusion waterfall attributing every dropped annotation to one named stage, per-concept trainability thresholds and the untrainable long tail, train/test leakage counts under four candidate split keys, and unlabelled-positive contamination.</li>
+                    <li>Built a dataset planning tool that characterizes a proposed ML training slice of an annotated survey imagery corpus from bounded SQL aggregates: an exclusion waterfall attributing every dropped annotation to one named stage, per-concept trainability thresholds and the untrainable long tail, train/test leakage counts under four candidate split keys, and unlabeled-positive contamination.</li>
                 </ul>
             </div>
             <div class="resume-item">
@@ -2624,7 +2876,7 @@
                 <ul>
                     <li>Developed multiple computer vision pipelines for pose detection and automated shark morphometric analysis across 4,850 archival videos (661 GB, 2012–2026, 4 sites), reaching 0.96 box mAP50, with a SQLite backend structured around Darwin Core concepts.</li>
                     <li>Built an active learning pipeline with an iterative human-in-the-loop platform for pose, segmentation and 3D interpretation tasks.</li>
-                    <li>Built SharkScarAnnotator, a multi-annotator platform whose 15-point labelling skeleton feeds the 16-keypoint pose model, with consensus scoring weighted by annotator experience and confidence.</li>
+                    <li>Built SharkScarAnnotator, a multi-annotator platform whose 15-point labeling skeleton feeds the 16-keypoint pose model, with consensus scoring weighted by annotator experience and confidence.</li>
                     <li>Processing accelerometer and magnetometer sensor data alongside dorsal-mounted camera video to correlate movement signatures with observed white shark behaviors.</li>
                     <li>Performed computational fluid dynamics analysis (OpenFOAM) of acoustic tags mounted to shark dorsal fins, iterating tag geometry to minimize hydrodynamic drag.</li>
                 </ul>
@@ -2659,8 +2911,8 @@
                 <ul>
                     <li>One re-identification approach applied to more than one animal: SAM 2 segmentation, feature embedding through an ArcFace metric head, and cosine-similarity ranking against a gallery of known individuals, so photographic sightings support mark-recapture without physical tags.</li>
                     <li>Harbor porpoise, by dorsal fin outline. MegaDescriptor-L-384 embeddings across 198 individuals (2,393 sightings, 2,153 images), after benchmarking MegaDescriptor-L-384, DINOv2-base and a two-backbone ensemble. Unbiased temporal split (train ≤ 2022, test 2023+): 30.5% rank-1, 57.4% rank-5. Leave-one-out on 94 individuals with at least 5 sightings reaches 93.0% rank-1 but is inflated by design and reported only for the gallery-size experiment.</li>
-                    <li>Broadnose sevengill shark (<em>Notorynchus cepedianus</em>), by spot constellation rather than outline: 1,099 images catalogued, 51 individuals labelled, three tracks in parallel (a fine-tuned MiewID head-crop embedding, a spot-graph GNN, and ALFRE-ID zero-shot local features). At this data scale local-feature aggregation outperforms fine-tuned metric learning, so the zero-shot track leads.</li>
-                    <li>Catalogue platform built to host any patterned marine species, with leopard sharks and eagle rays as the next candidates. Gradio interface, SQLite catalog, Docker deployment.</li>
+                    <li>Broadnose sevengill shark (<em>Notorynchus cepedianus</em>), by spot constellation rather than outline: 1,099 images cataloged, 51 individuals labeled, three tracks in parallel (a fine-tuned MiewID head-crop embedding, a spot-graph GNN, and ALFRE-ID zero-shot local features). At this data scale local-feature aggregation outperforms fine-tuned metric learning, so the zero-shot track leads.</li>
+                    <li>Catalog platform built to host any patterned marine species, with leopard sharks and eagle rays as the next candidates. Gradio interface, SQLite catalog, Docker deployment.</li>
                 </ul>
             </div>
             <div class="resume-item">
@@ -2785,6 +3037,6 @@
     </footer>
 
     <!-- JavaScript (ES Modules) -->
-    <script type="module" src="js/app.js?v=20260919a"></script>
+    <script type="module" src="js/app.js?v=20261003b"></script>
 </body>
 </html>

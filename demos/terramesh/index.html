@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TerraMesh</title>
+<meta name="description" content="TerraMesh: a field instrument for a living planet. Walk, look, listen and scan a place with a phone, and turn what you record into evidence about it.">
+<meta name="theme-color" content="#0D2A2E">
+<link rel="icon" href="kit/marks/leaf-small-lime-on-forest.svg" type="image/svg+xml">
+<link rel="preload" href="kit/fonts/figtree-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="terramesh.css">
+</head>
+<body>
+<!-- TerraMesh, as a window on the Technology desktop (and a page of its own on
+     a phone). Everything that moves here is drawn in code or is a reel the
+     Instagram renderer drew from open satellite data; there is no generated
+     imagery. The leaf, mission leaves, palette and Figtree come from the
+     TerraMesh design kit (kit/), copied in unchanged. -->
+
+<a class="back" href="../../#tech" target="_top" aria-label="Back to the portfolio">&larr; Portfolio</a>
+
+<main>
+
+  <!-- 1. The mark ------------------------------------------------------- -->
+  <section class="s hero" id="top" aria-labelledby="hero-title">
+    <canvas class="hex-drift" aria-hidden="true"></canvas>
+    <div class="hero-inner">
+      <canvas class="hero-leaf" width="220" height="220" aria-hidden="true"></canvas>
+      <h1 id="hero-title" class="wordmark" aria-label="TerraMesh"><span aria-hidden="true">TerraMesh</span></h1>
+      <p class="tagline rise">A field instrument for a living planet.</p>
+      <p class="lede rise">Walk, look, listen and scan a place with a phone. TerraMesh turns what you record into evidence about that place, and asks for the visit that would teach the map the most.</p>
+      <p class="byline rise">Founder and lead developer &middot; 2026 &ndash; present</p>
+    </div>
+    <a class="scroll-cue" href="#fog" aria-label="Scroll to the next section"><span></span></a>
+  </section>
+
+  <!-- 2. Fog ------------------------------------------------------------ -->
+  <section class="s fog" id="fog" aria-labelledby="fog-title">
+    <div class="fog-stage">
+      <canvas class="fog-canvas" aria-label="A map under fog. A walker clears the fog as it goes, and the fog slowly returns behind it. Move the pointer over the map to walk it yourself."></canvas>
+      <div class="fog-caption" aria-live="off">
+        <h2 id="fog-title" class="fog-line is-on">Fog is what we don&rsquo;t know yet.</h2>
+        <p class="fog-line">Walk a place.</p>
+        <p class="fog-line">Record what lives there, and where you looked.</p>
+        <p class="fog-line">Time passes. The fog comes back.</p>
+        <p class="fog-line">So we go back.</p>
+      </div>
+      <dl class="fog-hud">
+        <div><dt>Sampling effort</dt><dd><span data-hud="min">0</span> min</dd></div>
+        <div><dt>Tiles walked</dt><dd data-hud="tiles">0</dd></div>
+        <div><dt>Map still in fog</dt><dd><span data-hud="fog">100</span>%</dd></div>
+      </dl>
+      <p class="fog-hint">Move over the map to walk it</p>
+    </div>
+    <p class="credit">Base map: contains modified Copernicus Sentinel-2 data 2024 and Copernicus DEM.</p>
+  </section>
+
+  <!-- 3. Missions ------------------------------------------------------- -->
+  <section class="s missions" aria-labelledby="missions-title">
+    <header class="s-head">
+      <p class="eyebrow">Four missions</p>
+      <h2 id="missions-title">One place, every sphere</h2>
+      <p class="s-sub">Life, rock, water and air are surveyed together, because a place is all of them at once.</p>
+    </header>
+    <div class="mission-grid">
+      <article class="mission" data-style="bio" style="--accent:#2F5A38;--tint:#E4EDDD;--ink:#1D3B25">
+        <div class="m-media"><video muted loop playsinline preload="none" poster="../../assets/terramesh/scene-bio-poster.avif" data-src="../../assets/terramesh/scene-bio.mp4"></video></div>
+        <div class="m-body">
+          <canvas class="m-leaf" width="200" height="200" aria-hidden="true"></canvas>
+          <h3>Biodiversity</h3>
+          <p>Map where life thrives, and notice where it has gone quiet.</p>
+        </div>
+      </article>
+      <article class="mission" data-style="geo" style="--accent:#856019;--tint:#F1E8D5;--ink:#513A0C">
+        <div class="m-media"><video muted loop playsinline preload="none" poster="../../assets/terramesh/scene-geo-poster.avif" data-src="../../assets/terramesh/scene-geo.mp4"></video></div>
+        <div class="m-body">
+          <canvas class="m-leaf" width="200" height="200" aria-hidden="true"></canvas>
+          <h3>Geology</h3>
+          <p>Watch the ground itself shift, wear away and rebuild.</p>
+        </div>
+      </article>
+      <article class="mission" data-style="ocean" style="--accent:#0B5C6B;--tint:#DCEBEE;--ink:#083D47">
+        <div class="m-media"><video muted loop playsinline preload="none" poster="../../assets/terramesh/scene-ocean-poster.avif" data-src="../../assets/terramesh/scene-ocean.mp4"></video></div>
+        <div class="m-body">
+          <canvas class="m-leaf" width="200" height="200" aria-hidden="true"></canvas>
+          <h3>Ocean</h3>
+          <p>Keep watch where the land meets the sea.</p>
+        </div>
+      </article>
+      <article class="mission" data-style="sky" style="--accent:#3B5A84;--tint:#E3E9F3;--ink:#263C5A">
+        <div class="m-media"><video muted loop playsinline preload="none" poster="../../assets/terramesh/scene-sky-poster.avif" data-src="../../assets/terramesh/scene-sky.mp4"></video></div>
+        <div class="m-body">
+          <canvas class="m-leaf" width="200" height="200" aria-hidden="true"></canvas>
+          <h3>Sky</h3>
+          <p>Read the sky that every living thing shares.</p>
+        </div>
+      </article>
+    </div>
+    <ul class="capture">
+      <li><b>Photos</b> named on the phone, confirmed by a person</li>
+      <li><b>Sound</b> clips kept only around detections, never speech</li>
+      <li><b>3D scans</b> from LiDAR, ARKit and printed scale cubes</li>
+      <li><b>Effort</b> for every minute, so absence means something</li>
+    </ul>
+  </section>
+
+  <!-- 4. Gaia ----------------------------------------------------------- -->
+  <section class="s gaia" aria-labelledby="gaia-title">
+    <div class="gaia-grid">
+      <figure class="phone">
+        <video muted loop playsinline preload="none" poster="../../assets/terramesh/gaia-poster.avif" data-src="../../assets/terramesh/gaia.mp4" aria-label="Reel: the Earth rendered from satellite data, wrapped in a mesh of tiles, with cloud and wind layers passing over it"></video>
+      </figure>
+      <div class="gaia-copy">
+        <p class="eyebrow">Gaia</p>
+        <h2 id="gaia-title">A planetary data interpreter</h2>
+        <p class="s-sub">Plain, deterministic statistics on saved records. Not a chatbot: the same records always give the same numbers. For every place and species it answers three questions.</p>
+        <ol class="questions">
+          <li><span>1</span>What do the records say?</li>
+          <li><span>2</span>How sure are we?</li>
+          <li><span>3</span>What would one more visit settle?</li>
+        </ol>
+        <p class="gaia-loop">Interpretation makes asks. Asks make visits. Visits change the interpretation.</p>
+      </div>
+    </div>
+
+    <div class="gaia-charts">
+      <figure class="chart absence">
+        <figcaption>
+          <h3>Honest absence</h3>
+          <p>Not finding something is not proof it is gone. Gaia says how hard we looked.</p>
+        </figcaption>
+        <svg viewBox="0 0 420 240" role="img" aria-label="Chance a careful visit finds a species that is there, rising with minutes of counted effort. At 20 minutes it reaches 8 in 10.">
+          <g class="axis">
+            <line x1="40" y1="200" x2="400" y2="200"/>
+            <line x1="40" y1="20" x2="40" y2="200"/>
+            <text x="40" y="222">0</text><text x="160" y="222">10</text><text x="280" y="222">20</text><text x="388" y="222">30 min</text>
+            <text x="34" y="204" text-anchor="end">0</text><text x="34" y="114" text-anchor="end">0.5</text><text x="34" y="24" text-anchor="end">1</text>
+          </g>
+          <path class="curve" d=""/>
+          <g class="mark20">
+            <line x1="280" y1="200" x2="280" y2="56" />
+            <circle cx="280" cy="56" r="5"/>
+          </g>
+        </svg>
+        <p class="quote">&ldquo;We looked and listened for 20 minutes. If a wren were here, we&rsquo;d have found it 8 times in 10.&rdquo;</p>
+      </figure>
+
+      <figure class="chart bench">
+        <figcaption>
+          <h3>Choosing where to look</h3>
+          <p>Map error after the same number of visits, lower is better. Synthetic region, 8 seeds; bars start at 0.25.</p>
+        </figcaption>
+        <ul class="bars">
+          <li style="--v:0.2982"><span>Random visits</span><i></i><b>0.298</b></li>
+          <li style="--v:0.2871"><span>Stalest tile first</span><i></i><b>0.287</b></li>
+          <li class="is-gaia" style="--v:0.2734"><span>Gaia asks</span><i></i><b>0.273</b></li>
+          <li class="is-oracle" style="--v:0.2648"><span>Oracle (knows the truth)</span><i></i><b>0.265</b></li>
+        </ul>
+        <p class="note">About 1,380 asks checked per strategy, with zero breaks of the safety and privacy rules. Real-records scoring comes after the next field test, against predictions locked before each visit.</p>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 5. Consensus ------------------------------------------------------ -->
+  <section class="s consensus" aria-labelledby="cons-title">
+    <header class="s-head">
+      <p class="eyebrow">Review</p>
+      <h2 id="cons-title">Only people make a record count</h2>
+      <p class="s-sub">The phone suggests a name. It never counts as a find. A record reaches research grade when two or more people review it and more than two thirds agree.</p>
+    </header>
+    <div class="vote" aria-hidden="true">
+      <div class="specimen">
+        <canvas class="v-leaf" width="140" height="140"></canvas>
+        <p class="suggest">Phone suggests: <i>California poppy</i><em>doesn&rsquo;t count</em></p>
+      </div>
+      <ol class="voters">
+        <li data-say="yes"><span class="dot"></span><span class="say">California poppy</span></li>
+        <li data-say="yes"><span class="dot"></span><span class="say">California poppy</span></li>
+        <li data-say="no"><span class="dot"></span><span class="say">Unsure</span></li>
+        <li data-say="yes"><span class="dot"></span><span class="say">California poppy</span></li>
+      </ol>
+      <div class="tally"><span class="tally-n">3 of 4 agree</span><span class="badge">Research grade</span></div>
+    </div>
+  </section>
+
+  <!-- 6. Privacy -------------------------------------------------------- -->
+  <section class="s privacy" aria-labelledby="priv-title">
+    <div class="priv-grid">
+      <div class="priv-viz" aria-hidden="true"><canvas class="tile-canvas"></canvas></div>
+      <div class="priv-copy">
+        <p class="eyebrow">Privacy</p>
+        <h2 id="priv-title">Tiles, not pins</h2>
+        <ul class="ticks">
+          <li>Public maps show coarse hexagonal tiles, never exact points</li>
+          <li>Sensitive species and private places never appear in public</li>
+          <li>Faces are blurred before anything is shared</li>
+          <li>Sound is kept only around detections, and speech never</li>
+          <li>New features ship switched off, and turn on only after a field test proves them</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. How it is built ------------------------------------------------ -->
+  <section class="s build" aria-labelledby="build-title">
+    <header class="s-head">
+      <p class="eyebrow">How it is built</p>
+      <h2 id="build-title">Phone, station, outward</h2>
+    </header>
+    <ol class="flow">
+      <li><h3>Phone</h3><p>SwiftUI app with ARKit and LiDAR capture, on-device species suggestions (BioCLIP, Perch, BirdNET) and counted effort for every survey.</p></li>
+      <li><h3>Station</h3><p>An append-only evidence vault. COLMAP photogrammetry with ARKit priors, sound ID, individual shark re-ID (MiewID, LightGlue) and face blurring.</p></li>
+      <li><h3>Outward</h3><p>Reviewed records in Darwin Core with effort and absence, on H3 tiles, through Cloudflare Workers, built for GBIF and public place pages.</p></li>
+    </ol>
+    <div class="chips">
+      <span>Swift</span><span>SwiftUI</span><span>ARKit</span><span>Core ML</span><span>Python</span><span>COLMAP</span><span>OpenMVS</span><span>H3</span><span>Darwin Core</span><span>Cloudflare Workers</span><span>WebGL</span><span>Bayesian occupancy</span>
+    </div>
+    <p class="status">TerraMesh is young and says so. Most features are built and switched off until a field test proves them, and every number on this page is labeled with where it came from.</p>
+  </section>
+
+  <footer class="foot">
+    <img class="foot-leaf" src="kit/marks/leaf-small-lime-on-forest.svg" alt="" width="48" height="48">
+    <p>Everything here is drawn in code. Reels and maps contain modified Copernicus Sentinel-2 data 2020 and 2024, Copernicus DEM and NOAA GFS. Figtree is used under the SIL Open Font License.</p>
+  </footer>
+</main>
+
+<script src="kit/mark.js"></script>
+<script src="terramesh.js"></script>
+</body>
+</html>

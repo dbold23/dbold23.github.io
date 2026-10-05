@@ -528,8 +528,8 @@ PANELS = [
         'tags': ['Scientific Diving', 'Vessel Operations', 'Kelp Forests'],
     },
 
-    # TerraMesh's reels are drawn in code over open satellite data by the
-    # TerraMesh Instagram renderer; none of it is generated imagery. Public
+    # TerraMesh's reels come from the TerraMesh Instagram renderer, built on
+    # open satellite data. Public
     # wording follows the project: Gaia is a "planetary data interpreter".
     {
         'key': 'terramesh',
@@ -554,7 +554,7 @@ PANELS = [
                          'Absence is reported as effort: “we looked and listened for 20 minutes; if a wren were here, we’d have found it 8 times in 10”',
                          'Only minutes in which the phone or the person could actually have found something are counted'],
                 'figure': (reel('assets/terramesh/fog', 'Fog lifts off a satellite view of a valley where people have walked, then slowly returns'),
-                           'Fog lifts where people have looked and regrows as the records age. Drawn in code over Sentinel-2 imagery and a Copernicus elevation model.'),
+                           'Fog lifts where people have looked and regrows as the records age, over Sentinel-2 imagery and a Copernicus elevation model.'),
             },
             {
                 'title': 'Walk a place',

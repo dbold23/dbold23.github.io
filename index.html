@@ -525,7 +525,7 @@
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Results to date</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
-                                    <li>A 16-keypoint pose model reaching 0.96 box mAP50, measuring animals from video rather than counting them</li>
+                                    <li>A 16-keypoint ViTPose model reaching 0.928 PCK@0.1 (8 px median error) on sharks held out of training, measuring animals from video rather than counting them</li>
                                     <li>4,850 videos, 661 GB, spanning 2012–2026 across Año Nuevo, Aptos, the Farallon Islands and Point Reyes</li>
                                     <li>Multi-year photo-ID series tracking injury healing rates in known individuals</li>
                                     <li>Dorsal-camera footage and sensor records paired for behavior work, reconstructed in <em>anchor</em></li>
@@ -1415,9 +1415,9 @@
 │ tags         │   │ records          │
 └──────────────┘   └──────────────────┘
                                           ┌───────────────┐   ┌──────────────┐
-┌──────────────┐   ┌──────────────────┐   │ YOLO pose     │──▶│ morphometrics│
+┌──────────────┐   ┌──────────────────┐   │ ViTPose       │──▶│ morphometrics│
 │ dorsal cams, │──▶│ SharkScar-       │──▶│ 16 keypoints  │   │ body conditn │
-│ ROV + boat   │   │ Annotator        │   │ 0.96 box mAP50│   └──────────────┘
+│ ROV + boat   │   │ Annotator        │   │ PCK 0.928 test│   └──────────────┘
 │ video        │   │ 15-pt skeleton   │   └───────────────┘
 └──────────────┘   └────────┬─────────┘   ┌───────────────┐   ┌──────────────┐
                             │             │ PorpoiseID    │──▶│ resightings, │
@@ -1953,7 +1953,7 @@
                             <button class="folder-toggle" aria-expanded="false">
                                 <span class="folder-arrow">▶</span>
                                 <span class="folder-name">shark-morphometrics/</span>
-                                <span class="folder-desc">YOLOv8 Pose Estimation Pipeline</span>
+                                <span class="folder-desc">YOLO + ViTPose Pose Estimation Pipeline</span>
                             </button>
                             <div class="folder-children">
                                 <!-- pose-model.py -->
@@ -1961,12 +1961,12 @@
                                     <div class="tree-connector">│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├──</div>
                                     <button class="file-toggle">
                                         <span class="file-name">pose-model.py</span>
-                                        <span class="file-desc">16-Keypoint YOLOv8-Pose</span>
+                                        <span class="file-desc">16-Keypoint ViTPose</span>
                                     </button>
                                     <div class="file-content">
-                                        <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="YOLOv8 pose detection on white shark (early 5-keypoint model)"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
+                                        <video class="lazy-video" muted loop playsinline preload="none" width="640" height="480" aria-label="Keypoint detection on a white shark (early 5-keypoint model)"><source src="assets/shark-yolo-keypoints.webm" type="video/webm"><source src="assets/shark-yolo-keypoints.mp4" type="video/mp4"></video>
                                         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem; margin-bottom:1rem; font-style:italic;">Shown: first-generation 5-keypoint model. Current pipeline uses the 16-keypoint schema described below.</p>
-                                        <p>YOLOv8-pose model trained on 16 anatomical keypoints: 9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips, for white shark body condition assessment from underwater video. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
+                                        <p>Two stages: a YOLOv8 detector finds each shark, then a ViTPose-B model (Apache-2.0) places 16 anatomical keypoints: 9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips, for white shark body condition assessment from underwater video. Scored on a test set grouped by encounter (138 frames of 99 sharks, none seen in training): 0.928 PCK@0.1 with an 8&nbsp;px median error, against 0.716 pose mAP50 for the YOLOv8-pose model it replaces, which swapped snout and tail on hard views. This version has no visibility output yet, so it also places points it cannot see; a visibility head is in training. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
                                                 <div class="stat-val">16-pt</div>
@@ -1977,8 +1977,8 @@
                                                 <div class="stat-label">Videos</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">0.96</div>
-                                                <div class="stat-label">Box mAP50</div>
+                                                <div class="stat-val">0.928</div>
+                                                <div class="stat-label">PCK@0.1, held out</div>
                                             </div>
                                             <div class="stat-metric">
                                                 <div class="stat-val">4</div>
@@ -1986,6 +1986,7 @@
                                             </div>
                                         </div>
                                         <div class="card-tags">
+                                            <span class="tag">ViTPose</span>
                                             <span class="tag">YOLOv8</span>
                                             <span class="tag">Pose Estimation</span>
                                             <span class="tag">PyTorch</span>
@@ -2839,7 +2840,7 @@
             <div class="resume-item">
                 <ul>
                     <li><strong>Languages:</strong> Python, R, Java 21, SQL/T-SQL, JavaScript/TypeScript, MATLAB, Bash/Unix</li>
-                    <li><strong>ML &amp; Computer Vision:</strong> PyTorch, YOLO detection and YOLOv8-pose keypoints, SAM 2 / SAM 3 / SlimSAM segmentation, DINOv2 embeddings, ArcFace metric learning, XGBoost, scikit-learn, CNN-LSTM, positive-unlabeled learning, active learning and human-in-the-loop annotation, leakage-aware subject-level validation, ONNX Runtime</li>
+                    <li><strong>ML &amp; Computer Vision:</strong> PyTorch, YOLO detection and ViTPose keypoints, SAM 2 / SAM 3 / SlimSAM segmentation, DINOv2 embeddings, ArcFace metric learning, XGBoost, scikit-learn, CNN-LSTM, positive-unlabeled learning, active learning and human-in-the-loop annotation, leakage-aware subject-level validation, ONNX Runtime</li>
                     <li><strong>Data Engineering:</strong> Microsoft SQL Server, PostgreSQL, SQLite, Flyway migrations, Hibernate ORM/Envers, JPA, JPQL; schema design with composite and filtered indexes; Quarkus, JAX-RS/REST, Flask REST APIs; Docker; AWS (EC2, S3, SageMaker); distributed work-queue orchestration (lease-based claiming, crash recovery, multi-GPU worker pools); Celery/Redis</li>
                     <li><strong>Data Formats &amp; Standards:</strong> COCO (compressed-RLE / pycocotools interoperability), YOLO, Pascal VOC, Darwin Core, CF-1.8 NetCDF, Movebank, GeoTIFF, GeoJSON, Parquet</li>
                     <li><strong>Ocean &amp; Geospatial Data:</strong> NOAA VIIRS / ERDDAP satellite data, NDBC buoy data, GIS spatial analysis, Shapely, pyproj, rasterio; acoustic, accelerometer and magnetometer bio-logging tags; VHF telemetry; adaptive signal processing; water quality monitoring; BRUV deployment; CFD modeling (OpenFOAM)</li>
@@ -2874,7 +2875,7 @@
                 <h4>Undergraduate Researcher, Ocean Predator Ecology Lab, CSUMB</h4>
                 <p class="resume-meta">Spring 2023 – Present | Mentor: Dr. Salvador Jorgensen</p>
                 <ul>
-                    <li>Developed multiple computer vision pipelines for pose detection and automated shark morphometric analysis across 4,850 archival videos (661 GB, 2012–2026, 4 sites), reaching 0.96 box mAP50, with a SQLite backend structured around Darwin Core concepts.</li>
+                    <li>Developed multiple computer vision pipelines for pose detection and automated shark morphometric analysis across 4,850 archival videos (661 GB, 2012–2026, 4 sites), with a 16-keypoint ViTPose model reaching 0.928 PCK@0.1 on sharks held out of training and a SQLite backend structured around Darwin Core concepts.</li>
                     <li>Built an active learning pipeline with an iterative human-in-the-loop platform for pose, segmentation and 3D interpretation tasks.</li>
                     <li>Built SharkScarAnnotator, a multi-annotator platform whose 15-point labeling skeleton feeds the 16-keypoint pose model, with consensus scoring weighted by annotator experience and confidence.</li>
                     <li>Processing accelerometer and magnetometer sensor data alongside dorsal-mounted camera video to correlate movement signatures with observed white shark behaviors.</li>

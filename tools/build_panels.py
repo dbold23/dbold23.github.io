@@ -75,6 +75,12 @@ def _clip_size(stem, fallback=(512, 288)):
         return fallback
 
 
+# The keypoint clip both shark panels show. Says which model drew the points, so a
+# reader never takes an old model's output for the current one.
+POSE_CLIP_NOTE = (' <span class="rp-caption-note">Clip shows the first-generation 5-keypoint '
+                  'model; the current pipeline uses the 16-keypoint schema.</span>')
+
+
 def video(stem, label):
     w, h = _clip_size(stem)
     return (f'<video class="lazy-video" muted loop playsinline preload="none" '
@@ -124,7 +130,8 @@ PANELS = [
                          'Do bite and boat-strike injuries heal at rates that say something about individual condition?',
                          'What are sharks doing when no one is watching, and can sensors tell us?'],
                 'figure': (video('shark-yolo-keypoints', 'Automated keypoint tracking on a swimming white shark'),
-                           f'Automated keypoint tracking turns {SHARK["videos"]} archival videos into measurable landmarks.'),
+                           f'Automated keypoint tracking turns {SHARK["videos"]} archival videos into measurable landmarks.'
+                           + POSE_CLIP_NOTE),
             },
             {
                 'title': 'Field methods',
@@ -136,7 +143,7 @@ PANELS = [
             },
             {
                 'title': 'Results to date',
-                'body': [f'A {SHARK["pose_keypoints"]}-keypoint pose model reaching {SHARK["box_map50"]} {SHARK["box_map50_label"]}, measuring animals from video rather than counting them',
+                'body': [f'A {SHARK["pose_keypoints"]}-keypoint {SHARK["pose_model"]} model reaching {SHARK["pose_pck"]} {SHARK["pose_pck_label"]} ({SHARK["pose_median_px"]} px median error) on sharks held out of training, measuring animals from video rather than counting them',
                          f'{SHARK["videos"]} videos, {SHARK["corpus_size"]}, spanning {SHARK["corpus_years"]} across {SHARK["sites"]}',
                          'Multi-year photo-ID series tracking injury healing rates in known individuals',
                          'Dorsal-camera footage and sensor records paired for behavior work, reconstructed in <em>anchor</em>',
@@ -225,7 +232,8 @@ PANELS = [
                          'DeepLabCut and SLEAP keypoint exports converted into tailbeat frequency, amplitude, and body lengths per second',
                          'Drone and aquarium video speed calibration, with paired multi-tag runs scored by Cohen’s kappa'],
                 'figure': (video('shark-yolo-keypoints', 'Keypoint tracking on a swimming shark, used as optical ground truth'),
-                           'Optical ground truth: video keypoints give a tailbeat the tag can be checked against.'),
+                           'Optical ground truth: video keypoints give a tailbeat the tag can be checked against.'
+                           + POSE_CLIP_NOTE),
             },
             {
                 'title': 'Evaluation without leakage',

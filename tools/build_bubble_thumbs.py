@@ -35,7 +35,7 @@ JOBS = {
 
 # The biologging bubble comes from a frame of the keypoint video rather than a
 # still, so it is handled separately.
-VIDEO_JOB = ("anchor", "shark-yolo-keypoints.mp4", 40, (0.5, 0.52), 0.82)
+VIDEO_JOB = ("anchor", "shark-pose-vitpose.mp4", 40, (0.5, 0.52), 0.82)
 
 # The FathomNet bubble is an explicit crop of the MBARI talk photo rather than a
 # centred one: the box is chosen so the face clears the circle at the top and the

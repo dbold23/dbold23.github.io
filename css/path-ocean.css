@@ -819,10 +819,6 @@
   background: #04102a;
 }
 
-/* shark-yolo-keypoints carries its letterbox in the file itself: it is a 16:9
-   render written into a 4:3 frame, so covering 16:9 trims exactly the bars */
-.rp-plate video[width="640"][height="480"] { aspect-ratio: 16 / 9; }
-
 .rp-plate figcaption {
   padding: 0.8rem 1rem 0.9rem;
   font-size: 0.79rem;
@@ -832,9 +828,8 @@
   border-top: 1px solid var(--rp-rule);
 }
 
-/* Provenance footnote inside a figcaption: the keypoint clip on both research
-   plates is the first-generation 5-point render, not the 16-point model the
-   text describes. Set apart so it reads as a caveat, not as more caption. */
+/* Provenance footnote inside a figcaption: which model drew the points on the
+   keypoint clip. Set apart so it reads as a caveat, not as more caption. */
 .rp-caption-note {
   display: block;
   margin-top: 0.35rem;

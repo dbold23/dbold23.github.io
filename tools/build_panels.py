@@ -144,7 +144,7 @@ PANELS = [
             },
             {
                 'title': 'Results to date',
-                'body': [f'A {SHARK["pose_keypoints"]}-keypoint {SHARK["pose_model"]} model reaching {SHARK["pose_pck"]} {SHARK["pose_pck_label"]} ({SHARK["pose_median_px"]} px median error) on sharks held out of training, measuring animals from video rather than counting them',
+                'body': [f'A {SHARK["pose_keypoints"]}-keypoint {SHARK["pose_model"]} model reaching {SHARK["pose_pck"]} {SHARK["pose_pck_label"]} on sharks held out of training, measuring animals from video rather than counting them',
                          f'{SHARK["videos"]} videos, {SHARK["corpus_size"]}, spanning {SHARK["corpus_years"]} across {SHARK["sites"]}',
                          'Multi-year photo-ID series tracking injury healing rates in known individuals',
                          'Dorsal-camera footage and sensor records paired for behavior work, reconstructed in <em>anchor</em>',

@@ -525,7 +525,7 @@
                             <summary><span class="rp-fold-num">3</span><span class="rp-fold-title">Results to date</span><span class="rp-fold-chevron" aria-hidden="true"></span></summary>
                             <div class="rp-fold-body">
                                 <ul>
-                                    <li>A 16-keypoint ViTPose model reaching 0.928 PCK@0.1 (8 px median error) on sharks held out of training, measuring animals from video rather than counting them</li>
+                                    <li>A 16-keypoint ViTPose model reaching 0.924 PCK@0.1 on sharks held out of training, measuring animals from video rather than counting them</li>
                                     <li>4,850 videos, 661 GB, spanning 2012–2026 across Año Nuevo, Aptos, the Farallon Islands and Point Reyes</li>
                                     <li>Multi-year photo-ID series tracking injury healing rates in known individuals</li>
                                     <li>Dorsal-camera footage and sensor records paired for behavior work, reconstructed in <em>anchor</em></li>
@@ -1417,7 +1417,7 @@
                                           ┌───────────────┐   ┌──────────────┐
 ┌──────────────┐   ┌──────────────────┐   │ ViTPose       │──▶│ morphometrics│
 │ dorsal cams, │──▶│ SharkScar-       │──▶│ 16 keypoints  │   │ body conditn │
-│ ROV + boat   │   │ Annotator        │   │ PCK 0.928 test│   └──────────────┘
+│ ROV + boat   │   │ Annotator        │   │ PCK 0.924 test│   └──────────────┘
 │ video        │   │ 15-pt skeleton   │   └───────────────┘
 └──────────────┘   └────────┬─────────┘   ┌───────────────┐   ┌──────────────┐
                             │             │ PorpoiseID    │──▶│ resightings, │
@@ -1966,7 +1966,7 @@
                                     <div class="file-content">
                                         <video class="lazy-video" muted loop playsinline preload="none" width="1280" height="358" aria-label="The same white shark clip with the old YOLOv8-pose keypoints on the left and ViTPose on the right"><source src="assets/shark-pose-compare.webm" type="video/webm"><source src="assets/shark-pose-compare.mp4" type="video/mp4"></video>
                                         <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.3rem; margin-bottom:1rem; font-style:italic;">The same 4.5 s of footage, slowed 3x. Left: the YOLOv8-pose model this replaces, which scatters points across the body and puts the tail marker (T) above the dorsal fin. Right: ViTPose-B v2, which leaves out the snout and tail because they are outside the frame.</p>
-                                        <p>Two stages: a YOLOv8 detector finds each shark, then a ViTPose-B v2 model (Apache-2.0) places 16 anatomical keypoints: 9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips, for white shark body condition assessment from underwater video. Scored on a test set grouped by encounter (138 frames of 99 sharks, none seen in training): 0.928 PCK@0.1 with an 8&nbsp;px median error, against 0.716 pose mAP50 for the YOLOv8-pose model it replaces, which swapped snout and tail on hard views. v2 was also trained on which points are hidden, so on close-ups of the front, middle or back of the animal it reaches 0.918 PCK@0.1 (0.707 before) and leaves out points that are not in view. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
+                                        <p>Two stages: a YOLOv8 detector finds each shark, then a ViTPose-B v2 model (Apache-2.0) places 16 anatomical keypoints: 9 Tier&nbsp;1 body-axis landmarks (snout, eye, gill slits, pectoral base, dorsal base, caudal) and 7 Tier&nbsp;2 fin tips, for white shark body condition assessment from underwater video. Scored on a test set grouped by encounter (138 frames of 99 sharks, none seen in training): 0.924 PCK@0.1 (0.756 at the stricter PCK@0.05), against 0.716 pose mAP50 for the YOLOv8-pose model it replaces, which swapped snout and tail on hard views. v2 was also trained on which points are hidden, so on close-ups of the front, middle or back of the animal it reaches 0.919 PCK@0.1 (0.707 before) and leaves out points that are not in view. Extracts angle-tolerant morphometric ratios including total length, fork length, head-to-total ratio, and body condition index across 4 California research sites.</p>
                                         <div class="stat-metrics">
                                             <div class="stat-metric">
                                                 <div class="stat-val">16-pt</div>
@@ -1977,7 +1977,7 @@
                                                 <div class="stat-label">Videos</div>
                                             </div>
                                             <div class="stat-metric">
-                                                <div class="stat-val">0.928</div>
+                                                <div class="stat-val">0.924</div>
                                                 <div class="stat-label">PCK@0.1, held out</div>
                                             </div>
                                             <div class="stat-metric">
@@ -2875,7 +2875,7 @@
                 <h4>Undergraduate Researcher, Ocean Predator Ecology Lab, CSUMB</h4>
                 <p class="resume-meta">Spring 2023 – Present | Mentor: Dr. Salvador Jorgensen</p>
                 <ul>
-                    <li>Developed multiple computer vision pipelines for pose detection and automated shark morphometric analysis across 4,850 archival videos (661 GB, 2012–2026, 4 sites), with a 16-keypoint ViTPose model reaching 0.928 PCK@0.1 on sharks held out of training and a SQLite backend structured around Darwin Core concepts.</li>
+                    <li>Developed multiple computer vision pipelines for pose detection and automated shark morphometric analysis across 4,850 archival videos (661 GB, 2012–2026, 4 sites), with a 16-keypoint ViTPose model reaching 0.924 PCK@0.1 on sharks held out of training and a SQLite backend structured around Darwin Core concepts.</li>
                     <li>Built an active learning pipeline with an iterative human-in-the-loop platform for pose, segmentation and 3D interpretation tasks.</li>
                     <li>Built SharkScarAnnotator, a multi-annotator platform whose 15-point labeling skeleton feeds the 16-keypoint pose model, with consensus scoring weighted by annotator experience and confidence.</li>
                     <li>Processing accelerometer and magnetometer sensor data alongside dorsal-mounted camera video to correlate movement signatures with observed white shark behaviors.</li>

@@ -51,7 +51,7 @@ SECTIONS = [
                     ("Languages", "Python, R, Java 21, SQL/T-SQL, JavaScript/TypeScript, MATLAB, Bash/Unix"),
                     (
                         "ML & Computer Vision",
-                        "PyTorch, YOLO detection and YOLOv8-pose keypoints, SAM 2 / SAM 3 / SlimSAM segmentation, "
+                        "PyTorch, YOLO detection and ViTPose keypoints, SAM 2 / SAM 3 / SlimSAM segmentation, "
                         "DINOv2 embeddings, ArcFace metric learning, XGBoost, scikit-learn, CNN-LSTM, "
                         "positive-unlabeled learning, active learning and human-in-the-loop annotation, "
                         "leakage-aware subject-level validation, ONNX Runtime",
@@ -146,7 +146,8 @@ SECTIONS = [
                 "bullets": [
                     f"Developed multiple computer vision pipelines for pose detection and automated shark morphometric "
                     f"analysis across {SHARK['videos']} archival videos ({SHARK['corpus_size']}, {SHARK['corpus_years']}, "
-                    f"{SHARK['site_count']} sites), reaching {SHARK['box_map50']} {SHARK['box_map50_label']}, with a SQLite "
+                    f"{SHARK['site_count']} sites), with a {SHARK['pose_keypoints']}-keypoint {SHARK['pose_model']} model reaching "
+                    f"{SHARK['pose_pck']} {SHARK['pose_pck_label']} on sharks held out of training and a SQLite "
                     f"backend structured around Darwin Core concepts.",
                     "Built an active learning pipeline with an iterative human-in-the-loop platform for pose, segmentation and "
                     "3D interpretation tasks.",

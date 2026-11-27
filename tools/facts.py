@@ -13,9 +13,15 @@ is where the measurement is described alongside its protocol.
 # ---------------------------------------------------------------- sharks ----
 
 SHARK = {
-    # index.html folder-shark-morpho
-    'box_map50': '0.96',
-    'box_map50_label': 'box mAP50',
+    # index.html folder-shark-morpho. Keypoint model: ViTPose-B v2 (Apache-2.0; v1 with
+    # visibility training, DARK peak refinement), scored on a
+    # test split grouped by encounter (138 frames, 99 sharks, none in train or val); model
+    # card in ocean-predator-ecology-lab (white-shark-pose). The old "0.96 box mAP50" was a
+    # box-detection score from a 72-image YOLO run on an ungrouped split, quoted as if it were
+    # the pose result. Never quote the YOLO v3/v4 numbers: their splits leaked.
+    'pose_model': 'ViTPose',
+    'pose_pck': '0.924',
+    'pose_pck_label': 'PCK@0.1',
     'videos': '4,850',
     'corpus_size': '661 GB',
     'corpus_years': '2012–2026',
